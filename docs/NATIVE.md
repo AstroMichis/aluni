@@ -6,7 +6,7 @@ One app, one bundle id (`us.aluni.app`), two shells around this Rails app: `ios/
 
 | Piece | Role |
 |---|---|
-| `config/native_app.yml` + `app/services/native_app.rb` | App name, bundle id, UA prefix, sign-in/home paths, app-link paths, colours, tabs |
+| `config/native_app.yml` + `app/services/native_app.rb` | App name, bundle id, UA prefix, sign-in/home paths, app-link paths, colours, tabs, store listing URLs |
 | `GET /configurations/v1/:platform` (`ConfigurationsController`) | Tabs with per-platform icons, colours and the path rules the shells merge over their bundled `path_configuration.json` (declared first in routes) |
 | `GET /.well-known/apple-app-site-association`, `/.well-known/assetlinks.json` (`AppLinksController`) | Universal/app links **and** the passkey associations (`webcredentials`, `get_login_creds`). 404 until credentials `native_app.apple_team_id` / `native_app.android_cert_sha256` exist |
 | `hotwire_native_app?` (turbo-rails) | Layouts load `native.css` (hides web chrome) and mount bridge components; `NativeOnly` gates the app pages |
@@ -32,3 +32,5 @@ Not possible on this machine (XcodeGen is installed, full Xcode and Java are not
 ## Store notes
 
 App Store Guideline 4.2: the shells have native navigation, a native error screen and the share sheet; keep adding native value as screens appear. Google Play: verified app links need the release signing certificate fingerprint in `assetlinks.json`. Apple's CDN caches the AASA; changes propagate slowly.
+
+Store listings: `app.store.app_store_url` and `app.store.play_store_url` in `config/native_app.yml` are empty until the apps are published. The landing page (`shared/_store_buttons`) renders each store as a "coming soon" badge until its URL is set, then as a real link (`NativeApp.app_store_url`, `NativeApp.play_store_url`; blanks count as missing).
