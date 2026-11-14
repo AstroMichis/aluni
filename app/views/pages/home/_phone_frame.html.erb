@@ -1,0 +1,13 @@
+<%# A simulated phone, pure CSS. Not a live screen: the pill says so. %>
+<div class="phone-frame">
+  <div class="phone-frame__notch" aria-hidden="true"></div>
+  <div class="phone-frame__screen">
+    <div class="phone-frame__bar">
+      <span class="phone-frame__title"><%= title %></span>
+      <span class="phone-frame__pill"><%= t("pages.home.sample_pill") %></span>
+    </div>
+    <div class="phone-frame__content">
+      <%= yield %>
+    </div>
+  </div>
+</div>

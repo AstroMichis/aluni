@@ -1,0 +1,15 @@
+<%# Line glyphs for the capabilities list, paths only. %>
+<svg class="landing__capability-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  <% case capability %>
+  <% when "passkey" %>
+    <path d="M15 7a4 4 0 1 1-3.9 4.9L9 14l-1 1H6v2H3v-3l5.1-5.1A4 4 0 0 1 15 7z"/><path d="M15.5 8.5h.01"/>
+  <% when "push" %>
+    <path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15L6 16z"/><path d="M10 20a2 2 0 0 0 4 0"/>
+  <% when "siri" %>
+    <path d="M4 11v2M8 8v8M12 5v14M16 9v6M20 11v2"/>
+  <% when "device" %>
+    <path d="M8 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M11 18h2"/>
+  <% else %>
+    <path d="M4 12a8 8 0 0 1 8-8M4 16a12 12 0 0 1 12-12M4 20a16 16 0 0 1 16-16"/><path d="M5 19h.01"/>
+  <% end %>
+</svg>

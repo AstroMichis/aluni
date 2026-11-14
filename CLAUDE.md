@@ -2,7 +2,7 @@
 
 ## What is this
 
-Aluni is an open source tool for people, not for passwords. The web site at aluni.us is informational; the product lives in the iOS and Android apps (Hotwire Native shells around this Rails app), where people sign in with a passkey (face, fingerprint or device code) and never see a username or a password. Bilingual English/Spanish, English first. Dark-first design. The product domain is defined separately from this infrastructure; nothing here assumes it.
+Aluni is your smart crop cultivation assistant: an open source decision-support tool that helps farmers compare crop rotations with their field's soil, weather and satellite data, built for people, not for passwords. The web site at aluni.us is informational (a Three.js field scene, a guided tour of the app with sample data, and the store buttons); the product lives in the iOS and Android apps (Hotwire Native shells around this Rails app), where people sign in with a passkey (face, fingerprint or device code) and never see a username or a password. Bilingual English/Spanish, English first. Dark-first design. The product domain is defined separately from this infrastructure; nothing here assumes it.
 
 ## Critical rules
 
@@ -51,6 +51,7 @@ Read the relevant doc before working on that area:
 | `docs/RAILS_PATTERNS.md` | Service objects, controllers, Hotwire, Stimulus, jobs, the switchboard |
 | `docs/I18N.md` | Locale files, switching, formats, the copy specs |
 | `docs/INTEGRATIONS.md` | Gemini, push, web push, mail, R2, outbound client and inbound webhook shapes |
+| `docs/DATA_SOURCES.md` | Index of external data resources (weather, soil moisture and water, imagery and land cover, soil and terrain, crop characteristics, ag statistics and markets): one file per resource in `docs/data_sources/` with requests, parameters, sample responses, fields and documentation links |
 | `docs/RUST.md` | The extension gem: rules, dev loop, CI and Docker steps |
 | `docs/INFRASTRUCTURE.md` | Gemfile, routes, ENV and credentials inventory, testing, CI |
 | `docs/deploy/DEPLOY.md` | Setting up and running production for $0 |

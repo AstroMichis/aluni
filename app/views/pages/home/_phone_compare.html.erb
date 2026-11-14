@@ -1,0 +1,17 @@
+<p class="phone-frame__label"><%= t("#{scope}.evidence") %></p>
+<ul class="phone-frame__evidence">
+  <li class="phone-frame__chip phone-frame__chip--fact"><%= t("#{scope}.frost", days: sample[:frost_days]) %></li>
+  <li class="phone-frame__chip phone-frame__chip--fact"><%= t("#{scope}.gdd", value: sample[:gdd]) %></li>
+  <li class="phone-frame__chip phone-frame__chip--fact"><%= t("#{scope}.heat", days: sample[:heat_days]) %></li>
+  <li class="phone-frame__chip phone-frame__chip--fact"><%= t("#{scope}.rain", mm: sample[:rain_mm]) %></li>
+  <li class="phone-frame__chip phone-frame__chip--fact"><%= t("#{scope}.wetness", value: sample[:wetness]) %></li>
+</ul>
+<ol class="phone-frame__options">
+  <% %w[current small_grain cover].each do |option| %>
+    <li class="phone-frame__option">
+      <span class="phone-frame__value"><%= t("#{scope}.#{option}") %></span>
+      <span class="phone-frame__line"><span class="phone-frame__line-label"><%= t("#{scope}.why") %></span> <%= t("#{scope}.#{option}_why") %></span>
+      <span class="phone-frame__line"><span class="phone-frame__line-label"><%= t("#{scope}.risk") %></span> <%= t("#{scope}.#{option}_risk") %></span>
+    </li>
+  <% end %>
+</ol>

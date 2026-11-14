@@ -17,10 +17,35 @@ RSpec.describe "Informational site", type: :request do
     expect(response.body).to include('lang="es"').and include(I18n.t("pages.home.headline", locale: :es))
   end
 
-  it "shows sign-in instead of the store links inside the native shells" do
+  it "walks through the tour and ends with the store buttons" do
+    get "/en"
+
+    expect(response.body).to include('data-controller="scroll-story"').and include('id="tour-step-1"').and include('id="tour-step-5"')
+    expect(response.body).to include(I18n.t("pages.home.steps.location.title")).and include(I18n.t("pages.home.steps.alerts.title"))
+    expect(response.body).to include(I18n.t("pages.home.capabilities.title")).and include('id="get-the-app"')
+    expect(response.body.scan(I18n.t("shared.store_buttons.coming_soon")).size).to eq(2)
+    expect(response.body).not_to include("apps.apple.com")
+  end
+
+  it "links the store badges once the urls are configured" do
+    allow(NativeApp).to receive_messages(
+      app_store_url: "https://apps.apple.com/app/id1",
+      play_store_url: "https://play.google.com/store/apps/details?id=us.aluni.app"
+    )
+
+    get "/en"
+
+    expect(response.body).to include('href="https://apps.apple.com/app/id1"').and include('rel="noopener"')
+    expect(response.body).to include('href="https://play.google.com/store/apps/details?id=us.aluni.app"')
+    expect(response.body).not_to include(I18n.t("shared.store_buttons.coming_soon"))
+  end
+
+  it "shows sign-in instead of the tour and the store links inside the native shells" do
     get "/en", headers: native_headers
 
     expect(response.body).to include(I18n.t("pages.home.sign_in")).and include("sign_in")
+    expect(response.body).not_to include('data-controller="scroll-story"')
+    expect(response.body).not_to include(I18n.t("shared.store_buttons.coming_soon"))
   end
 
   it "switches the locale and goes back where the person was" do

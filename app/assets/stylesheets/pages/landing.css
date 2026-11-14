@@ -1,8 +1,12 @@
-/* The informational site. Mobile first. */
+/* The informational site. Mobile first. The Three.js field scene sits fixed
+   behind everything (hero_scene_controller); the tour sections scroll over it
+   and drive it through scroll_story_controller. */
 .landing {
   position: relative;
   min-height: 100dvh;
 }
+
+html:has(.landing) { scroll-behavior: smooth; }
 
 /* Top navigation, fixed; gains a surface once the page scrolls (landing_nav_controller). */
 .landing__nav {
@@ -27,19 +31,36 @@
   gap: var(--space-4);
 }
 
+/* The logo is the wordmark plus its tagline. The hero eyebrow carries the
+   tagline while the hero is on screen; the nav shows it once the page has
+   scrolled (from 641px), so it never reads twice at once. */
 .landing__brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  min-height: 48px;
+}
+
+.landing__wordmark {
   font-family: var(--font-serif);
   font-size: var(--text-xl);
   letter-spacing: var(--tracking-tight);
 }
 
-/* Hero: full viewport, copy centred, the Three.js scene behind everything. */
+.landing__tagline {
+  display: none;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  letter-spacing: var(--tracking-wide);
+}
+
+/* Hero: full viewport, copy centred, the field scene behind everything. */
 .landing__hero {
   position: relative;
   display: flex;
   align-items: center;
   min-height: 100dvh;
-  padding-block: var(--space-20) var(--space-12);
+  padding-block: var(--space-20) var(--space-16);
 }
 
 .landing__hero-bg {
@@ -52,6 +73,21 @@
 .landing__hero-bg canvas {
   width: 100% !important;
   height: 100% !important;
+}
+
+/* A soft vignette keeps the copy legible over the scene. */
+.landing__hero-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, transparent 30%, color-mix(in srgb, var(--color-bg-primary) 75%, transparent) 100%);
+}
+
+/* Reduced motion or no WebGL: fields drawn in CSS instead of the scene. */
+.landing__hero-bg--static {
+  background:
+    linear-gradient(180deg, var(--color-bg-primary) 0%, transparent 45%),
+    repeating-linear-gradient(104deg, var(--color-bg-secondary) 0 56px, var(--color-bg-tertiary) 56px 112px, var(--color-secondary-muted) 112px 128px);
 }
 
 .landing__hero-content {
@@ -69,9 +105,12 @@
   transform: none;
 }
 
+.landing__eyebrow { color: var(--color-accent-text); }
+
 .landing__title {
   font-size: var(--text-4xl);
   margin-block: var(--space-4) var(--space-5);
+  text-wrap: balance;
 }
 
 .landing__lede {
@@ -86,20 +125,169 @@
   margin-top: var(--space-8);
 }
 
-/* Sections below the fold reveal as they scroll in (scroll_reveal_controller). */
-.landing__section {
-  padding-block: var(--space-12);
+/* Scroll cue: a bobbing chevron that is also a link to the first step. */
+.landing__scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: var(--space-6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  transform: translateX(-50%);
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  opacity: 1;
+  transition: opacity var(--transition-slow), color var(--transition-fast);
 }
+
+@starting-style {
+  .landing__scroll-cue { opacity: 0; }
+}
+
+.landing__scroll-cue:hover { color: var(--color-text-primary); }
+
+.landing__scroll-cue svg {
+  width: 24px;
+  height: 24px;
+  animation: landing-bob 1.8s ease-in-out infinite;
+}
+
+@keyframes landing-bob {
+  0%, 100% { transform: translateY(-3px); }
+  50% { transform: translateY(3px); }
+}
+
+/* Preview notice: one line above the tour. */
+.landing__notice {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-1) var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  background: color-mix(in srgb, var(--color-bg-primary) 82%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.landing__notice-link {
+  color: var(--color-accent-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── The tour ───────────────────────────────────────────────────────────
+   scroll_story_controller marks the step at the viewport centre --active (it
+   stays revealed afterwards) and sets --idle on steps not yet seen. Idle
+   steps hand their children two custom properties that the copy, the device
+   and the phone-frame component animate from; without JavaScript nothing is
+   ever idle, so everything simply shows. */
+.tour { position: relative; }
+
+.tour-step {
+  display: flex;
+  align-items: center;
+  min-height: 100dvh;
+  padding-block: var(--space-12);
+  scroll-margin-top: var(--space-16);
+}
+
+.tour-step--idle {
+  --reveal-opacity: 0;
+  --reveal-shift: 12px;
+  --reveal-scale: 0;
+}
+
+.tour-step__inner {
+  display: grid;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+.tour-step__copy {
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-bg-primary) 82%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--color-border-subtle);
+  opacity: var(--reveal-opacity, 1);
+  transform: translateY(var(--reveal-shift, 0px));
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+}
+
+.tour-step__kicker { color: var(--color-accent-text); }
+
+.tour-step__title {
+  font-size: var(--text-2xl);
+  margin-block: var(--space-3) var(--space-4);
+  text-wrap: balance;
+}
+
+.tour-step__body {
+  color: var(--color-text-secondary);
+  font-size: var(--text-lg);
+}
+
+.tour-step__next {
+  margin-top: var(--space-6);
+  min-height: 48px;
+}
+
+.tour-step__device {
+  display: flex;
+  justify-content: center;
+  opacity: var(--reveal-opacity, 1);
+  transform: translateY(calc(var(--reveal-shift, 0px) * 2));
+  transition: opacity var(--transition-slow) 120ms, transform var(--transition-slow) 120ms;
+}
+
+/* Step rail: dots on the right from 769px, shown only while inside the tour. */
+.tour-nav { display: none; }
+
+/* ── Capabilities banner and download ─────────────────────────────────── */
+.landing__banner { padding-block: var(--space-12) 0; }
+
+.landing__banner-card {
+  background: color-mix(in srgb, var(--color-bg-secondary) 88%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.landing__capabilities { margin-top: var(--space-2); }
+
+.landing__capability {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  line-height: var(--leading-snug);
+}
+
+.landing__capability-glyph {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: var(--color-accent-text);
+}
+
+.landing__footnote { font-size: var(--text-sm); }
+
+.landing__section { padding-block: var(--space-12); }
 
 .landing__section-title {
   font-size: var(--text-2xl);
   margin-bottom: var(--space-4);
 }
 
-.landing__section p {
-  color: var(--color-text-secondary);
-}
+.landing__section p { color: var(--color-text-secondary); }
 
+.landing__download { text-align: center; }
+.landing__download .store-buttons { margin-top: var(--space-8); }
+
+/* Sections below the tour reveal as they scroll in (scroll_reveal_controller). */
 .landing__reveal {
   opacity: 0;
   transform: translateY(16px);
@@ -111,16 +299,96 @@
   transform: none;
 }
 
+@media (min-width: 641px) {
+  .landing__nav--scrolled .landing__tagline { display: inline; }
+}
+
 @media (min-width: 769px) {
   .landing__title { font-size: var(--text-5xl); }
   .landing__section { padding-block: var(--space-16); }
+  .tour-step__title { font-size: var(--text-3xl); }
+
+  .tour-step__inner {
+    grid-template-columns: 1fr minmax(260px, 340px);
+    gap: var(--space-12);
+  }
+
+  .tour-step:nth-of-type(even) .tour-step__inner { grid-template-columns: minmax(260px, 340px) 1fr; }
+  .tour-step:nth-of-type(even) .tour-step__device { order: -1; }
+
+  .tour-nav {
+    display: block;
+    position: fixed;
+    right: var(--space-4);
+    top: 50%;
+    z-index: var(--z-sticky);
+    transform: translateY(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-slow);
+  }
+
+  .tour--in-tour .tour-nav {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .tour-nav__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .tour-nav__dot {
+    position: relative;
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-full);
+    background: var(--color-border-strong);
+    transition: background var(--transition-fast), transform var(--transition-fast);
+  }
+
+  /* 44px hit area around a 12px dot. */
+  .tour-nav__dot::before {
+    content: "";
+    position: absolute;
+    inset: -16px;
+  }
+
+  .tour-nav__dot:hover { background: var(--color-text-secondary); }
+
+  .tour-nav__dot[aria-current="step"],
+  .tour-nav__dot--current {
+    background: var(--color-accent);
+    transform: scale(1.25);
+  }
 }
 
-/* Less motion: nothing animates in, everything is simply there. */
+@media (forced-colors: active) {
+  .tour-nav__dot { border: 1px solid CanvasText; }
+  .tour-nav__dot[aria-current="step"],
+  .tour-nav__dot--current { background: Highlight; }
+}
+
+/* Less motion: nothing animates in, everything is simply there, and the
+   fields are drawn in CSS (the controller never imports Three). */
 @media (prefers-reduced-motion: reduce) {
   .landing__hero-content--hidden,
   .landing__reveal {
     opacity: 1;
     transform: none;
   }
+
+  .landing__scroll-cue svg { animation: none; }
+
+  .landing__hero-bg {
+    background:
+      linear-gradient(180deg, var(--color-bg-primary) 0%, transparent 45%),
+      repeating-linear-gradient(104deg, var(--color-bg-secondary) 0 56px, var(--color-bg-tertiary) 56px 112px, var(--color-secondary-muted) 112px 128px);
+  }
+}
+
+@media print {
+  .tour-nav, .landing__scroll-cue { display: none !important; }
 }

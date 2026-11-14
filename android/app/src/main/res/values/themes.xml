@@ -2,25 +2,25 @@
 <resources>
     <!-- Dark theme matching the web design tokens (app/assets/stylesheets/base/variables.css). -->
     <style name="Theme.Aluni" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:colorBackground">#0B0D12</item>
-        <item name="colorSurface">#0B0D12</item>
-        <item name="colorSurfaceVariant">#12151C</item>
+        <item name="android:colorBackground">#0F2920</item>
+        <item name="colorSurface">#0F2920</item>
+        <item name="colorSurfaceVariant">#173D2D</item>
 
-        <item name="colorPrimary">#5B8DEF</item>
-        <item name="colorOnPrimary">#0B0D12</item>
-        <item name="colorSecondary">#E0A458</item>
+        <item name="colorPrimary">#B69A5B</item>
+        <item name="colorOnPrimary">#0F2920</item>
+        <item name="colorSecondary">#6B7650</item>
 
-        <item name="colorOnSurface">#E8EBF0</item>
-        <item name="colorOnSurfaceVariant">#9AA3B2</item>
+        <item name="colorOnSurface">#F1EBDD</item>
+        <item name="colorOnSurfaceVariant">#C8C3B2</item>
 
         <item name="bottomNavigationStyle">@style/Widget.Aluni.BottomNavigation</item>
 
-        <item name="android:statusBarColor">#0B0D12</item>
-        <item name="android:navigationBarColor">#12151C</item>
+        <item name="android:statusBarColor">#0F2920</item>
+        <item name="android:navigationBarColor">#173D2D</item>
     </style>
 
     <style name="Widget.Aluni.BottomNavigation" parent="Widget.Material3.BottomNavigationView">
-        <item name="backgroundTint">#12151C</item>
+        <item name="backgroundTint">#173D2D</item>
         <item name="itemIconTint">@color/bottom_nav_color</item>
         <item name="itemTextColor">@color/bottom_nav_color</item>
     </style>

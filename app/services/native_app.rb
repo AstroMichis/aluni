@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 # config/native_app.yml, read once: what the native shells are and what the
-# server tells them (ConfigurationsController, AppLinksController).
+# server tells them (ConfigurationsController, AppLinksController), plus the
+# store listings the landing page links to once they exist.
 module NativeApp
   PATH = Rails.root.join("config/native_app.yml")
 
@@ -20,4 +21,9 @@ module NativeApp
   def app_paths = Array(config["app_paths"])
   def colors = config.fetch("colors", {})
   def tabs = Array(config["tabs"])
+
+  # Store listings: nil until published, blanks count as missing.
+  def store = config["store"] || {}
+  def app_store_url = store["app_store_url"].presence
+  def play_store_url = store["play_store_url"].presence
 end

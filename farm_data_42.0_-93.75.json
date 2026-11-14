@@ -1,0 +1,91 @@
+{
+  "location": {
+    "lat": 42.0,
+    "lon": -93.75
+  },
+  "period": [
+    "20250101",
+    "20251031"
+  ],
+  "climate_summary": {
+    "precip_total_mm": 854.3,
+    "temp_mean_c": 12.37,
+    "growing_degree_days_base10": 1915.0,
+    "frost_days": 86,
+    "heat_stress_days_gt32c": 8,
+    "root_zone_wetness_mean": 0.491
+  },
+  "site_attributes": {
+    "elevation": 321.736785889,
+    "slope": 4.05,
+    "soil_map_unit": "Clarion loam, Bemis moraine, 6 to 10 percent slopes",
+    "soil_component": "Clarion",
+    "component_share": 90.0,
+    "hydrologic_soil_group": "B",
+    "drainage_class": "Well drained",
+    "mapped_slope": 8.0,
+    "organic_matter": 3.5,
+    "sand": 45.0,
+    "clay": 21.0,
+    "available_water_capacity": 0.21,
+    "nearest_gauge": "Ioway Creek at Ames, IA (10.2 km)",
+    "crop_2020": "Soybeans",
+    "crop_2021": "Corn",
+    "crop_2022": "Soybeans",
+    "crop_2023": "Corn",
+    "crop_2024": "Soybeans",
+    "crop_2025": "Corn"
+  },
+  "time_series_summary": {
+    "NASA POWER | air_temp_max (degC)": {
+      "n": 304,
+      "mean": 18.2268,
+      "min": -15.44,
+      "max": 34.47
+    },
+    "NASA POWER | air_temp_mean (degC)": {
+      "n": 304,
+      "mean": 12.3699,
+      "min": -19.21,
+      "max": 29.42
+    },
+    "NASA POWER | air_temp_min (degC)": {
+      "n": 304,
+      "mean": 6.813,
+      "min": -25.54,
+      "max": 25.2
+    },
+    "NASA POWER | precipitation (mm/day)": {
+      "n": 304,
+      "mean": 2.8103,
+      "min": 0.0,
+      "max": 46.8,
+      "total": 854.3
+    },
+    "NASA POWER | relative_humidity (%)": {
+      "n": 304,
+      "mean": 73.1363,
+      "min": 47.74,
+      "max": 96.14
+    },
+    "NASA POWER | root_zone_soil_wetness (fraction 0-1)": {
+      "n": 304,
+      "mean": 0.4906,
+      "min": 0.42,
+      "max": 0.6
+    },
+    "NASA POWER | solar_radiation (MJ/m2/day)": {
+      "n": 304,
+      "mean": 16.312,
+      "min": 2.31,
+      "max": 29.81,
+      "total": 4958.8
+    },
+    "USGS NWIS | streamflow_nearest_gauge (m3/s)": {
+      "n": 1,
+      "mean": 11.015,
+      "min": 11.015,
+      "max": 11.015
+    }
+  }
+}

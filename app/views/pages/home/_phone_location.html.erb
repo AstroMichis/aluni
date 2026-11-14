@@ -1,0 +1,11 @@
+<div class="phone-frame__search"><%= t("#{scope}.search") %></div>
+<div class="phone-frame__map" aria-hidden="true">
+  <% 25.times do |i| %><span class="phone-frame__tile phone-frame__tile--<%= i % 4 %>"></span><% end %>
+  <span class="phone-frame__pin-ring"></span>
+  <span class="phone-frame__pin"></span>
+</div>
+<div class="phone-frame__card">
+  <span class="phone-frame__value"><%= t("#{scope}.place") %></span>
+  <span class="phone-frame__label text-mono"><%= t("#{scope}.coords", lat: sample[:lat], lon: sample[:lon]) %></span>
+</div>
+<span class="phone-frame__cta"><%= t("#{scope}.cta") %></span>

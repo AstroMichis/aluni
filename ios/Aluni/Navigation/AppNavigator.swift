@@ -70,7 +70,7 @@ final class AppNavigator: NSObject {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = UIColor(named: "TabBarBackground") ?? UIColor.systemBackground
-        tabBarController.tabBar.tintColor = UIColor(red: 0x5B / 255, green: 0x8D / 255, blue: 0xEF / 255, alpha: 1)
+        tabBarController.tabBar.tintColor = UIColor(red: 0xB6 / 255, green: 0x9A / 255, blue: 0x5B / 255, alpha: 1)
         tabBarController.tabBar.standardAppearance = appearance
         tabBarController.tabBar.scrollEdgeAppearance = appearance
     }

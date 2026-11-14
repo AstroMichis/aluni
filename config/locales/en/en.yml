@@ -2,7 +2,7 @@ en:
   app_name: "Aluni"
 
   meta:
-    description: "Aluni is an open source tool. The web site explains it; the app is where you use it."
+    description: "Aluni is your smart crop cultivation assistant. Drop a pin on your field and compare rotation plans built on soil, weather and satellite data."
     og_locale: "en_US"
 
   language_toggle:

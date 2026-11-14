@@ -1,10 +1,13 @@
 <% content_for :title, t(".title", app_name: t("app_name")) %>
-<% content_for :description, t(".lede") %>
+<% content_for :description, t(".lede", app_name: t("app_name")) %>
 
 <div class="landing">
   <nav class="landing__nav" data-controller="landing-nav" aria-label="<%= t(".nav_label") %>">
     <div class="container landing__nav-inner">
-      <%= link_to t("app_name"), root_path, class: "landing__brand" %>
+      <%= link_to root_path, class: "landing__brand" do %>
+        <span class="landing__wordmark"><%= t("app_name") %></span>
+        <span class="landing__tagline"><%= t(".tagline") %></span>
+      <% end %>
       <div class="cluster cluster--sm">
         <%= render "shared/language_toggle" %>
         <button type="button" class="btn btn--ghost btn--sm" data-action="theme#toggle" aria-label="<%= t("theme.toggle") %>">
@@ -18,33 +21,84 @@
     <section class="landing__hero"
             data-controller="hero-scene"
             data-hero-scene-hidden-class="landing__hero-content--hidden"
-            data-hero-scene-visible-class="landing__hero-content--visible">
+            data-hero-scene-visible-class="landing__hero-content--visible"
+            data-hero-scene-fallback-class="landing__hero-bg--static">
       <div class="landing__hero-bg" data-hero-scene-target="canvas" aria-hidden="true"></div>
       <div class="container container--md landing__hero-content landing__hero-content--hidden" data-hero-scene-target="heroContent">
-        <p class="text-label"><%= t(".eyebrow") %></p>
+        <p class="text-label landing__eyebrow"><%= t(".tagline") %></p>
         <h1 class="text-display landing__title"><%= t(".headline") %></h1>
-        <p class="landing__lede"><%= t(".lede") %></p>
+        <p class="landing__lede"><%= t(".lede", app_name: t("app_name")) %></p>
         <div class="cluster cluster--sm landing__actions">
           <% if hotwire_native_app? %>
             <%= link_to t(".sign_in"), sign_in_path, class: "btn btn--primary btn--lg" %>
             <%= link_to t(".sign_up"), sign_up_path, class: "btn btn--secondary btn--lg" if signups_enabled? %>
           <% else %>
             <a class="btn btn--primary btn--lg" href="#get-the-app"><%= t(".get_the_app") %></a>
-            <a class="btn btn--secondary btn--lg" href="#about"><%= t(".learn_more") %></a>
+            <a class="btn btn--secondary btn--lg" href="#tour-step-1"><%= t(".take_the_tour") %></a>
           <% end %>
         </div>
       </div>
+      <% unless hotwire_native_app? %>
+        <a class="landing__scroll-cue" href="#tour-step-1" aria-label="<%= t(".scroll_cue") %>">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+        </a>
+      <% end %>
     </section>
 
-    <section id="about" class="landing__section container container--md landing__reveal" data-controller="scroll-reveal">
-      <h2 class="text-heading landing__section-title"><%= t(".about_title") %></h2>
-      <p><%= t(".about_body") %></p>
-    </section>
+    <% unless hotwire_native_app? %>
+      <div id="tour" class="tour"
+           data-controller="scroll-story"
+           data-scroll-story-active-class="tour-step--active"
+           data-scroll-story-idle-class="tour-step--idle"
+           data-scroll-story-current-class="tour-nav__dot--current"
+           data-scroll-story-in-tour-class="tour--in-tour">
+        <p class="landing__notice container container--md">
+          <span><%= t(".preview_notice") %></span>
+          <a class="landing__notice-link" href="#get-the-app"><%= t(".preview_notice_link") %></a>
+        </p>
 
-    <section id="get-the-app" class="landing__section container container--md landing__reveal" data-controller="scroll-reveal">
-      <h2 class="text-heading landing__section-title"><%= t(".get_the_app_title") %></h2>
-      <p><%= t(".get_the_app_body") %></p>
-    </section>
+        <nav class="tour-nav" aria-label="<%= t(".tour_label") %>" data-scroll-story-target="nav">
+          <ol class="tour-nav__list">
+            <% tour_steps.each_with_index do |step, index| %>
+              <li>
+                <a class="tour-nav__dot" href="#tour-step-<%= index + 1 %>" data-scroll-story-target="dot">
+                  <span class="sr-only"><%= t(".tour_step_label", number: index + 1, title: t("pages.home.steps.#{step}.title")) %></span>
+                </a>
+              </li>
+            <% end %>
+          </ol>
+        </nav>
+
+        <% tour_steps.each_with_index do |step, index| %>
+          <%= render "pages/home/tour_step", step: step, number: index + 1, total: tour_steps.size %>
+        <% end %>
+
+        <section class="landing__banner container container--md landing__reveal" data-controller="scroll-reveal" aria-labelledby="capabilities-title">
+          <div class="card landing__banner-card">
+            <div class="card__body stack stack--md">
+              <p class="text-label landing__eyebrow"><%= t(".capabilities.kicker") %></p>
+              <h2 id="capabilities-title" class="text-heading landing__section-title"><%= t(".capabilities.title") %></h2>
+              <p><%= t(".capabilities.body") %></p>
+              <ul class="landing__capabilities grid grid--2">
+                <% %w[passkey push siri device data].each do |capability| %>
+                  <li class="landing__capability">
+                    <%= render "pages/home/capability_glyph", capability: capability %>
+                    <span><%= t(".capabilities.#{capability}") %></span>
+                  </li>
+                <% end %>
+              </ul>
+              <p class="text-muted landing__footnote"><%= t(".capabilities.footnote", app_name: t("app_name")) %></p>
+            </div>
+          </div>
+        </section>
+
+        <section id="get-the-app" class="landing__section landing__download container container--md landing__reveal" data-controller="scroll-reveal" aria-labelledby="get-the-app-title">
+          <h2 id="get-the-app-title" class="text-heading landing__section-title"><%= t(".get_the_app_title") %></h2>
+          <p><%= t(".get_the_app_body") %></p>
+          <%= render "shared/store_buttons" %>
+        </section>
+      </div>
+    <% end %>
   </main>
 
   <%= render "shared/public_footer" %>

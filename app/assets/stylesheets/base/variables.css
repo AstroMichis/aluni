@@ -1,50 +1,56 @@
 /* Design tokens. :root is the dark default; [data-theme="light"] overrides the
-   same names. Components and pages use tokens only, never raw values. */
+   same names. Components and pages use tokens only, never raw values.
+   Brand: deep green #173D2D (main), gold #B69A5B (secondary), slate #26364A
+   (accessories), cream #F1EBDD (subtle accent), olive #6B7650 (decoration). */
 :root {
-  /* Surfaces (dark default) */
-  --color-bg-primary: #0B0D12;
-  --color-bg-secondary: #12151C;
-  --color-bg-tertiary: #1A1E27;
-  --color-bg-hover: #222733;
-  --color-bg-active: #2A303E;
+  /* Surfaces (dark default): the brand green and its deeper shades */
+  --color-bg-primary: #0F2920;
+  --color-bg-secondary: #173D2D;
+  --color-bg-tertiary: #1E4A37;
+  --color-bg-hover: #255640;
+  --color-bg-active: #2C624A;
 
-  /* Text */
-  --color-text-primary: #E8EBF0;
-  --color-text-secondary: #9AA3B2;
-  --color-text-tertiary: #6B7484;
-  --color-text-inverse: #0B0D12;
+  /* Text: cream on green */
+  --color-text-primary: #F1EBDD;
+  --color-text-secondary: #C8C3B2;
+  --color-text-tertiary: #A4A994;
+  --color-text-inverse: #0F2920;
 
   /* Borders */
-  --color-border-default: #262B37;
-  --color-border-subtle: #1C2029;
-  --color-border-strong: #343B4A;
+  --color-border-default: #2B5542;
+  --color-border-subtle: #214634;
+  --color-border-strong: #3B6B54;
 
-  /* Accent: calm blue */
-  --color-accent: #5B8DEF;
-  --color-accent-hover: #74A0F4;
-  --color-accent-muted: #5B8DEF26;
-  --color-accent-text: #A9C4FA;
+  /* Accent: brand gold. 5.7:1 on bg-primary but 4.46:1 on bg-secondary, so
+     text on cards uses --color-accent-text. */
+  --color-accent: #B69A5B;
+  --color-accent-hover: #C9AF72;
+  --color-accent-muted: #B69A5B26;
+  --color-accent-text: #D9C48F;
 
-  /* Secondary accent: warm amber */
-  --color-secondary: #E0A458;
-  --color-secondary-hover: #EBB76F;
-  --color-secondary-muted: #E0A4581A;
+  /* Secondary: olive decoration (fills and marks, never text) */
+  --color-secondary: #6B7650;
+  --color-secondary-hover: #7E8A61;
+  --color-secondary-muted: #6B76501A;
+
+  /* Chrome: slate accessories (device bezels, rails, status bars) */
+  --color-chrome: #26364A;
 
   /* Status */
-  --color-success: #5C9A6E;
-  --color-success-bg: #5C9A6E1A;
-  --color-warning: #C4935A;
-  --color-warning-bg: #C4935A1A;
-  --color-danger: #C25E5E;
-  --color-danger-bg: #C25E5E1A;
-  --color-info: #5B8DEF;
-  --color-info-bg: #5B8DEF1A;
+  --color-success: #8CBF7E;
+  --color-success-bg: #8CBF7E1A;
+  --color-warning: #E3A845;
+  --color-warning-bg: #E3A8451A;
+  --color-danger: #E68B7C;
+  --color-danger-bg: #E68B7C1A;
+  --color-info: #93AACB;
+  --color-info-bg: #93AACB1A;
 
   /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 20px rgba(91, 141, 239, 0.1);
+  --shadow-glow: 0 0 20px rgba(182, 154, 91, 0.12);
 
   /* Spacing (8px base, 4px steps) */
   --space-1: 4px;   --space-2: 8px;   --space-3: 12px;
@@ -91,27 +97,36 @@
   --container-lg: 1024px; --container-xl: 1200px;
 }
 
-/* Light mode override */
+/* Light mode override: cream surfaces, deep green text and accent */
 [data-theme="light"] {
-  --color-bg-primary: #F7F8FA;
-  --color-bg-secondary: #FFFFFF;
-  --color-bg-tertiary: #EEF1F5;
-  --color-bg-hover: #E4E8EE;
-  --color-bg-active: #D9DEE6;
-  --color-text-primary: #171A21;
-  --color-text-secondary: #525A68;
-  --color-text-tertiary: #7E869A;
-  --color-text-inverse: #F7F8FA;
-  --color-border-default: #D3D8E0;
-  --color-border-subtle: #E3E7ED;
-  --color-border-strong: #BCC3CF;
-  --color-accent: #2F67D8;
-  --color-accent-hover: #2456BD;
-  --color-accent-muted: #2F67D815;
-  --color-accent-text: #1F4AA3;
-  --color-secondary: #B87A24;
-  --color-secondary-hover: #9F681B;
-  --color-secondary-muted: #B87A2415;
+  --color-bg-primary: #F1EBDD;
+  --color-bg-secondary: #FAF7EF;
+  --color-bg-tertiary: #E7DFCB;
+  --color-bg-hover: #DDD3BB;
+  --color-bg-active: #D2C7AA;
+  --color-text-primary: #173D2D;
+  --color-text-secondary: #3F5A4C;
+  --color-text-tertiary: #566659;
+  --color-text-inverse: #F1EBDD;
+  --color-border-default: #D4CAB2;
+  --color-border-subtle: #E3DBC7;
+  --color-border-strong: #B9AD90;
+  --color-accent: #173D2D;
+  --color-accent-hover: #112E22;
+  --color-accent-muted: #173D2D14;
+  --color-accent-text: #173D2D;
+  --color-secondary: #6B7650;
+  --color-secondary-hover: #5C664A;
+  --color-secondary-muted: #6B765026;
+  --color-chrome: #26364A;
+  --color-success: #35703F;
+  --color-success-bg: #35703F1A;
+  --color-warning: #7D5F18;
+  --color-warning-bg: #7D5F181A;
+  --color-danger: #A8432F;
+  --color-danger-bg: #A8432F1A;
+  --color-info: #26364A;
+  --color-info-bg: #26364A1A;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);

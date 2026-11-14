@@ -156,4 +156,4 @@ Nothing secret lives in `/ios`. `BASE_URL` comes from the xcconfig files through
 
 ## Key conventions
 
-Dark launch screen (`#0B0D12`), minimal chrome, 48 pt touch targets on the web side, English primary with Spanish localisation (`en.lproj`, `es.lproj`), the web views inherit the Rails design tokens.
+Dark launch screen (`#0F2920`), minimal chrome, 48 pt touch targets on the web side, English primary with Spanish localisation (`en.lproj`, `es.lproj`), the web views inherit the Rails design tokens.

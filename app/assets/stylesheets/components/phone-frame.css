@@ -1,0 +1,371 @@
+/* A simulated phone for the landing tour (pages/home/_phone_frame). Pure CSS,
+   no images. Children animate from two custom properties the tour step sets
+   while it is idle (--reveal-opacity, --reveal-shift, --reveal-scale) and
+   settle to their defaults once the step is active. */
+.phone-frame {
+  position: relative;
+  width: min(100%, 320px);
+  aspect-ratio: 9 / 19.5;
+  padding: 10px;
+  border-radius: 40px;
+  background: var(--color-chrome);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: var(--shadow-lg);
+  contain: paint;
+}
+
+.phone-frame__notch {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  z-index: 1;
+  width: 96px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--color-chrome);
+  transform: translateX(-50%);
+}
+
+/* The aspect ratio sets the usual height; longer copy (Spanish) grows the phone rather than clipping. */
+.phone-frame__screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  border-radius: 32px;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  overflow: hidden;
+}
+
+.phone-frame__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-12) var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.phone-frame__title { font-weight: 600; }
+
+.phone-frame__pill {
+  padding: 2px var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.phone-frame__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+/* Anything that reveals: fades and lifts in, staggered by position. */
+.phone-frame__search,
+.phone-frame__card,
+.phone-frame__cta,
+.phone-frame__row,
+.phone-frame__chip,
+.phone-frame__option,
+.phone-frame__alert,
+.phone-frame__note,
+.phone-frame__source,
+.phone-frame__evidence,
+.phone-frame__actions {
+  opacity: var(--reveal-opacity, 1);
+  transform: translateY(var(--reveal-shift, 0px));
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+}
+
+.phone-frame__content > :nth-child(2), .phone-frame__content > * > :nth-child(2) { transition-delay: 70ms; }
+.phone-frame__content > :nth-child(3), .phone-frame__content > * > :nth-child(3) { transition-delay: 140ms; }
+.phone-frame__content > :nth-child(4), .phone-frame__content > * > :nth-child(4) { transition-delay: 210ms; }
+.phone-frame__content > :nth-child(5), .phone-frame__content > * > :nth-child(5) { transition-delay: 280ms; }
+.phone-frame__content > :nth-child(6), .phone-frame__content > * > :nth-child(6) { transition-delay: 350ms; }
+.phone-frame__content > :nth-child(7), .phone-frame__content > * > :nth-child(7) { transition-delay: 420ms; }
+
+/* Generic pieces */
+.phone-frame__label {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.phone-frame__value { font-weight: 600; }
+
+.phone-frame__card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-default);
+}
+
+.phone-frame__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.phone-frame__cta--quiet {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+.phone-frame__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.phone-frame__note,
+.phone-frame__source {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+/* Step 1: a map of field tiles with a pin that drops in. */
+.phone-frame__search {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+}
+
+.phone-frame__map {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.phone-frame__tile { background: var(--color-bg-tertiary); }
+.phone-frame__tile--1 { background: var(--color-secondary-muted); }
+.phone-frame__tile--2 { background: var(--color-bg-secondary); }
+.phone-frame__tile--3 { background: var(--color-accent-muted); }
+
+.phone-frame__pin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  border-radius: 50% 50% 50% 0;
+  background: var(--color-accent);
+  opacity: var(--reveal-opacity, 1);
+  transform: translate(-50%, calc(-100% - var(--reveal-shift, 0px) * 10)) rotate(-45deg);
+  transition: opacity var(--transition-base) 200ms, transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1.1) 200ms;
+}
+
+.phone-frame__pin-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--color-accent);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.2);
+  animation: phone-ring 1.8s ease-out 800ms infinite;
+  animation-play-state: var(--reveal-play, running);
+}
+
+.tour-step--idle .phone-frame__pin-ring { animation-play-state: paused; }
+
+@keyframes phone-ring {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+}
+
+/* Step 2: rows with meters that fill. */
+.phone-frame__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.phone-frame__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-2);
+  padding-block: var(--space-1);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.phone-frame__meter {
+  display: block;
+  width: 100%;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-tertiary);
+  overflow: hidden;
+}
+
+.phone-frame__meter-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-accent);
+  transform-origin: left center;
+  transform: scaleX(calc(var(--fill, 1) * var(--reveal-scale, 1)));
+  transition: transform 700ms ease 300ms;
+}
+
+.phone-frame__meter-fill--om { --fill: 0.35; }
+.phone-frame__meter-fill--sand { --fill: 0.45; }
+.phone-frame__meter-fill--awc { --fill: 0.55; }
+.phone-frame__meter-fill--slope { --fill: 0.27; background: var(--color-secondary); }
+
+/* Step 3: a year timeline of crop chips. */
+.phone-frame__timeline {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+
+.phone-frame__chip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
+  background: var(--color-bg-tertiary);
+}
+
+.phone-frame__chip--corn {
+  background: var(--color-accent-muted);
+  color: var(--color-accent-text);
+}
+
+.phone-frame__chip--soybeans {
+  background: var(--color-secondary-muted);
+  color: var(--color-text-primary);
+}
+
+.phone-frame__chip-year { color: var(--color-text-secondary); }
+.phone-frame__chip-crop { font-weight: 600; }
+
+/* Step 4: evidence chips and three option cards; the step's data-phase picks one. */
+.phone-frame__evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.phone-frame__chip--fact {
+  flex-direction: row;
+  padding: 2px var(--space-2);
+  color: var(--color-text-secondary);
+}
+
+.phone-frame__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.phone-frame__option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-default);
+  transition: opacity var(--transition-slow), transform var(--transition-slow), border-color var(--transition-slow);
+}
+
+.phone-frame__line {
+  color: var(--color-text-secondary);
+  line-height: var(--leading-snug);
+}
+
+.phone-frame__line-label {
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+[data-phase] .phone-frame__option { opacity: calc(var(--reveal-opacity, 1) * 0.6); }
+
+[data-phase="1"] .phone-frame__option:nth-child(1),
+[data-phase="2"] .phone-frame__option:nth-child(2),
+[data-phase="3"] .phone-frame__option:nth-child(3) {
+  opacity: var(--reveal-opacity, 1);
+  border-color: var(--color-accent);
+  transform: translateY(calc(var(--reveal-shift, 0px) - 3px));
+}
+
+/* Step 5: a stack of notifications sliding down from the top. */
+.phone-frame__alerts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.phone-frame__alert {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  border-left: 3px solid var(--color-warning);
+  transform: translateY(calc(-1 * var(--reveal-shift, 0px)));
+}
+
+.phone-frame__alert--frost { border-left-color: var(--color-info); }
+.phone-frame__alert--bare { border-left-color: var(--color-secondary); }
+.phone-frame__alert--moisture { border-left-color: var(--color-warning); }
+
+.phone-frame__alert-head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.phone-frame__time {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+}
+
+.phone-frame__alert-body {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phone-frame__pin-ring { animation: none; opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+}
+
+@media (forced-colors: active) {
+  .phone-frame,
+  .phone-frame__card,
+  .phone-frame__option,
+  .phone-frame__alert,
+  .phone-frame__chip { border: 1px solid CanvasText; }
+}

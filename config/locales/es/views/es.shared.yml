@@ -3,6 +3,13 @@ es:
     public_footer:
       tagline: "Código abierto, construido a la vista de todos."
       meta: "%{app_name} %{year}"
+    store_buttons:
+      label: "Descargar la app"
+      app_store: "App Store"
+      app_store_hint: "Descárgala en"
+      play_store: "Google Play"
+      play_store_hint: "Disponible en"
+      coming_soon: "Muy pronto"
   web_push:
     prompt: "¿Quieres un aviso en tu dispositivo?"
     enable: "Activar notificaciones"

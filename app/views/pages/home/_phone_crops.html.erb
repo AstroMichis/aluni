@@ -1,0 +1,13 @@
+<ol class="phone-frame__timeline">
+  <% sample[:crops].each do |year, crop| %>
+    <li class="phone-frame__chip phone-frame__chip--<%= crop %>">
+      <span class="phone-frame__chip-year text-mono"><%= year %></span>
+      <span class="phone-frame__chip-crop"><%= t("#{scope}.#{crop}") %></span>
+    </li>
+  <% end %>
+</ol>
+<p class="phone-frame__note"><%= t("#{scope}.pattern") %></p>
+<div class="phone-frame__actions">
+  <span class="phone-frame__cta"><%= t("#{scope}.confirm") %></span>
+  <span class="phone-frame__cta phone-frame__cta--quiet"><%= t("#{scope}.edit") %></span>
+</div>

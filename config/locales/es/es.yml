@@ -2,7 +2,7 @@ es:
   app_name: "Aluni"
 
   meta:
-    description: "Aluni es una herramienta de código abierto. El sitio web la explica; la app es donde se usa."
+    description: "Aluni es tu asistente inteligente de cultivo. Marca un punto en tu campo y compara planes de rotación basados en datos de suelo, clima y satélite."
     og_locale: "es_ES"
 
   language_toggle:

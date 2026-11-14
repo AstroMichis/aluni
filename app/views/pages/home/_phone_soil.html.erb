@@ -1,0 +1,35 @@
+<ul class="phone-frame__list">
+  <li class="phone-frame__row">
+    <span class="phone-frame__label"><%= t("#{scope}.series_label") %></span>
+    <span class="phone-frame__value"><%= t("#{scope}.series") %></span>
+  </li>
+  <li class="phone-frame__row">
+    <span class="phone-frame__label"><%= t("#{scope}.drainage_label") %></span>
+    <span class="phone-frame__value"><%= t("#{scope}.drainage") %></span>
+  </li>
+  <li class="phone-frame__row phone-frame__row--meter">
+    <span class="phone-frame__label"><%= t("#{scope}.om") %></span>
+    <span class="phone-frame__value text-mono"><%= t("#{scope}.om_value", value: sample[:om]) %></span>
+    <span class="phone-frame__meter" aria-hidden="true"><span class="phone-frame__meter-fill phone-frame__meter-fill--om"></span></span>
+  </li>
+  <li class="phone-frame__row phone-frame__row--meter">
+    <span class="phone-frame__label"><%= t("#{scope}.texture") %></span>
+    <span class="phone-frame__value text-mono"><%= t("#{scope}.texture_value", sand: sample[:sand], clay: sample[:clay]) %></span>
+    <span class="phone-frame__meter" aria-hidden="true"><span class="phone-frame__meter-fill phone-frame__meter-fill--sand"></span></span>
+  </li>
+  <li class="phone-frame__row phone-frame__row--meter">
+    <span class="phone-frame__label"><%= t("#{scope}.awc") %></span>
+    <span class="phone-frame__value text-mono"><%= t("#{scope}.awc_value", value: sample[:awc]) %></span>
+    <span class="phone-frame__meter" aria-hidden="true"><span class="phone-frame__meter-fill phone-frame__meter-fill--awc"></span></span>
+  </li>
+  <li class="phone-frame__row phone-frame__row--meter">
+    <span class="phone-frame__label"><%= t("#{scope}.slope") %></span>
+    <span class="phone-frame__value text-mono"><%= t("#{scope}.slope_value", value: sample[:slope]) %></span>
+    <span class="phone-frame__meter" aria-hidden="true"><span class="phone-frame__meter-fill phone-frame__meter-fill--slope"></span></span>
+  </li>
+  <li class="phone-frame__row">
+    <span class="phone-frame__label"><%= t("#{scope}.group") %></span>
+    <span class="phone-frame__value"><%= t("#{scope}.group_value", value: sample[:group]) %></span>
+  </li>
+</ul>
+<p class="phone-frame__source"><%= t("#{scope}.source") %></p>

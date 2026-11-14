@@ -10,7 +10,11 @@ app:
   home_path: /app
   # Universal links / app links: these paths on aluni.us open the app (AppLinksController).
   app_paths: ["/app/*", "/sign_in", "/sign_up", "/passkeys"]
-  colors: { tint: "#5B8DEF", background: "#0B0D12" }
+  # Brand colours the shells read before sign-in; mirror base/variables.css.
+  colors: { tint: "#B69A5B", background: "#0F2920" }
+  # Store listings. Empty until the apps are published; the landing page shows
+  # "coming soon" buttons for any store without a URL.
+  store: { app_store_url: ~, play_store_url: ~ }
   tabs:
     - { key: home, path: /app, ios_icon: house, android_icon: ic_home }
     - { key: account, path: /passkeys, ios_icon: person.crop.circle, android_icon: ic_account }

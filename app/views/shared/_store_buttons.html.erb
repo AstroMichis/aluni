@@ -1,0 +1,23 @@
+<%# App Store and Google Play. A store without a URL in config/native_app.yml renders as a "coming soon" badge instead of a link. %>
+<div class="store-buttons cluster cluster--sm cluster--center" role="group" aria-label="<%= t(".label") %>">
+  <% { app_store: NativeApp.app_store_url, play_store: NativeApp.play_store_url }.each do |store, url| %>
+    <% if url %>
+      <%= link_to url, class: "store-button store-button--#{store}", rel: "noopener", target: "_blank" do %>
+        <%= render "shared/store_glyph", store: store %>
+        <span class="store-button__text">
+          <span class="store-button__hint"><%= t(".#{store}_hint") %></span>
+          <span class="store-button__name"><%= t(".#{store}") %></span>
+        </span>
+      <% end %>
+    <% else %>
+      <span class="store-button store-button--<%= store %> store-button--soon" aria-disabled="true">
+        <%= render "shared/store_glyph", store: store %>
+        <span class="store-button__text">
+          <span class="store-button__hint"><%= t(".#{store}_hint") %></span>
+          <span class="store-button__name"><%= t(".#{store}") %></span>
+        </span>
+        <span class="badge badge--secondary store-button__badge"><%= t(".coming_soon") %></span>
+      </span>
+    <% end %>
+  <% end %>
+</div>

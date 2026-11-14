@@ -11,6 +11,19 @@ RSpec.describe "Landing page", type: :system do
     expect_no_server_errors!
   end
 
+  it "activates a tour step on scroll and reaches the store section" do
+    visit root_path(locale: "en")
+    expect(page).to have_css(".landing__hero-content--visible", wait: 5)
+
+    page.execute_script("document.getElementById('tour-step-3').scrollIntoView({ block: 'center', behavior: 'instant' })")
+    expect(page).to have_css("#tour-step-3.tour-step--active", wait: 5)
+    expect(page).to have_css(".tour-nav__dot[aria-current='step'][href='#tour-step-3']", visible: :all)
+
+    page.execute_script("document.getElementById('get-the-app').scrollIntoView({ behavior: 'instant' })")
+    expect(page).to have_css(".store-button--soon", count: 2, wait: 5)
+    expect_no_server_errors!
+  end
+
   it "switches the theme" do
     visit root_path(locale: "en")
 

@@ -1,0 +1,23 @@
+<ul class="phone-frame__alerts">
+  <li class="phone-frame__alert phone-frame__alert--frost">
+    <span class="phone-frame__alert-head">
+      <span class="phone-frame__value"><%= t("#{scope}.frost") %></span>
+      <span class="phone-frame__time"><%= t("#{scope}.now") %></span>
+    </span>
+    <span class="phone-frame__alert-body"><%= t("#{scope}.frost_body") %></span>
+  </li>
+  <li class="phone-frame__alert phone-frame__alert--bare">
+    <span class="phone-frame__alert-head">
+      <span class="phone-frame__value"><%= t("#{scope}.bare") %></span>
+      <span class="phone-frame__time"><%= t("#{scope}.earlier") %></span>
+    </span>
+    <span class="phone-frame__alert-body"><%= t("#{scope}.bare_body") %></span>
+  </li>
+  <li class="phone-frame__alert phone-frame__alert--moisture">
+    <span class="phone-frame__alert-head">
+      <span class="phone-frame__value"><%= t("#{scope}.moisture") %></span>
+      <span class="phone-frame__time"><%= t("#{scope}.earlier") %></span>
+    </span>
+    <span class="phone-frame__alert-body"><%= t("#{scope}.moisture_body", value: sample[:wetness_low]) %></span>
+  </li>
+</ul>
