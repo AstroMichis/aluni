@@ -1,0 +1,17 @@
+<%# Browser notifications opt-in. Shown only when the VAPID keys are set. %>
+<% if Notifications::WebPushConfig.configured? %>
+  <div class="card web-push" hidden
+       data-controller="web-push"
+       data-web-push-url-value="<%= app_web_push_subscriptions_path %>"
+       data-web-push-public-key-value="<%= Notifications::WebPushConfig.public_key %>">
+    <div class="card__body stack stack--sm">
+      <div class="stack stack--sm" data-web-push-target="prompt" hidden>
+        <p><%= t("web_push.prompt") %></p>
+        <button type="button" class="btn btn--primary btn--full" data-action="web-push#enable"><%= t("web_push.enable") %></button>
+      </div>
+      <p data-web-push-target="done" hidden><%= t("web_push.done") %></p>
+      <p data-web-push-target="denied" hidden><%= t("web_push.denied") %></p>
+      <p data-web-push-target="install" hidden><%= t("web_push.install") %></p>
+    </div>
+  </div>
+<% end %>

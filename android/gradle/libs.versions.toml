@@ -1,0 +1,25 @@
+[versions]
+agp = "8.13.2"
+kotlin = "2.0.21"
+hotwire = "1.2.0"
+kotlinx-serialization = "1.7.3"
+material = "1.12.0"
+# The version Hotwire Native Android 1.2.0 already depends on; the WebAuthn
+# WebView API (passkeys inside the web view) lives here.
+androidx-webkit = "1.13.0"
+firebase-messaging = "24.1.0"
+google-services = "4.4.2"
+
+[libraries]
+hotwire-core = { module = "dev.hotwire:core", version.ref = "hotwire" }
+hotwire-navigation-fragments = { module = "dev.hotwire:navigation-fragments", version.ref = "hotwire" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "androidx-webkit" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebase-messaging" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }

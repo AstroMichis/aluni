@@ -1,0 +1,5 @@
+#!/bin/sh
+# Run migrations once per deploy, before the new web containers boot,
+# instead of on every container start.
+echo "Running migrations on $KAMAL_HOSTS (version $KAMAL_VERSION)"
+kamal app exec --primary --version="$KAMAL_VERSION" "bin/rails db:prepare"

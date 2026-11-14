@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(mise exec:*)"
+    ],
+    "deny": [
+      "WebFetch",
+      "WebSearch",
+      "Bash(rm -rf:*)",
+      "Bash(git reset:*)",
+      "Bash(rails db:rollback:*)",
+      "Bash(rails db:migrate:down:*)",
+      "Bash(rails db:reset:*)",
+      "Bash(rails db:drop:*)",
+      "Bash(rails db:schema:load:*)",
+      "Bash(rails db:structure:load:*)",
+      "Bash(bin/rails db:rollback:*)",
+      "Bash(bin/rails db:migrate:down:*)",
+      "Bash(bin/rails db:reset:*)",
+      "Bash(bin/rails db:drop:*)",
+      "Bash(bin/rails db:schema:load:*)",
+      "Bash(bin/rails db:structure:load:*)",
+      "Bash(bundle exec rails db:rollback:*)",
+      "Bash(bundle exec rails db:migrate:down:*)",
+      "Bash(bundle exec rails db:reset:*)",
+      "Bash(bundle exec rails db:drop:*)",
+      "Bash(bundle exec rails db:schema:load:*)",
+      "Bash(bundle exec rails db:structure:load:*)",
+      "Bash(mise exec -- bundle exec rails db:rollback:*)",
+      "Bash(mise exec -- bundle exec rails db:migrate:down:*)",
+      "Bash(mise exec -- bundle exec rails db:reset:*)",
+      "Bash(mise exec -- bundle exec rails db:drop:*)",
+      "Bash(mise exec -- bundle exec rails db:schema:load:*)",
+      "Bash(mise exec -- bundle exec rails db:structure:load:*)",
+      "Bash(rm db/migrate:*)",
+      "Bash(rm db/schema:*)",
+      "Bash(rm db/structure:*)",
+      "Bash(rm -rf db/:*)",
+      "Bash(rm -rf db/migrate:*)",
+      "Read(./config/master.key)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./config/credentials/**)",
+      "Read(./config/credentials.yml.enc)",
+      "Read(./config/credentials*.key)",
+      "Read(./.kamal/secrets)"
+    ]
+  }
+}

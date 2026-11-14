@@ -1,0 +1,10 @@
+es:
+  sessions:
+    new:
+      title: "Iniciar sesión"
+      lede: "Usa la llave de acceso de este dispositivo. Tu cara, tu huella o el código del dispositivo confirman que eres tú."
+      button: "Entrar con llave de acceso"
+      no_account: "¿Primera vez?"
+      sign_up: "Crear una cuenta"
+    destroy:
+      signed_out: "Cerraste sesión."

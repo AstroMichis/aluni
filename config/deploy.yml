@@ -1,0 +1,191 @@
+# Kamal 2 deploy config: one VM running web (Puma behind kamal-proxy) and the
+# Sidekiq worker, with Postgres 16, Redis 7 and a nightly pg_dump-to-R2 job
+# as accessories on the same box.
+#
+# Default target is the $0 Oracle Cloud Always Free Ampere A1 VM (arm64),
+# images in GitHub Container Registry, secrets from GitHub Actions. Setup:
+# docs/deploy/DEPLOY.md. The same file deploys to a cheap amd64 VPS by
+# changing KAMAL_HOST and KAMAL_ARCH.
+#
+# Validate with `bin/kamal config` (needs the env vars below exported).
+#
+# Memory budget (12 GB on Oracle A1, fits in 4 GB on a VPS): one Puma process
+# with 3 threads, Sidekiq with 3 threads, Postgres with 1 GB shared buffers,
+# Redis capped at 256 MB.
+#
+# Ingress (KAMAL_TUNNEL=1, the default): Cloudflare Tunnel. The cloudflared
+# accessory dials out to Cloudflare and hands requests to kamal-proxy over
+# the private Docker network, so the VM needs no open inbound port at all.
+# Cloudflare terminates TLS. Boot kamal-proxy bound to localhost once per server:
+#   bin/kamal proxy boot_config set --publish-host-ip=127.0.0.1 && bin/kamal proxy reboot
+#
+# Without the tunnel (KAMAL_TUNNEL=0): Cloudflare proxies to the public IP and
+# kamal-proxy serves a Cloudflare Origin certificate (CERTIFICATE_PEM /
+# PRIVATE_KEY_PEM); restrict 80/443 to Cloudflare's IP ranges.
+<% tunnel = ENV.fetch("KAMAL_TUNNEL", "1") == "1" %>
+
+service: aluni
+image: <%= ENV.fetch("KAMAL_IMAGE", "CHANGE_ME/aluni") %>
+
+servers:
+  web:
+    hosts:
+      - <%= ENV.fetch("KAMAL_HOST", "203.0.113.10") %>
+  worker:
+    hosts:
+      - <%= ENV.fetch("KAMAL_HOST", "203.0.113.10") %>
+    cmd: bundle exec sidekiq -C config/sidekiq.yml
+    env:
+      clear:
+        # DB pool follows RAILS_MAX_THREADS; keep it above Sidekiq's threads.
+        RAILS_MAX_THREADS: 4
+        SIDEKIQ_CONCURRENCY: 3
+
+proxy:
+  app_port: 3000
+  healthcheck:
+    path: /up
+    interval: 3
+<% unless tunnel %>
+  ssl:
+    certificate_pem: CERTIFICATE_PEM
+    private_key_pem: PRIVATE_KEY_PEM
+<% end %>
+  hosts:
+    - <%= ENV.fetch("APP_DOMAIN", "aluni.us") %>
+    - www.<%= ENV.fetch("APP_DOMAIN", "aluni.us") %>
+
+ssh:
+  user: <%= ENV.fetch("KAMAL_SSH_USER", "deploy") %>
+
+# GitHub Container Registry: free for container images. The password is a
+# GitHub token with write:packages (GITHUB_TOKEN in Actions).
+registry:
+  server: <%= ENV.fetch("KAMAL_REGISTRY_SERVER", "ghcr.io") %>
+  username: <%= ENV.fetch("KAMAL_REGISTRY_USERNAME", "CHANGE_ME") %>
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# arm64 for Oracle A1, amd64 for most VPS. KAMAL_BUILDER_REMOTE (ssh://user@host)
+# builds natively on the server itself: no QEMU emulation (which would make the
+# Rust extension's compile many times slower) and no CI build minutes.
+builder:
+  arch: <%= ENV.fetch("KAMAL_ARCH", "arm64") %>
+<% if ENV["KAMAL_BUILDER_REMOTE"].present? %>
+  remote: <%= ENV["KAMAL_BUILDER_REMOTE"] %>
+<% end %>
+
+env:
+  clear:
+    RAILS_LOG_LEVEL: info
+    RAILS_MAX_THREADS: 3
+    # Less memory fragmentation per thread (jemalloc is already preloaded).
+    MALLOC_ARENA_MAX: 2
+    # Emergency brake: set to 1 and `bin/kamal deploy` (or `bin/kamal app boot`)
+    # to pause every outside service even if the database is down.
+    PLATFORM_PAUSE_ALL: <%= ENV.fetch("PLATFORM_PAUSE_ALL", "0") %>
+    RAILS_SERVE_STATIC_FILES: true
+    # Cloudflare's published edge ranges (https://www.cloudflare.com/ips/), so
+    # request.remote_ip and Rack::Attack see the visitor, not the Cloudflare
+    # edge. Through the tunnel the hop is private (trusted by default); this
+    # matters when Cloudflare proxies to the public IP instead.
+    TRUSTED_PROXIES: "173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32"
+    APP_DOMAIN: <%= ENV.fetch("APP_DOMAIN", "aluni.us") %>
+    # Sidekiq Web (/sidekiq) answers only on this host, and only with the basic-auth secrets below.
+    ADMIN_HOST: <%= ENV.fetch("ADMIN_HOST", ENV.fetch("APP_DOMAIN", "aluni.us")) %>
+    # The web is informational; sign-in and /app answer only to the native shells.
+    NATIVE_WEB_ACCESS: "0"
+    SIGNUPS_ENABLED: <%= ENV.fetch("SIGNUPS_ENABLED", "1") %>
+  secret:
+    - RAILS_MASTER_KEY
+    - DATABASE_URL
+    - REDIS_URL
+    - SIDEKIQ_WEB_USERNAME
+    - SIDEKIQ_WEB_PASSWORD
+
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole"
+
+volumes:
+  - "aluni_storage:/rails/storage"
+
+asset_path: /rails/public/assets
+
+accessories:
+  db:
+    image: postgres:16
+    host: <%= ENV.fetch("KAMAL_HOST", "203.0.113.10") %>
+    port: "127.0.0.1:5432:5432"
+    # Two roles: `postgres` (superuser, used only by the backup job) and
+    # `aluni_app` (owns aluni_production, no superuser), which the app connects
+    # as. Without superuser, an SQL injection cannot reach the shell
+    # (COPY ... TO PROGRAM) or other databases. The init script runs only when
+    # the data directory is first created.
+    env:
+      clear:
+        POSTGRES_USER: postgres
+        POSTGRES_DB: aluni_production
+      secret:
+        - POSTGRES_PASSWORD
+        - APP_DB_PASSWORD
+    files:
+      - config/deploy/postgres_app_role.sh:/docker-entrypoint-initdb.d/10_app_role.sh
+    cmd: postgres -c shared_buffers=1GB -c max_connections=40 -c password_encryption=scram-sha-256
+    directories:
+      - data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    host: <%= ENV.fetch("KAMAL_HOST", "203.0.113.10") %>
+    port: "127.0.0.1:6379:6379"
+    # Sidekiq needs noeviction: an evicted job is a lost job. A password so
+    # no other container on the Docker network can read or write the queues.
+    env:
+      secret:
+        - REDIS_PASSWORD
+    # Through the image's entrypoint so Redis still drops root and runs as
+    # the redis user; sh is only there to expand the secret.
+    cmd: sh -c 'exec docker-entrypoint.sh redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy noeviction --requirepass "$REDIS_PASSWORD"'
+    directories:
+      - data:/data
+
+  # Nightly logical backup of Postgres to Cloudflare R2 (S3-compatible),
+  # keeping 14 days. Restore drill: docs/deploy/DEPLOY.md.
+  backup:
+    image: eeshugerman/postgres-backup-s3:16
+    host: <%= ENV.fetch("KAMAL_HOST", "203.0.113.10") %>
+    env:
+      clear:
+        SCHEDULE: "@daily"
+        BACKUP_KEEP_DAYS: 14
+        S3_REGION: auto
+        S3_BUCKET: aluni-backups
+        S3_PREFIX: postgres
+        S3_ENDPOINT: <%= "https://#{ENV.fetch('R2_ACCOUNT_ID', 'CHANGE_ME')}.r2.cloudflarestorage.com" %>
+        POSTGRES_HOST: aluni-db
+        POSTGRES_DATABASE: aluni_production
+        POSTGRES_USER: postgres
+      secret:
+        - POSTGRES_PASSWORD
+        - S3_ACCESS_KEY_ID
+        - S3_SECRET_ACCESS_KEY
+        # Dumps are GPG-encrypted with this passphrase before upload, so a
+        # leaked R2 token does not leak data. Keep a copy offline: without it
+        # the backups cannot be restored.
+        - PASSPHRASE:BACKUP_PASSPHRASE
+
+<% if tunnel %>
+  # Cloudflare Tunnel: outbound-only connection to Cloudflare. Public
+  # hostnames are mapped in the Cloudflare dashboard (Zero Trust, Networks,
+  # Tunnels) to http://kamal-proxy:80; see docs/deploy/DEPLOY.md.
+  tunnel:
+    image: cloudflare/cloudflared:2026.9.3
+    host: <%= ENV.fetch("KAMAL_HOST", "203.0.113.10") %>
+    cmd: tunnel --no-autoupdate run
+    env:
+      secret:
+        - TUNNEL_TOKEN
+<% end %>

@@ -1,0 +1,66 @@
+es:
+  app_name: "Aluni"
+
+  meta:
+    description: "Aluni es una herramienta de código abierto. El sitio web la explica; la app es donde se usa."
+    og_locale: "es_ES"
+
+  language_toggle:
+    label: "Idioma"
+    en: "English"
+    es: "Español"
+
+  theme:
+    toggle: "Cambiar entre modo oscuro y claro"
+    toggle_short: "Tema"
+
+  layouts:
+    skip_to_content: "Ir al contenido"
+    app_nav: "Cuenta"
+    home: "Inicio"
+    passkeys: "Llaves de acceso"
+    sign_out: "Cerrar sesión"
+
+  native_only:
+    notice: "Esa parte de Aluni vive en la app. Instálala en tu teléfono para continuar."
+
+  signups:
+    disabled_notice: "Las cuentas nuevas todavía no están abiertas. Puedes iniciar sesión."
+
+  platform:
+    service_paused: "Ese servicio está en pausa por mantenimiento. Inténtalo de nuevo en un rato."
+
+  service_errors:
+    generic: "Algo no funcionó. Inténtalo de nuevo."
+
+  passkeys:
+    default_nickname: "Este dispositivo"
+    errors:
+      unsupported: "Este dispositivo no puede usar llaves de acceso. Prueba con la última versión de tu navegador o sistema."
+      cancelled: "No pasa nada. Toca el botón cuando estés listo."
+      failed: "Eso no funcionó. Inténtalo de nuevo."
+      already_registered: "Este dispositivo ya tiene una llave de acceso para Aluni."
+      unknown_credential: "No reconocemos esa llave de acceso. Crea una cuenta primero o inicia sesión en el dispositivo donde la registraste."
+      verification_failed: "No pudimos comprobar la llave de acceso. Inténtalo de nuevo."
+      registration_expired: "Eso tardó demasiado. Empieza de nuevo."
+      display_name_required: "Dinos primero cómo llamarte."
+      too_long: "Es un poco largo. Acórtalo, por favor."
+      invalid: "Revisa los datos e inténtalo de nuevo."
+      forbidden: "Las cuentas nuevas todavía no están abiertas."
+
+  time:
+    formats:
+      short: "%-d %b %Y %H:%M"
+      long: "%-d de %B de %Y a las %H:%M"
+  date:
+    formats:
+      short: "%-d %b %Y"
+      long: "%-d de %B de %Y"
+  number:
+    currency:
+      format:
+        unit: "$"
+        format: "%u%n"
+        separator: "."
+        delimiter: ","
+        precision: 2

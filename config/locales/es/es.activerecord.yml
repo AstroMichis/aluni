@@ -1,0 +1,23 @@
+es:
+  activerecord:
+    models:
+      user:
+        one: "Cuenta"
+        other: "Cuentas"
+      passkey:
+        one: "Llave de acceso"
+        other: "Llaves de acceso"
+      session:
+        one: "Sesión"
+        other: "Sesiones"
+      platform_switch:
+        one: "Interruptor de plataforma"
+        other: "Interruptores de plataforma"
+    attributes:
+      user:
+        display_name: "Nombre"
+        email_address: "Correo"
+        locale: "Idioma"
+      passkey:
+        nickname: "Nombre del dispositivo"
+        last_used_at: "Último uso"

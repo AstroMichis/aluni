@@ -1,0 +1,13 @@
+<%# SEO and share tags for every public page. Pages set :title and :description with content_for. %>
+<meta name="description" content="<%= content_for(:description) || t("meta.description") %>">
+<% I18n.available_locales.each do |locale| %>
+<link rel="alternate" hreflang="<%= locale %>" href="<%= localized_url(locale) %>">
+<% end %>
+<meta property="og:site_name" content="<%= t("app_name") %>">
+<meta property="og:title" content="<%= content_for(:title) || t("app_name") %>">
+<meta property="og:description" content="<%= content_for(:description) || t("meta.description") %>">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="<%= t("meta.og_locale") %>">
+<meta property="og:url" content="<%= request.original_url %>">
+<meta property="og:image" content="<%= request.base_url %>/icon.png">
+<meta name="twitter:card" content="summary">

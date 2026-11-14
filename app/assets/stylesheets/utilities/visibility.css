@@ -1,0 +1,21 @@
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.hidden { display: none !important; }
+
+/* Mobile first: hidden-mobile hides below 769px, hidden-desktop from 769px up. */
+.hidden-mobile { display: none !important; }
+
+@media (min-width: 769px) {
+  .hidden-mobile { display: revert !important; }
+  .hidden-desktop { display: none !important; }
+}

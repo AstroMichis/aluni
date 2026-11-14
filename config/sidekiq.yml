@@ -1,0 +1,14 @@
+# Sidekiq server config. Referenced by Procfile.dev and the Kamal worker role.
+# Every queue a job declares with `queue_as` must be listed here, otherwise its
+# jobs are enqueued but never processed.
+#
+# Concurrency must not exceed the ActiveRecord pool (database.yml uses
+# RAILS_MAX_THREADS), so the worker process should run with
+# RAILS_MAX_THREADS >= SIDEKIQ_CONCURRENCY.
+:concurrency: <%= ENV.fetch("SIDEKIQ_CONCURRENCY", 5) %>
+:queues:
+  - [default, 2]
+  - [gemini, 2]
+  - [push, 2]
+  - [webhooks, 2]
+  - [maintenance, 1]

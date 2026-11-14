@@ -1,0 +1,16 @@
+en:
+  pages:
+    home:
+      title: "%{app_name}"
+      nav_label: "Site"
+      eyebrow: "Open source"
+      headline: "A tool built for people, not for passwords."
+      lede: "Aluni lives on your phone. Sign in with your face or fingerprint; there is nothing to remember and nothing to leak."
+      sign_in: "Sign in"
+      sign_up: "Create an account"
+      get_the_app: "Get the app"
+      learn_more: "Learn more"
+      about_title: "What this is"
+      about_body: "This site explains Aluni. Everything you do with it happens inside the app, where your information stays on your device and in your account."
+      get_the_app_title: "Get the app"
+      get_the_app_body: "Aluni is coming to the App Store and Google Play. The code is open source, so anyone can read how it works."

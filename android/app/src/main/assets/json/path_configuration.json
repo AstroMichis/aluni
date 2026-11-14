@@ -1,0 +1,30 @@
+{
+  "settings": {
+    "tabs": [
+      { "key": "home", "title": "Home", "url": "/app", "icon": "ic_home" },
+      { "key": "account", "title": "Account", "url": "/passkeys", "icon": "ic_account" }
+    ]
+  },
+  "rules": [
+    {
+      "patterns": [".*"],
+      "properties": { "context": "default", "pull_to_refresh_enabled": true, "animated": true }
+    },
+    {
+      "patterns": ["(/(en|es))?/(sign_in|sign_up)$"],
+      "properties": { "context": "default", "presentation": "replace", "pull_to_refresh_enabled": false }
+    },
+    {
+      "patterns": ["(/(en|es))?/sign_out$"],
+      "properties": { "presentation": "clear_all" }
+    },
+    {
+      "patterns": ["/new$", "/edit$"],
+      "properties": { "context": "modal", "pull_to_refresh_enabled": false }
+    },
+    {
+      "patterns": ["(/(en|es))?/passkeys$"],
+      "properties": { "pull_to_refresh_enabled": false }
+    }
+  ]
+}

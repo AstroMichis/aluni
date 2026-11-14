@@ -1,0 +1,16 @@
+# The native shells (ios/, android/): one app, one bundle id, and the chrome each
+# shell draws from GET /configurations/v1/:platform (ConfigurationsController).
+# Paths are relative and get the locale prefix at render time.
+app:
+  name: "Aluni"
+  bundle_id: us.aluni.app
+  user_agent_prefix: "Aluni"
+  sign_in_path: /sign_in
+  sign_up_path: /sign_up
+  home_path: /app
+  # Universal links / app links: these paths on aluni.us open the app (AppLinksController).
+  app_paths: ["/app/*", "/sign_in", "/sign_up", "/passkeys"]
+  colors: { tint: "#5B8DEF", background: "#0B0D12" }
+  tabs:
+    - { key: home, path: /app, ios_icon: house, android_icon: ic_home }
+    - { key: account, path: /passkeys, ios_icon: person.crop.circle, android_icon: ic_account }

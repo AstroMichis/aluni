@@ -1,0 +1,89 @@
+name: Deploy
+
+# Kamal deploy to the production VM (docs/deploy/DEPLOY.md). Runs by hand or
+# on a version tag (git tag v2026.11.1 && git push --tags), never on every
+# push, to save Actions minutes. The image is built natively on the server
+# (KAMAL_BUILDER_REMOTE, also what keeps the Rust compile off QEMU) and pushed
+# to GitHub Container Registry.
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+  # OIDC token for the Tailscale workload identity sign-in.
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    # Secrets live in the "production" environment, limited to main and v*
+    # tags, so a workflow on any other branch cannot read them.
+    environment: production
+    env:
+      KAMAL_HOST: ${{ secrets.KAMAL_HOST }}
+      KAMAL_KNOWN_HOSTS: ${{ secrets.KAMAL_KNOWN_HOSTS }}
+      TS_OAUTH_CLIENT_ID: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+      KAMAL_SSH_USER: ${{ vars.KAMAL_SSH_USER || 'deploy' }}
+      KAMAL_ARCH: ${{ vars.KAMAL_ARCH || 'arm64' }}
+      KAMAL_TUNNEL: ${{ vars.KAMAL_TUNNEL || '1' }}
+      KAMAL_BUILDER_REMOTE: ssh://${{ vars.KAMAL_SSH_USER || 'deploy' }}@${{ secrets.KAMAL_HOST }}
+      KAMAL_IMAGE: ${{ github.repository_owner }}/aluni
+      KAMAL_REGISTRY_USERNAME: ${{ github.repository_owner }}
+      KAMAL_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      APP_DB_PASSWORD: ${{ secrets.APP_DB_PASSWORD }}
+      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+      BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+      TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
+      CERTIFICATE_PEM: ${{ secrets.CERTIFICATE_PEM }}
+      PRIVATE_KEY_PEM: ${{ secrets.PRIVATE_KEY_PEM }}
+      S3_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
+      S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+      SIDEKIQ_WEB_USERNAME: ${{ secrets.SIDEKIQ_WEB_USERNAME }}
+      SIDEKIQ_WEB_PASSWORD: ${{ secrets.SIDEKIQ_WEB_PASSWORD }}
+      PLATFORM_PAUSE_ALL: ${{ vars.PLATFORM_PAUSE_ALL || '0' }}
+      SIGNUPS_ENABLED: ${{ vars.SIGNUPS_ENABLED || '1' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
+        with:
+          bundler-cache: true
+      - uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.KAMAL_SSH_KEY }}
+      # SSH is not open to the internet: the runner joins the tailnet as an
+      # ephemeral node and reaches the server by its Tailscale address
+      # (KAMAL_HOST). It signs in with workload identity federation (a GitHub
+      # OIDC token, no stored Tailscale secret). Skipped until the federated
+      # identity is configured.
+      - name: Join tailnet
+        if: env.TS_OAUTH_CLIENT_ID != ''
+        uses: tailscale/github-action@99a8333667fff04fdd6cffb46dfd409f8329a7bf # v4.3.0
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          audience: ${{ secrets.TS_AUDIENCE }}
+          tags: tag:ci
+      # The server's host key is pinned (ssh-keyscan output saved once), so a
+      # spoofed server cannot receive the deploy.
+      - name: Trust the server host key
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$KAMAL_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+      - name: Kamal deploy
+        run: bin/kamal deploy
+      # Ephemeral nodes otherwise linger for 30 to 60 minutes after the run.
+      - name: Leave tailnet
+        if: always() && env.TS_OAUTH_CLIENT_ID != ''
+        run: sudo tailscale logout || true

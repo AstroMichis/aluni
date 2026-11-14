@@ -1,0 +1,41 @@
+/* Native <dialog> element, opened by dialog_controller.js. */
+dialog.dialog {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: var(--container-sm);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 0;
+  color: var(--color-text-primary);
+}
+
+dialog.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+dialog.dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.dialog__body {
+  padding: var(--space-5);
+}
+
+.dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-border-subtle);
+}

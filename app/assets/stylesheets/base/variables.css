@@ -1,0 +1,119 @@
+/* Design tokens. :root is the dark default; [data-theme="light"] overrides the
+   same names. Components and pages use tokens only, never raw values. */
+:root {
+  /* Surfaces (dark default) */
+  --color-bg-primary: #0B0D12;
+  --color-bg-secondary: #12151C;
+  --color-bg-tertiary: #1A1E27;
+  --color-bg-hover: #222733;
+  --color-bg-active: #2A303E;
+
+  /* Text */
+  --color-text-primary: #E8EBF0;
+  --color-text-secondary: #9AA3B2;
+  --color-text-tertiary: #6B7484;
+  --color-text-inverse: #0B0D12;
+
+  /* Borders */
+  --color-border-default: #262B37;
+  --color-border-subtle: #1C2029;
+  --color-border-strong: #343B4A;
+
+  /* Accent: calm blue */
+  --color-accent: #5B8DEF;
+  --color-accent-hover: #74A0F4;
+  --color-accent-muted: #5B8DEF26;
+  --color-accent-text: #A9C4FA;
+
+  /* Secondary accent: warm amber */
+  --color-secondary: #E0A458;
+  --color-secondary-hover: #EBB76F;
+  --color-secondary-muted: #E0A4581A;
+
+  /* Status */
+  --color-success: #5C9A6E;
+  --color-success-bg: #5C9A6E1A;
+  --color-warning: #C4935A;
+  --color-warning-bg: #C4935A1A;
+  --color-danger: #C25E5E;
+  --color-danger-bg: #C25E5E1A;
+  --color-info: #5B8DEF;
+  --color-info-bg: #5B8DEF1A;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px rgba(91, 141, 239, 0.1);
+
+  /* Spacing (8px base, 4px steps) */
+  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;
+  --space-4: 16px;  --space-5: 20px;  --space-6: 24px;
+  --space-8: 32px;  --space-10: 40px; --space-12: 48px;
+  --space-16: 64px; --space-20: 80px;
+
+  /* Radius */
+  --radius-sm: 4px;  --radius-md: 8px;
+  --radius-lg: 12px; --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 350ms ease;
+
+  /* Typography (placeholder families: swap for the brand's) */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Type scale */
+  --text-xs: 0.75rem;   --text-sm: 0.875rem;
+  --text-base: 1rem;    --text-lg: 1.125rem;
+  --text-xl: 1.25rem;   --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem; --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+
+  /* Line heights */
+  --leading-tight: 1.2;  --leading-snug: 1.35;
+  --leading-normal: 1.6; --leading-relaxed: 1.75;
+
+  /* Letter spacing */
+  --tracking-tight: -0.02em;  --tracking-normal: 0.01em;
+  --tracking-wide: 0.04em;    --tracking-wider: 0.08em;
+
+  /* Z-index */
+  --z-dropdown: 100; --z-sticky: 200;
+  --z-modal-backdrop: 300; --z-modal: 400; --z-toast: 500;
+
+  /* Container widths */
+  --container-sm: 640px;  --container-md: 768px;
+  --container-lg: 1024px; --container-xl: 1200px;
+}
+
+/* Light mode override */
+[data-theme="light"] {
+  --color-bg-primary: #F7F8FA;
+  --color-bg-secondary: #FFFFFF;
+  --color-bg-tertiary: #EEF1F5;
+  --color-bg-hover: #E4E8EE;
+  --color-bg-active: #D9DEE6;
+  --color-text-primary: #171A21;
+  --color-text-secondary: #525A68;
+  --color-text-tertiary: #7E869A;
+  --color-text-inverse: #F7F8FA;
+  --color-border-default: #D3D8E0;
+  --color-border-subtle: #E3E7ED;
+  --color-border-strong: #BCC3CF;
+  --color-accent: #2F67D8;
+  --color-accent-hover: #2456BD;
+  --color-accent-muted: #2F67D815;
+  --color-accent-text: #1F4AA3;
+  --color-secondary: #B87A24;
+  --color-secondary-hover: #9F681B;
+  --color-secondary-muted: #B87A2415;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --shadow-glow: none;
+}

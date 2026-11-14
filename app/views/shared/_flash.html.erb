@@ -1,0 +1,11 @@
+<% flash.each do |type, message| %>
+  <% toast_class = case type
+    when "notice", "success" then "toast--success"
+    when "alert", "error" then "toast--error"
+    when "warning" then "toast--warning"
+    else "toast--info"
+  end %>
+  <div class="toast <%= toast_class %>" data-controller="toast" role="status">
+    <p><%= message %></p>
+  </div>
+<% end %>

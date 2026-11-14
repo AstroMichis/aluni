@@ -1,0 +1,5 @@
+en:
+  native_app:
+    tabs:
+      home: "Home"
+      account: "Account"

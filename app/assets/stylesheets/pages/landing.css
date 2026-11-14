@@ -1,0 +1,126 @@
+/* The informational site. Mobile first. */
+.landing {
+  position: relative;
+  min-height: 100dvh;
+}
+
+/* Top navigation, fixed; gains a surface once the page scrolls (landing_nav_controller). */
+.landing__nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: var(--z-sticky);
+  padding-block: var(--space-3);
+  transition: background var(--transition-base), border-color var(--transition-base);
+  border-bottom: 1px solid transparent;
+}
+
+.landing__nav--scrolled {
+  background: color-mix(in srgb, var(--color-bg-primary) 85%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom-color: var(--color-border-subtle);
+}
+
+.landing__nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.landing__brand {
+  font-family: var(--font-serif);
+  font-size: var(--text-xl);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Hero: full viewport, copy centred, the Three.js scene behind everything. */
+.landing__hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 100dvh;
+  padding-block: var(--space-20) var(--space-12);
+}
+
+.landing__hero-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.landing__hero-bg canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.landing__hero-content {
+  text-align: center;
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+}
+
+.landing__hero-content--hidden {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.landing__hero-content--visible {
+  opacity: 1;
+  transform: none;
+}
+
+.landing__title {
+  font-size: var(--text-4xl);
+  margin-block: var(--space-4) var(--space-5);
+}
+
+.landing__lede {
+  color: var(--color-text-secondary);
+  font-size: var(--text-lg);
+  max-width: 36rem;
+  margin-inline: auto;
+}
+
+.landing__actions {
+  justify-content: center;
+  margin-top: var(--space-8);
+}
+
+/* Sections below the fold reveal as they scroll in (scroll_reveal_controller). */
+.landing__section {
+  padding-block: var(--space-12);
+}
+
+.landing__section-title {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-4);
+}
+
+.landing__section p {
+  color: var(--color-text-secondary);
+}
+
+.landing__reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+}
+
+.landing__reveal--visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (min-width: 769px) {
+  .landing__title { font-size: var(--text-5xl); }
+  .landing__section { padding-block: var(--space-16); }
+}
+
+/* Less motion: nothing animates in, everything is simply there. */
+@media (prefers-reduced-motion: reduce) {
+  .landing__hero-content--hidden,
+  .landing__reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

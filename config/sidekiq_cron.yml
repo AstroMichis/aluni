@@ -1,0 +1,9 @@
+# Scheduled jobs, loaded by config/initializers/sidekiq.rb. Cron runs in UTC
+# (the app time zone is UTC too). Each class must use a queue listed in
+# config/sidekiq.yml. Platform::CronControl disables every entry while the
+# `cron` or `jobs` switch is paused and re-enables them on resume.
+sessions_purge_stale:
+  cron: "0 3 * * *"   # 03:00 UTC daily
+  class: "Sessions::PurgeStaleJob"
+  queue: maintenance
+  description: "Delete sign-in sessions that have not been used for a year"

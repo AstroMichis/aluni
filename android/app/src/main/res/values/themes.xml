@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark theme matching the web design tokens (app/assets/stylesheets/base/variables.css). -->
+    <style name="Theme.Aluni" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:colorBackground">#0B0D12</item>
+        <item name="colorSurface">#0B0D12</item>
+        <item name="colorSurfaceVariant">#12151C</item>
+
+        <item name="colorPrimary">#5B8DEF</item>
+        <item name="colorOnPrimary">#0B0D12</item>
+        <item name="colorSecondary">#E0A458</item>
+
+        <item name="colorOnSurface">#E8EBF0</item>
+        <item name="colorOnSurfaceVariant">#9AA3B2</item>
+
+        <item name="bottomNavigationStyle">@style/Widget.Aluni.BottomNavigation</item>
+
+        <item name="android:statusBarColor">#0B0D12</item>
+        <item name="android:navigationBarColor">#12151C</item>
+    </style>
+
+    <style name="Widget.Aluni.BottomNavigation" parent="Widget.Material3.BottomNavigationView">
+        <item name="backgroundTint">#12151C</item>
+        <item name="itemIconTint">@color/bottom_nav_color</item>
+        <item name="itemTextColor">@color/bottom_nav_color</item>
+    </style>
+</resources>

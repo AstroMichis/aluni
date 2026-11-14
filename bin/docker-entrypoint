@@ -1,0 +1,15 @@
+#!/bin/bash -e
+
+# Enable jemalloc for reduced memory usage and latency.
+if [ -z "${LD_PRELOAD+x}" ] && [ -f /usr/lib/*/libjemalloc.so.2 ]; then
+  export LD_PRELOAD="$(echo /usr/lib/*/libjemalloc.so.2)"
+fi
+
+# Migrations run once per deploy from .kamal/hooks/pre-deploy, not on every
+# container start. Set DB_PREPARE_ON_BOOT=1 to restore the old behaviour
+# (e.g. a one-off `docker run` against an empty database).
+if [ "${DB_PREPARE_ON_BOOT}" = "1" ] && [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
+  ./bin/rails db:prepare
+fi
+
+exec "${@}"

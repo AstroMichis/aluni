@@ -1,0 +1,25 @@
+# Every automatic message the app sends. Code calls
+#   NotificationRouter.deliver(recipient:, purpose:, payload:, idempotency_key:)
+# and never a mailer or a push sender directly.
+#
+# Per purpose:
+#   audience   user
+#   category   transactional | marketing
+#   group_key  push grouping, interpolated from payload[:group] (iOS thread-id, Android group)
+#   channels   tried in order; the first that accepts the message wins
+#                push      native push to the recipient's devices (device_tokens)
+#                web_push  browser notifications the person turned on (web_push_subscriptions)
+#                email     mailer.action(*payload[:mailer_args]); skipped when the account has no email
+#   mailer     Mailer#action for the email channel
+#   push_key   I18n key under notifications.push.* (title + body) for push and web_push
+#
+# Validated at load by Notifications::Purposes (boot fails on a bad file).
+# The shell ships with no purposes; the first one looks like this:
+#
+#   welcome:
+#     audience: user
+#     category: transactional
+#     channels: [push, email]
+#     mailer: NotificationMailer#generic
+#     push_key: welcome
+purposes: {}

@@ -1,0 +1,43 @@
+/* Sign-in, sign-up and passkey pages: one card, one action. */
+.auth {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100dvh;
+  padding-block: var(--space-12);
+}
+
+.auth__brand {
+  font-family: var(--font-serif);
+  font-size: var(--text-2xl);
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.auth__title {
+  font-size: var(--text-2xl);
+}
+
+.auth__lede {
+  color: var(--color-text-secondary);
+}
+
+.auth__status {
+  min-height: 1.5em;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.auth__status--error {
+  color: var(--color-danger);
+}
+
+.auth__alt {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.auth__alt a {
+  color: var(--color-accent);
+}

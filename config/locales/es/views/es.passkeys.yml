@@ -1,0 +1,17 @@
+es:
+  passkeys:
+    index:
+      title: "Tus llaves de acceso"
+      lede: "Cada dispositivo desde el que entras tiene su propia llave. Agrega una antes de cambiar de teléfono."
+      added_on: "Agregada el %{date}"
+      last_used: "último uso %{date}"
+      never_used: "sin usar todavía"
+      remove: "Quitar"
+      confirm_remove: "¿Quitar esta llave de acceso? Ese dispositivo necesitará otra para entrar."
+      add_title: "Agregar una llave para este dispositivo"
+      nickname: "Nombre del dispositivo (opcional)"
+      nickname_placeholder: "Mi tableta"
+      add_button: "Agregar llave"
+    destroy:
+      last_passkey: "Es tu única llave de acceso. Agrega otra antes de quitarla."
+      removed: "Llave de acceso quitada."

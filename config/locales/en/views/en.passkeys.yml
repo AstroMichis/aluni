@@ -1,0 +1,17 @@
+en:
+  passkeys:
+    index:
+      title: "Your passkeys"
+      lede: "Each device you sign in from has its own passkey. Add one before you switch phones."
+      added_on: "Added %{date}"
+      last_used: "last used %{date}"
+      never_used: "not used yet"
+      remove: "Remove"
+      confirm_remove: "Remove this passkey? That device will need another one to sign in."
+      add_title: "Add a passkey for this device"
+      nickname: "Device name (optional)"
+      nickname_placeholder: "My tablet"
+      add_button: "Add passkey"
+    destroy:
+      last_passkey: "That is your only passkey. Add another one before removing it."
+      removed: "Passkey removed."

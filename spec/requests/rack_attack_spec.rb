@@ -1,0 +1,38 @@
+require "rails_helper"
+
+RSpec.describe "Rack::Attack", type: :request do
+  around do |example|
+    original_store = Rack::Attack.cache.store
+    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    example.run
+  ensure
+    Rack::Attack.cache.store = original_store
+  end
+
+  it "throttles passkey ceremonies per IP" do
+    8.times do
+      post sign_in_options_path(locale: "en"), headers: native_headers, as: :json
+      expect(response).to have_http_status(:ok)
+    end
+
+    post sign_in_options_path(locale: "en"), headers: native_headers, as: :json
+
+    expect(response).to have_http_status(:too_many_requests)
+  end
+
+  it "matches the auth paths with and without a locale prefix" do
+    %w[/sign_in /es/sign_in/options /en/sign_up /passkeys/options /en/passkeys].each do |path|
+      expect(path).to match(RACK_ATTACK_AUTH_PATH)
+    end
+    %w[/en /up /api/v1/me /en/sign_in/extra].each do |path|
+      expect(path).not_to match(RACK_ATTACK_AUTH_PATH)
+    end
+  end
+
+  it "blocks vulnerability scanners" do
+    get "/wp-login.php"
+
+    expect(response).to have_http_status(:forbidden)
+    expect(response.body).to eq("Forbidden")
+  end
+end

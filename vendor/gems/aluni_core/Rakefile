@@ -1,0 +1,12 @@
+# frozen_string_literal: true
+
+# `bin/rails core:compile` (lib/tasks/core.rake) runs this from the app root.
+require "rb_sys/extensiontask"
+
+GEMSPEC = Gem::Specification.load("aluni_core.gemspec")
+
+RbSys::ExtensionTask.new("aluni_core", GEMSPEC) do |ext|
+  ext.lib_dir = "lib/aluni_core"
+end
+
+task default: :compile

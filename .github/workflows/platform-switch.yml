@@ -1,0 +1,84 @@
+name: Platform switch
+
+# Pause or resume an outside service from GitHub (works from the phone app).
+# Runs the platform rake tasks on the server (lib/tasks/platform.rake).
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: What to do
+        type: choice
+        options: [status, pause, resume, pause_all, resume_all, bootstrap]
+        default: status
+      service:
+        description: Service (for pause/resume)
+        type: choice
+        options: ["", jobs, cron, gemini, mail, push]
+        default: ""
+      reason:
+        description: Reason (optional)
+        type: string
+        default: ""
+
+concurrency:
+  group: platform-switch
+
+permissions:
+  contents: read
+  # OIDC token for the Tailscale workload identity sign-in.
+  id-token: write
+
+jobs:
+  switch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    env:
+      KAMAL_HOST: ${{ secrets.KAMAL_HOST }}
+      KAMAL_KNOWN_HOSTS: ${{ secrets.KAMAL_KNOWN_HOSTS }}
+      TS_OAUTH_CLIENT_ID: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+      KAMAL_SSH_USER: ${{ vars.KAMAL_SSH_USER || 'deploy' }}
+      KAMAL_IMAGE: ${{ github.repository_owner }}/aluni
+      KAMAL_REGISTRY_USERNAME: ${{ github.repository_owner }}
+      KAMAL_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      INPUT_ACTION: ${{ inputs.action }}
+      INPUT_SERVICE: ${{ inputs.service }}
+      INPUT_REASON: ${{ inputs.reason }}
+      PLATFORM_ACTOR: ${{ github.actor }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
+        with:
+          bundler-cache: true
+      - uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.KAMAL_SSH_KEY }}
+      - name: Join tailnet
+        if: env.TS_OAUTH_CLIENT_ID != ''
+        uses: tailscale/github-action@99a8333667fff04fdd6cffb46dfd409f8329a7bf # v4.3.0
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          audience: ${{ secrets.TS_AUDIENCE }}
+          tags: tag:ci
+      - name: Trust the server host key
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$KAMAL_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+      - name: Run platform task
+        run: |
+          case "$INPUT_ACTION" in
+            pause|resume)
+              [ -n "$INPUT_SERVICE" ] || { echo "Pick a service for $INPUT_ACTION"; exit 1; }
+              # Strip characters that would break rake's [args] syntax.
+              reason=$(printf '%s' "$INPUT_REASON" | tr -cd '[:alnum:] ._-')
+              task="platform:${INPUT_ACTION}[${INPUT_SERVICE},${reason}]" ;;
+            *)
+              task="platform:${INPUT_ACTION}" ;;
+          esac
+          actor=$(printf '%s' "$PLATFORM_ACTOR" | tr -cd '[:alnum:]._-')
+          bin/kamal app exec --reuse --roles=web "env PLATFORM_ACTOR=$actor bin/rails '$task'"
+      - name: Leave tailnet
+        if: always() && env.TS_OAUTH_CLIENT_ID != ''
+        run: sudo tailscale logout || true

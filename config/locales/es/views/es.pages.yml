@@ -1,0 +1,16 @@
+es:
+  pages:
+    home:
+      title: "%{app_name}"
+      nav_label: "Sitio"
+      eyebrow: "Código abierto"
+      headline: "Una herramienta hecha para personas, no para contraseñas."
+      lede: "Aluni vive en tu teléfono. Entra con tu cara o tu huella; no hay nada que recordar ni nada que se filtre."
+      sign_in: "Iniciar sesión"
+      sign_up: "Crear una cuenta"
+      get_the_app: "Descargar la app"
+      learn_more: "Saber más"
+      about_title: "Qué es esto"
+      about_body: "Este sitio explica Aluni. Todo lo que haces con ella ocurre dentro de la app, donde tu información se queda en tu dispositivo y en tu cuenta."
+      get_the_app_title: "Descargar la app"
+      get_the_app_body: "Aluni llegará a la App Store y a Google Play. El código es abierto, así que cualquiera puede leer cómo funciona."

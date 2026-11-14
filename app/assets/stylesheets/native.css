@@ -1,0 +1,19 @@
+/* ==========================================================================
+   native.css
+   Loaded only when hotwire_native_app? is true. The native shells draw their
+   own navigation bar and tab bar, so the web chrome steps aside.
+   ========================================================================== */
+
+.app-shell__header,
+.landing__nav,
+.public-footer {
+  display: none !important;
+}
+
+.landing__hero {
+  padding-block-start: var(--space-8) !important;
+}
+
+.app-shell__main {
+  padding-block-start: var(--space-4);
+}

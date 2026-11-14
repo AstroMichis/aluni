@@ -1,0 +1,5 @@
+"tab.home" = "Inicio";
+"tab.account" = "Cuenta";
+"error.title" = "Sin conexión";
+"error.message" = "Revisa tu conexión a internet e inténtalo de nuevo.";
+"error.retry" = "Reintentar";

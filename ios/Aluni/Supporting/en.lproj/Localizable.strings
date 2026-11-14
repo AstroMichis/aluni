@@ -1,0 +1,5 @@
+"tab.home" = "Home";
+"tab.account" = "Account";
+"error.title" = "No connection";
+"error.message" = "Check your internet connection and try again.";
+"error.retry" = "Try again";

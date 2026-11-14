@@ -1,0 +1,23 @@
+en:
+  activerecord:
+    models:
+      user:
+        one: "Account"
+        other: "Accounts"
+      passkey:
+        one: "Passkey"
+        other: "Passkeys"
+      session:
+        one: "Session"
+        other: "Sessions"
+      platform_switch:
+        one: "Platform switch"
+        other: "Platform switches"
+    attributes:
+      user:
+        display_name: "Name"
+        email_address: "Email"
+        locale: "Language"
+      passkey:
+        nickname: "Device name"
+        last_used_at: "Last used"

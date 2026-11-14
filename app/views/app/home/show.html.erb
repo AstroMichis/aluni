@@ -1,0 +1,10 @@
+<% content_for :title, t(".title") %>
+
+<section class="stack stack--md">
+  <h1 class="text-display app-home__title"><%= t(".greeting", name: Current.user.display_name) %></h1>
+  <p class="app-home__lede"><%= t(".lede") %></p>
+  <div class="cluster cluster--sm">
+    <%= link_to t(".passkeys"), passkeys_path, class: "btn btn--secondary" %>
+    <%= button_to t(".sign_out"), sign_out_path, method: :delete, class: "btn btn--ghost" %>
+  </div>
+</section>

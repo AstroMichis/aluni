@@ -1,0 +1,15 @@
+es:
+  shared:
+    public_footer:
+      tagline: "Código abierto, construido a la vista de todos."
+      meta: "%{app_name} %{year}"
+  web_push:
+    prompt: "¿Quieres un aviso en tu dispositivo?"
+    enable: "Activar notificaciones"
+    done: "Las notificaciones están activas en este dispositivo."
+    denied: "Las notificaciones están bloqueadas en la configuración de tu navegador."
+    install: "Agrega esta página a tu pantalla de inicio para recibir notificaciones en iPhone."
+  push_permission:
+    request: "Activar notificaciones"
+    granted: "Las notificaciones están activas."
+    denied: "Las notificaciones siguen apagadas. Puedes cambiarlo en Ajustes."

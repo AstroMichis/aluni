@@ -1,0 +1,5 @@
+/*
+ * Intentionally empty. Each layout links the stylesheets it needs, one
+ * stylesheet_link_tag per file, in this order: base, components, layouts,
+ * page, utilities (see docs/DESIGN_SYSTEM.md).
+ */

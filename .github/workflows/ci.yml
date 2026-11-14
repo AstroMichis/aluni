@@ -1,0 +1,99 @@
+name: CI
+
+# GitHub Free plan budget: superseded runs are cancelled, docs-only changes
+# skip CI, every job has a timeout, the security scan runs on PRs to main and
+# weekly, and the production image is built only by the deploy workflow.
+on:
+  pull_request:
+    paths-ignore: ["docs/**", "**/*.md"]
+  push:
+    branches: [main]
+    paths-ignore: ["docs/**", "**/*.md"]
+  schedule:
+    - cron: "0 6 * * 1" # weekly security scan, Monday 06:00 UTC
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:7
+        ports: ["6379:6379"]
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/aluni_test
+      REDIS_URL: redis://localhost:6379/0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install libvips
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends libvips
+      # rustup on the runner reads rust-toolchain.toml and installs that channel.
+      - name: Rust toolchain
+        run: rustup show
+      - uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
+        with:
+          bundler-cache: true
+      - name: Compile the Rust extension
+        run: cd vendor/gems/aluni_core && bundle exec rake compile
+      - name: Rust unit tests
+        run: cargo test --manifest-path vendor/gems/aluni_core/Cargo.toml
+      - name: Prepare database
+        run: bin/rails db:create db:schema:load
+      - name: RSpec
+        run: bundle exec rspec
+
+  security:
+    if: github.event_name == 'schedule' || (github.event_name == 'pull_request' && github.base_ref == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
+        with:
+          bundler-cache: true
+      - name: Brakeman
+        run: bin/brakeman --no-pager --quiet --exit-on-warn --exit-on-error
+      - name: Bundler audit
+        run: bin/bundler-audit check --update
+      - name: Rust toolchain
+        run: rustup show
+      - name: Cargo audit
+        run: cargo install cargo-audit --locked && cargo audit --file vendor/gems/aluni_core/Cargo.lock
+
+  lint:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
+        with:
+          bundler-cache: true
+      - name: RuboCop
+        run: bin/rubocop -f github
+      - name: Rust toolchain
+        run: rustup show
+      - name: cargo fmt
+        run: cargo fmt --all --check --manifest-path vendor/gems/aluni_core/Cargo.toml
+      - name: cargo clippy
+        run: cargo clippy --all-targets --manifest-path vendor/gems/aluni_core/Cargo.toml -- -D warnings

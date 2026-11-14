@@ -1,0 +1,12 @@
+en:
+  registrations:
+    new:
+      title: "Create an account"
+      lede: "No password. Your device creates a passkey and keeps it safe."
+      display_name: "What should we call you?"
+      display_name_hint: "A first name or a nickname is enough."
+      email_address: "Email (optional)"
+      email_hint: "Only if you want us to be able to reach you."
+      button: "Create my account"
+      have_account: "Already have an account?"
+      sign_in: "Sign in"

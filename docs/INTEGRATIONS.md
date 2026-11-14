@@ -1,0 +1,47 @@
+# Integrations
+
+Every outside service has one client class, a switchboard guard, structured errors, explicit timeouts, and WebMock stubs in its specs. Nothing is called until the operator resumes it (`platform:bootstrap` pauses `cron gemini mail push` on the first deploy).
+
+## Gemini (`app/services/gemini/client.rb`)
+
+- `BASE_URL = https://generativelanguage.googleapis.com/v1beta`; API key from credentials `gemini.api_key` as `x-goog-api-key`.
+- Model tiers from `config.x.gemini` (`GEMINI_FLASH_MODEL`, `GEMINI_PRO_MODEL`, `GEMINI_TRANSCRIBE_MODEL`, default `gemini-3.8-flash`) and `GEMINI_CHAT_MAX_OUTPUT_TOKENS` (2048). `thinking_config_for` keeps thinking minimal per model family.
+- `generate(prompt, system_instruction:, images:, response_schema:, max_tokens:)` single turn, temperature 0.3, inline base64 images, structured JSON via `responseMimeType` + `responseSchema`; `chat(messages:, system_instruction:)` multi turn, temperature 0.4.
+- Retries: backoffs `[0.5, 1.5, 3.0]` s plus jitter within a 6 s budget, `Retry-After` parsed from the 429 message (capped at 5 s); retryable types `rate_limited`, `service_unavailable`, `network_error`, `empty_response`. On exhaustion returns `nil` and exposes `last_error` (`{ type:, status:, message:, retry_after: }`). Faraday: JSON in and out, `retry max: 2`, timeout 30 s, open timeout 10 s.
+- `Platform::Switchboard.guard!(:gemini)` right before the request; `fix_unicode_escapes` repairs a known structured-output bug.
+- Callers handle `nil`, rescue `JSON::ParserError`, and never show a raw processing error to a person: `try_external(Faraday::Error, JSON::ParserError)` in services.
+- `Gemini::LanguagePrompt.lock(locale)` forces the answer language.
+- Shapes to add when an assistant exists: a Redis TTL session store encrypted at rest, a PII redactor before storage, an intent classifier with rate limits and a strike/block system, Rack::Attack throttles on the AI-backed endpoints (20/min and 150/hour per IP).
+- Specs: `spec/services/gemini/client_spec.rb` (WebMock); `spec/support/external_apis.rb` fails the suite if any other spec reaches a Google host.
+
+## Outbound client pattern
+
+One class per provider under `app/services/<provider>/client.rb`: Faraday with JSON middleware and `faraday-retry`, explicit timeouts, structured error classes, `Platform::Switchboard.guard!(:service)` before each call (or `Platform::FaradayPauseGuard` as middleware for clients with several connections), a `PlatformSwitch::SERVICES` entry and a `Platform::Features` flag when the integration ships off by default.
+
+## Inbound webhooks (shape, not built)
+
+`namespace :webhooks` is outside the locale scope. Each provider gets an `ActionController::API` controller (no session, no CSRF) that caps the body from `Content-Length` (413), verifies the provider's signature with `ActiveSupport::SecurityUtils.secure_compare`, records the delivery in a `webhook_events` table with a unique `(source, dedupe_key)` so redeliveries are no-ops that still answer 200, and enqueues a job that re-fetches the object from the provider before acting. A webhook controller never mutates business state in the request. Wrap the route in `constraints: ->(_r) { Platform::Features.<provider>? }` so it 404s until the integration is turned on. Rack::Attack throttles `/webhooks` at 100/min per IP.
+
+## Off until configured
+
+An integration that costs money ships with no defaults: its initializer reads ENV or credentials into `config.x.<area>`, `Platform::Features.<area>?` answers false while unset, and every caller checks the flag or gets a skipped outcome (see the push channel). The SMS pattern from the reference is the template if SMS ever arrives.
+
+## Push (`action_push_native`)
+
+`config/push.yml` reads APNs (`action_push_native.apns.{key_id,encryption_key,team_id,topic}`) and FCM (`action_push_native.fcm.{encryption_key,project_id}`) from credentials; `APNS_DEVELOPMENT` picks the sandbox (default on outside production). `DeviceToken` rows (ios/android, registered by the shells through `App::DeviceTokensController`) are mirrored into `action_push_native_devices` by `Notifications::PushDevices` before a push. `ApplicationPushNotificationJob` runs on the `push` queue so pausing `push` holds it. Unconfigured: the channel is skipped and the next one takes over.
+
+## Web Push (`web-push`)
+
+VAPID keys in credentials `web_push.{public_key,private_key,subject}` (`bin/rails web_push:vapid_keys` prints a pair). `WebPushSubscription` rows per account and browser endpoint (`App::WebPushSubscriptionsController`, `web_push_controller.js`, `web_push/_opt_in.html.erb`); `Notifications::WebPushJob` sends and deletes expired subscriptions; the service worker shows the notification and opens its URL.
+
+## Notification router
+
+`NotificationRouter.deliver(recipient:, purpose:, payload:, idempotency_key:)` reads `config/notification_purposes.yml` (validated at boot by `Notifications::Purposes`), tries the purpose's channels in order (`push`, `web_push`, `email`) and records every attempt on a `NotificationDelivery`. Same key twice: once sent, nothing is sent again. The shell ships with no purposes and one generic mailer action (`NotificationMailer#generic(user, subject, body)`).
+
+## Mail
+
+`ApplicationMailer` sends from credentials `mailer.from` (or `MAILER_FROM`). Development writes mail to `tmp/mails`; production uses SMTP from credentials `smtp.*` (pick a free tier such as Resend or Brevo; add SPF, DKIM and DMARC at the DNS provider). `Platform::MailPauseInterceptor` drops mail while `mail` is paused unless the message carries `X-Platform-Critical`.
+
+## Storage (Cloudflare R2)
+
+`config/storage.yml` `cloudflare_r2` uses the S3 adapter (`endpoint https://<account_id>.r2.cloudflarestorage.com`, `region auto`, `force_path_style`, checksum settings `when_required`), credentials `r2.*` with `R2_*` ENV fallbacks, bucket `R2_BUCKET` (default `aluni`). Production proxies files through the app (`resolve_model_to_route = :rails_storage_proxy`), so the bucket stays private; variants use libvips (`Vips.block_untrusted(true)`). R2 CORS must be configured in the Cloudflare dashboard for direct uploads.

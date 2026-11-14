@@ -1,0 +1,9 @@
+en:
+  app:
+    home:
+      show:
+        title: "Home"
+        greeting: "Hello, %{name}."
+        lede: "This is where Aluni starts. The first screens will arrive here."
+        passkeys: "Manage passkeys"
+        sign_out: "Sign out"

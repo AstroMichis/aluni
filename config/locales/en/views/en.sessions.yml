@@ -1,0 +1,10 @@
+en:
+  sessions:
+    new:
+      title: "Sign in"
+      lede: "Use the passkey on this device. Your face, fingerprint or device code confirms it is you."
+      button: "Sign in with a passkey"
+      no_account: "New here?"
+      sign_up: "Create an account"
+    destroy:
+      signed_out: "You are signed out."

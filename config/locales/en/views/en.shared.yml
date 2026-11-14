@@ -1,0 +1,15 @@
+en:
+  shared:
+    public_footer:
+      tagline: "Open source, built in the open."
+      meta: "%{app_name} %{year}"
+  web_push:
+    prompt: "Want a heads-up on your device?"
+    enable: "Turn on notifications"
+    done: "Notifications are on for this device."
+    denied: "Notifications are blocked in your browser settings."
+    install: "Add this page to your home screen to get notifications on iPhone."
+  push_permission:
+    request: "Turn on notifications"
+    granted: "Notifications are on."
+    denied: "Notifications stay off. You can change that in Settings."

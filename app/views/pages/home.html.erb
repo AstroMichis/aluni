@@ -1,0 +1,51 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% content_for :description, t(".lede") %>
+
+<div class="landing">
+  <nav class="landing__nav" data-controller="landing-nav" aria-label="<%= t(".nav_label") %>">
+    <div class="container landing__nav-inner">
+      <%= link_to t("app_name"), root_path, class: "landing__brand" %>
+      <div class="cluster cluster--sm">
+        <%= render "shared/language_toggle" %>
+        <button type="button" class="btn btn--ghost btn--sm" data-action="theme#toggle" aria-label="<%= t("theme.toggle") %>">
+          <%= t("theme.toggle_short") %>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main">
+    <section class="landing__hero"
+            data-controller="hero-scene"
+            data-hero-scene-hidden-class="landing__hero-content--hidden"
+            data-hero-scene-visible-class="landing__hero-content--visible">
+      <div class="landing__hero-bg" data-hero-scene-target="canvas" aria-hidden="true"></div>
+      <div class="container container--md landing__hero-content landing__hero-content--hidden" data-hero-scene-target="heroContent">
+        <p class="text-label"><%= t(".eyebrow") %></p>
+        <h1 class="text-display landing__title"><%= t(".headline") %></h1>
+        <p class="landing__lede"><%= t(".lede") %></p>
+        <div class="cluster cluster--sm landing__actions">
+          <% if hotwire_native_app? %>
+            <%= link_to t(".sign_in"), sign_in_path, class: "btn btn--primary btn--lg" %>
+            <%= link_to t(".sign_up"), sign_up_path, class: "btn btn--secondary btn--lg" if signups_enabled? %>
+          <% else %>
+            <a class="btn btn--primary btn--lg" href="#get-the-app"><%= t(".get_the_app") %></a>
+            <a class="btn btn--secondary btn--lg" href="#about"><%= t(".learn_more") %></a>
+          <% end %>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="landing__section container container--md landing__reveal" data-controller="scroll-reveal">
+      <h2 class="text-heading landing__section-title"><%= t(".about_title") %></h2>
+      <p><%= t(".about_body") %></p>
+    </section>
+
+    <section id="get-the-app" class="landing__section container container--md landing__reveal" data-controller="scroll-reveal">
+      <h2 class="text-heading landing__section-title"><%= t(".get_the_app_title") %></h2>
+      <p><%= t(".get_the_app_body") %></p>
+    </section>
+  </main>
+
+  <%= render "shared/public_footer" %>
+</div>

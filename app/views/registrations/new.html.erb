@@ -1,0 +1,35 @@
+<% content_for :title, t(".title") %>
+
+<main id="main" class="auth container container--sm">
+  <p class="auth__brand"><%= t("app_name") %></p>
+  <section class="card"
+           data-controller="passkey"
+           data-passkey-mode-value="create"
+           data-passkey-options-url-value="<%= sign_up_options_path %>"
+           data-passkey-submit-url-value="<%= sign_up_path %>"
+           data-passkey-messages-value="<%= passkey_messages %>">
+    <div class="card__body stack stack--md">
+      <h1 class="text-heading auth__title"><%= t(".title") %></h1>
+      <p class="auth__lede"><%= t(".lede") %></p>
+
+      <form class="stack stack--md" data-passkey-target="form" data-action="submit->passkey#start" novalidate>
+        <div class="input-group">
+          <label class="input-group__label" for="display_name"><%= t(".display_name") %></label>
+          <input class="input" type="text" id="display_name" name="display_name" required maxlength="<%= User::NAME_MAX %>" autocomplete="name" autocapitalize="words">
+          <p class="input-group__hint"><%= t(".display_name_hint") %></p>
+        </div>
+        <div class="input-group">
+          <label class="input-group__label" for="email_address"><%= t(".email_address") %></label>
+          <input class="input" type="email" id="email_address" name="email_address" maxlength="<%= User::NAME_MAX %>" autocomplete="email" inputmode="email">
+          <p class="input-group__hint"><%= t(".email_hint") %></p>
+        </div>
+        <button type="submit" class="btn btn--primary btn--lg btn--full" data-passkey-target="button">
+          <%= t(".button") %>
+        </button>
+      </form>
+
+      <p class="auth__status" data-passkey-target="error" role="status" aria-live="polite"></p>
+      <p class="auth__alt"><%= t(".have_account") %> <%= link_to t(".sign_in"), sign_in_path %></p>
+    </div>
+  </section>
+</main>

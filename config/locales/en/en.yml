@@ -1,0 +1,66 @@
+en:
+  app_name: "Aluni"
+
+  meta:
+    description: "Aluni is an open source tool. The web site explains it; the app is where you use it."
+    og_locale: "en_US"
+
+  language_toggle:
+    label: "Language"
+    en: "English"
+    es: "Español"
+
+  theme:
+    toggle: "Switch between dark and light mode"
+    toggle_short: "Theme"
+
+  layouts:
+    skip_to_content: "Skip to content"
+    app_nav: "Account"
+    home: "Home"
+    passkeys: "Passkeys"
+    sign_out: "Sign out"
+
+  native_only:
+    notice: "That part of Aluni lives in the app. Get it on your phone to continue."
+
+  signups:
+    disabled_notice: "New accounts are not open yet. You can still sign in."
+
+  platform:
+    service_paused: "That service is paused for maintenance. Please try again in a little while."
+
+  service_errors:
+    generic: "Something did not work. Please try again."
+
+  passkeys:
+    default_nickname: "This device"
+    errors:
+      unsupported: "This device cannot use passkeys. Try the latest version of your browser or system."
+      cancelled: "No problem. Tap the button whenever you are ready."
+      failed: "That did not work. Please try again."
+      already_registered: "This device already has a passkey for Aluni."
+      unknown_credential: "We do not recognise that passkey. Create an account first, or sign in on the device you registered."
+      verification_failed: "The passkey could not be checked. Please try again."
+      registration_expired: "That took a bit too long. Please start again."
+      display_name_required: "Tell us what to call you first."
+      too_long: "That is a bit long. Please shorten it."
+      invalid: "Please check the details and try again."
+      forbidden: "Sign-ups are not open yet."
+
+  time:
+    formats:
+      short: "%b %-d, %Y %H:%M"
+      long: "%B %-d, %Y at %H:%M"
+  date:
+    formats:
+      short: "%b %-d, %Y"
+      long: "%B %-d, %Y"
+  number:
+    currency:
+      format:
+        unit: "$"
+        format: "%u%n"
+        separator: "."
+        delimiter: ","
+        precision: 2

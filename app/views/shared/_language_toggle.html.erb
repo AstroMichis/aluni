@@ -1,0 +1,12 @@
+<%# Plain links, no JavaScript: the choice is kept in the locale cookie (and on the account). %>
+<% if request.get? %>
+  <nav class="language-toggle" aria-label="<%= t("language_toggle.label") %>">
+    <% I18n.available_locales.each do |locale| %>
+      <% if locale == I18n.locale %>
+        <span class="language-toggle__option language-toggle__option--active" aria-current="true"><%= t("language_toggle.#{locale}") %></span>
+      <% else %>
+        <%= link_to t("language_toggle.#{locale}"), localized_path(locale), class: "language-toggle__option", lang: locale, hreflang: locale %>
+      <% end %>
+    <% end %>
+  </nav>
+<% end %>

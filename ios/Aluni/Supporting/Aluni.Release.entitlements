@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Release only (needs the paid Apple Developer team):
+     applinks: links on aluni.us open the app (AppLinksController serves the AASA).
+     webcredentials: lets WKWebView create and use passkeys for aluni.us.
+     aps-environment: APNs production push. -->
+<plist version="1.0">
+<dict>
+	<key>aps-environment</key>
+	<string>production</string>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:aluni.us</string>
+		<string>applinks:www.aluni.us</string>
+		<string>webcredentials:aluni.us</string>
+	</array>
+</dict>
+</plist>
