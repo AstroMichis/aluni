@@ -9,7 +9,7 @@ One app, one bundle id (`us.aluni.app`), two shells around this Rails app: `ios/
 | `config/native_app.yml` + `app/services/native_app.rb` | App name, bundle id, UA prefix, sign-in/home paths, app-link paths, colours, tabs, store listing URLs |
 | `GET /configurations/v1/:platform` (`ConfigurationsController`) | Tabs with per-platform icons, colours and the path rules the shells merge over their bundled `path_configuration.json` (declared first in routes) |
 | `GET /.well-known/apple-app-site-association`, `/.well-known/assetlinks.json` (`AppLinksController`) | Universal/app links **and** the passkey associations (`webcredentials`, `get_login_creds`). 404 until credentials `native_app.apple_team_id` / `native_app.android_cert_sha256` exist |
-| `hotwire_native_app?` (turbo-rails) | Layouts load `native.css` (hides web chrome) and mount bridge components; `NativeOnly` gates the app pages |
+| `hotwire_native_app?` (turbo-rails) | Layouts load `native.css` (hides web chrome) and mount bridge components; `NativeOnly` lets the shells through even when `NATIVE_WEB_ACCESS=0` closes the pages to browsers |
 | `Api::V1::BaseController` | JSON for native screens: session cookie + `X-Aluni-Native: 1` on writes |
 | `app/javascript/controllers/bridge/*` | `share`, `notification-token`, `push-permission`; names match the Swift and Kotlin components exactly |
 

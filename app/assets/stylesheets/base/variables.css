@@ -101,6 +101,16 @@
   /* Container widths */
   --container-sm: 640px;  --container-md: 768px;
   --container-lg: 1024px; --container-xl: 1200px;
+
+  /* Aluni, the seedling mascot. Mirrored as hex ints in
+     app/javascript/mascot/palette.js; change both together. */
+  --color-mascot-seed: #A67C4E;
+  --color-mascot-seed-shade: #6F4F2F;
+  --color-mascot-leaf: #3E7A4A;
+  --color-mascot-leaf-shade: #6B7650;
+  --color-mascot-eye: #1F1B16;
+  --color-mascot-cheek: #D9C48F;
+  --color-mascot-mouth: #4A2E1A;
 }
 
 /* Light mode override: cream surfaces, deep green text and accent */
@@ -140,4 +150,11 @@
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
   --shadow-glow: none;
+  --color-mascot-seed: #9C7244;
+  --color-mascot-seed-shade: #6A4A2A;
+  --color-mascot-leaf: #35703F;
+  --color-mascot-leaf-shade: #55663F;
+  --color-mascot-eye: #1F1B16;
+  --color-mascot-cheek: #C9AF72;
+  --color-mascot-mouth: #3E2715;
 }

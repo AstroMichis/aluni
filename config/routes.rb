@@ -46,7 +46,7 @@ Rails.application.routes.draw do
 
     # The main menu dial: a web preview for now, the app's first screen later.
     get "menu", to: "pages#menu", as: :menu
-    # Section 1 of the menu, My fields: a preview on the sample farm (Fields::SampleFarm).
+    # The menu sections (fields, crops, weather, team, reports): a preview on the session draft (Fields::Draft).
     scope "menu", as: "menu" do
       resources :fields, only: %i[index show new create] do
         collection do
@@ -84,7 +84,7 @@ Rails.application.routes.draw do
       end
     end
 
-    # Passkey sign-in and sign-up (native shells; NATIVE_WEB_ACCESS opens them to browsers).
+    # Passkey sign-in and sign-up (browsers and native shells; NATIVE_WEB_ACCESS=0 closes them to browsers).
     get    "sign_in",         to: "sessions#new",          as: :sign_in
     post   "sign_in/options", to: "sessions#options",      as: :sign_in_options
     post   "sign_in",         to: "sessions#create"
@@ -100,6 +100,15 @@ Rails.application.routes.draw do
     # Authenticated area (native shells).
     namespace :app do
       root "home#show"
+      # The onboarding chat: one page, Turbo Stream actions for every turn.
+      resource :onboarding, only: :show, controller: "onboarding" do
+        post :message
+        post :confirm
+        post :discard
+        post :skip
+        post :complete
+        delete :reset
+      end
       resources :device_tokens, only: :create
       delete "device_tokens", to: "device_tokens#destroy"
       resources :web_push_subscriptions, only: :create

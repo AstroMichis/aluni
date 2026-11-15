@@ -1,0 +1,12 @@
+<%= turbo_stream.update "onboarding-notice", "" %>
+<%= turbo_stream.append "onboarding-messages" do %>
+  <%= render "app/onboarding/divider", topic: @topic %>
+  <%= render "app/onboarding/message", role: "assistant", text: @transition if @transition.present? %>
+  <%= render "app/onboarding/completion" if @completed %>
+<% end %>
+<%= turbo_stream.replace "onboarding-progress" do %>
+  <%= render "app/onboarding/progress", topic: @topic, index: @index, total: @total %>
+<% end %>
+<%= turbo_stream.update "onboarding-location-tools" do %>
+  <%= render "app/onboarding/location_tools", pin: @pin if @topic == "location" %>
+<% end %>

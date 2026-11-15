@@ -1,0 +1,33 @@
+<%# Aluni's stage on the landing page: a small fixed box bottom-left holding the WebGL canvas, its CSS ground shadow, the SVG twin for the fallback path and the speech bubble. mascot_controller.js owns the lifecycle; the walk-in is the CSS transition between mascot--offstage and mascot--onstage. The bubble's controls are real HTML so they work without the scene. %>
+<div class="mascot mascot--offstage"
+     data-controller="mascot"
+     data-mascot-mode-value="landing"
+     data-mascot-dock-selector-value="#landing-chat-companion"
+     data-mascot-offstage-class="mascot--offstage"
+     data-mascot-onstage-class="mascot--onstage"
+     data-mascot-arrived-class="mascot--arrived"
+     data-mascot-docked-class="mascot--docked"
+     data-mascot-away-class="mascot--away"
+     data-mascot-hidden-class="mascot--hidden"
+     data-mascot-static-class="mascot--static"
+     data-mascot-fallback-class="mascot--fallback"
+     data-mascot-bubble-visible-class="mascot__bubble--visible">
+  <div class="mascot__shadow" aria-hidden="true"></div>
+  <div class="mascot__canvas" data-mascot-target="canvas" aria-hidden="true"></div>
+  <div class="mascot__fallback" data-mascot-target="fallback" hidden>
+    <%= render "shared/mascot_avatar", size: "xl" %>
+  </div>
+  <div class="mascot__bubble" data-mascot-target="bubble" role="dialog" aria-labelledby="mascot-greeting" hidden>
+    <button type="button" class="mascot__close" data-action="mascot#dismiss" aria-label="<%= t("mascot.dismiss") %>">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <p id="mascot-greeting" class="mascot__line"><%= t("mascot.greeting", app_name: t("app_name")) %></p>
+    <p class="mascot__line"><%= t("mascot.question") %></p>
+    <div class="cluster cluster--sm mascot__actions">
+      <% if signups_enabled? %>
+        <button type="button" class="btn btn--primary" data-action="mascot#letsGo"><%= t("mascot.lets_go") %></button>
+      <% end %>
+      <a class="btn btn--secondary" href="#tour-step-1" data-turbo="false" data-action="mascot#dismiss"><%= t("mascot.show_me_around") %></a>
+    </div>
+  </div>
+</div>

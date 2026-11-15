@@ -1,0 +1,18 @@
+<%# Aluni's inline SVG twin: the same seedling (seed, stem, two cotyledons, arm blades, eyes, cheeks, smile, root-ball feet) drawn flat for places without WebGL or room for the stage. Colours are the mascot tokens so it follows the theme. No text nodes: the label is the aria-label. Local `size:` is one of sm | md | lg | xl. %>
+<svg viewBox="0 0 64 64" role="img" aria-label="<%= t("mascot.avatar_label", app_name: t("app_name")) %>" class="mascot-avatar mascot-avatar--<%= size %>" focusable="false">
+  <ellipse cx="24" cy="56.5" rx="7" ry="4.5" fill="var(--color-mascot-seed-shade)"/>
+  <ellipse cx="40" cy="56.5" rx="7" ry="4.5" fill="var(--color-mascot-seed-shade)"/>
+  <path d="M18 40 Q10 44 9 51 Q16 49 18 40Z" fill="var(--color-mascot-leaf-shade)"/>
+  <path d="M46 40 Q54 44 55 51 Q48 49 46 40Z" fill="var(--color-mascot-leaf-shade)"/>
+  <path d="M32 23 L32 13" stroke="var(--color-mascot-leaf-shade)" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M32 14 Q22 16 17 7 Q27 3 32 14Z" fill="var(--color-mascot-leaf)"/>
+  <path d="M32 14 Q42 16 47 7 Q37 3 32 14Z" fill="var(--color-mascot-leaf)"/>
+  <ellipse cx="32" cy="38" rx="15" ry="17" fill="var(--color-mascot-seed)"/>
+  <circle cx="26.5" cy="37" r="2.7" fill="var(--color-mascot-eye)"/>
+  <circle cx="37.5" cy="37" r="2.7" fill="var(--color-mascot-eye)"/>
+  <circle cx="27.4" cy="36.1" r="0.8" fill="var(--color-mascot-cheek)"/>
+  <circle cx="38.4" cy="36.1" r="0.8" fill="var(--color-mascot-cheek)"/>
+  <ellipse cx="22.5" cy="42.5" rx="2.4" ry="1.5" fill="var(--color-mascot-cheek)"/>
+  <ellipse cx="41.5" cy="42.5" rx="2.4" ry="1.5" fill="var(--color-mascot-cheek)"/>
+  <path d="M28.5 44.5 Q32 48 35.5 44.5" stroke="var(--color-mascot-mouth)" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+</svg>

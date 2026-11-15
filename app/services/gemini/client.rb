@@ -16,6 +16,27 @@ module Gemini
 
     attr_reader :last_error
 
+    # Gemini Developer API (key) or Vertex AI (attached service account, no key).
+    # Same request and response bodies on both; only the URL and auth differ.
+    def self.backend = Rails.configuration.x.gemini.backend.to_s == "vertex" ? :vertex : :api_key
+
+    def self.configured?
+      if backend == :vertex
+        Rails.configuration.x.gemini.vertex_project.present?
+      else
+        Rails.application.credentials.dig(:gemini, :api_key).present?
+      end
+    end
+
+    def self.base_url
+      return BASE_URL unless backend == :vertex
+
+      config = Rails.configuration.x.gemini
+      location = config.vertex_location.presence || "global"
+      host = location == "global" ? "aiplatform.googleapis.com" : "#{location}-aiplatform.googleapis.com"
+      "https://#{host}/v1/projects/#{config.vertex_project}/locations/#{location}/publishers/google/"
+    end
+
     def self.models
       config = Rails.configuration.x.gemini
       {
@@ -37,9 +58,12 @@ module Gemini
       end
     end
 
-    def initialize(model: :flash)
+    # timeout (seconds) overrides the 30 s Faraday read timeout for callers
+    # that answer a person waiting on the page.
+    def initialize(model: :flash, timeout: nil)
       @model = self.class.models.fetch(model)
       @api_key = Rails.application.credentials.dig(:gemini, :api_key)
+      @timeout = timeout
       @last_error = nil
     end
 
@@ -56,18 +80,20 @@ module Gemini
 
     # Multi turn. messages follow Gemini's contents format:
     # [{ role: "user" | "model", parts: [{ text: "..." }] }]
-    def chat(messages:, system_instruction: nil)
+    # Structured JSON when response_schema is given, as in #generate.
+    def chat(messages:, system_instruction: nil, response_schema: nil, max_tokens: nil)
       @last_error = nil
       body = {
         contents: messages,
-        generationConfig: { temperature: 0.4, maxOutputTokens: chat_max_output_tokens }
+        generationConfig: { temperature: 0.4, maxOutputTokens: max_tokens || chat_max_output_tokens }
       }
       apply_thinking_config(body)
       body[:systemInstruction] = { parts: [ { text: system_instruction } ] } if system_instruction
+      apply_response_schema(body, response_schema)
       path = "models/#{@model}:generateContent"
 
       with_retries do
-        post_and_extract(path, body, expect_schema: false)
+        post_and_extract(path, body, expect_schema: !response_schema.nil?)
       end
     end
 
@@ -117,7 +143,9 @@ module Gemini
 
     def post_and_extract(path, body, expect_schema:)
       Platform::Switchboard.guard!(:gemini)
-      response = connection.post(path, body.to_json)
+      response = connection.post(path, body.to_json) do |req|
+        req.headers["Authorization"] = "Bearer #{VertexToken.fetch}" if self.class.backend == :vertex
+      end
 
       unless response.success?
         @last_error = classify_http_error(response)
@@ -136,6 +164,9 @@ module Gemini
       end
 
       expect_schema ? fix_unicode_escapes(text) : text
+    rescue VertexToken::Error => e
+      @last_error = { type: :api_error, status: nil, message: e.message, retry_after: nil }
+      nil
     rescue Faraday::TimeoutError => e
       @last_error = { type: :network_error, status: nil, message: "Timeout: #{e.message}", retry_after: nil }
       nil
@@ -195,13 +226,13 @@ module Gemini
     end
 
     def connection
-      @connection ||= Faraday.new(url: BASE_URL) do |f|
+      @connection ||= Faraday.new(url: self.class.base_url) do |f|
         f.request :json
         f.response :json
-        f.headers["x-goog-api-key"] = @api_key
+        f.headers["x-goog-api-key"] = @api_key if self.class.backend == :api_key
         f.request :retry, max: 2, interval: 0.5
         f.adapter Faraday.default_adapter
-        f.options.timeout = 30
+        f.options.timeout = @timeout || 30
         f.options.open_timeout = 10
       end
     end
@@ -230,12 +261,14 @@ module Gemini
 
       apply_thinking_config(body)
       body[:systemInstruction] = { parts: [ { text: system_instruction } ] } if system_instruction
+      apply_response_schema(body, response_schema)
+    end
 
-      if response_schema
-        body[:generationConfig][:responseMimeType] = "application/json"
-        body[:generationConfig][:responseSchema] = response_schema
-      end
+    def apply_response_schema(body, schema)
+      return body unless schema
 
+      body[:generationConfig][:responseMimeType] = "application/json"
+      body[:generationConfig][:responseSchema] = schema
       body
     end
 

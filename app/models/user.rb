@@ -9,6 +9,9 @@ class User < ApplicationRecord
   has_many :device_tokens, dependent: :destroy
   has_many :web_push_subscriptions, dependent: :destroy
   has_many :notification_deliveries, as: :recipient, dependent: :destroy
+  has_one :farmer_profile, dependent: :destroy
+  has_one :onboarding_session, dependent: :destroy
+  has_many :farms, dependent: :destroy
 
   normalizes :email_address, with: ->(e) { e.to_s.strip.downcase.presence }
 
@@ -18,6 +21,8 @@ class User < ApplicationRecord
   validates :display_name, presence: true, length: { maximum: NAME_MAX }
   validates :email_address, uniqueness: true, length: { maximum: NAME_MAX }, allow_nil: true
   validates :locale, inclusion: { in: ->(_user) { I18n.available_locales.map(&:to_s) } }
+
+  def onboarding_complete? = onboarding_session&.completed? || false
 
   private
 

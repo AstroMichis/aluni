@@ -2,13 +2,13 @@
 
 ## What is this
 
-Aluni is your smart crop cultivation assistant: an open source decision-support tool that helps farmers compare crop rotations with their field's soil, weather and satellite data, built for people, not for passwords. The web site at aluni.us is informational (a Three.js field scene, a guided tour of the app with sample data, and the store buttons); the product lives in the iOS and Android apps (Hotwire Native shells around this Rails app), where people sign in with a passkey (face, fingerprint or device code) and never see a username or a password. Bilingual English/Spanish, English first. Dark-first design. The product domain is defined separately from this infrastructure; nothing here assumes it.
+Aluni is your smart crop cultivation assistant: an open source decision-support tool that helps farmers compare crop rotations with their field's soil, weather and satellite data, built for people, not for passwords. The web app at aluni.us is the product: the landing page (a Three.js field scene, Aluni the seedling mascot, a guided tour with sample data), then the onboarding chat and the authenticated area, all in the browser; the iOS and Android apps are Hotwire Native shells around the same Rails app. People sign in with a passkey (face, fingerprint or device code) and never see a username or a password. Bilingual English/Spanish, English first. Dark-first design. The product domain is defined separately from this infrastructure; nothing here assumes it.
 
 ## Critical rules
 
 - **Ruby only through mise.** `mise exec -- bin/rails ...`, `mise exec -- bundle exec rspec`. Never bare `ruby`, `rails` or `bundle`.
 - **Passkeys only.** No passwords, no Devise, no JWT. Sign-in is a WebAuthn ceremony (`docs/AUTH.md`); sessions are rows (`Session`) behind a permanent signed cookie.
-- **The web is informational.** Sign-in, sign-up, passkeys and `/app` answer only to the native shells (`NativeOnly`); `NATIVE_WEB_ACCESS=1` opens them to browsers in development.
+- **Web and native are both first-class clients.** Sign-in, sign-up, passkeys and `/app` answer to browsers and to the shells; `NativeOnly` is the operator kill switch (`NATIVE_WEB_ACCESS=0` sends browsers back to the landing page).
 - **Pure CSS only.** No Tailwind, no Bootstrap, no bundler, no node. CSS custom properties + BEM; one `stylesheet_link_tag` per file.
 - **Hotwire, not SPA.** Turbo + Stimulus. Heavy libraries (Three.js) are vendored and loaded lazily with `await import()`.
 - **Service objects for business logic.** `ApplicationService` + `Result`; controllers pattern match; models hold validations and associations only.
@@ -31,7 +31,7 @@ Aluni is your smart crop cultivation assistant: an open source decision-support 
 | Frontend | Hotwire (Turbo + Stimulus), pure CSS, importmap-rails, vendored Three.js r169 |
 | Native | Hotwire Native iOS 1.2 (ios/, XcodeGen) and Android 1.2 (android/, Gradle KTS) |
 | Rust | vendor/gems/aluni_core (magnus 0.9 on rb-sys 0.9, Rust 1.92 via rust-toolchain.toml) |
-| AI | Google Gemini over Faraday (`Gemini::Client`), paused by default on first deploy |
+| AI | Google Gemini over Faraday (`Gemini::Client`): `GEMINI_BACKEND=api_key` (credentials key, development) or `vertex` (the GCP VM's service account, production); paused by default on first deploy |
 | Push | action_push_native (APNs/FCM) + web-push (VAPID) behind `NotificationRouter` |
 | Storage | Cloudflare R2 (S3 adapter) via Active Storage, proxied through the app |
 | Hosting | Oracle Always Free A1 VM via Kamal 2 + GHCR + GitHub Actions (config/deploy.yml, docs/deploy/DEPLOY.md) |
@@ -48,6 +48,7 @@ Read the relevant doc before working on that area:
 | `docs/NATIVE.md` | The iOS and Android shells, path configuration, app links, bridge components, building them |
 | `docs/DESIGN_SYSTEM.md` | Any UI work: tokens, typography, CSS components, layouts, the Three.js hero |
 | `docs/DATA_MODEL.md` | Tables, migrations, associations, conventions |
+| `docs/ONBOARDING.md` | Aluni the mascot and the onboarding chat: flow, topics (`config/onboarding/topics.yml`), the Gemini turn, proposal and confirm card, abuse rules, demo runbook |
 | `docs/RAILS_PATTERNS.md` | Service objects, controllers, Hotwire, Stimulus, jobs, the switchboard |
 | `docs/I18N.md` | Locale files, switching, formats, the copy specs |
 | `docs/INTEGRATIONS.md` | Gemini, push, web push, mail, R2, outbound client and inbound webhook shapes |
@@ -65,30 +66,33 @@ Builder skills live in `.claude/commands/` (`/service`, `/job`, `/model`, `/stim
 app/
   assets/stylesheets/       # base/ components/ layouts/ pages/ utilities/ native.css (docs/DESIGN_SYSTEM.md)
   controllers/
-    app/                     # Authenticated area (native shells): App::BaseController
+    app/                     # Authenticated area: App::BaseController; home, onboarding (the chat)
     api/v1/                  # JSON for native screens (session cookie + X-Aluni-Native header)
     concerns/                # Authentication, NativeOnly, PasskeyCeremony
     sessions_controller.rb   # Passkey sign-in
     registrations_controller.rb  # Passkey sign-up
     passkeys_controller.rb   # Add/remove passkeys
-    pages_controller.rb      # Informational site + locale switch
+    pages_controller.rb      # Landing page + locale switch
     configurations_controller.rb, app_links_controller.rb  # Native shell endpoints
-  javascript/controllers/    # Stimulus (passkey, hero_scene, theme, toast, bridge/*)
+  javascript/controllers/    # Stimulus (passkey, hero_scene, mascot, chat, landing_chat, theme, toast, bridge/*)
+  javascript/mascot/         # Aluni's character, animator and palette (plain modules behind the mascot controller)
   jobs/                      # ApplicationJob (switchboard aware), sessions/, notifications/
   mailers/                   # ApplicationMailer, NotificationMailer
-  models/                    # User, Session, Passkey, PlatformSwitch, DeviceToken, WebPushSubscription, NotificationDelivery, Result
+  models/                    # User, Session, Passkey, FarmerProfile, Farm, Field, FieldCrop, OnboardingSession, PlatformSwitch, DeviceToken, WebPushSubscription, NotificationDelivery, Result
   services/
     application_service.rb   # Result + step + try_external
     core/                    # Ruby wrappers around the Rust extension
     gemini/                  # Gemini client + language lock
     notifications/           # Router channels, purposes registry, push devices
+    onboarding/              # The chat engine: topics, reply (two Gemini calls), proposal apply, snapshot, segment
     platform/                # Switchboard, toggle, cron control, features
   views/
-    layouts/                 # public.html.erb (site), application.html.erb (app), mailer
-    pages/ sessions/ registrations/ passkeys/ app/home/ shared/ pwa/
+    layouts/                 # public.html.erb (landing + auth), application.html.erb (app), mailer
+    pages/ sessions/ registrations/ passkeys/ app/home/ app/onboarding/ shared/ pwa/
 config/
   locales/{en,es}/           # Nested locale trees (parity enforced by spec/i18n)
   initializers/              # app_domain, redis, sidekiq, rack_attack, csp, webauthn, native, gemini, ...
+  onboarding/topics.yml      # The onboarding topics and the model guidance per topic (English, not copy)
   native_app.yml, notification_purposes.yml, sidekiq.yml, sidekiq_cron.yml, deploy.yml
 ios/  android/               # Hotwire Native shells (docs/NATIVE.md)
 vendor/gems/aluni_core/      # Rust extension (docs/RUST.md)

@@ -1,0 +1,27 @@
+<%# The proposal card: one checkbox per suggested change, all checked. "Save selected" posts the
+    accepted keys to confirm; "Not now" posts to discard through formaction. Both are plain Turbo
+    submits (the stream answer replaces the slots). Local: proposal (Onboarding::ReplyService shape). %>
+<% rows = proposal_rows(proposal) %>
+<% if rows.any? %>
+  <%= form_with url: confirm_app_onboarding_path, method: :post, class: "confirm-card card card--nested", aria: { labelledby: "onboarding-confirm-title" } do %>
+    <div class="confirm-card__header">
+      <h2 id="onboarding-confirm-title" class="confirm-card__title"><%= t("app.onboarding.show.confirm.title") %></h2>
+      <p class="confirm-card__lede"><%= t("app.onboarding.show.confirm.lede") %></p>
+    </div>
+    <ul class="confirm-card__rows">
+      <% rows.each_with_index do |row, i| %>
+        <li class="confirm-card__row">
+          <label class="confirm-card__option" for="accepted-field-<%= i %>">
+            <input class="confirm-card__checkbox" type="checkbox" id="accepted-field-<%= i %>" name="accepted_fields[]" value="<%= row[:key] %>" checked>
+            <span class="confirm-card__label"><%= row[:label] %></span>
+            <span class="confirm-card__value"><%= row[:value] %></span>
+          </label>
+        </li>
+      <% end %>
+    </ul>
+    <div class="confirm-card__actions">
+      <button type="submit" class="btn btn--primary"><%= t("app.onboarding.show.confirm.save") %></button>
+      <button type="submit" class="btn btn--ghost" formaction="<%= discard_app_onboarding_path %>" formnovalidate><%= t("app.onboarding.show.confirm.not_now") %></button>
+    </div>
+  <% end %>
+<% end %>

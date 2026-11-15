@@ -32,7 +32,7 @@ FROM base AS build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips libyaml-dev pkg-config && \
+    apt-get install --no-install-recommends -y build-essential git libclang-dev libpq-dev libvips libyaml-dev pkg-config && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Rust toolchain for the native extension (build stage only; the runtime image gets the compiled .so).
@@ -45,7 +45,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --pr
 # Install application gems (the in-repo Rust gem compiles here, inside the gem layer)
 COPY vendor/* ./vendor/
 COPY vendor/gems ./vendor/gems
-COPY Gemfile Gemfile.lock ./
+COPY Gemfile Gemfile.lock .ruby-version ./
 
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     bundle install && \

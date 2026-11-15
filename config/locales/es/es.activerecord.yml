@@ -13,6 +13,21 @@ es:
       platform_switch:
         one: "Interruptor de plataforma"
         other: "Interruptores de plataforma"
+      farmer_profile:
+        one: "Perfil de agricultor"
+        other: "Perfiles de agricultor"
+      farm:
+        one: "Finca"
+        other: "Fincas"
+      field:
+        one: "Campo"
+        other: "Campos"
+      field_crop:
+        one: "Cultivo"
+        other: "Cultivos"
+      onboarding_session:
+        one: "Configuración inicial"
+        other: "Configuraciones iniciales"
     attributes:
       user:
         display_name: "Nombre"
@@ -21,3 +36,45 @@ es:
       passkey:
         nickname: "Nombre del dispositivo"
         last_used_at: "Último uso"
+      farmer_profile:
+        role: "Rol"
+        experience: "Experiencia"
+        team: "Quién trabaja la tierra"
+        team_size: "Tamaño del equipo"
+        units: "Unidades"
+        land_tenure: "Tierra"
+        budget_level: "Insumos y presupuesto"
+        risk_tolerance: "Riesgo"
+        segment: "Perfil"
+        goals: "Objetivos"
+        equipment: "Equipo"
+        livestock: "Ganado"
+        market_channels: "Dónde vendes"
+        practices: "Prácticas"
+        notes: "Notas"
+      farm:
+        name: "Nombre de la finca"
+        country_code: "País"
+        admin_area: "Región"
+      field:
+        name: "Nombre del campo"
+        latitude: "Latitud"
+        longitude: "Longitud"
+        place_label: "Lugar"
+        area: "Área"
+        area_unit: "Unidad de área"
+        irrigation: "Riego"
+        water_source: "Fuente de agua"
+        cropping_intensity: "Cultivos por año"
+        soil: "Suelo"
+      field_crop:
+        crop_name: "Cultivo"
+        scientific_name: "Nombre científico"
+        season_year: "Temporada"
+        planting_month: "Mes de siembra"
+        harvest_month: "Mes de cosecha"
+        role: "Rol"
+      onboarding_session:
+        topic: "Tema"
+        status: "Estado"
+        language: "Idioma"

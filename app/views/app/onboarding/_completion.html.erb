@@ -1,0 +1,8 @@
+<%# Appended to the log when the last topic is done; the button runs CompleteService and lands on /app. %>
+<div class="chat__card card card--nested" role="status">
+  <div class="card__body stack stack--sm">
+    <h2 class="text-heading chat__card-title"><%= t("app.onboarding.show.completion.title") %></h2>
+    <p><%= t("app.onboarding.show.completion.body") %></p>
+    <%= button_to t("app.onboarding.show.completion.cta"), complete_app_onboarding_path, method: :post, class: "btn btn--primary btn--lg" %>
+  </div>
+</div>

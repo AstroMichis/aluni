@@ -25,8 +25,10 @@ RSpec.describe "Device tokens", type: :request do
     expect(response).to have_http_status(:unprocessable_content)
   end
 
-  it "is native only" do
-    post app_device_tokens_path(locale: "en"), params: { token: "abc", platform: "ios" }, as: :json
+  it "is closed to browsers while the web kill switch is off" do
+    with_native_web_access(false) do
+      post app_device_tokens_path(locale: "en"), params: { token: "abc", platform: "ios" }, as: :json
+    end
 
     expect(response).to have_http_status(:forbidden)
   end

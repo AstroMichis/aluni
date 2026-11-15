@@ -1,0 +1,84 @@
+/* The proposal card: one checkbox per suggested change, all ticked, then
+   "Save selected" or "Not now". Lives inside the chat under the log. */
+.confirm-card { display: flex; flex-direction: column; }
+
+.confirm-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-4) var(--space-2);
+}
+
+.confirm-card__title { font-size: var(--text-base); font-weight: 600; }
+.confirm-card__lede { margin: 0; font-size: var(--text-sm); color: var(--color-text-secondary); }
+
+.confirm-card__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--space-2);
+  display: flex;
+  flex-direction: column;
+}
+
+.confirm-card__row { contain: layout style; }
+.confirm-card__row + .confirm-card__row { border-top: 1px solid var(--color-border-subtle); }
+
+.confirm-card__option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "box label" "box value";
+  column-gap: var(--space-3);
+  row-gap: var(--space-1);
+  align-items: center;
+  min-height: 48px;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+.confirm-card__option:hover { background: var(--color-bg-hover); }
+
+.confirm-card__checkbox {
+  grid-area: box;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.confirm-card__label {
+  grid-area: label;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.confirm-card__value {
+  grid-area: value;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+
+.confirm-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+.confirm-card__actions .btn { flex: 1 1 auto; min-height: 48px; }
+
+@media (min-width: 641px) {
+  .confirm-card__option {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "box label value";
+  }
+  .confirm-card__value { text-align: end; }
+  .confirm-card__actions .btn { flex: 0 0 auto; }
+}
+
+@media (forced-colors: active) {
+  .confirm-card__option:hover { outline: 1px solid CanvasText; }
+}

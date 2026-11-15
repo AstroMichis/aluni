@@ -17,7 +17,7 @@ You are building a full-stack feature for Aluni. The feature request is: $ARGUME
 2. **Analyze existing patterns** by reading at least one example of each layer you will touch:
    - Model: `app/models/passkey.rb` (associations, validations, one `!` method)
    - Service: `app/services/core/normalize_service.rb` and `app/services/platform/toggle_service.rb`
-   - Controller: `app/controllers/passkeys_controller.rb` (authenticated, native-only, JSON + HTML) and `app/controllers/app/home_controller.rb`
+   - Controller: `app/controllers/passkeys_controller.rb` (authenticated, JSON + HTML) and `app/controllers/app/home_controller.rb`
    - View: `app/views/passkeys/index.html.erb` (card, list, form, Stimulus)
    - Test: `spec/requests/passkey_flow_spec.rb` (request specs that render pages)
    - CSS: `app/assets/stylesheets/components/card.css`, `pages/app.css`
@@ -29,7 +29,7 @@ You are building a full-stack feature for Aluni. The feature request is: $ARGUME
    - Files to modify
    - Migration(s) needed
    - i18n keys needed (both en and es)
-   - Any new routes, and whether they are native-only (`App::` namespace) or public
+   - Any new routes, and whether they are authenticated (`App::` namespace) or public
 
 ## Build order (always follow this sequence):
 
@@ -54,7 +54,7 @@ You are building a full-stack feature for Aluni. The feature request is: $ARGUME
 - Primitive arguments only; find records inside `perform`; cron entries in `config/sidekiq_cron.yml`
 
 ### Step 5: Controller
-- Authenticated screens inherit `App::BaseController` (native-only + session + Pundit); public pages inherit `ApplicationController` with `allow_unauthenticated_access` and `layout "public"`; JSON for native screens inherits `Api::V1::BaseController`
+- Authenticated screens inherit `App::BaseController` (session + Pundit + the `NativeOnly` kill switch); public pages inherit `ApplicationController` with `allow_unauthenticated_access` and `layout "public"`; JSON for native screens inherits `Api::V1::BaseController`
 - Pattern match the Result; respond with `format.html` and `format.turbo_stream`; `:unprocessable_content` on failed forms, `:see_other` after non-GET redirects
 
 ### Step 6: Routes
@@ -93,7 +93,7 @@ You are building a full-stack feature for Aluni. The feature request is: $ARGUME
 ## Critical rules (never violate):
 - Pure CSS only; Hotwire only; service objects with Result for all business logic
 - English-first i18n with Spanish parity; no em dashes; every string through `t()`
-- Passkeys only; the web is informational, sessions live in the native shells
+- Passkeys only; browsers and the native shells are both clients of the same sessions
 - Ruby only through `mise exec --`; never read credentials files; the operator runs git
 - Rust only inside `vendor/gems/aluni_core`, called only from `app/services/core/`
 - Never use hacks or workarounds; check existing conventions first
