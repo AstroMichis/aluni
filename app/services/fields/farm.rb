@@ -131,6 +131,20 @@ module Fields
       def observations = record.observations
 
       def main_crops = record.field_crops.select(&:role_main?).sort_by(&:season_year)
+      # The second crop that has followed each main crop in the same season, from the
+      # history (latest first wins): { "triticum-aestivum" => <FieldCrop soybeans> }.
+      def double_crops
+        @double_crops ||= begin
+          mains = main_crops.index_by(&:season_year)
+          record.field_crops.select { |c| c.role_second? && c.season_year <= Date.current.year }.sort_by(&:season_year)
+                .each_with_object({}) do |second, map|
+                  main = mains[second.season_year]
+                  key = main && (Crops::Agronomy.find(main)&.key || main.crop_key)
+                  map[key] = second if key
+                end
+        end
+      end
+
       # Cover crops sown between main seasons, up to this season, oldest first.
       def cover_crops = record.field_crops.select { |c| c.role_cover? && c.season_year <= Date.current.year }.sort_by(&:season_year)
       def current_crop = main_crops.reverse.find { |c| c.season_year <= Date.current.year }

@@ -102,6 +102,7 @@ module Rotations
         "erosion" => erosion(crops, facts, gaps), "workload" => workload(crops)
       }
       cover_history_fact(facts)
+      double_crop_fact(crops, facts, gaps)
       gaps << "market"
       gaps << "soil" if @record.soil["texture"].blank?
       gaps << "ecocrop" unless crops.all? { |c| Crops::Agronomy.find(c)&.requirements.present? }
@@ -215,6 +216,21 @@ module Rotations
 
       facts << Fact.new(key: "cover_history", values: { crops: covers.map(&:crop_name).uniq.to_sentence, years: covers.map(&:season_year).uniq.to_sentence },
                         source: nil)
+    end
+
+    # A second crop the field grows after one of this strategy's main crops; or the gap
+    # when the farmer says two crops a year but none is recorded.
+    def double_crop_fact(crops, facts, gaps)
+      doubles = @field.double_crops
+      if doubles.empty?
+        gaps << "second_crop" if @record.cropping_intensity_two_per_year?
+        return
+      end
+
+      crops.uniq.each do |crop|
+        second = doubles[crop] or next
+        facts << Fact.new(key: "double_crop", values: { main: crop, second: Crops::Agronomy.find(second)&.key || second.crop_name }, source: nil)
+      end
     end
 
     # Fewer different crops and machinery the farm already has mean less work.

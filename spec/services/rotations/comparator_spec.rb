@@ -64,6 +64,18 @@ RSpec.describe Rotations::Comparator do
     expect(current.risks).to include("dry_soil")
   end
 
+  it "cites the second crop the field grows, and the gap when two crops a year are not recorded" do
+    record.update!(cropping_intensity: :two_per_year)
+    comparator = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile)
+    expect(comparator.strategies.first.gaps).to include("second_crop")
+
+    create(:field_crop, field: record, role: :second, crop_name: "Wheat", scientific_name: "Triticum aestivum", season_year: Date.current.year - 1)
+    current = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first
+
+    expect(current.evidence.find { |f| f.key == "double_crop" }.values).to eq(main: "glycine-max", second: "triticum-aestivum")
+    expect(current.gaps).not_to include("second_crop")
+  end
+
   it "cites the cover crops the field already had" do
     create(:field_crop, field: record, role: :cover, crop_name: "Cereal rye", scientific_name: "Secale cereale", season_year: Date.current.year - 1)
     current = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first

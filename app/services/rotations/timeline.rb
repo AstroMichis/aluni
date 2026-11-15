@@ -88,6 +88,7 @@ module Rotations
         end
         window.each { |i| states[i] = [ "crop", crop ] if i < states.size }
       end
+      add_second_crops(crops, states)
       months = states.each_with_index.map do |(state, crop), i|
         month = (i % MONTHS) + 1
         Month.new(index: i, year: @first_year + (i / MONTHS), month: month,
@@ -97,6 +98,32 @@ module Rotations
     end
 
     private
+
+    # A season whose main crop the field has double-cropped before gets that
+    # second crop too: in its own months when the record has them, else from
+    # the month after the main harvest for its FAO-56 length. It never covers
+    # a month a main crop holds.
+    def add_second_crops(crops, states)
+      crops.each_with_index do |crop, season|
+        second = @field.double_crops[key_of(crop)] or next
+        main = window(crop, season) or next
+        planting, length = second_months(second)
+        next unless length
+
+        start = planting ? (season * MONTHS) + planting - 1 : main.last + 1
+        start += MONTHS if planting && start <= main.first
+        (start...(start + length)).each do |i|
+          states[i] = [ "crop", key_of(second) ] if i < states.size && states[i].first != "crop"
+        end
+      end
+    end
+
+    def second_months(second)
+      return [ second.planting_month, ((second.harvest_month - second.planting_month) % MONTHS) + 1 ] if second.planting_month && second.harvest_month
+
+      fao = Crops::Agronomy.find(second)&.fao56
+      [ nil, fao && (fao["stages"].sum / DAYS_PER_MONTH).ceil ]
+    end
 
     # Runs of COVER_MONTHS or more bare months, each with the cover that fits its weather.
     def cover_windows(months)

@@ -830,6 +830,7 @@ en:
         water: "%{crop} needs about %{need} mm; the usual rain covers about %{effective} mm."
         slope: Slope of %{value} %.
         cover_history: "This field already had a cover crop (%{crops}) in %{years}."
+        double_crop: "After %{main} this field grows %{second} in the same season; the timeline keeps it."
         heavy_rain: "About %{days} days a year bring 25 mm of rain or more, most of them in %{months} (%{years} years of satellite rain)."
         soil_dry: "Over the last year the root zone was in the driest fifth of its usual range in %{months} (satellite soil moisture)."
         soil_usual: Over the last year the root zone stayed within its usual range of moisture (satellite soil moisture).
@@ -849,6 +850,7 @@ en:
         contract: You sell under contract or for export. Check with your buyer before changing the crop.
       gaps:
         market: 'Prices and buyers: there is no source for your local market yet.'
+        second_crop: You grow two crops a year, but the second one is not recorded yet; add it to the field's history to see it on the timeline.
         soil: Your soil texture is not confirmed yet.
         ecocrop: The crops' temperature and pH requirements (FAO ECOCROP) are not loaded yet.
         suitability: FAO GAEZ has no value for some of these crops at your pin.
