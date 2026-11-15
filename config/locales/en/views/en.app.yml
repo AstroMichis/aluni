@@ -628,7 +628,18 @@ en:
         headline: Weather alerts
         lede: Choose what you want to hear about. Below, what this season would have sent you.
         prefs_title: Tell me about
-        prefs_hint: Alerts will reach your phone once they run. For now they shape this page.
+        prefs_hint: Each morning I check the next two days at your fields. Alerts reach your phone or email when those are on, and always show here.
+        recent:
+          title: Recent alerts
+          none: No alerts in the last two weeks.
+          choose: Choose at least one kind above and I will start checking every morning.
+          sent: "sent by %{channel}"
+          here_only: shown here only (no phone or email connected yet)
+          removed_field: a field you removed
+          channels:
+            push: phone
+            web_push: browser
+            email: email
         save: Save
         kinds:
           frost:

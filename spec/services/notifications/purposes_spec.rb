@@ -2,7 +2,10 @@ require "rails_helper"
 
 RSpec.describe Notifications::Purposes do
   it "loads the committed registry" do
-    expect(described_class.load_file(described_class::PATH).keys).to eq([])
+    registry = described_class.load_file(described_class::PATH)
+    expect(registry.keys).to eq([ "weather_alert" ])
+    expect(registry.fetch("weather_alert")).to have_attributes(channels: %w[push web_push email], push_key: "weather_alert", transactional?: true)
+    expect(registry.fetch("weather_alert").group_for(field: 7)).to eq("weather-7")
   end
 
   it "builds a purpose with its channels in order" do

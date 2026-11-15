@@ -7,3 +7,9 @@ sessions_purge_stale:
   class: "Sessions::PurgeStaleJob"
   queue: maintenance
   description: "Delete sign-in sessions that have not been used for a year"
+
+weather_daily_alerts:
+  cron: "0 10 * * *"  # 10:00 UTC: early morning across the Americas
+  class: "Weather::DailyAlertsJob"
+  queue: default
+  description: "Frost, heat, heavy rain and dry-spell alerts from the forecast, for the kinds each farmer chose"

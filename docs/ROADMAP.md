@@ -40,7 +40,7 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 
 **Still missing:**
 - **NASA breadth.** Done: POWER, Landsat, NASADEM (SRTM), GPM IMERG, SMAP. Missing from the challenge list: ECOSTRESS, MODIS, GRACE.
-- **Alerts.** None are sent.
+- **Alerts on the phone.** The daily alerts run and show in the app; push and email go out once the `cron`, `push` and `mail` switches are resumed and the shells ship.
 - **Global soil.** Outside the US it depends on the farmer (the slope now comes from NASADEM).
 
 ## P0: the demo tells the whole story
@@ -73,7 +73,7 @@ Suggested next order: MODIS and ECOSTRESS (same AppEEARS task path as SMAP), the
 ## P2: a reason to come back
 
 - ✅ **Forecast:** seven days of Meteomatics on the weather screen (`Weather::Forecast`, lazy `forecast` frame): local solar days, frost (air or soil at 5 cm), heat, heavy rain and wind alerts with what to do, and the week's rain-minus-evapotranspiration balance.
-- **Daily alerts job:** frost, heavy rain, dry spell and heat per field from the forecast, shown in the app (push when the shells ship). Purposes go in `config/notification_purposes.yml`.
+- ✅ **Daily alerts job:** `Weather::DailyAlertsJob` (cron 10:00 UTC) checks today and tomorrow at each located field and sends the kinds each farmer chose (frost, heat, heavy rain; a dry spell when the next six days bring almost no rain) through `NotificationRouter` (purpose `weather_alert`, one per field, day and kind). The alerts screen lists the last two weeks from the deliveries, sent or shown here only.
 - **Weekly refresh** of each field's observations (sidekiq-cron); today only a pin change refreshes them.
 
 ## P3: the wow

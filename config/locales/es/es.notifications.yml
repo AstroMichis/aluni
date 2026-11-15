@@ -1,0 +1,18 @@
+es:
+  notifications:
+    push:
+      weather_alert:
+        title: "%{field}: %{kind}"
+        body: "%{day}: %{text}"
+    weather_alert:
+      subject: "%{field}: %{kind} el %{day}"
+      kinds:
+        frost: Helada
+        heat: Calor extremo
+        heavy_rain: Lluvia fuerte
+        dry_spell: Racha seca
+      text:
+        frost: "mínima de %{tmin} °C (suelo %{soil} °C). Cubre los almácigos y espera a que suba la temperatura para regar."
+        heat: "máxima de %{tmax} °C. Riega temprano y evita aplicar en las horas de calor."
+        heavy_rain: "%{rain} mm de lluvia. No entres con maquinaria al suelo mojado y revisa los drenajes."
+        dry_spell: "%{days} días por delante casi sin lluvia. Planifica el riego y deja rastrojo sobre el suelo."

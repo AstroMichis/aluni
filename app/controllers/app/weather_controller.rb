@@ -17,7 +17,11 @@ module App
       render partial: "app/weather/forecast", locals: { forecast: Weather::Forecast.for(@field) }, layout: false
     end
 
+    # The preferences, the last fortnight's alerts (from their deliveries) and the season's events.
     def alerts
+      @recent = NotificationDelivery.where(recipient: Current.user, purpose: Weather::DailyAlertsJob::PURPOSE)
+                                    .where(created_at: 14.days.ago..).order(created_at: :desc).limit(20)
+                                    .filter_map { |d| (parsed = Weather::DailyAlertsJob.parse_key(d.idempotency_key)) && [ d, *parsed ] }
     end
 
     def update_alerts

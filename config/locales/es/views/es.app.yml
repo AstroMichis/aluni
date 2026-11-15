@@ -628,7 +628,18 @@ es:
         headline: Alertas de clima
         lede: Elige de qué quieres enterarte. Abajo, lo que esta temporada te habría enviado.
         prefs_title: Avísame de
-        prefs_hint: Las alertas llegarán a tu teléfono cuando estén activas. Por ahora ajustan esta página.
+        prefs_hint: Cada mañana reviso los próximos dos días en tus terrenos. Las alertas llegan a tu teléfono o correo cuando están activos, y siempre aparecen aquí.
+        recent:
+          title: Alertas recientes
+          none: Sin alertas en las últimas dos semanas.
+          choose: Elige al menos un tipo arriba y empezaré a revisar cada mañana.
+          sent: "enviada por %{channel}"
+          here_only: solo aquí (todavía sin teléfono ni correo conectados)
+          removed_field: un terreno que eliminaste
+          channels:
+            push: teléfono
+            web_push: navegador
+            email: correo
         save: Guardar
         kinds:
           frost:
