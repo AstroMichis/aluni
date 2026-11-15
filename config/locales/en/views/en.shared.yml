@@ -10,6 +10,15 @@ en:
       meta: "%{app_name} %{year}"
       devices: "%{app_name} Probe"
       glossary: What the numbers mean
+    judges_bar:
+      label: "For reviewers"
+      kicker: "For judges"
+      evidence:
+        title: "The evidence"
+        detail: "8 tests against 25 years of records"
+      plan:
+        title: "The action plan"
+        detail: "Proposal, budget and roadmap"
     devices_link:
       short: "Probe"
       label: "%{app_name} Probe: field station"

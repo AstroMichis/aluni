@@ -34,6 +34,8 @@ module Rotations
     DRY_SHARE = 0.5     # a rainfed crop whose season rain is under half its need
     PERENNIALS = %w[medicago-sativa].freeze # a stand of several seasons is one crop, not a repeat
     LOW_SUITABILITY = 4000
+    # Where a water-need fact's numbers come from, by the rain the need used (Crops::WaterNeed#rain_source).
+    WATER_SOURCES = { "imerg" => "NASA POWER · NASA GPM IMERG · FAO-56", "power" => "NASA POWER · FAO-56" }.freeze
     # Practices that already put soil health first count as that goal.
     SOIL_PRACTICES = %w[no_till regenerative organic certified_organic].freeze
     # Sales tied to a buyer: changing the crop needs the buyer's agreement.
@@ -192,7 +194,7 @@ module Rotations
       water_storage_fact(facts)
       needs = crops.uniq.filter_map do |crop|
         need = water_need(crop) or next
-        facts << Fact.new(key: "water", values: { crop: crop, need: need.crop_mm, effective: need.effective_mm }, source: "NASA POWER · FAO-56")
+        facts << Fact.new(key: "water", values: { crop: crop, need: need.crop_mm, effective: need.effective_mm }, source: WATER_SOURCES.fetch(need.rain_source))
         [ crop, need ]
       end.to_h
       if needs.size < crops.uniq.size
@@ -354,11 +356,15 @@ module Rotations
     end
 
     # The crop's FAO-56 water need, sown when the field last sowed it (its recorded
-    # planting month), else in FAO-56's month for the hemisphere.
+    # planting month), else when the region plants it (Crops::PlantingCalendar),
+    # else in FAO-56's month for the hemisphere; rain from GPM IMERG where the
+    # field has it (Crops::WaterNeed).
     def water_need(crop)
       @water_needs ||= {}
       @water_needs.fetch(crop) do
-        @water_needs[crop] = Crops::WaterNeed.for(crop, observation: @power, latitude: @record.latitude, planting_month: sown_in(crop))
+        @water_needs[crop] = Crops::WaterNeed.for(crop, observation: @power, latitude: @record.latitude, planting_month: sown_in(crop),
+                                                        imerg: @field.observation("gpm_imerg"), scenario: @scenario,
+                                                        place: Crops::PlantingCalendar.place_of(@record))
       end
     end
 

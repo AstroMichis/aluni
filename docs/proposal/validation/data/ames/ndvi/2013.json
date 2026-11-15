@@ -1,0 +1,80 @@
+[
+  {
+    "month": "2013-01",
+    "ndvi": null
+  },
+  {
+    "month": "2013-02",
+    "ndvi": 0.085,
+    "date": "2013-02-12",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_027031_20130212_02_T1"
+  },
+  {
+    "month": "2013-03",
+    "ndvi": 0.106,
+    "date": "2013-03-22",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_026031_20130322_02_T1"
+  },
+  {
+    "month": "2013-04",
+    "ndvi": 0.116,
+    "date": "2013-04-25",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_027031_20130425_02_T1"
+  },
+  {
+    "month": "2013-05",
+    "ndvi": 0.119,
+    "date": "2013-05-20",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_026031_20130520_02_T1"
+  },
+  {
+    "month": "2013-06",
+    "ndvi": 0.169,
+    "date": "2013-06-13",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_026031_20130613_02_T1"
+  },
+  {
+    "month": "2013-07",
+    "ndvi": 0.424,
+    "date": "2013-07-06",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_027031_20130706_02_T1"
+  },
+  {
+    "month": "2013-08",
+    "ndvi": null
+  },
+  {
+    "month": "2013-09",
+    "ndvi": 0.14,
+    "date": "2013-09-25",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_026031_20130925_02_T1"
+  },
+  {
+    "month": "2013-10",
+    "ndvi": 0.116,
+    "date": "2013-10-27",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_026031_20131027_02_T1"
+  },
+  {
+    "month": "2013-11",
+    "ndvi": 0.104,
+    "date": "2013-11-12",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_026031_20131112_02_T1"
+  },
+  {
+    "month": "2013-12",
+    "ndvi": 0.077,
+    "date": "2013-12-06",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_026031_20131206_02_T1"
+  }
+]

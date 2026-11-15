@@ -31,6 +31,8 @@
 
 .timeline__cell--crop { background: var(--color-success); }
 .timeline__cell--bare { background: var(--color-warning-bg); border: 1px solid var(--color-warning); }
+/* Planted but the canopy has not closed (before FAO-56 effective full cover): a low band of green over open soil. */
+.timeline__cell--establishing { background: linear-gradient(to top, var(--color-success) 0 35%, var(--color-warning-bg) 35%); border: 1px solid var(--color-success); }
 .timeline__cell--vulnerable {
   background: repeating-linear-gradient(135deg, var(--color-danger-bg) 0 3px, var(--color-danger) 3px 5px);
   border: 1px solid var(--color-danger);
@@ -46,6 +48,7 @@
 .timeline__key::before { content: ""; width: var(--space-3); height: var(--space-3); border-radius: var(--radius-sm); }
 .timeline__key--crop::before { background: var(--color-success); }
 .timeline__key--bare::before { background: var(--color-warning-bg); border: 1px solid var(--color-warning); }
+.timeline__key--establishing::before { background: linear-gradient(to top, var(--color-success) 0 35%, var(--color-warning-bg) 35%); border: 1px solid var(--color-success); }
 .timeline__key--vulnerable::before { background: repeating-linear-gradient(135deg, var(--color-danger-bg) 0 2px, var(--color-danger) 2px 4px); border: 1px solid var(--color-danger); }
 .timeline__key--unknown::before { border: 1px dashed var(--color-border-strong); }
 .timeline__key--window::before { background: var(--color-warning-bg); box-shadow: 0 3px 0 var(--color-success); }

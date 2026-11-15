@@ -1,0 +1,79 @@
+/* The evidence page (/evidence): the hindcast's eight studies for reviewers. Reuses the
+   landing nav and the badge component; everything here is .evidence*. Mobile first. */
+
+.evidence__main { padding-block: var(--space-12) var(--space-16); display: grid; gap: var(--space-12); }
+.evidence__hero { max-width: 70ch; }
+.evidence__eyebrow { align-self: flex-start; }
+.evidence__title { margin: 0; font-size: var(--text-3xl); text-wrap: balance; }
+@media (min-width: 768px) { .evidence__title { font-size: var(--text-4xl); } }
+.evidence__lede { margin: 0; font-size: var(--text-lg); color: var(--color-text-secondary); }
+.evidence__tally { list-style: none; margin: 0; padding: 0; }
+
+.evidence__section { display: grid; gap: var(--space-4); }
+.evidence__heading { margin: 0; font-family: var(--font-serif); font-size: var(--text-2xl); color: var(--color-text-primary); }
+.evidence__subheading { margin: var(--space-4) 0 0; font-size: var(--text-lg); color: var(--color-text-primary); }
+.evidence__text { margin: 0; max-width: 70ch; color: var(--color-text-secondary); }
+.evidence__meta { margin: 0; font-size: var(--text-sm); color: var(--color-text-tertiary); }
+
+.evidence__principles { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+@media (min-width: 768px) { .evidence__principles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.evidence__principle {
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+}
+.evidence__principle strong { color: var(--color-text-primary); }
+
+.evidence__studies { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
+@media (min-width: 1025px) { .evidence__studies { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.evidence__study {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+  scroll-margin-top: var(--space-16);
+}
+.evidence__study-head { display: grid; grid-template-columns: auto 1fr; gap: var(--space-2) var(--space-3); align-items: start; }
+.evidence__study-head .badge { grid-column: 1 / -1; justify-self: start; }
+.evidence__study-id { color: var(--color-accent-text); font-size: var(--text-sm); padding-top: 0.2em; }
+.evidence__study-title { margin: 0; font-size: var(--text-lg); color: var(--color-text-primary); }
+.evidence__facts { margin: 0; display: grid; gap: var(--space-1) var(--space-3); font-size: var(--text-sm); }
+.evidence__facts dt { color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; font-size: var(--text-xs); margin-top: var(--space-2); }
+.evidence__facts dd { margin: 0; color: var(--color-text-secondary); }
+@media (min-width: 768px) {
+  .evidence__facts { grid-template-columns: 8.5rem 1fr; }
+  .evidence__facts dt { margin-top: 0.15em; }
+}
+
+.evidence__answers { display: grid; gap: var(--space-4); }
+@media (min-width: 768px) { .evidence__answers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.evidence__answer { display: grid; gap: var(--space-2); padding: var(--space-5); border-left: 3px solid var(--color-accent); background: var(--color-bg-secondary); border-radius: var(--radius-md); }
+.evidence__answer-q { margin: 0; font-size: var(--text-base); color: var(--color-text-primary); }
+.evidence__answer-short { margin: 0; color: var(--color-accent-text); }
+
+.evidence__fixes { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.evidence__fix {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: var(--space-2);
+  align-items: baseline;
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-border-subtle);
+  color: var(--color-text-secondary);
+}
+.evidence__fix-id { color: var(--color-text-tertiary); font-size: var(--text-sm); }
+
+.evidence__commands { margin: 0; padding-left: var(--space-5); display: grid; gap: var(--space-2); }
+.evidence__commands code {
+  display: inline-block;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+}

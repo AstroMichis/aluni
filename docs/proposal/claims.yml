@@ -1,0 +1,64 @@
+# Every quantitative or evidence claim in "Aluni — Integrated Project Proposal", with the value draft 0.2
+# stated (was), the value draft 0.3 states (now), and how it is recomputed (compute: a Ruby expression,
+# evaluated by claims_audit.rb with we = ames_worked_example_out.json, v = validation/validation_out.json).
+# kind: number (compared within tol) or evidence (compute returns SUPPORTED / REFUTED / OVERCLAIM / QUALIFIED).
+# C-numbers are the review findings (see the plan and the comments in the 0.3 docx).
+
+# ---------------------------------------------------------------- budget and hardware (E1, E7, T5b, T11, T12)
+- { id: B1, section: E1/T11, text: "Gate 1 total", kind: number, was: 25537.58, now: 25537.58, tol: 0.01,
+    compute: "240 * 63.20 + 120 * 37.87 + 10 * 522.65 + 3 * 24.46 + 90 * 2000 * 1024 * 2.50 / 1e6 + 10 * (3 + 3 * 1 + 3 * 5 * 0.03)" }
+- { id: B2, section: E1, text: "AACE Class 5 range low (-50%)", kind: number, was: 12769, now: 12769, tol: 1, compute: "25537.58 * 0.5" }
+- { id: B3, section: E1, text: "AACE Class 5 range high (+100%)", kind: number, was: 51075, now: 51075, tol: 1, compute: "25537.58 * 2" }
+- { id: B4, section: T5b, text: "Sonda Pro BOM at 100 units ($)", kind: number, was: 493.73, now: 493.73, tol: 0.01,
+    compute: "[4.64, 26.07, 0.72, 3.85, 213.56, 150.00, 55.20, 13.30, 6.09, 19.60, 0.70].sum" }
+- { id: B5, section: T5b, text: "Sonda Lite BOM ($)", kind: number, was: 316.96, now: 316.96, tol: 0.01,
+    compute: "[4.64, 0.72, 3.85, 213.56, 55.20, 13.30, 6.09, 19.60].sum" }
+- { id: B6, section: T5b, text: "All electronics under $42", kind: number, was: 41.37, now: 41.37, tol: 0.01, compute: "[4.64, 26.07, 0.72, 3.85, 6.09].sum" }
+- { id: B7, section: E7/T5b, text: "Probes and rain gauge share of the Pro BOM (%)", kind: number, was: 74, now: 74, tol: 0.6, compute: "100 * (213.56 + 150.00) / 493.73" }
+- { id: B8, section: T11, text: "EVT unit with the BG95-M3 Zero dev board ($)", kind: number, was: 522.65, now: 522.65, tol: 0.01, compute: "493.73 - 26.07 + 54.99" }
+- { id: B9, section: T11, text: "Gemini monthly ceiling ($)", kind: number, was: 153.60, now: 153.60, tol: 0.01, compute: "30 * 2000 * 1024 * 2.50 / 1e6" }
+- { id: B10, section: T5b, text: "Hologram per device per month at 5 MB ($)", kind: number, was: 1.15, now: 1.15, tol: 0.001, compute: "1 + 5 * 0.03" }
+- { id: B11, section: T5b, text: "Telnyx per device per month at 5 MB ($)", kind: number, was: 0.39, now: 0.39, tol: 0.001, compute: "5 * 0.078" }
+- { id: B12, section: T12, text: "Hardware unit test floor per Pro ($)", kind: number, was: 507.53, now: 507.53, tol: 0.01, compute: "493.73 + 12 * 1.15" }
+
+# ---------------------------------------------------------------- worked example (E8, T5c), now with measured NASA POWER wind (C8)
+- { id: W1, section: T5c, text: "Jan-Oct ET0 total (mm)", kind: number, was: 838, now: 881, tol: 0.5, compute: "we['season']['et0_mm']" }
+- { id: W2, section: T5c, text: "Jan-Oct rain total (mm)", kind: number, was: 854, now: 854, tol: 0.5, compute: "we['season']['rain_mm']" }
+- { id: W3, section: T5c, text: "GDD base 10, 86/50 method, May-Sep", kind: number, was: 1702, now: 1702, tol: 0.5, compute: "we['season']['gdd_86_50_may_sep']" }
+- { id: W4, section: E8/T5c, text: "Corn ETc need (mm)", kind: number, was: 497, now: 506, tol: 0.5, compute: "we['need']['zea-mays']['crop_mm']" }
+- { id: W5, section: E8/T5c, text: "Corn need covered by effective rain, season total (%)", kind: number, was: 82, now: 80, tol: 0.6, compute: "100 * we['need']['zea-mays']['share_app']" }
+- { id: W6, section: E8/T5c, text: "Soybean need covered by effective rain (%)", kind: number, was: 74, now: 73, tol: 0.6, compute: "100 * we['need']['glycine-max']['share_app']" }
+- { id: W7, section: E8/T5c, text: "Strategy totals current / small grain / other family", kind: number, was: 82, now: 82, tol: 0, compute: "we['compare']['current']['total']" }
+- { id: W8, section: E8/T5c, text: "Small grain total", kind: number, was: 68, now: 68, tol: 0, compute: "we['compare']['small_grain']['total']" }
+- { id: W9, section: E8/T5c, text: "Other family total", kind: number, was: 60, now: 60, tol: 0, compute: "we['compare']['other_family']['total']" }
+- { id: W10, section: E8/O2/T5c, text: "Vulnerable bare months, current rotation, FAO-56 calendar (C3: the doc quoted the record variant, 11)", kind: number, was: 11, now: 12, tol: 0, compute: "we['timeline']['lines']['current (FAO-56)']['vulnerable']" }
+- { id: W11, section: E8/O2/T5c, text: "Vulnerable months with cover, FAO-56 (was 3, record variant)", kind: number, was: 3, now: 4, tol: 0, compute: "we['timeline']['lines']['current (FAO-56)']['exposed_with_cover']" }
+- { id: W12, section: T5c, text: "Soybean modelled 2025 yield factor (shallow roots, POWER rain)", kind: number, was: 0.881, now: 0.872, tol: 0.001, compute: "we['water_limited']['glycine-max']['yield_factor']" }
+- { id: W13, section: T5c, text: "Partial N balance, current rotation (kg N/ha, 3 seasons)", kind: number, was: -259, now: -257, tol: 0.5, compute: "we['nitrogen']['current']['balance']" }
+- { id: W14, section: T5c/T12, text: "Illustrative margin, current ($/ha/yr)", kind: number, was: 628, now: 614, tol: 0.5, compute: "we['margins']['current']['margin_per_year']" }
+- { id: W15, section: T5c/T12, text: "Illustrative margin, small grain", kind: number, was: 497, now: 473, tol: 0.5, compute: "we['margins']['small_grain']['margin_per_year']" }
+- { id: W16, section: T5c/T12, text: "Illustrative margin, other family", kind: number, was: 428, now: 409, tol: 0.5, compute: "we['margins']['other_family']['margin_per_year']" }
+- { id: W17, section: T5c, text: "Tar spot favourable corn-season days", kind: number, was: 20, now: 20, tol: 0, compute: "we['pests']['tar_spot']['favourable_days']" }
+- { id: W18, section: T5c, text: "Mean measured wind used for ET0 (m/s), was the 2 m/s default", kind: number, was: 2.0, now: 3.15, tol: 0.01, compute: "we['assumptions']['wind_u2'][/mean ([\\d.]+)/, 1].to_f" }
+
+# ---------------------------------------------------------------- evidence claims (the review findings)
+- { id: C1, section: E8/T5c, text: "Soybean is the crop that lost yield on this field in 2025 (-12%)", kind: evidence,
+    compute: "a = v.dig('V2','details','glycine-max','nass_anomaly','2025'); a && a > 0 ? \"REFUTED: NASS Story County 2025 soybean yield was #{a}% above trend; RMA soybean losses 2025 were excess rain only\" : 'NOT TESTED'" }
+- { id: C2, section: T5c, text: "The app's own services give the same strategy totals", kind: evidence,
+    compute: "'SUPPORTED: ames_cross_check.rb now computes the totals with the app water shares (82/68/60)'" }
+- { id: C3, section: E8/O2/T5c, text: "11 vulnerable months, cut to 3 by cover crops; counts are conservative", kind: evidence,
+    compute: "r = v.dig('V6','details','results').values.first; nd = v.dig('V8','summary'); \"QUALIFIED: FAO-56 calendar gives 12 -> 4; Nov-Dec were open soil in every satellite view (V8: #{nd}); RUSLE soil saved by a rye cover is #{r.values.map { |x| x['saved_pct'] }.minmax.join('-')}%, not the ~70% the month count implies\"" }
+- { id: C4, section: T5c, text: "What this proves: Aluni does not push change for its own sake", kind: evidence,
+    compute: "\"QUALIFIED: one season; V4 (#{v.dig('V4','verdict')}) supports the rotation; V7 (#{v.dig('V7','verdict')}) shows the strict alternation beat a margin-switching rule\"" }
+- { id: C5, section: T5c, text: "Production uses 25-year POWER normals", kind: evidence,
+    compute: "clim = JSON.parse(File.read(File.join(VAL, 'data/power_climatology.json'))); clim.dig('header','range').to_s.include?('25-year') ? \"SUPPORTED: #{clim.dig('header','range')} (docs/FIELDS.md now says the same)\" : 'REFUTED'" }
+- { id: C8, section: T5b/T5c/U-25, text: "Wind moves the corn yield factor by up to 4.4%, so the Sonda needs an anemometer", kind: evidence,
+    compute: "'OVERCLAIM: NASA POWER WS2M is free at every pin (mean 3.15 m/s in 2025 here) and now used; the device case rests on leaf wetness'" }
+- { id: C11, section: T5c, text: "Pests the daily data can already flag (tar spot, fall armyworm)", kind: evidence,
+    compute: "\"QUALIFIED: V5 #{v.dig('V5','summary')}\"" }
+- { id: C12, section: E3/T5c, text: "Will bare soil wash away? (erosion score)", kind: evidence,
+    compute: "\"QUALIFIED: V6 #{v.dig('V6','verdict')}: the score orders strategies as RUSLE does; it is not a soil-loss estimate\"" }
+- { id: V2a, section: T5d, text: "The water model predicts yield", kind: evidence,
+    compute: "\"REFUTED: #{v.dig('V2','summary')}\"" }
+- { id: V1a, section: T5d, text: "NASA POWER rain at the pin is accurate", kind: evidence,
+    compute: "\"REFUTED: POWER rain fails, IMERG passes the same test. #{v.dig('V1','summary')}\"" }

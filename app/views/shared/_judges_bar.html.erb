@@ -1,0 +1,15 @@
+<%# The reviewers' strip at the top of the landing page (inside its fixed nav): the hindcast
+    evidence (/evidence) and the action plan (/plan), each one tap away. %>
+<aside class="judges-bar" aria-label="<%= t("shared.judges_bar.label") %>">
+  <div class="container judges-bar__inner">
+    <span class="judges-bar__kicker"><%= t("shared.judges_bar.kicker") %></span>
+    <%= link_to evidence_path, class: "judges-bar__link judges-bar__link--evidence" do %>
+      <strong><%= t("shared.judges_bar.evidence.title") %></strong>
+      <span class="judges-bar__detail"><%= t("shared.judges_bar.evidence.detail") %></span>
+    <% end %>
+    <%= link_to plan_path, class: "judges-bar__link judges-bar__link--plan" do %>
+      <strong><%= t("shared.judges_bar.plan.title") %></strong>
+      <span class="judges-bar__detail"><%= t("shared.judges_bar.plan.detail") %></span>
+    <% end %>
+  </div>
+</aside>

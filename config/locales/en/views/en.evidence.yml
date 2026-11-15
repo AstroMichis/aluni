@@ -1,0 +1,136 @@
+en:
+  evidence:
+    show:
+      title: "%{app_name}: the evidence"
+      description: "A 25-year backtest that scores %{app_name}'s calculations against what really happened on one Iowa field: rain gauges, county yields, crop insurance losses, field trials and satellite images."
+      nav_label: "Site"
+      back_home: "Back to home"
+      eyebrow: "For reviewers"
+      headline: "Would %{app_name} have been right? We checked against 25 years of records."
+      lede: "We ran %{app_name}'s calculations on one real field (%{place}) for every season from %{from} to %{to}, and scored them against records they never read. Some held up, some did not, and the app changed because of it."
+      tally_label: "Verdicts of the eight studies"
+      tally:
+        pass:
+          one: "1 passed"
+          other: "%{count} passed"
+        reported:
+          one: "1 reported"
+          other: "%{count} reported"
+        fail:
+          one: "1 failed"
+          other: "%{count} failed"
+      cta_studies: "See the eight studies"
+      cta_plan: "Read the action plan"
+      method:
+        title: "How the test works"
+        lede: "Each study asks one question a farmer or a judge would ask of %{app_name}, picks an independent record of what happened, and sets the pass mark before looking at the result."
+        principles:
+          preregistered:
+            title: "Pass marks set first."
+            body: "Every criterion was written down before the results were seen, and a failure stays a failure."
+          independent:
+            title: "Independent truth."
+            body: "Rain gauges, USDA county yields, crop insurance losses by cause, published field trials and satellite images, none of which the app reads."
+          unfitted:
+            title: "Nothing fitted."
+            body: "Every coefficient comes from FAO, USDA or the cited papers, so the test is out of sample by construction."
+          reproducible:
+            title: "Reproducible."
+            body: "The data are public and the scripts are in the repository; anyone can rerun every number on this page."
+      studies_title: "The eight studies"
+      studies_lede: "Each card shows the question, the record used as truth, the pass mark set beforehand, the result and what it means."
+      verdicts:
+        pass: "Passed"
+        fail: "Failed"
+        reported: "Reported"
+      labels:
+        truth: "Truth"
+        criterion: "Pass mark"
+        result: "Result"
+        meaning: "What it means"
+      studies:
+        v1:
+          question: "Is the NASA data at the field factual?"
+          truth: "%{gauges} CoCoRaHS volunteer rain gauges within 30 km, and the Daymet 1 km weather grid."
+          criterion: "Daily highs and lows within 2.5 °C (RMSE), and season rain within 15 %% of the gauges in at least 80 %% of the years."
+          result: "Temperature passes: highs within %{tmax_rmse} °C and lows within %{tmin_rmse} °C, frost days agree %{frost_agreement} %% of the time. NASA POWER rain read low in %{power_low_seasons} of %{seasons} seasons (%{power_bias} %% on average) and was within 15 %% in only %{power_within} %% of them; NASA GPM IMERG rain was within 15 %% in %{imerg_within} %%."
+          meaning: "Temperature and frost are reliable at the pin. For rain, %{app_name} now reads IMERG instead of POWER."
+        v2:
+          question: "Would the water model have flagged the bad years?"
+          truth: "USDA NASS Story County yields (trend removed) and USDA crop insurance losses by cause, 2001 to 2025."
+          criterion: "A correlation of at least 0.5 with the yield anomaly, and 2012 among the three driest modelled years."
+          result: "It ranks drought and heat insurance losses well (%{rho_corn} for corn, %{rho_soy} for soybeans) and puts 2012 first, but it does not track yields (correlation %{r_corn} for corn, %{r_soy} for soybeans): it calls %{stressed_min} to %{stressed_max} of 25 seasons stressed. In 2025, when the model cut soybeans by 13 %%, Story County soybeans yielded %{soy_2025} %% above trend."
+          meaning: "The water need is a drought flag, not a harvest forecast, and the app now says so."
+        v3:
+          question: "Does the crop evidence point at the crops that thrive here?"
+          truth: "The crops grown at the pin (USDA Cropland Data Layer, 2008 to 2025) and USDA NASS yields."
+          criterion: "Corn and soybeans ranked above wheat and sunflower, and FAO GAEZ attainable yield within 30 %% of the real yields."
+          result: "FAO GAEZ rates all %{crops} crops at the top suitability (%{suitability}), so it cannot rank them here. Water alone would favour %{water_first}. GAEZ maize was %{maize_gap} %% above the real yields, soybeans %{soy_gap} %% above."
+          meaning: "Suggesting a replacement crop needs yields and prices (a margin), not suitability and water alone."
+        v4:
+          question: "Is the rotation advice backed by evidence?"
+          truth: "A meta-analysis of field trials (Zhao et al. 2022): %{trials} comparisons from %{sites} sites in a climate like Ames, at the nitrogen rates farmers use."
+          criterion: "The 95 %% interval of the soybean pre-crop effect on corn yield must exclude zero."
+          result: "Corn after soybeans yields %{gain} %% more than after a non-legume (95 %% interval %{low} to %{high} %%); without nitrogen fertiliser the gain is %{gain_no_n} %%. The farmer's corn and soybean alternation meets every rule the comparator checks."
+          meaning: "The rotation advice rests on hundreds of field trials, not on points alone."
+        v5:
+          question: "Do the pest and disease weather rules match real losses?"
+          truth: "USDA crop insurance losses to plant disease, mycotoxin and insects in the twelve counties of central Iowa."
+          criterion: "Reported, not scored: rank correlation and lead time for each of the %{rules} rules."
+          result: "Every rule leans the right way (correlations %{rho_min} to %{rho_max}), but none is significant; the first favourable day comes about %{lead} months before the main loss month."
+          meaning: "The rules say when to scout, not that a crop will be hit. Leaf wetness and scouting records are needed: the strongest case for the field station."
+        v6:
+          question: "How much soil does each rotation lose, and how much does a cover crop save?"
+          truth: "The USDA soil loss equation (RUSLE) on the field's rain, soil erodibility and slope."
+          criterion: "The app's erosion score must order the rotations the way RUSLE does."
+          result: "The order holds. A rye cover crop saves %{saved_min} to %{saved_max} %% of the soil lost each year, far less than counting bare months suggests, because most erosive rain falls from May to September under young crops. The losses (%{loss_min} to %{loss_max} t/ha a year) rest on assumed residue and cover values."
+          meaning: "The ranking is sound; the timeline now counts young crops as open soil."
+        v7:
+          question: "Would choosing the crop by expected margin have paid?"
+          truth: "USDA NASS Story County yields and Iowa prices, %{years} seasons, with placeholder costs."
+          criterion: "A margin rule must earn at least as much as the farmer's strict corn and soybean alternation."
+          result: "The margin rule earned $%{aluni} per hectare against $%{farmer} for the farmer, $%{corn_always} for continuous corn and $%{foresight} with hindsight. One 12-row planter covers 400 ha in all %{springs} springs; Iowa corn is half planted between %{planted_first} and %{planted_last}, not on 1 April."
+          meaning: "Rotating clearly pays against continuous corn, but a simple margin rule does not beat an experienced farmer. %{app_name} supports the farmer's judgement, it does not replace it."
+        v8:
+          question: "Do the timeline's crop and bare months match the field?"
+          truth: "Landsat and Sentinel-2 satellite images of the field, one clear view a month, 2013 to 2025, with the crop of each year."
+          criterion: "At least 80 %% of the months agree, and planting and harvest within one month of the satellite green-up and drying."
+          result: "Only %{agreement} %% of %{months} months agreed: the canopy closes about %{lag} months after the table's planting month, and November and December were open soil in %{nov_dec_open} of %{nov_dec_views} views. With the rule the app uses now (real planting months, young crops counted as open soil) agreement rises to %{app_rule_agreement} %%."
+          meaning: "The timeline now plants when farmers in the region plant and shows the soil open until the crop covers it."
+      answers_title: "Answers to the questions that matter"
+      answers:
+        facts:
+          question: "Could %{app_name} have predicted the facts on this field?"
+          short: "Partly."
+          body: "Temperature and frost from NASA are reliable at the pin; rain from NASA GPM IMERG passes, NASA POWER rain reads low. %{app_name} spots drought disasters but does not forecast a harvest."
+        rotation:
+          question: "Can it suggest a better rotation or a replacement crop?"
+          short: "A better rotation, yes. A replacement crop, not yet."
+          body: "The rotation advice is backed by hundreds of field trials and by the erosion model. Ranking replacement crops needs yields and prices, which the action plan adds as a margin criterion."
+        pests:
+          question: "Can it help prevent pests and disease?"
+          short: "It says when to scout."
+          body: "Weather rules point at the right seasons but did not track real losses significantly. Leaf-wetness sensors and scouting records come next."
+        operations:
+          question: "Can it inform costs, supplies, people, equipment and land productivity?"
+          short: "The calculations work on real data."
+          body: "Planting capacity against the days fields can be worked, real planting dates, nitrogen balances and margins all run on public data. What is proven is the value of rotating; what is not is that %{app_name} beats an experienced farmer."
+      fixes_title: "What changed in %{app_name} because of this"
+      fixes_lede: "Every failed study named a cause. These are the changes, and the two still open."
+      fix_status:
+        done: "Done"
+        open: "Open"
+      fixes:
+        u27: "The water need reads NASA GPM IMERG rain, which passed against the gauges, instead of NASA POWER rain."
+        u28: "Crops are planted in the month farmers in the region plant them (USDA NASS crop progress) before the FAO-56 table."
+        u29: "The timeline counts a young crop's months as open soil until its canopy closes; satellite agreement rose to %{app_rule_agreement} %%."
+        u30: "The water need is presented as a drought risk, never as a harvest figure."
+        u31: "Erosion as a soil loss in tonnes, with documented residue and cover values and a published reference."
+        u32: "Disease rules checked against leaf-wetness readings and scouting records in the pilot."
+      limits:
+        title: "Limits"
+        body: "One field and one county; yields and insurance losses are county totals; insured losses are a thin record of disease; costs are placeholders; the soil losses rest on assumed residue and cover values. The pilot fields in the action plan widen the test."
+      reproduce:
+        title: "Run it yourself"
+        body: "The data are public; the scripts live in docs/proposal/validation in the repository."
+      generated: "Results generated on %{date} for the pin at %{lat}, %{lon}."

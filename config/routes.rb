@@ -48,6 +48,11 @@ scope "(:locale)", locale: /en|es/ do
   get "devices", to: "devices#show", as: :devices
   get "glossary", to: "glossary#show", as: :glossary
 
+  # For reviewers: the hindcast that scores the decision engine against what happened (docs/proposal/validation)
+  # and the integrated project proposal, the action plan (docs/proposal/). Public, informational.
+  get "evidence", to: "evidence#show", as: :evidence
+  get "plan", to: "plan#show", as: :plan
+
   # The welcome screen and the accessibility controls (cookie, plus the account when signed in).
   post "preferences", to: "preferences#update", as: :preferences
 

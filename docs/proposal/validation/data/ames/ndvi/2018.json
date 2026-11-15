@@ -1,0 +1,86 @@
+[
+  {
+    "month": "2018-01",
+    "ndvi": 0.275,
+    "date": "2018-01-27",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20180127T170549_R069_T15TVG_20201014T092140"
+  },
+  {
+    "month": "2018-02",
+    "ndvi": 0.05,
+    "date": "2018-02-26",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_027031_20180226_02_T1"
+  },
+  {
+    "month": "2018-03",
+    "ndvi": 0.243,
+    "date": "2018-03-01",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20180301T171249_R112_T15TVG_20210517T030844"
+  },
+  {
+    "month": "2018-04",
+    "ndvi": 0.207,
+    "date": "2018-04-07",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20180407T165849_R069_T15TVG_20201012T193537"
+  },
+  {
+    "month": "2018-05",
+    "ndvi": 0.176,
+    "date": "2018-05-07",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20180507T165849_R069_T15TVG_20201012T070729"
+  },
+  {
+    "month": "2018-06",
+    "ndvi": 0.157,
+    "date": "2018-06-03",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_026031_20180603_02_T1"
+  },
+  {
+    "month": "2018-07",
+    "ndvi": 0.893,
+    "date": "2018-07-16",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20180716T165849_R069_T15TVG_20201011T163924"
+  },
+  {
+    "month": "2018-08",
+    "ndvi": 0.568,
+    "date": "2018-08-08",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20180808T170849_R112_T15TVG_20201010T230534"
+  },
+  {
+    "month": "2018-09",
+    "ndvi": 0.251,
+    "date": "2018-09-22",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20180922T171021_R112_T15TVG_20201009T034426"
+  },
+  {
+    "month": "2018-10",
+    "ndvi": 0.178,
+    "date": "2018-10-27",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20181027T171419_R112_T15TVG_20201009T160002"
+  },
+  {
+    "month": "2018-11",
+    "ndvi": 0.203,
+    "date": "2018-11-13",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20181113T170539_R069_T15TVG_20201008T182129"
+  },
+  {
+    "month": "2018-12",
+    "ndvi": 0.202,
+    "date": "2018-12-23",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20181223T170719_R069_T15TVG_20201008T123135"
+  }
+]

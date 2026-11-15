@@ -1,0 +1,1335 @@
+{
+  "field": {
+    "lat": 42.0,
+    "lon": -93.75,
+    "elevation_m": 321.736785889,
+    "slope_3dep": 4.05,
+    "slope_ssurgo": 8.0,
+    "cdl": {
+      "2020": "Soybeans",
+      "2021": "Corn",
+      "2022": "Soybeans",
+      "2023": "Corn",
+      "2024": "Soybeans",
+      "2025": "Corn"
+    },
+    "soil": {
+      "soil_map_unit": "Clarion loam, Bemis moraine, 6 to 10 percent slopes",
+      "organic_matter": "3.5",
+      "sand": "45.0",
+      "clay": "21.0",
+      "available_water_capacity": "0.21",
+      "hydrologic_soil_group": "B",
+      "drainage_class": "Well drained"
+    }
+  },
+  "assumptions": {
+    "wind_u2": "NASA POWER WS2M daily (mean 3.15 m/s)",
+    "profile": {
+      "goals": [
+        "rotation",
+        "soil_health"
+      ],
+      "equipment": [
+        "tractor",
+        "planter",
+        "sprayer",
+        "harvester"
+      ],
+      "irrigation": "rainfed"
+    }
+  },
+  "monthly": {
+    "1": {
+      "et0": 18.1,
+      "rain": 7.0,
+      "frost": 31,
+      "heavy": 0,
+      "ext": 0,
+      "max_day": 3.44,
+      "t_mean": -7.4,
+      "t_max": 10.36,
+      "n": 31
+    },
+    "2": {
+      "et0": 25.4,
+      "rain": 10.1,
+      "frost": 26,
+      "heavy": 0,
+      "ext": 0,
+      "max_day": 5.83,
+      "t_mean": -5.3,
+      "t_max": 14.58,
+      "n": 28
+    },
+    "3": {
+      "et0": 67.2,
+      "rain": 66.7,
+      "frost": 22,
+      "heavy": 1,
+      "ext": 0,
+      "max_day": 33.62,
+      "t_mean": 5.9,
+      "t_max": 26.16,
+      "n": 31
+    },
+    "4": {
+      "et0": 86.6,
+      "rain": 89.8,
+      "frost": 7,
+      "heavy": 1,
+      "ext": 0,
+      "max_day": 26.95,
+      "t_mean": 10.5,
+      "t_max": 26.61,
+      "n": 30
+    },
+    "5": {
+      "et0": 127.0,
+      "rain": 75.8,
+      "frost": 0,
+      "heavy": 1,
+      "ext": 0,
+      "max_day": 46.8,
+      "t_mean": 16.1,
+      "t_max": 29.45,
+      "n": 31
+    },
+    "6": {
+      "et0": 132.3,
+      "rain": 187.5,
+      "frost": 0,
+      "heavy": 2,
+      "ext": 0,
+      "max_day": 46.51,
+      "t_mean": 22.9,
+      "t_max": 34.47,
+      "n": 30
+    },
+    "7": {
+      "et0": 138.7,
+      "rain": 236.1,
+      "frost": 0,
+      "heavy": 3,
+      "ext": 0,
+      "max_day": 37.78,
+      "t_mean": 24.6,
+      "t_max": 32.48,
+      "n": 31
+    },
+    "8": {
+      "et0": 114.1,
+      "rain": 82.6,
+      "frost": 0,
+      "heavy": 0,
+      "ext": 0,
+      "max_day": 19.18,
+      "t_mean": 21.9,
+      "t_max": 33.15,
+      "n": 31
+    },
+    "9": {
+      "et0": 94.5,
+      "rain": 39.9,
+      "frost": 0,
+      "heavy": 0,
+      "ext": 0,
+      "max_day": 12.16,
+      "t_mean": 19.8,
+      "t_max": 34.33,
+      "n": 30
+    },
+    "10": {
+      "et0": 76.8,
+      "rain": 59.1,
+      "frost": 0,
+      "heavy": 0,
+      "ext": 0,
+      "max_day": 19.23,
+      "t_mean": 13.6,
+      "t_max": 31.31,
+      "n": 31
+    }
+  },
+  "season": {
+    "et0_mm": 881,
+    "rain_mm": 854,
+    "frost_days": 86,
+    "gdd_86_50_may_sep": 1702,
+    "gdd_86_50_all": 2077,
+    "gdd_simple_all": 1915,
+    "longest_dry_spell": {
+      "days": 28,
+      "from": "2025-01-03",
+      "to": "2025-01-30"
+    },
+    "last_spring_frost": "2025-04-08",
+    "first_fall_frost": "none through 2025-10-31"
+  },
+  "need": {
+    "zea-mays": {
+      "key": "zea-mays",
+      "from": "2025-04-01",
+      "to": "2025-08-28",
+      "days": 150,
+      "crop_mm": 506,
+      "rain_mm": 663,
+      "effective_mm": 408,
+      "deficit_mm": 119,
+      "share_app": 0.805,
+      "share_met": 0.764,
+      "monthly": {
+        "4": {
+          "etc": 26.0,
+          "effective": 46.8
+        },
+        "5": {
+          "etc": 80.0,
+          "effective": 35.6
+        },
+        "6": {
+          "etc": 154.7,
+          "effective": 125.0
+        },
+        "7": {
+          "etc": 166.3,
+          "effective": 163.8
+        },
+        "8": {
+          "etc": 79.3,
+          "effective": 36.6
+        }
+      }
+    },
+    "glycine-max": {
+      "key": "glycine-max",
+      "from": "2025-05-01",
+      "to": "2025-09-12",
+      "days": 135,
+      "crop_mm": 499,
+      "rain_mm": 588,
+      "effective_mm": 365,
+      "deficit_mm": 138,
+      "share_app": 0.732,
+      "share_met": 0.723,
+      "monthly": {
+        "5": {
+          "etc": 56.1,
+          "effective": 35.6
+        },
+        "6": {
+          "etc": 132.5,
+          "effective": 125.0
+        },
+        "7": {
+          "etc": 159.4,
+          "effective": 163.8
+        },
+        "8": {
+          "etc": 124.1,
+          "effective": 41.1
+        },
+        "9": {
+          "etc": 27.0,
+          "effective": 0
+        }
+      }
+    },
+    "triticum-aestivum": {
+      "key": "triticum-aestivum",
+      "from": "2025-03-01",
+      "to": "2025-07-13",
+      "days": 135,
+      "crop_mm": 428,
+      "rain_mm": 508,
+      "effective_mm": 297,
+      "deficit_mm": 165,
+      "share_app": 0.694,
+      "share_met": 0.615,
+      "monthly": {
+        "3": {
+          "etc": 24.5,
+          "effective": 30.0
+        },
+        "4": {
+          "etc": 91.6,
+          "effective": 46.8
+        },
+        "5": {
+          "etc": 146.0,
+          "effective": 35.6
+        },
+        "6": {
+          "etc": 134.5,
+          "effective": 125.0
+        },
+        "7": {
+          "etc": 31.7,
+          "effective": 60.0
+        }
+      }
+    },
+    "helianthus-annuus": {
+      "key": "helianthus-annuus",
+      "from": "2025-04-01",
+      "to": "2025-08-08",
+      "days": 130,
+      "crop_mm": 418,
+      "rain_mm": 610,
+      "effective_mm": 382,
+      "deficit_mm": 83,
+      "share_app": 0.913,
+      "share_met": 0.801,
+      "monthly": {
+        "4": {
+          "etc": 31.1,
+          "effective": 46.8
+        },
+        "5": {
+          "etc": 96.6,
+          "effective": 35.6
+        },
+        "6": {
+          "etc": 142.9,
+          "effective": 125.0
+        },
+        "7": {
+          "etc": 132.7,
+          "effective": 163.8
+        },
+        "8": {
+          "etc": 14.8,
+          "effective": 10.6
+        }
+      }
+    }
+  },
+  "weights": {
+    "pest_break": 3,
+    "soil_health": 3,
+    "nitrogen": 3,
+    "water": 1,
+    "erosion": 3,
+    "workload": 1
+  },
+  "compare": {
+    "current": {
+      "crops": [
+        "soybeans",
+        "corn",
+        "soybeans"
+      ],
+      "scores": {
+        "pest_break": 100,
+        "soil_health": 85,
+        "nitrogen": 67,
+        "water": 76,
+        "erosion": 76,
+        "workload": 85
+      },
+      "total": 82,
+      "risks": [],
+      "benefits": []
+    },
+    "small_grain": {
+      "crops": [
+        "wheat",
+        "soybeans",
+        "corn"
+      ],
+      "scores": {
+        "pest_break": 75,
+        "soil_health": 75,
+        "nitrogen": 33,
+        "water": 74,
+        "erosion": 84,
+        "workload": 70
+      },
+      "total": 68,
+      "risks": [],
+      "benefits": []
+    },
+    "other_family": {
+      "crops": [
+        "sunflower",
+        "corn",
+        "sunflower"
+      ],
+      "scores": {
+        "pest_break": 100,
+        "soil_health": 45,
+        "nitrogen": 0,
+        "water": 88,
+        "erosion": 76,
+        "workload": 85
+      },
+      "total": 60,
+      "risks": [],
+      "benefits": [
+        "water"
+      ]
+    }
+  },
+  "sensitivity": {
+    "baseline (3DEP slope 4.05%)": {
+      "current": 82,
+      "small_grain": 68,
+      "other_family": 60
+    },
+    "SSURGO mapped slope 8.0%": {
+      "current": 71,
+      "small_grain": 60,
+      "other_family": 49
+    },
+    "no harvester": {
+      "current": 82,
+      "small_grain": 66,
+      "other_family": 60
+    },
+    "no goals (all weights 1)": {
+      "current": 82,
+      "small_grain": 69,
+      "other_family": 66
+    }
+  },
+  "timeline": {
+    "risks": {
+      "1": [
+        "dry",
+        "frost"
+      ],
+      "2": [
+        "dry",
+        "frost"
+      ],
+      "3": [
+        "storm",
+        "frost"
+      ],
+      "4": [
+        "storm",
+        "frost"
+      ],
+      "5": [
+        "storm"
+      ],
+      "6": [
+        "storm"
+      ],
+      "7": [
+        "storm"
+      ],
+      "8": [],
+      "9": [
+        "dry"
+      ],
+      "10": [],
+      "11": null,
+      "12": null
+    },
+    "lines": {
+      "current (FAO-56)": {
+        "strip": "....SSSSS.?? | ...CCCCC..?? | ....SSSSS.??",
+        "bare": 15,
+        "vulnerable": 12,
+        "exposed_with_cover": 4,
+        "vulnerable_months": [
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-04",
+          "2027-01",
+          "2027-02",
+          "2027-03",
+          "2027-09",
+          "2028-01",
+          "2028-02",
+          "2028-03",
+          "2028-04"
+        ]
+      },
+      "current (corn Apr-Oct record)": {
+        "strip": "....SSSSS.?? | ...CCCCCCC?? | ....SSSSS.??",
+        "bare": 13,
+        "vulnerable": 11,
+        "exposed_with_cover": 3,
+        "vulnerable_months": [
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-04",
+          "2027-01",
+          "2027-02",
+          "2027-03",
+          "2028-01",
+          "2028-02",
+          "2028-03",
+          "2028-04"
+        ]
+      },
+      "small_grain (FAO-56)": {
+        "strip": "..WWWWW...?? | ....SSSSS.?? | ...CCCCC..??",
+        "bare": 15,
+        "vulnerable": 11,
+        "exposed_with_cover": 4,
+        "vulnerable_months": [
+          "2026-01",
+          "2026-02",
+          "2026-09",
+          "2027-01",
+          "2027-02",
+          "2027-03",
+          "2027-04",
+          "2028-01",
+          "2028-02",
+          "2028-03",
+          "2028-09"
+        ]
+      },
+      "small_grain (corn Apr-Oct record)": {
+        "strip": "..WWWWW...?? | ....SSSSS.?? | ...CCCCCCC??",
+        "bare": 13,
+        "vulnerable": 10,
+        "exposed_with_cover": 3,
+        "vulnerable_months": [
+          "2026-01",
+          "2026-02",
+          "2026-09",
+          "2027-01",
+          "2027-02",
+          "2027-03",
+          "2027-04",
+          "2028-01",
+          "2028-02",
+          "2028-03"
+        ]
+      },
+      "other_family (FAO-56)": {
+        "strip": "...SSSSS..?? | ...CCCCC..?? | ...SSSSS..??",
+        "bare": 15,
+        "vulnerable": 12,
+        "exposed_with_cover": 6,
+        "vulnerable_months": [
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-09",
+          "2027-01",
+          "2027-02",
+          "2027-03",
+          "2027-09",
+          "2028-01",
+          "2028-02",
+          "2028-03",
+          "2028-09"
+        ]
+      },
+      "other_family (corn Apr-Oct record)": {
+        "strip": "...SSSSS..?? | ...CCCCCCC?? | ...SSSSS..??",
+        "bare": 13,
+        "vulnerable": 11,
+        "exposed_with_cover": 5,
+        "vulnerable_months": [
+          "2026-01",
+          "2026-02",
+          "2026-03",
+          "2026-09",
+          "2027-01",
+          "2027-02",
+          "2027-03",
+          "2028-01",
+          "2028-02",
+          "2028-03",
+          "2028-09"
+        ]
+      }
+    }
+  },
+  "pests": {
+    "tar_spot": {
+      "favourable_days": 20,
+      "season_days": 150,
+      "first": "2025-06-16",
+      "longest_run": 16,
+      "rh90_days": 4
+    },
+    "fall_armyworm": {
+      "du Plessis 2020 (12.57 C, 391 DD)": {
+        "dd": 1402,
+        "generations": 3.59
+      },
+      "Malekera 2022 linear (9.73 C, 490 DD)": {
+        "dd": 1890,
+        "generations": 3.86
+      }
+    },
+    "strategies": {
+      "current": {
+        "daily_rules": [
+          "tar spot (1 corn season)",
+          "fall armyworm degree-days"
+        ],
+        "hourly_rules": [
+          "Asian soybean rust",
+          "gray leaf spot",
+          "northern corn leaf blight"
+        ]
+      },
+      "small_grain": {
+        "daily_rules": [
+          "tar spot (1 corn season)",
+          "fall armyworm degree-days"
+        ],
+        "hourly_rules": [
+          "stripe rust",
+          "leaf rust",
+          "stem rust",
+          "Fusarium head blight (De Wolf)",
+          "Asian soybean rust",
+          "gray leaf spot",
+          "northern corn leaf blight"
+        ]
+      },
+      "other_family": {
+        "daily_rules": [
+          "tar spot (1 corn season)",
+          "fall armyworm degree-days"
+        ],
+        "hourly_rules": [
+          "gray leaf spot",
+          "northern corn leaf blight"
+        ]
+      }
+    }
+  },
+  "water_limited": {
+    "zea-mays": {
+      "raw_mm": 116,
+      "stress_mm": 4,
+      "eta_etc": 0.993,
+      "yield_factor": 0.991
+    },
+    "glycine-max": {
+      "raw_mm": 63,
+      "stress_mm": 75,
+      "eta_etc": 0.85,
+      "yield_factor": 0.872
+    },
+    "triticum-aestivum": {
+      "raw_mm": 116,
+      "stress_mm": 50,
+      "eta_etc": 0.884,
+      "yield_factor": 0.867
+    },
+    "helianthus-annuus": {
+      "raw_mm": 76,
+      "stress_mm": 7,
+      "eta_etc": 0.982,
+      "yield_factor": 0.983
+    }
+  },
+  "nitrogen": {
+    "current": {
+      "seasons": [
+        {
+          "crop": "soybeans",
+          "key": "glycine-max",
+          "n_applied": 0.0,
+          "n_fixed": 112,
+          "n_removed": 225,
+          "yield_t_ha": 3.49
+        },
+        {
+          "crop": "corn",
+          "key": "zea-mays",
+          "n_applied": 150.0,
+          "n_fixed": 0,
+          "n_removed": 181,
+          "yield_t_ha": 12.39
+        },
+        {
+          "crop": "soybeans",
+          "key": "glycine-max",
+          "n_applied": 0.0,
+          "n_fixed": 112,
+          "n_removed": 225,
+          "yield_t_ha": 3.49
+        }
+      ],
+      "applied": 150,
+      "fixed": 224,
+      "removed": 631,
+      "balance": -257
+    },
+    "small_grain": {
+      "seasons": [
+        {
+          "crop": "wheat",
+          "key": "triticum-aestivum",
+          "n_applied": 90.0,
+          "n_fixed": 0,
+          "n_removed": 78,
+          "yield_t_ha": 3.9
+        },
+        {
+          "crop": "soybeans",
+          "key": "glycine-max",
+          "n_applied": 0.0,
+          "n_fixed": 112,
+          "n_removed": 225,
+          "yield_t_ha": 3.49
+        },
+        {
+          "crop": "corn",
+          "key": "zea-mays",
+          "n_applied": 150.0,
+          "n_fixed": 0,
+          "n_removed": 181,
+          "yield_t_ha": 12.39
+        }
+      ],
+      "applied": 240,
+      "fixed": 112,
+      "removed": 484,
+      "balance": -132
+    },
+    "other_family": {
+      "seasons": [
+        {
+          "crop": "sunflower",
+          "key": "helianthus-annuus",
+          "n_applied": 70.0,
+          "n_fixed": 0,
+          "n_removed": 61,
+          "yield_t_ha": 2.16
+        },
+        {
+          "crop": "corn",
+          "key": "zea-mays",
+          "n_applied": 200.0,
+          "n_fixed": 0,
+          "n_removed": 181,
+          "yield_t_ha": 12.39
+        },
+        {
+          "crop": "sunflower",
+          "key": "helianthus-annuus",
+          "n_applied": 70.0,
+          "n_fixed": 0,
+          "n_removed": 61,
+          "yield_t_ha": 2.16
+        }
+      ],
+      "applied": 340,
+      "fixed": 0,
+      "removed": 303,
+      "balance": 37
+    }
+  },
+  "margins": {
+    "current": {
+      "seasons": [
+        {
+          "crop": "soybeans",
+          "key": "glycine-max",
+          "n_applied": 0.0,
+          "n_fixed": 112,
+          "n_removed": 225,
+          "yield_t_ha": 3.49,
+          "revenue": 1309,
+          "cost": 815,
+          "margin": 494
+        },
+        {
+          "crop": "corn",
+          "key": "zea-mays",
+          "n_applied": 150.0,
+          "n_fixed": 0,
+          "n_removed": 181,
+          "yield_t_ha": 12.39,
+          "revenue": 2044,
+          "cost": 1190,
+          "margin": 854
+        },
+        {
+          "crop": "soybeans",
+          "key": "glycine-max",
+          "n_applied": 0.0,
+          "n_fixed": 112,
+          "n_removed": 225,
+          "yield_t_ha": 3.49,
+          "revenue": 1309,
+          "cost": 815,
+          "margin": 494
+        }
+      ],
+      "margin_per_year": 614
+    },
+    "small_grain": {
+      "seasons": [
+        {
+          "crop": "wheat",
+          "key": "triticum-aestivum",
+          "n_applied": 90.0,
+          "n_fixed": 0,
+          "n_removed": 78,
+          "yield_t_ha": 3.9,
+          "revenue": 780,
+          "cost": 710,
+          "margin": 70
+        },
+        {
+          "crop": "soybeans",
+          "key": "glycine-max",
+          "n_applied": 0.0,
+          "n_fixed": 112,
+          "n_removed": 225,
+          "yield_t_ha": 3.49,
+          "revenue": 1309,
+          "cost": 815,
+          "margin": 494
+        },
+        {
+          "crop": "corn",
+          "key": "zea-mays",
+          "n_applied": 150.0,
+          "n_fixed": 0,
+          "n_removed": 181,
+          "yield_t_ha": 12.39,
+          "revenue": 2044,
+          "cost": 1190,
+          "margin": 854
+        }
+      ],
+      "margin_per_year": 473
+    },
+    "other_family": {
+      "seasons": [
+        {
+          "crop": "sunflower",
+          "key": "helianthus-annuus",
+          "n_applied": 70.0,
+          "n_fixed": 0,
+          "n_removed": 61,
+          "yield_t_ha": 2.16,
+          "revenue": 972,
+          "cost": 760,
+          "margin": 212
+        },
+        {
+          "crop": "corn",
+          "key": "zea-mays",
+          "n_applied": 200.0,
+          "n_fixed": 0,
+          "n_removed": 181,
+          "yield_t_ha": 12.39,
+          "revenue": 2044,
+          "cost": 1240,
+          "margin": 804
+        },
+        {
+          "crop": "sunflower",
+          "key": "helianthus-annuus",
+          "n_applied": 70.0,
+          "n_fixed": 0,
+          "n_removed": 61,
+          "yield_t_ha": 2.16,
+          "revenue": 972,
+          "cost": 760,
+          "margin": 212
+        }
+      ],
+      "margin_per_year": 409
+    }
+  },
+  "price_sensitivity": {
+    "corn -20%": {
+      "current": 478,
+      "small_grain": 336,
+      "other_family": 273
+    },
+    "corn +20%": {
+      "current": 750,
+      "small_grain": 609,
+      "other_family": 546
+    },
+    "soybean -20%": {
+      "current": 439,
+      "small_grain": 385,
+      "other_family": 409
+    },
+    "soybean +20%": {
+      "current": 789,
+      "small_grain": 560,
+      "other_family": 409
+    }
+  },
+  "ranking": {
+    "score": [
+      "current",
+      "small_grain",
+      "other_family"
+    ],
+    "margin": [
+      "current",
+      "small_grain",
+      "other_family"
+    ]
+  },
+  "device": {
+    "sensors": [
+      {
+        "sensor": "air T + RH (SHT45), hourly",
+        "closes": "hourly_weather",
+        "unlocks": "gray leaf spot, NCLB, rusts, FHB, soybean rust, Hutton; frost on the field, not the 0.5 deg grid",
+        "nasa": "POWER T2M, RH2M",
+        "metric": "bias and RMSE of daily Tmin/Tmax vs POWER; hours RH >= 90 vs POWER hourly"
+      },
+      {
+        "sensor": "soil moisture + T at 10 and 30 cm",
+        "closes": "soil water",
+        "unlocks": "the RAW buffer in section 7 measured instead of assumed full at planting; irrigation timing",
+        "nasa": "SMAP L4 root zone, POWER GWETROOT",
+        "metric": "correlation of daily anomalies (absolute values need the texture calibration DEVICES.md lists)"
+      },
+      {
+        "sensor": "tipping-bucket rain, 0.2 mm (Pro)",
+        "closes": "imerg",
+        "unlocks": "effective rain and heavy-day counts on the field; storm penalty in erosion",
+        "nasa": "POWER PRECTOTCORR, GPM IMERG",
+        "metric": "bias of event totals; hit rate for days >= 25 mm"
+      },
+      {
+        "sensor": "radiation (Pro)",
+        "closes": "-",
+        "unlocks": "Rs in ET0",
+        "nasa": "POWER ALLSKY_SFC_SW_DWN",
+        "metric": "bias of daily MJ/m2"
+      },
+      {
+        "sensor": "wind at 2 m: NOT in the spec",
+        "closes": "wind",
+        "unlocks": "U2 in ET0 (sensitivity above)",
+        "nasa": "POWER WS2M",
+        "metric": "add an anemometer on the SDI-12 port, or fetch WS2M"
+      },
+      {
+        "sensor": "leaf wetness: NOT in the spec",
+        "closes": "hourly_weather",
+        "unlocks": "the wetness hours every disease rule above counts (RH >= 90 is only a proxy)",
+        "nasa": "none",
+        "metric": "add a leaf-wetness sensor on the SDI-12 port"
+      }
+    ],
+    "wind_sensitivity": {
+      "1.0": {
+        "corn_etc": 481,
+        "deficit": 98,
+        "yield_factor": 1.0
+      },
+      "2.0": {
+        "corn_etc": 497,
+        "deficit": 112,
+        "yield_factor": 1.0
+      },
+      "3.0": {
+        "corn_etc": 510,
+        "deficit": 124,
+        "yield_factor": 0.979
+      },
+      "4.0": {
+        "corn_etc": 521,
+        "deficit": 134,
+        "yield_factor": 0.956
+      }
+    }
+  },
+  "inputs": {
+    "p.zea-mays": {
+      "value": 0.55,
+      "status": "published",
+      "source": "FAO-56 Table 22, maize grain"
+    },
+    "zr.zea-mays": {
+      "value": 1.0,
+      "status": "published",
+      "source": "FAO-56 Table 22, maize 1.0-1.7 m"
+    },
+    "ky.zea-mays": {
+      "value": 1.25,
+      "status": "published",
+      "source": "FAO Irrigation and Drainage Paper 33, maize"
+    },
+    "p.glycine-max": {
+      "value": 0.5,
+      "status": "published",
+      "source": "FAO-56 Table 22, soybeans"
+    },
+    "zr.glycine-max": {
+      "value": 0.6,
+      "status": "published",
+      "source": "FAO-56 Table 22, soybeans 0.6-1.3 m"
+    },
+    "ky.glycine-max": {
+      "value": 0.85,
+      "status": "published",
+      "source": "FAO-33, soybean"
+    },
+    "p.triticum-aestivum": {
+      "value": 0.55,
+      "status": "published",
+      "source": "FAO-56 Table 22, spring wheat"
+    },
+    "zr.triticum-aestivum": {
+      "value": 1.0,
+      "status": "published",
+      "source": "FAO-56 Table 22, spring wheat 1.0-1.5 m"
+    },
+    "ky.triticum-aestivum": {
+      "value": 1.15,
+      "status": "published",
+      "source": "FAO-33, spring wheat"
+    },
+    "p.helianthus-annuus": {
+      "value": 0.45,
+      "status": "published",
+      "source": "FAO-56 Table 22, sunflower"
+    },
+    "zr.helianthus-annuus": {
+      "value": 0.8,
+      "status": "published",
+      "source": "FAO-56 Table 22, sunflower 0.8-1.5 m"
+    },
+    "ky.helianthus-annuus": {
+      "value": 0.95,
+      "status": "published",
+      "source": "FAO-33, sunflower"
+    },
+    "n_rate.glycine-max": {
+      "value": 0.0,
+      "status": "placeholder",
+      "source": "soybean is not fertilized with N in Iowa"
+    },
+    "yield.glycine-max": {
+      "value": 4.0,
+      "status": "placeholder",
+      "source": "NASS QuickStats SOYBEANS - YIELD, Story County IA, BU/ACRE x 0.0673"
+    },
+    "n_removal.glycine-max": {
+      "value": 64.5,
+      "status": "cited",
+      "source": "OMAFRA soybean 62.3-66.7 kg N/t, midpoint (nutrient_removal.md)"
+    },
+    "fixation_share.glycine-max": {
+      "value": 0.5,
+      "status": "placeholder",
+      "source": "share of soybean N from fixation (literature 0.4-0.7); Ludemann or ISU"
+    },
+    "n_rate.zea-mays.after_legume": {
+      "value": 150.0,
+      "status": "placeholder",
+      "source": "MRTN, corn following soybean, Iowa"
+    },
+    "yield.zea-mays": {
+      "value": 12.5,
+      "status": "placeholder",
+      "source": "NASS QuickStats CORN, GRAIN - YIELD, Story County IA, BU/ACRE x 0.0628"
+    },
+    "n_removal.zea-mays": {
+      "value": 14.6,
+      "status": "cited",
+      "source": "OMAFRA grain corn 11.5-17.7 kg N/t, midpoint (nutrient_removal.md)"
+    },
+    "n_rate.triticum-aestivum": {
+      "value": 90.0,
+      "status": "placeholder",
+      "source": "state extension spring wheat N guide"
+    },
+    "yield.triticum-aestivum": {
+      "value": 4.5,
+      "status": "placeholder",
+      "source": "NASS QuickStats WHEAT, SPRING - YIELD (Iowa has little wheat: use MN or the farmer's own)"
+    },
+    "n_removal.triticum-aestivum": {
+      "value": 20.0,
+      "status": "cited",
+      "source": "OMAFRA wheat 19.1-20.9 kg N/t, midpoint (nutrient_removal.md)"
+    },
+    "n_rate.helianthus-annuus": {
+      "value": 70.0,
+      "status": "placeholder",
+      "source": "NDSU sunflower N guide"
+    },
+    "yield.helianthus-annuus": {
+      "value": 2.2,
+      "status": "placeholder",
+      "source": "NASS QuickStats SUNFLOWER - YIELD, LB/ACRE x 0.00112 (ND/SD; none in Iowa)"
+    },
+    "n_removal.helianthus-annuus": {
+      "value": 28.0,
+      "status": "placeholder",
+      "source": "no documented value; Ludemann coefficients"
+    },
+    "n_rate.zea-mays.after_other": {
+      "value": 200.0,
+      "status": "placeholder",
+      "source": "MRTN, corn following corn (used for any non-legume)"
+    },
+    "price.glycine-max": {
+      "value": 375.0,
+      "status": "placeholder",
+      "source": "AMS 2850 Iowa cash soybean bid, $/bu x 36.74"
+    },
+    "cost.glycine-max": {
+      "value": 815.0,
+      "status": "placeholder",
+      "source": "Iowa State Ag Decision Maker crop budgets (A1-20) or USDA ERS commodity costs and returns (CSV, no API; usda_ers.md)"
+    },
+    "n_price": {
+      "value": 1.0,
+      "status": "placeholder",
+      "source": "$/kg N: AMS Iowa Production Cost Report or ERS fertilizer prices (not yet documented)"
+    },
+    "price.zea-mays": {
+      "value": 165.0,
+      "status": "placeholder",
+      "source": "AMS 2850 Iowa cash corn bid, $/bu x 39.37"
+    },
+    "cost.zea-mays": {
+      "value": 1040.0,
+      "status": "placeholder",
+      "source": "Iowa State Ag Decision Maker crop budgets (A1-20) or USDA ERS commodity costs and returns (CSV, no API; usda_ers.md)"
+    },
+    "price.triticum-aestivum": {
+      "value": 200.0,
+      "status": "placeholder",
+      "source": "AMS 3046 Minneapolis spring wheat, $/bu x 36.74"
+    },
+    "cost.triticum-aestivum": {
+      "value": 620.0,
+      "status": "placeholder",
+      "source": "Iowa State Ag Decision Maker crop budgets (A1-20) or USDA ERS commodity costs and returns (CSV, no API; usda_ers.md)"
+    },
+    "price.helianthus-annuus": {
+      "value": 450.0,
+      "status": "placeholder",
+      "source": "NASS PRICE RECEIVED SUNFLOWER, $/CWT x 22.05"
+    },
+    "cost.helianthus-annuus": {
+      "value": 690.0,
+      "status": "placeholder",
+      "source": "Iowa State Ag Decision Maker crop budgets (A1-20) or USDA ERS commodity costs and returns (CSV, no API; usda_ers.md)"
+    }
+  },
+  "landing": {
+    "frost_days": [
+      86.0,
+      86,
+      "Tmin <= 0 C, 2025-01-01..2025-10-31"
+    ],
+    "rain_mm": [
+      854.0,
+      854,
+      "NASA POWER precipitation, 2025-01-01..2025-10-31"
+    ],
+    "gdd": [
+      1915.0,
+      1915,
+      "simple method, daily T2M - 10 C, 2025-01-01..2025-10-31; 86/50 gives 2077 (May-Sep 1702)"
+    ],
+    "heat_days": [
+      8.0,
+      8,
+      "Tmax >= 32 C (>= 30 C gives 31)"
+    ],
+    "slope": [
+      4.05,
+      4.05,
+      "USGS 3DEP (derived)"
+    ],
+    "om": [
+      3.5,
+      3.5,
+      "SSURGO"
+    ],
+    "sand": [
+      45.0,
+      45.0,
+      "SSURGO"
+    ],
+    "clay": [
+      21.0,
+      21.0,
+      "SSURGO"
+    ],
+    "awc": [
+      0.21,
+      0.21,
+      "SSURGO"
+    ]
+  },
+  "gaps": [
+    {
+      "gap": "normals",
+      "why": "one year (2025) of daily data stands in for the 30-year NASA POWER normals the app uses"
+    },
+    {
+      "gap": "nov_dec",
+      "why": "data ends 2025-10-31; November and December are unknown months in the timeline"
+    },
+    {
+      "gap": "profile",
+      "why": "goals, equipment and irrigation are assumed (demo_farms.yml nebraska), not the Ames farmer's answers"
+    },
+    {
+      "gap": "crop_fit",
+      "why": "FAO GAEZ suitability is not in the CSV: crop_fit is left out of the total, as the app does when GAEZ has not answered"
+    },
+    {
+      "gap": "perennial",
+      "why": "the alfalfa strategy needs GAEZ to call alfalfa suitable (Comparator#suitable?), so it is not offered here"
+    },
+    {
+      "gap": "imerg",
+      "why": "storm penalty and stormy months use 2025 NASA POWER rain, not 20 years of GPM IMERG"
+    },
+    {
+      "gap": "hourly_weather",
+      "why": "gray leaf spot, northern corn leaf blight, rusts, Fusarium head blight and soybean rust need hourly T, RH and leaf wetness: NASA POWER hourly (pest_weather_rules.md) or the field station"
+    },
+    {
+      "gap": "rotation_pests",
+      "why": "corn rootworm and soybean cyst nematode, the Corn Belt pests rotation controls, have no documented rule or data source; pest_break scores only the family break"
+    },
+    {
+      "gap": "faw_arrival",
+      "why": "fall armyworm generations count from arrival, which needs FAMEWS or trap data"
+    },
+    {
+      "gap": "market",
+      "why": "margins use placeholder yields, prices and costs until NASS, AMS and ERS/ISU values go into ames_inputs.json"
+    }
+  ],
+  "checks": [
+    {
+      "check": "NASA POWER days are contiguous",
+      "ok": true,
+      "detail": "2025-01-01..2025-10-31, 304 days"
+    },
+    {
+      "check": "every day has the six variables ET0 needs",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "no NASA POWER fill values (-999)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "solar radiation is in MJ/m2/day (FAO-56 units)",
+      "ok": true,
+      "detail": "MJ/m2/day"
+    },
+    {
+      "check": "precipitation is in mm/day",
+      "ok": true,
+      "detail": "mm/day"
+    },
+    {
+      "check": "CDL history maps to catalog crops",
+      "ok": true,
+      "detail": "{2020 => \"Soybeans\", 2021 => \"Corn\", 2022 => \"Soybeans\", 2023 => \"Corn\", 2024 => \"Soybeans\", 2025 => \"Corn\"}"
+    },
+    {
+      "check": "measured NASA POWER wind covers every day of the record",
+      "ok": true,
+      "detail": "WS2M from validation/data/power_daily.json"
+    },
+    {
+      "check": "daily ET0 within 0-12 mm (FAO-56 plausible range)",
+      "ok": true,
+      "detail": "max 7.77"
+    },
+    {
+      "check": "each need: effective rain never above total rain",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "Kc curve reaches Kc end on the last day",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "landing frost_days matches the data",
+      "ok": true,
+      "detail": "shown 86.0, computed 86"
+    },
+    {
+      "check": "landing rain_mm matches the data",
+      "ok": true,
+      "detail": "shown 854.0, computed 854"
+    },
+    {
+      "check": "landing gdd matches the data",
+      "ok": true,
+      "detail": "shown 1915.0, computed 1915"
+    },
+    {
+      "check": "landing heat_days matches the data",
+      "ok": true,
+      "detail": "shown 8.0, computed 8"
+    },
+    {
+      "check": "landing slope matches the data",
+      "ok": true,
+      "detail": "shown 4.05, computed 4.05"
+    },
+    {
+      "check": "landing om matches the data",
+      "ok": true,
+      "detail": "shown 3.5, computed 3.5"
+    },
+    {
+      "check": "landing sand matches the data",
+      "ok": true,
+      "detail": "shown 45.0, computed 45.0"
+    },
+    {
+      "check": "landing clay matches the data",
+      "ok": true,
+      "detail": "shown 21.0, computed 21.0"
+    },
+    {
+      "check": "landing awc matches the data",
+      "ok": true,
+      "detail": "shown 0.21, computed 0.21"
+    },
+    {
+      "check": "yield factors are between 0 and 1",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "soil buffer uses the SSURGO AWC of this field",
+      "ok": true,
+      "detail": "AWC 0.21 cm/cm"
+    },
+    {
+      "check": "more wind, more ET0 (FAO-56 Eq. 6 is monotonic in u2 for es > ea)",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "every strategy has a margin and a nitrogen balance",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "check": "every input used is tagged and sourced",
+      "ok": true,
+      "detail": null
+    }
+  ]
+}

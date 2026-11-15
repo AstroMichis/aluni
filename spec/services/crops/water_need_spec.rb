@@ -30,6 +30,28 @@ RSpec.describe Crops::WaterNeed do
     expect(described_class.for("zea-mays", observation: observation, latitude: -33.8, planting_month: 11).planting_month).to eq(11)
   end
 
+  it "takes the rain from IMERG when the field has it, with the scenario's rain change" do
+    months = (1..12).map { |m| { "month" => m, "rain_mm" => 100, "heavy_days" => 0.5 } }
+    imerg = build(:field_observation, source: "gpm_imerg", payload: { "years" => 20, "months" => months })
+
+    power = described_class.for("zea-mays", observation: observation, latitude: 40.95)
+    wet = described_class.for("zea-mays", observation: observation, latitude: 40.95, imerg: imerg)
+    drier = described_class.for("zea-mays", observation: observation, latitude: 40.95, imerg: imerg, scenario: Weather::Scenario.find("warm2_dry"))
+
+    expect([ power.rain_source, wet.rain_source ]).to eq(%w[power imerg])
+    expect(wet.rain_mm).to be_within(5).of(100 * 150 / 30.4) # about 100 mm a month over 150 days
+    expect(drier.rain_mm).to be_within(2).of(wet.rain_mm * 0.8)
+    expect(wet.crop_mm).to eq(power.crop_mm) # the crop's demand does not depend on the rain source
+  end
+
+  it "plants in the region's calendar month, after the farmer's own and before the FAO-56 row" do
+    iowa = { country_code: "US", admin_area: "Iowa" }
+
+    expect(described_class.for("zea-mays", observation: observation, latitude: 42.0, place: iowa).planting_month).to eq(5)
+    expect(described_class.for("zea-mays", observation: observation, latitude: 42.0, place: { country_code: "US", admin_area: "Texas" }).planting_month).to eq(4)
+    expect(described_class.for("zea-mays", observation: observation, latitude: 42.0, place: iowa, planting_month: 4).planting_month).to eq(4)
+  end
+
   it "covers the catalog crops whose FAO-56 rows were captured" do
     %w[sorghum-bicolor triticum-aestivum phaseolus-vulgaris solanum-tuberosum gossypium-hirsutum].each do |crop|
       need = described_class.for(crop, observation: observation, latitude: 40.95)

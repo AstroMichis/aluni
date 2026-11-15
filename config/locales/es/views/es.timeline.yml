@@ -2,7 +2,7 @@ es:
   app:
     timeline:
       title: Tus próximas tres temporadas, mes a mes
-      lede: Cuándo el suelo tiene cultivo y cuándo queda descubierto, frente al clima habitual. Los meses descubiertos con tormentas, sequía o heladas son los vulnerables.
+      lede: Cuándo el suelo tiene cultivo y cuándo queda abierto, frente al clima habitual. El suelo abierto con tormentas, sequía o heladas es vulnerable, y eso incluye las primeras semanas de un cultivo, antes de que sus hojas cubran el suelo.
       weather_label: Clima habitual en tu punto
       risks:
         storm: Tormentas
@@ -11,7 +11,7 @@ es:
         heat: Calor
       risk_notes:
         storm: al menos un día de 25 mm o más en un año típico (NASA GPM IMERG)
-        dry: llueve menos de la mitad de lo que se evapora (NASA POWER, FAO-56)
+        dry: llueve menos de la mitad de lo que se evapora (lluvia de NASA GPM IMERG, clima de NASA POWER, FAO-56)
         frost: dos días con helada o más en un mes típico (NASA POWER)
         heat: el mes ha llegado a 35 °C (NASA POWER)
       states:
@@ -19,9 +19,12 @@ es:
         bare: suelo descubierto
         unknown: temporada desconocida
         vulnerable: suelo descubierto con %{risks}
+        establishing: "%{crop}, joven: el suelo sigue abierto"
+        vulnerable_establishing: "%{crop}, joven: suelo abierto con %{risks}"
       cell: "%{month} %{year}: %{state}"
       legend:
         crop: Cultivo en el suelo
+        establishing: Cultivo joven, suelo aún abierto
         bare: Suelo descubierto
         vulnerable: Descubierto y expuesto
         unknown: Sin dato
@@ -35,8 +38,11 @@ es:
           frost: resiste las heladas
           cool: una cobertura de estación fría
           warm: una leguminosa de verano que aporta nitrógeno
-      summary: "Descubierto %{bare} de %{total} meses; %{vulnerable} de ellos expuestos (%{stormy} con tormentas)."
+      summary: "Descubierto %{bare} de %{total} meses. Expuestos: %{vulnerable} meses de suelo abierto con tormentas, sequía o heladas (%{stormy} meses descubiertos con tormentas)."
       summary_covered: Suelo cubierto los %{total} meses.
+      establishing_note:
+        one: " Un mes cuenta como suelo abierto aunque tenga cultivo: el follaje todavía no se cierra."
+        other: " %{count} meses cuentan como suelo abierto aunque tengan cultivo: el follaje todavía no se cierra."
       unknown_note: "Todavía no se conoce la temporada de %{crops}, así que esos meses quedan en blanco."
       about_title: Cómo se dibuja
-      about: Cada cultivo crece desde su mes de siembra habitual durante sus etapas FAO-56 (tus propios meses para el cultivo actual; seis meses después al sur de los trópicos); la alfalfa cubre todo el año. La franja del clima es la misma cada año, con promedios de largo plazo. Revisa las fechas con tu experiencia local.
+      about: Cada cultivo crece desde su mes de siembra durante sus etapas FAO-56. El mes es el tuyo para el cultivo actual; si no, el mes en que siembra la mayoría en tu estado (avance de cultivos de USDA NASS, donde existe); si no, la tabla FAO-56 (seis meses después al sur de los trópicos); la alfalfa cubre todo el año. Un cultivo cuenta como joven hasta su cobertura completa según FAO-56; las imágenes satelitales de un campo de Iowa mostraron el suelo abierto durante ese tiempo. La franja del clima es la misma cada año, con promedios de largo plazo; la lluvia es de NASA GPM IMERG. Revisa las fechas con tu experiencia local.

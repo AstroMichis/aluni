@@ -1,0 +1,758 @@
+# The action plan page (/plan): the integrated project proposal, draft 0.3, transcribed for
+# the Space Apps judges. Each section is a list of blocks rendered by plan/_blocks:
+#   p (paragraph), lead (b + t: a paragraph with a bold lead-in), h3, ul, ol, checklist,
+#   table (caption + rows; the first row is the header), formula, figure (a caption),
+#   note (bom or register: the shared "under revision" notes below), evidence (a link to /evidence).
+# Arrays collapse in spec/i18n/locale_parity_spec.rb, so es.plan.yml must keep the same blocks by hand.
+en:
+  plan:
+    show:
+      title: "%{app_name}: Integrated Project Proposal"
+      description: "The %{app_name} action plan for NASA Space Apps 2026: the integrated project proposal, with every figure and evidence label."
+      nav_label: "Site"
+      back_home: "Back to home"
+      eyebrow: "Action plan · NASA Space Apps 2026"
+      headline: "%{app_name}: Integrated Project Proposal (Draft for team review)"
+      version: "Draft 0.3 · 15 Nov 2026"
+      lede: "%{app_name} today is a live rotation-comparison tool. This proposal is about where it ends up: one place where a farmer plans and runs the whole season."
+      legend_title: "Evidence labels used in every section"
+      legend:
+        - ["Label", "Meaning", "What may rest on it"]
+        - ["[VERIFIED: source]", "Read this session in the repo, the team's overview, or an opened web source", "Decisions and numbers"]
+        - ["[VERIFIED (secondary): source]", "Read only on a reseller, directory or summary page", "Context; upgrade before a funding decision"]
+        - ["[UNKNOWN]", "Not verified. Listed in the register (T6) with an owner and an action", "Nothing. No cost, date or go-decision depends on it"]
+        - ["[ASSUMPTION A-n]", "A deliberate planning value, logged with its switching value", "Illustration only, never the ask"]
+        - ["[DESIGN]", "A proposal by the authors (the vision), not a fact", "Discussion; needs team approval"]
+      toc_label: "Contents"
+      table_hint: "Swipe sideways to see the whole table."
+      back_to_top: "Back to contents"
+      evidence_cta: "See the evidence page"
+      notes:
+        bom: "Under revision: the updated Sonda section (T5b) no longer states a full unit BOM."
+        register: "Under revision: the updated Sonda section (T5b) lists U-07 and U-08 as open again and uses assumptions A-2 and A-3."
+      sections:
+        read:
+          title: "How to read this draft"
+          blocks:
+            - p: "%{app_name} today is a live rotation-comparison tool. This proposal is about where it ends up: one place where a farmer plans and runs the whole season, covering land, crops, people, machines, supplies, money, sensors and every data feed. Each part below is marked built, designed or vision, so the team can tell the prototype from the end goal."
+            - lead: { b: "Stage.", t: "Strategic Outline Case (SOC). Cost estimate AACE Class 5 (concept screening, expected range −20% to −50% / +30% to +100%). The format follows the uploaded Integrated Project Proposal Format (Green Book five cases, TRL, AACE, known/unknown register)." }
+            - lead: { b: "What was read for this draft:", t: "the repo (README.md, CLAUDE.md, docs/ROADMAP.md, docs/DEVICES.md, docs/FIELDS.md, docs/DATA_MODEL.md, docs/DATA_SOURCES.md, docs/DEMO.md, parts of docs/ONBOARDING.md, app/models/farmer_profile.rb, the weather, crops and rotations services, config/crops/agronomy.yml, config/demo_farms.yml and docs/proposal/ (worked example and cross-check); git log shows 102 commits, last on 15 Nov 2026); the team's %{app_name}: Project Overview (15 Nov 2026); the format guide; and the web pages under Sources. Where the repo and the overview disagree, both are kept and the conflict goes to the register." }
+            - lead: { b: "Not read:", t: "firmware (none exists), the iOS and Android code, docs/AUTH.md, docs/INTEGRATIONS.md in full, docs/deploy/DEPLOY.md in full, and any team member's CV." }
+        executive:
+          title: "Executive layer (decision brief)"
+          blocks:
+            - lead: { b: "E0 · Header.", t: "%{app_name}, by the AstroMichis team. NASA Space Apps 2026, challenge \"Adapting Farms with NASA Data\". Stage: SOC. Estimate: AACE Class 5. TRL: web decision tool 5–6 (self-assessed), farm-operations modules 1–2, Sonda field station 2 (see T6). Version: draft 0.3, 15 Nov 2026. It adds the worked example and cross-check (T5c), the priced Sonda BOM (T5b) and the Gate 1 budget (T11)." }
+            - note: "bom"
+            - lead: { b: "E1 · The ask.", t: "Approve Gate 1: $25,538 over 12 weeks (AACE Class 5 range $12,769–$51,075). It covers:" }
+            - ul:
+                - "240 developer hours at the BLS median rate of $63.20/h, which comes to $15,168;"
+                - "120 agronomist hours at $37.87/h, which comes to $4,544;"
+                - "10 Sonda Pro engineering prototypes, $5,227;"
+                - "hosting for 3 months, $73;"
+                - "Gemini at its cost ceiling, $461;"
+                - "10 SIMs with data, $65."
+            - note: "bom"
+            - p: "It buys a pilot with farmers in York, Nebraska and Buin, Chile; Sonda readings paired with SMAP and IMERG; and a baseline for every KPI. Hours are [DESIGN] quantities the team can change; every rate is sourced (T11)."
+            - lead: { b: "E2 · Purpose.", t: "%{app_name} turns free NASA and public Earth data into one season plan per field. The farmer then runs that plan with their own people, machines, supplies and budget in the same app. [DESIGN]" }
+            - lead: { b: "E3 · Why.", t: "There are at least 570 million farms; more than 475 million are under 2 ha [VERIFIED: FAO, Lowder et al. 2014]. Erosion removes 25–40 billion tonnes of topsoil a year and costs about 7.6 million tonnes of cereal a year [VERIFIED: FAO SWSR 2015 via ReliefWeb]. In the 2026 FAO assessment, 81% of regional assessments rate erosion management poor or very poor [VERIFIED (secondary): DevelopmentAid on FAO SWSR 2026]. Today the data that could help sits in research portals, and farm records sit in separate tools or on paper (BAU, T4)." }
+            - lead: { b: "E4 · Why now.", t: "NASA point services (POWER, AppEEARS) now return per-field values with no GIS skills, and %{app_name} already uses nine NASA datasets in production [VERIFIED: docs/ROADMAP.md, checkpoint 2026-11-15]. LTE-M/GNSS modules cost about £19–23 each [VERIFIED: RS UK]. Language models can narrate computed facts under guardrails; %{app_name}'s Gemini narration is live with a daily cap of 2,000 requests [VERIFIED: ROADMAP.md]." }
+            - lead: { b: "E5 · What.", t: "Preferred option (T4, Option B+C, staged): grow %{app_name} from a rotation comparator into an integrated season-execution platform, with the Sonda station as a gated hardware track. It beats BAU because it links the plan to the inputs that make it executable. It beats \"comparator only\" because a plan with no labour, machine or cost view stays advice. [DESIGN]" }
+            - lead: { b: "E6 · How.", t: "" }
+            - ul:
+                - "Gate 1 (validate): pilot with real farmers in two languages; usability targets from the team's own plan (landing to Your plan in under 5 minutes; 4 of 5 new users reach it without help) [VERIFIED: team overview §17]."
+                - "Gate 2 (operations core): People and Tasks, Equipment, Supplies, Season Execution Plan."
+                - "Gate 3 (economics): costs, budgets, prices; gross margin as an eighth criterion."
+                - "Hardware track: EVT, then DVT, then certification, then a 100-unit pilot batch."
+                - "Accountable owner per gate: [UNKNOWN] (team names and roles are an open question in the overview)."
+            - lead: { b: "E7 · Cost.", t: "Sonda unit bill of materials at 100 units, priced from distributors: Pro $493.73, Lite $316.96 (T5b). Soil, rain and air sensors are 74% of the Pro's cost, so the probe choice drives the price, not the electronics. Running cost: one e2-medium VM at $24.46 a month [VERIFIED (secondary): Economize]; connectivity about $1.15 per Pro device per month at A-1. Gate 1 total: $25,538 (E1)." }
+            - note: "bom"
+            - lead: { b: "E8 · Value, shown on a real field (T5c).", t: "Ames, Iowa, 2025 NASA POWER data run through %{app_name}'s own formulas:" }
+            - ul:
+                - "Corn needed 506 mm of water (FAO-56, with NASA POWER's measured wind) and effective rain covered 80%; soybean 73%. The model's 13% soybean cut for 2025 did not happen: Story County soybeans yielded 4.2% above trend (NASS). The 25-year backtest (T5d) shows the water model flags drought disasters but does not predict yield."
+                - "The farmer's current corn–soybean rotation scores 82, ahead of a small-grain rotation (68) and a family change (60). The ranking holds under a steeper slope, without a harvester, and with no goals set. The app's own services give the same totals (docs/proposal/ames_cross_check.rb now computes them)."
+                - "The risk it finds: 12 vulnerable bare months over three seasons on the FAO-56 calendar; a cover crop in each bare window cuts the count to 4. In soil terms (RUSLE) a rye cover saves about 13% of the yearly loss, because most erosive rain falls May to September, under young crops the timeline counts as cover (T5d, V6 and V8)."
+                - "The 25-year backtest (T5d) scores eight of these claims against what happened on the field: the rotation advice is backed by 670 field trials (+9.9% corn yield after soybean) and the erosion ranking holds; five tests fail, each with a named cause and fix."
+            - evidence: "See the backtest evidence"
+            - p: "NPV and payback need the pilot's adoption data (G1)."
+            - lead: { b: "E9 · Evidence status.", t: "Every figure in E1–E8 is either sourced or computed from sourced inputs by code in the repo; docs/proposal/claims_audit.rb recomputes 40 of them and fails if the text and the code disagree. 28 items remain open (T6), six of them raised by the backtest. Only pilot travel touches the Gate 1 budget. The three that matter most:" }
+            - ul:
+                - "whether farmers will log operations in the season plan (the pilot answers it);"
+                - "the Sonda Pro's certification path, since a cellular device may need PTCRB and carrier approval;"
+                - "%{app_name}'s open-source licence (no LICENSE file in the repo root yet)."
+            - lead: { b: "E10 · Top risks.", t: "Scope creep into a generic farm-management tool; hardware cost and certification; coarse data misleading small fields; adoption; a small team. Owners and mitigations are in T14." }
+            - lead: { b: "E11 · Kill criteria.", t: "Stop the operations modules if fewer than 3 of 10 pilot farmers use the season plan weekly after 6 weeks. Stop the hardware track if the DVT unit BOM exceeds the agreed price ceiling, or if Sonda readings cannot be paired with SMAP/IMERG for the same pin. Stop the program if no institutional partner signs a letter of intent by Gate 2. [DESIGN] thresholds; the team must set the final numbers (T18)." }
+            - lead: { b: "E12 · Decision requested.", t: "Approve with conditions: Gate 1 only. Next gate review: [UNKNOWN] date, to be set by the team." }
+        t1:
+          title: "T1 · Problem and strategic rationale"
+          blocks:
+            - p: "Farmers have to make season decisions that hold up for years, and the evidence and the records they need are spread across many places. %{app_name}'s job is to bring them together."
+            - h3: "Case for change"
+            - ul:
+                - "Scale. At least 570 million farms worldwide, more than 500 million family farms, and more than 475 million under 2 ha [VERIFIED: FAO ESA Working Paper 14-02, Lowder, Skoet, Singh 2014]. A later count gives 656 million farms in 2020 [VERIFIED: CIMMYT repository paper]."
+                - "Soil loss. Erosion removes 25–40 billion t of topsoil a year. If nothing changes, cereal losses reach about 253 million t by 2050 [VERIFIED: FAO SWSR 2015 via ReliefWeb]. FAO put the possible yield loss at up to 10% by 2050 [VERIFIED: UN News]."
+                - "Getting worse. The FAO Status of the World's Soil Resources 2026 was launched on 27 Aug 2026 and calls erosion the most severe threat [VERIFIED: FAO Global Soil Partnership]. 65% of assessments report a deteriorating trend since 2015 [VERIFIED (secondary): DevelopmentAid]."
+                - "Access. The team's view is that NASA data \"lives in scientific portals, file formats and units built for researchers,\" and that small and medium farms often cannot pay agronomists [VERIFIED: team overview §3; a team claim, not yet measured]."
+            - lead: { b: "Business as usual (fair version).", t: "BAU is not \"nothing\". Farmers rotate by habit and adviser input. Large farms buy commercial platforms (T7). Others keep records on paper or in spreadsheets, and extension offices give advice where they reach. BAU's weakness is the break between evidence (satellites, soil surveys) and execution (labour, machines, inputs, cash). BAU cost to the farmer: [UNKNOWN]; it needs pilot interviews." }
+            - lead: { b: "Theory of change [DESIGN]:", t: "per-field NASA and soil evidence, plus farmer goals → a ranked rotation with exposed months flagged (built) → a season execution plan with tasks, machines, inputs and costs (vision) → the farmer runs it and records what happened (vision) → next season recomputes from real outcomes (partly built: \"Use as plan\" saves next season's crop [VERIFIED: docs/FIELDS.md]). The key untested assumption: farmers will record operations if the plan pre-fills them. Kill criterion K1 tests it." }
+            - lead: { b: "Strategic fit.", t: "It answers every item in the challenge brief [VERIFIED: docs/ROADMAP.md, challenge requirements]. It also matches FAO's 2026 call for the adoption of sustainable soil management [VERIFIED: FAO GSP page]." }
+        t2:
+          title: "T2 · Objectives and success criteria"
+          blocks:
+            - p: "The objectives are outcomes for farmers, not features. Baselines are missing because no farmer has used %{app_name} yet, so every baseline is set during Gate 1."
+            - table:
+                caption: "Objectives O1 to O5"
+                rows:
+                  - ["#", "Objective (SMART)", "Baseline", "Target", "By", "Measured with"]
+                  - ["O1", "New farmers get from landing to a usable plan quickly", "[UNKNOWN]", "under 5 min; 4 of 5 without help [VERIFIED: team overview §17]", "Gate 1", "Usability sessions, en and es"]
+                  - ["O2", "Fewer exposed bare-soil months in the chosen plan", "Method run on Ames: 12 vulnerable months over 3 seasons, 4 with cover (T5c); NDVI shows the count misses May-June and Nov-Dec exposure (T5d, V8); pilot fields measured at enrolment", "[DESIGN] −50% against the current rotation", "1 season after Gate 1", "Rotations::Timeline exposed-month count; NDVI bare windows"]
+                  - ["O3", "The plan is executed, not only read", "0 (module not built)", "[DESIGN] 3 of 10 pilot farmers log operations weekly", "Gate 2 + 6 weeks", "Task and operation logs"]
+                  - ["O4", "The farmer can see the cost of each strategy", "0 (prices are always a gap [VERIFIED: docs/FIELDS.md])", "[DESIGN] cost per ha shown for all strategies in 2 countries", "Gate 3", "Budget module coverage"]
+                  - ["O5", "Ground readings sit next to satellite readings", "0 (hardware not built)", "[DESIGN] 10 Sonda units paired with SMAP and IMERG for 60 days", "Hardware DVT", "device_readings beside the observations"]
+        t3:
+          title: "T3 · Scope"
+          blocks:
+            - lead: { b: "In scope (end goal):", t: "the eleven platform modules in T5 and the Sonda station (Lite and Pro) in T5b. Global coverage with richer US layers, two languages, web plus iOS and Android shells." }
+            - lead: { b: "Out of scope until a later gate [DESIGN]:", t: "farm accounting and tax (Farmbrite and others already do this, T7); machine guidance and variable-rate prescriptions; livestock management beyond the profile list; payments and marketplaces; drones." }
+            - lead: { b: "Interfaces:", t: "NASA POWER, AppEEARS, Earthdata, Planetary Computer, FAO GAEZ, SSURGO, USGS, CDL, Meteomatics, Gemini on Vertex [VERIFIED: docs/FIELDS.md, CLAUDE.md]. Planned: price, pest and nutrient sources already documented in docs/data_sources/ [VERIFIED: docs/DATA_SOURCES.md], and the Sonda ingestion API [VERIFIED: docs/DEVICES.md]." }
+        t4:
+          title: "T4 · Options analysis"
+          blocks:
+            - p: "The recommendation [DESIGN] is to build the integrated platform in stages (B) and to treat the Sonda (C) as a separate, gated track. Option A (lean on an existing open-source farm system for records) is the main alternative, and the team should choose between A and B at Gate 1."
+            - lead: { b: "Longlist considered:", t: "BAU; do-minimum (keep the comparator only); A, comparator plus integration with farmOS for operations records; B, an integrated platform built in the current Rails app; C, B plus own hardware; D, license a commercial platform and add the NASA layer to it. D is dropped: no commercial platform's API terms were read [UNKNOWN], and it gives up the open-source and free-data objectives." }
+            - table:
+                caption: "Shortlisted options against the objectives"
+                rows:
+                  - ["Criterion", "BAU", "Do-minimum", "A · Comparator + farmOS", "B · Integrated platform (preferred)", "C · B + Sonda"]
+                  - ["Meets O1 (fast plan)", "No", "Yes (built)", "Yes", "Yes", "Yes"]
+                  - ["Meets O2 (fewer exposed months)", "No", "Partly: shows them, cannot track execution", "Yes, if farmers log in farmOS", "Yes", "Yes"]
+                  - ["Meets O3 (plan executed)", "No", "No", "Yes, but across two apps", "Yes, in one app", "Yes"]
+                  - ["Meets O4 (cost per strategy)", "No", "No", "Partly: farmOS logs carry no prices by default [UNKNOWN]", "Yes (Gate 3)", "Yes"]
+                  - ["Meets O5 (ground vs satellite)", "No", "No", "farmOS has sensor support [VERIFIED: Drop Times project page]; pairing [UNKNOWN]", "No", "Yes"]
+                  - ["Whole-life cost", "Farmer's time, advisers [UNKNOWN]", "$0 on credits [VERIFIED: docs/deploy/DEPLOY.md]; $24.46/month VM after (T11)", "Low build; Drupal hosting [UNKNOWN]", "Gate 1 $25,538 (T11); later gates priced at G1", "Highest: Sonda Pro BOM $493.73/unit, certification, connectivity"]
+                  - ["Key risk", "Status quo erosion", "A plan that is never executed", "Two stacks, two logins, Drupal skills", "Scope creep into a generic farm-management tool", "Hardware cost and certification"]
+                  - ["Evidence status", "Weak", "Strong (live)", "Medium", "Medium", "Weak (TRL 2)"]
+            - note: "bom"
+            - lead: { b: "Why B over A [DESIGN]:", t: "%{app_name}'s season data already lives in its own models (fields, crop zones, timeline months, observations) [VERIFIED: docs/DATA_MODEL.md, docs/FIELDS.md]. Tasks, machines and inputs need to hang off those same months and zones, which is easier in one data model. A stays the fallback if team capacity is the binding limit. farmOS is GPL and models equipment, maintenance logs and inventory [VERIFIED: farmos.org guide], so it is also a pattern to copy." }
+            - lead: { b: "Why C is gated, not cancelled:", t: "the challenge rewards satellite-ground comparison, and the design is ready [VERIFIED: docs/DEVICES.md]. Hardware is the costliest and least mature part (TRL 2), so it only moves past EVT with pilot demand (T18)." }
+            - lead: { b: "Switching values (what would flip the choice) [DESIGN]:", t: "if fewer than 3 of 10 pilot farmers log operations weekly, B falls back to do-minimum. If farmOS integration costs under half of B's build effort, A wins. If the Sonda Pro BOM goes above the price ceiling the team sets, C stops after EVT." }
+        t5:
+          title: "T5 · Technical design: the end-goal platform"
+          blocks:
+            - p: "The end goal is one season plan per field that every module reads from and writes to. Rotation, weather and satellite evidence decide what to grow. People, machines, supplies and money decide whether it can be done. Sensors and records show what actually happened. Six modules exist today, one is designed (the Sonda), and four are vision."
+            - lead: { b: "The integrating idea: the Season Execution Plan [DESIGN].", t: "When a farmer taps \"Use as plan\" (built), %{app_name} expands the chosen strategy into a dated list of field operations for each crop zone: prepare, sow, fertilise, spray, irrigate, cover-crop, harvest. Each operation carries its window (from the timeline's months and the 7-day forecast), the machine it needs, the inputs and quantities, the people and hours, and its cost. Done operations are logged against the same zone, and the harvest closes the loop. Today the plan stores only next season's crop [VERIFIED: docs/FIELDS.md, Crops::PlanService]." }
+            - h3: "%{app_name} end-goal architecture · 11 modules around one season plan"
+            - figure: "Evidence on the left and resources on the right both meet in the season plan. Solid boxes are live today; dashed boxes are the Sonda and the four vision modules."
+            - table:
+                caption: "The eleven modules"
+                rows:
+                  - ["#", "Module", "Built today", "End goal [DESIGN]", "Main data and APIs", "Status"]
+                  - ["1", "Land and Fields", "Pins, area, irrigation, water source, soil class; up to six crop zones on a 10×10 grid; field workspace [VERIFIED: docs/FIELDS.md, DATA_MODEL.md]", "Field boundaries (the boundary column is empty until a map exists [VERIFIED: DATA_MODEL.md]); tenure and lease terms; parcel documents; soil lab results", "SSURGO, 3DEP, NASADEM, CDL, GIBS, FCC", "Built, extend"]
+                  - ["2", "Crops and Rotation Planner", "Current rotation plus 4 strategies, 7 criteria scored 0–100, 3-season timeline, scenarios (+1/+2 °C, −20% rain), Gemini \"why\" [VERIFIED: ROADMAP.md]", "Own yields recorded (needs a column [VERIFIED: FIELDS.md]); GEOGLAM crop calendars; gross margin as an 8th criterion", "GAEZ, ECOCROP, FAO-56, POWER, IMERG, SMAP, MODIS, ECOSTRESS, GRACE", "Built, extend"]
+                  - ["3", "Weather and Risk", "7-day Meteomatics forecast; daily frost, heat, heavy-rain and dry-spell alerts; push and email wait for switches and the shells [VERIFIED: ROADMAP.md]", "Pest and disease weather rules; alerts tied to scheduled operations (\"spray window closes Thursday\")", "Meteomatics, POWER hourly; pest rules documented [VERIFIED: data_sources/pest_weather_rules.md]", "Built, extend"]
+                  - ["4", "Field from Space", "Monthly NDVI (Landsat, Sentinel-2), MODIS normal, bare windows, NDVI map [VERIFIED: ROADMAP.md]", "Observed bare months against the planned timeline (listed as next [VERIFIED: ROADMAP.md]); anomaly alerts", "Planetary Computer, AppEEARS", "Built, extend"]
+                  - ["5", "Reports and Sharing", "Season summary, GAEZ attainable harvest, CSV/JSON export [VERIFIED: FIELDS.md]", "Read-only plan link for an adviser or extension office; cooperative roll-ups", "Internal", "Built, extend"]
+                  - ["6", "People and Tasks", "Profile fields only: role, team type, team size [VERIFIED: farmer_profile.rb]. \"Team members and tasks need their own models\" [VERIFIED: FIELDS.md]", "Several users per farm with roles (owner, manager, worker, advisor already exist as profile roles); tasks generated from the plan, assigned, timed; hours, wage rate, labour cost; workload score from real hours", "Passkeys per member (existing auth)", "Vision"]
+                  - ["7", "Equipment and Machinery", "A checklist of 8 types: hand tools, draft animals, tractor, planter, sprayer, harvester, irrigation system, drone [VERIFIED: farmer_profile.rb]. The workload score counts a combine for small grains [VERIFIED: FIELDS.md]", "Asset registry (make, model, year, hours, location); maintenance logs and reminders; use per operation; fuel; ownership vs hire cost; strategies checked against machines actually owned", "Manual entry; machine-data import [UNKNOWN which standard]", "Vision"]
+                  - ["8", "Supplies and Inputs", "Nothing", "Stock of seed, fertiliser, crop protection, fuel, cover-crop seed; consumption per operation; reorder points before a sowing window; nitrogen balance per zone", "Nutrient removal sources documented [VERIFIED: data_sources/nutrient_removal.md]", "Vision"]
+                  - ["9", "Costs, Budget and Markets", "Nothing. Market prices are a gap in every strategy [VERIFIED: FIELDS.md]. The profile has budget level low/high [VERIFIED: DATA_MODEL.md]", "Cost per ha per strategy (inputs + machines + labour); price feeds; gross margin; monthly cash need on the timeline", "FAOSTAT, AMS, NASS, WFP, World Bank and others, with licence verdicts already checked [VERIFIED: DATA_SOURCES.md]; most keys not configured", "Vision"]
+                  - ["10", "Field Station (Sonda)", "Catalogue page with a 3D viewer only [VERIFIED: DEVICES.md]", "Ground soil moisture, temperature and rain next to SMAP, IMERG, POWER; device card, alerts (T5b)", "POST /api/v1/devices/readings (to build)", "Designed"]
+                  - ["11", "Integrations Hub", "13 sources fetched per field pin, all through one client with retries and an operator pause switch [VERIFIED: FIELDS.md]", "Sources as plug-ins with status per farm; credentials per source; partner exports (adviser, cooperative, farmOS)", "Index of about 60 documented sources [VERIFIED: docs/data_sources/]", "Built, extend"]
+            - lead: { b: "Architecture fit.", t: "The current architecture absorbs the new modules without a rewrite [DESIGN]. Each module is one Rails area with service objects and Turbo screens, following the house rules (thin controllers, Result objects, every outside call through the switchboard) [VERIFIED: CLAUDE.md]. New tables follow the existing conventions (money as integer minor units or decimal(10,2), never Float; integer enums starting at unknown) [VERIFIED: DATA_MODEL.md]. Proposed new tables [DESIGN]: farm_members, tasks, operations, equipment_assets, maintenance_logs, supplies, stock_movements, cost_items, price_quotes, devices, device_readings (the last two are already specified [VERIFIED: DEVICES.md])." }
+            - lead: { b: "Repo vs overview conflicts (logged as U-01 and U-02 in T6):", t: "the overview calls MODIS, ECOSTRESS and GRACE \"next\", but ROADMAP.md marks them done. FIELDS.md still lists AppEEARS products and FAO-56 as \"not connected yet\", which ROADMAP.md contradicts." }
+        t5b:
+          title: "T5b · Sonda field station: modules, cost, manufacturing"
+          blocks:
+            - p: "The Sonda is fully specified on paper (docs/DEVICES.md) but not yet built: only the catalogue page with a 3D viewer exists in production [VERIFIED: docs/DEVICES.md]. Roughly half of the core electronics have verified distributor unit prices, while soil probes, power components, enclosure mechanics and market-by-market certification paths remain open (U-07 to U-11, U-21, U-22). Consequently, no final unit BOM or retail price is stated at this Strategic Outline Case (SOC) stage. The station is designed as a single global product: the same hardware, firmware and backend serve any agricultural region, with only the connectivity variant (Lite or Pro) and the regulatory approvals differing by deployment market."
+            - h3: "1. Expected end-to-end operation [DESIGN] + [VERIFIED: docs/DEVICES.md]"
+            - p: "The Sonda operates as an autonomous agrometeorological field station that turns subsoil and microclimate measurements into actionable decisions inside %{app_name}'s season plan. Operation follows four stages:"
+            - ul:
+                - "Field setup (once, about 2 minutes). The farmer mounts the weatherproof enclosure on a post inside the target crop zone and buries two capacitive soil probes at 10 cm (seedbed and evaporation zone) and 30 cm (active root zone). Scanning the exterior QR label in the %{app_name} app validates a one-time claim token and binds the hardware (device_id) to the field pin or crop zone [VERIFIED: docs/DEVICES.md]."
+                - "Edge acquisition (every 15 minutes). Powered by a 5 W solar panel and a LiFePO4 battery, the station stays in deep sleep and is woken by the RV-3028 real-time clock to sample soil moisture and temperature at 10 and 30 cm, air temperature and relative humidity (SHT45), plus cumulative rainfall and solar radiation on the Pro model [VERIFIED: docs/DEVICES.md]. Each sample is written to a 16 MB SPI NOR flash buffer with a monotonically increasing sequence number (seq) and an RTC timestamp, so no data is lost during multi-day WiFi or cellular outages [VERIFIED: docs/DEVICES.md]. Timestamps are stored in UTC and converted to local time from the field's location, so the same firmware runs in any time zone [DESIGN]."
+                - "Secure telemetry (every 60 minutes). The Sonda batches pending readings, signs the batch inside its ATECC608B secure element (ECDSA P-256) and uploads it over TLS through local WiFi (Lite) or LTE-M/NB-IoT with a soldered multi-carrier eSIM (Pro) [VERIFIED: docs/DEVICES.md]. Flash is freed only up to the highest seq acknowledged by the server [VERIFIED: docs/DEVICES.md]."
+                - "Cloud pairing and action (continuous). Readings are ingested through POST /api/v1/devices/readings, validated (signature, seq, clock skew ≤ 10 min) and plotted side by side with NASA SMAP, IMERG, POWER and Meteomatics series in the \"Your sensor next to the satellite\" view [VERIFIED: docs/DEVICES.md]. When readings cross agronomic thresholds (water stress, rainfall that makes a planned irrigation unnecessary, frost, heat or disease risk), %{app_name} updates tasks in the Season Execution Plan and sends alerts [DESIGN]."
+            - table:
+                caption: "Figure T5b-1 · Sonda end-to-end flow in four stages"
+                rows:
+                  - ["Stage", "Cadence", "Key operations and data flow"]
+                  - ["Stage 1 · Field Setup", "Once (~2 min)", "Post mount in crop zone; bury 10 cm and 30 cm capacitive probes; scan QR label in the %{app_name} app to bind device_id to field pin or zone"]
+                  - ["Stage 2 · Edge Acquisition", "Every 15 min", "RV-3028 RTC wakes ESP32-S3; sample soil (10/30 cm) and SHT45 air T/RH; write to 16 MB SPI NOR flash buffer with monotonic seq and UTC timestamp"]
+                  - ["Stage 3 · Secure Telemetry", "Every 60 min", "Batch pending samples; sign in ATECC608B (ECDSA P-256); upload over TLS via WiFi (Lite) or LTE-M/NB-IoT with soldered eSIM (Pro); free flash up to server ACK"]
+                  - ["Stage 4 · Cloud Pairing & Action", "Continuous", "Ingest via POST /api/v1/devices/readings; validate signature, seq and clock skew ≤ 10 min; store in device_readings; pair against SMAP, IMERG, POWER and Meteomatics; update Season Execution Plan and send alerts"]
+            - h3: "2. Scientific rationale: closing the satellite-to-ground gap [DESIGN]"
+            - p: "Earth observation datasets give %{app_name} global, zero-cost coverage, but their spatial resolution, sensing depth and revisit time leave blind spots at the field-zone scale. The Sonda is designed to ground-truth and downscale four data streams already active in %{app_name} [VERIFIED: docs/ROADMAP.md, docs/DEVICES.md]:"
+            - table:
+                caption: "What each satellite source misses at field scale, and what the Sonda measures"
+                rows:
+                  - ["Variable", "Satellite / gridded source", "Limitation at field scale", "Sonda measurement"]
+                  - ["Soil moisture", "NASA SMAP (~9–36 km)", "Senses only the top ~5 cm of soil", "Capacitive moisture and temperature at 10 cm and 30 cm [VERIFIED: docs/DEVICES.md], validating root-zone water where SMAP cannot see"]
+                  - ["Precipitation", "NASA IMERG (~0.1°, ~10 km)", "Can miss localized convective rainfall", "0.2 mm tipping-bucket rain gauge, Pro only [VERIFIED: docs/DEVICES.md], separating rain from irrigation at field level"]
+                  - ["Microclimate", "NASA POWER (~50 km); Meteomatics (~1–9 km)", "Grid cells average out local frost pockets, slopes and canopy effects", "On-site air T/RH (SHT45), solar radiation (Pro) and optional leaf wetness [VERIFIED: docs/DEVICES.md], driving frost, heat-stress and pest/disease rules (pest_weather_rules.md)"]
+                  - ["Crop water stress", "NASA ECOSTRESS (~70 m)", "Intermittent overpasses leave temporal gaps", "Continuous 15-minute soil and air time series [VERIFIED: docs/DEVICES.md], filling gaps between overpasses for irrigation timing"]
+            - h3: "3. Hardware architecture: Lite vs. Pro [VERIFIED: docs/DEVICES.md]"
+            - p: "Both variants share a common solar-powered, weatherproof core and differ only in backhaul connectivity, positioning and meteorological expansion:"
+            - ul:
+                - "Common core platform (Lite and Pro): 5 W solar panel → MPPT charger → LiFePO4 battery → regulated rails; Espressif ESP32-S3-WROOM-1 MCU (WiFi 2.4 GHz + BLE); Microchip ATECC608B secure element (ECDSA P-256); 16 MB SPI NOR flash buffer; RV-3028 RTC; IP67 UV-stabilised polycarbonate enclosure with vent, M12 sealed probe connectors and pole mount. Samples every 15 minutes and uploads hourly in batches."
+                - "Sonda Lite: for fields within reach of a local WiFi network. Uses WiFi 2.4 GHz plus Bluetooth for local setup, inherits its geolocation from the field pin in the %{app_name} app, and carries the base sensor set (soil at 10 and 30 cm, air T/RH)."
+                - "Sonda Pro: for remote fields that depend on cellular IoT coverage. Adds a Quectel BG95-M3 module (LTE-M / NB-IoT with built-in GNSS), a soldered MFF2 multi-carrier eSIM, a 0.2 mm tipping-bucket rain gauge, a solar radiation sensor and an SDI-12 / RS485 expansion port."
+            - table:
+                caption: "Figure T5b-2 · Hardware architecture: common core, Sonda Lite and Sonda Pro"
+                rows:
+                  - ["Subsystem", "Common core platform", "Sonda Lite", "Sonda Pro"]
+                  - ["Power", "5 W solar panel → MPPT charger → LiFePO4 battery → regulated rails", "Included", "Included"]
+                  - ["Compute and security", "ESP32-S3-WROOM-1 MCU + ATECC608B (ECDSA P-256)", "Included", "Included"]
+                  - ["Storage and time", "16 MB SPI NOR flash buffer + RV-3028 RTC with backup", "Included", "Included"]
+                  - ["Base sensors", "2× capacitive soil moisture/temperature probes (10 and 30 cm) + SHT45 air T/RH", "Included", "Included"]
+                  - ["Enclosure and mount", "IP67 UV-stabilised polycarbonate, vent, M12 connectors, pole mount", "Included", "Included"]
+                  - ["Backhaul and positioning", "Variant-specific", "WiFi 2.4 GHz + BLE; location from field pin in app", "BG95-M3 LTE-M / NB-IoT + built-in GNSS; MFF2 soldered eSIM"]
+                  - ["Weather and bus expansion", "Variant-specific", "None (base soil and air sensing only)", "0.2 mm rain gauge, solar radiation sensor, SDI-12 / RS485 port"]
+                  - ["Target deployment", "Variant-specific", "Fields with local WiFi coverage", "Remote fields with cellular IoT coverage"]
+            - h3: "4. Hardware modules and unit costs normalized in USD (BOM status)"
+            - p: "Distributor quotes in other currencies are normalized to USD with fixed reference rates ([ASSUMPTION A-3]: 1 GBP = 1.27 USD; 1 EUR = 1.08 USD), keeping the original verified list price in parentheses. All prices exclude VAT, sales taxes, import duties and freight; landed cost varies by destination market and is not estimated at this stage. \"Qty 100\" is the 100-unit price break."
+            - table:
+                caption: "Hardware modules and unit costs (BOM status)"
+                rows:
+                  - ["Block / subsystem", "Part (as designed)", "Lite", "Pro", "Unit (Qty 1)", "Batch (Qty 100)", "Evidence"]
+                  - ["MCU, WiFi + BLE", "Espressif ESP32-S3-WROOM-1-N8R8", "Yes", "Yes", "$5.82 (£4.58)", "$4.39 (£3.46)", "[VERIFIED: DigiKey UK]"]
+                  - ["Cellular + GNSS", "Quectel BG95-M3 (BG95M3LA-64-SGNS)", "No", "Yes", "$29.60 (£23.31)", "$24.66 (£19.42)", "[VERIFIED: RS UK]"]
+                  - ["Secure element", "Microchip ATECC608B-SSHDA-B", "Yes", "Yes", "$0.86 (€0.796)", "$0.69 (€0.642)", "[VERIFIED: Farnell IE]"]
+                  - ["Air temperature + humidity", "Sensirion SHT45-AD1F-R2", "Yes", "Yes", "$4.10 (€3.80)", "$3.70 (€3.43)", "[VERIFIED: SOS electronic]"]
+                  - ["Embedded SIM", "MFF2 soldered eSIM", "No", "Yes", "$0.70", "$0.70", "[VERIFIED: Telnyx pricing]"]
+                  - ["Rain gauge (0.2 mm/tip)", "Tipping-bucket collector; final SKU open", "No", "Yes", "$150.00 (benchmark)", "[UNKNOWN]", "[VERIFIED: NovaLynx store]"]
+                  - ["Soil moisture + temperature (×2)", "Capacitive, never resistive; SKU open (U-07)", "Yes", "Yes", "[UNKNOWN]", "[UNKNOWN]", "Research-grade benchmark: $218 each [VERIFIED: METER TEROS 11]"]
+                  - ["Offline buffer", "16 MB SPI NOR flash (U-08)", "Yes", "Yes", "[UNKNOWN]", "[UNKNOWN]", "Not yet quoted"]
+                  - ["Real-time clock", "RV-3028 RTC + backup (U-08)", "Yes", "Yes", "[UNKNOWN]", "[UNKNOWN]", "Not yet quoted"]
+                  - ["Power subsystem", "5 W panel, LiFePO4 cell, MPPT charger (U-08)", "Yes", "Yes", "[UNKNOWN]", "[UNKNOWN]", "Not yet quoted"]
+                  - ["Mechanics", "IP67 PC enclosure, M12 connectors, radiation shield (U-08)", "Yes", "Yes", "[UNKNOWN]", "[UNKNOWN]", "Not yet quoted"]
+                  - ["PCB + assembly", "Custom 2/4-layer board (U-22)", "Yes", "Yes", "$8.00 + $0.0016/joint", "$8.00 + $0.0016/joint", "[VERIFIED: JLCPCB]; joint count [UNKNOWN]"]
+                  - ["Priced core electronics subtotal", "MCU + secure element + SHT45 (Lite); + BG95-M3 + eSIM (Pro). Excludes probes, rain gauge, flash, RTC, power, enclosure and PCB", "Lite / Pro", "", "~$10.78 / ~$41.08", "~$8.78 / ~$34.14", "Computed from verified items [ASSUMPTION A-3]"]
+            - p: "Optional SDI-12 / RS485 expansion sensors [DESIGN]: soil electrical conductivity (TEROS 12, $258.00) and leaf wetness for fungal-disease models (PHYTOS 31, $164.00), both at METER 2025 fellowship-sheet prices [VERIFIED: METER 2025 fellowship sheet]. The solar radiation sensor SKU for the Pro remains [UNKNOWN] (U-21)."
+            - lead: { b: "BOM sensitivity:", t: "the priced core electronics are inexpensive (~$8.78 Lite and ~$34.14 Pro at Qty 100, of which the BG95-M3 module is ~$24.66). External transducers dominate: two research-grade soil probes alone (~$436 at the benchmark price) would exceed the whole priced core of either variant, and the rain gauge benchmark ($150.00) is more than four times the Pro core. Choosing between an industrial capacitive probe and a research-grade probe is therefore the main hardware trade-off before EVT (U-07)." }
+            - h3: "5. Firmware security, backend ingestion and engineering estimates"
+            - lead: { b: "Hardware-rooted identity and firmware safety [VERIFIED: docs/DEVICES.md]:", t: "each unit generates its private key inside the ATECC608B during factory enrolment, and the key never leaves the chip. Every batch is signed with ECDSA P-256; the backend rejects duplicate seq values and clock skew above 10 minutes. Firmware enforces secure boot, flash encryption and signed A/B OTA updates with automatic rollback." }
+            - lead: { b: "Backend ingestion and UI integration (to build) [VERIFIED: docs/DEVICES.md]:", t: "dedicated endpoint POST /api/v1/devices/readings feeding the devices and device_readings tables; non-destructive range validation (out-of-range values are flagged, not dropped); rate limiting with Rack::Attack; an operator pause switch in the Integrations Hub; and a field-workspace device card with battery and signal health, threshold alerts and the \"Your sensor next to the satellite\" charts." }
+            - lead: { b: "Cellular payload and connectivity cost [ASSUMPTION A-1]:", t: "4 readings/hour × 24 h × 30 days = 2,880 readings/month (~720 hourly batches). A compact JSON/CBOR payload (~180 bytes/reading plus TLS overhead) is expected to stay under 1–2 MB/month if TLS sessions are resumed between uploads; the model uses 5 MB/month to cover full handshakes, OTA checks and retries. At 5 MB/month, Telnyx ($0.70 one-time eSIM, $0.00/month platform fee, $0.078/MB) costs ~$0.39/month versus Hologram ($3.00 SIM, $1.00/month, $0.03/MB) at ~$1.15/month [VERIFIED: Telnyx and Hologram pricing]. Excluding one-time SIM costs, Telnyx stays cheaper up to ~21 MB/month per device. Per-country tariffs, roaming restrictions and LTE-M/NB-IoT availability in each target market are [UNKNOWN] (U-09, U-10)." }
+            - lead: { b: "Energy budget envelope [ASSUMPTION A-2]:", t: "the MCU spends more than 98% of the time in deep sleep, waking ~1–2 s every 15 minutes for sensing and ~5–10 s per hour for the radio upload. With a 3.2 V / 6,000 mAh LiFePO4 cell (~19.2 Wh nominal) and a 5 W panel, an estimated consumption of ~0.3–0.6 Wh/day gives a conservative autonomy of more than 15–20 days without sun (after derating for cold, ageing and depth of discharge) and recovers a day's use in under one hour of peak sun. Because deployments will span all climate zones, the charger must block LiFePO4 charging below 0 °C and the power design must be checked against high-latitude winter irradiance and hot-climate enclosure temperatures [DESIGN]. All figures are to be measured on EVT units (U-08)." }
+            - h3: "6. Manufacturing path [DESIGN]"
+            - table:
+                caption: "Manufacturing gates"
+                rows:
+                  - ["Gate", "Units", "Build", "Exit criteria"]
+                  - ["EVT · Engineering Validation Test", "10", "Commercial development boards (ESP32-S3 and BG95-M3) in a standard IP67 enclosure with candidate soil probes", "Store-and-forward firmware loop validated; power draw measured; 60-day pairing against SMAP and IMERG on pilot fields in at least two contrasting agro-climatic regions (O5)"]
+                  - ["DVT · Design Validation Test", "20–30", "Custom PCB through turnkey PCBA; final UV-stabilised enclosure and M12 connectors", "Full-season field deployment; soil-texture calibration curves indexed by Field.soil.texture covering the main soil classes of target markets (open design item in docs/DEVICES.md)"]
+                  - ["Certification and PVT · Production Validation Test", "100 (pilot batch)", "Per-unit factory provisioning: flash firmware with secure boot → ATECC608B internal key generation → register public key in %{app_name}'s devices table [VERIFIED: docs/DEVICES.md] → print and apply QR claim label → thermal burn-in and IP67 water-ingress test → pack", "Repeatable yield; units ready for market-specific certification and shipment"]
+            - lead: { b: "Make-vs-buy gates:", t: "off-the-shelf versus custom enclosures and probes are re-evaluated at each gate [VERIFIED: docs/DEVICES.md]." }
+            - h3: "7. Regulatory certification path (global, module-based)"
+            - p: "Using pre-certified radio modules (ESP32-S3-WROOM-1 and Quectel BG95-M3) lets the Sonda reuse existing module approvals in many markets, so that the host product needs a lighter declaration and EMC assessment instead of full end-device radio certification [DESIGN]. Each destination market (or regional bloc) has its own type-approval regime, and which module approvals are recognized in each target market is [UNKNOWN] (U-09, U-10). The only market costed so far is the United States, used here as a reference benchmark:"
+            - table:
+                caption: "Certification paths, United States as the reference benchmark"
+                rows:
+                  - ["Certification path", "Applicability", "Benchmark cost (USD)", "Benchmark lead time", "Evidence"]
+                  - ["Host declaration reusing pre-certified module approvals", "Sonda Lite; Sonda Pro if the BG95-M3 approval covers the host design", "$2,500 – $5,500", "3 – 6 weeks", "[VERIFIED (secondary): MarkReady] (US FCC SDoC); other markets [UNKNOWN] (U-10)"]
+                  - ["Cellular IoT EMC / radio testing", "Sonda Pro if the host board or antenna needs a full radio test", "$15,000 – $40,000", "8 – 16 weeks", "[VERIFIED (secondary): MarkReady] (US); other markets [UNKNOWN] (U-10)"]
+                  - ["Full cellular end-device + industry certification + operator approval", "Sonda Pro only if mobile operators require end-device certification", "$50,000 – $200,000", "6 – 9 months", "[VERIFIED (secondary): MarkReady] (US, PTCRB route); other markets [UNKNOWN] (U-10)"]
+            - lead: { b: "Gated rollout strategy [DESIGN]:", t: "Sonda Lite ships first because it relies only on a WiFi/BLE module and stays on the cheapest, fastest certification route in each market. Sonda Pro follows market by market once module manufacturer and test-lab consultations confirm BG95-M3 approval coverage (U-09), national type-approval requirements (U-10) and LTE-M/NB-IoT network availability in each target market." }
+        t5c:
+          title: "T5c · How %{app_name} decides: use cases, formulas and a worked example on real data"
+          blocks:
+            - p: "Every recommendation %{app_name} makes is a deterministic calculation on public data, and it can be reproduced line by line. The formulas below are copied from the production services. They were run on a real field: the team's captured dataset for Ames, Iowa (42.0, −93.75), with NASA POWER daily data for 1 Jan–31 Oct 2025 (304 days), plus SSURGO soil, USGS 3DEP slope and the USDA Cropland Data Layer [VERIFIED: farm_data_42.0_-93.75.csv / .json in the repo]."
+            - h3: "Use cases: problem → data → calculation → farmer decision"
+            - table:
+                caption: "Use cases"
+                rows:
+                  - ["Farm problem", "Data source (NASA first)", "Calculation in %{app_name}", "What the farmer decides"]
+                  - ["Will rain cover this crop's water need?", "NASA POWER (T2M, RH2M, WS2M, ALLSKY_SFC_SW_DWN, PRECTOTCORR); FAO-56 Kc", "Weather::Et0 (Penman-Monteith) → Crops::WaterNeed (Kc curve, CROPWAT effective rain) → water score", "Which crop fits rainfed; whether to irrigate"]
+                  - ["Will bare soil wash away?", "GPM IMERG 20-year daily rain; USGS 3DEP or NASADEM slope", "Weather::RainExtremes (25/50 mm days) → erosion score; Rotations::Timeline storm months", "Rotation with fewer row crops on slopes; cover crop timing"]
+                  - ["When is the soil bare and exposed?", "Landsat + Sentinel-2 NDVI; MODIS 20-year normal; POWER frost days", "Fields::Vegetation, Rotations::Timeline (bare month under storm, dry or frost)", "Cover crop and sowing window"]
+                  - ["Is irrigation water secure?", "GRACE/GRACE-FO water storage; SMAP L4 root-zone moisture; ECOSTRESS ESI", "Weather::WaterStorage (−15 water points when depleted), Weather::SoilMoisture, Weather::WaterStress", "Reduce irrigated area; choose drought-tolerant crops"]
+                  - ["Is the crop suited to this pin and soil?", "FAO GAEZ v4; FAO ECOCROP; SSURGO", "Crops::Potential, Crops::Fit (−20 points per soil property outside tolerance)", "Drop unsuitable crops"]
+                  - ["Does the rotation break pests and build nitrogen?", "USDA CDL crop history; crop families", "Crops::RotationCheck (same family, monoculture, no legume in 4 seasons)", "Insert a legume or another family"]
+                  - ["Frost, heat, storm this week", "Meteomatics 7-day; POWER", "Weather::Forecast, Weather::DailyAlertsJob", "Delay sowing, protect, harvest early"]
+                  - ["What will the plan cost and earn (vision)", "FAOSTAT, USDA AMS/NASS, WFP, World Bank (licence verdicts recorded)", "Module 9: cost per ha + price → gross margin", "Pick the strategy that pays"]
+            - p: "Sources for the calculations column: [VERIFIED: app/services/weather/et0.rb, crops/water_need.rb, rotations/comparator.rb, rotations/timeline.rb, weather/rain_extremes.rb; docs/FIELDS.md; docs/DATA_SOURCES.md]."
+            - h3: "The formulas (as implemented)"
+            - p: "1. Reference evapotranspiration, FAO-56 Penman-Monteith (Weather::Et0):"
+            - formula: "ET0 = [0.408 Δ Rn + γ (900 / (T + 273)) u2 (es − ea)] / [Δ + γ (1 + 0.34 u2)]"
+            - p: "Here Rn = 0.77 Rs − Rnl; Rs comes from ALLSKY_SFC_SW_DWN, γ = 0.000665 P, and P is set by elevation."
+            - p: "2. Crop water need over the FAO-56 stages (Crops::WaterNeed). Kc is flat, rises, holds, then falls:"
+            - formula: "ETc = Σ (d = 1 to L) Kc(d) × ET0(d)"
+            - p: "3. Effective rain per month, FAO/CROPWAT (Smith 1992):"
+            - formula: "Pe = 0.8 P − 25 when P > 75 mm; Pe = max(0.6 P − 10, 0) when P ≤ 75 mm"
+            - p: "4. Water score (rainfed): 100 × the mean of Pe/ETc over the strategy's crops. Season totals let a wet month hide a dry one: sunflower is 91% covered by the season total but 80% month by month. Irrigated: 60 + 40 × that share − 15 when GRACE shows the regional store depleted."
+            - p: "5. Erosion score: 100 − (row crops × penalty). The penalty is 25 on slopes of 5% or more, else 8, plus 7 where 50 mm days come at least once a year (IMERG)."
+            - p: "6. Soil health = min(100, 25 + 20 × legumes + 10 × families + 10 × non-row crops). Nitrogen = 100 × legume seasons / seasons. Pest break = 100 − 25 × same-family pairs − 30 × monoculture runs. Workload = 100 − 15 × (distinct crops − 1) − 20 for small grains without a harvester."
+            - p: "7. Total, weighted by the farmer's goals (weight 3 for a criterion that matches a goal, else 1):"
+            - formula: "S = Σc (wc × sc) / Σc wc, with wc ∈ {1, 3}"
+            - p: "8. Exposed month (Rotations::Timeline): a month with no crop in the ground whose 20-year IMERG mean is at least one heavy-rain day a year (storm), rain under half of ET0 (dry), or ≥2 frost days. A cover crop protects every month of a bare window of 2+ months except the first."
+            - h3: "Worked example: Ames, Iowa, 2025 season"
+            - lead: { b: "Field inputs [VERIFIED: repo dataset]:", t: "elevation 321.7 m; slope 4.05% (USGS 3DEP); Clarion loam, well drained, 3.5% organic matter, available water capacity 0.21 cm/cm (SSURGO). CDL history: soybeans 2020, 2022, 2024; corn 2021, 2023, 2025. Profile and goals as in the team's Nebraska demo farm (rotation + soil health; owns a harvester) [VERIFIED: config/demo_farms.yml]." }
+            - lead: { b: "Method note.", t: "Production uses 25-year POWER normals and 20 years of IMERG. This example uses the 2025 daily series actually captured, so it shows one real season. Wind is not in the file, so each day's NASA POWER WS2M at the pin is used (mean 3.15 m/s in 2025; the FAO-56 default of 2 m/s understated it). Heavy-rain days come from POWER rain here, not IMERG. Every number comes from docs/proposal/ames_worked_example.rb (run mise exec -- ruby docs/proposal/ames_worked_example.rb). It writes ames_worked_example_out.json, lists every gap it does not fill, and exits with an error if any of its 24 checks fails." }
+            - table:
+                caption: "Monthly weather, 2025 (computed)"
+                rows:
+                  - ["Month", "ET0 (mm)", "Rain (mm)", "Frost days", "Days ≥ 25 mm", "Risk flags (timeline rule)"]
+                  - ["Jan", "18.1", "7.0", "31", "0", "dry, frost"]
+                  - ["Feb", "25.4", "10.0", "26", "0", "dry, frost"]
+                  - ["Mar", "67.2", "66.7", "22", "1", "storm, frost"]
+                  - ["Apr", "86.6", "89.8", "7", "1", "storm, frost"]
+                  - ["May", "127.0", "75.8", "0", "1", "storm"]
+                  - ["Jun", "132.3", "187.4", "0", "2", "storm"]
+                  - ["Jul", "138.7", "236.0", "0", "3", "storm"]
+                  - ["Aug", "114.1", "82.6", "0", "0", "–"]
+                  - ["Sep", "94.5", "39.9", "0", "0", "dry"]
+                  - ["Oct", "76.8", "59.1", "0", "0", "–"]
+            - p: "Jan–Oct totals: ET0 881 mm, rain 854 mm. Last spring frost: 8 Apr; no fall frost by 31 Oct. Growing degree days (base 10 °C, 86/50 method, May–Sep): 1,702; the landing page's 1,915 is the simple method (daily mean − 10 °C) over Jan–Oct. Wettest day: 46.8 mm (May), so there were no 50 mm days and no storm penalty."
+            - table:
+                caption: "Crop water balance, 2025 (Crops::WaterNeed algorithm)"
+                rows:
+                  - ["Crop (FAO-56 season)", "ETc need (mm)", "Season rain (mm)", "Effective rain (mm)", "Deficit (mm)", "Covered by rain"]
+                  - ["Corn, 1 Apr–28 Aug", "506", "663", "408", "119", "80%"]
+                  - ["Soybean, 1 May–12 Sep", "499", "588", "365", "138", "73%"]
+                  - ["Spring wheat, 1 Mar–13 Jul", "428", "508", "297", "165", "69%"]
+                  - ["Sunflower, 1 Apr–8 Aug", "418", "610", "382", "83", "91%"]
+            - table:
+                caption: "Strategy scores (Rotations::Comparator; crop fit left out because GAEZ is not in this dataset, exactly as the app does when a criterion is missing)"
+                rows:
+                  - ["Strategy (next 3 seasons)", "Pest break ×3", "Soil health ×3", "Nitrogen ×3", "Water ×1", "Erosion ×3", "Workload ×1", "Total"]
+                  - ["Current: soybean → corn → soybean", "100", "85", "67", "76", "76", "85", "82"]
+                  - ["Small grain: wheat → soybean → corn", "75", "75", "33", "74", "84", "70", "68"]
+                  - ["Other family: sunflower → corn → sunflower", "100", "45", "0", "88", "76", "85", "60"]
+            - table:
+                caption: "Bare and exposed months, 2025 weather (Jan–Oct)"
+                rows:
+                  - ["Strategy, seasons 2026–2028 (Jan–Oct known; Nov–Dec have no data)", "Vulnerable months, FAO-56 seasons", "With cover", "Vulnerable, corn on the farmer's Apr–Oct record", "With cover"]
+                  - ["Current: soybean → corn → soybean", "12", "4", "11", "3"]
+                  - ["Small grain: wheat → soybean → corn", "11", "4", "10", "3"]
+                  - ["Other family: sunflower → corn → sunflower", "12", "6", "11", "5"]
+            - p: "Source: timeline.lines in docs/proposal/ames_worked_example_out.json. A cover protects every month of a bare window except the first. Unknown months break a window, so these counts are low: November and December were open soil in all 26 clear satellite views of 2013-2025 (T5d, V8)."
+            - lead: { b: "What this shows.", t: "On this field %{app_name} does not push change for its own sake: the current corn–soybean rotation scores highest (82). That agrees with 670 field trials of maize after soybean in a climate like Ames (+9.9%, T5d V4) and with what the farmer has grown since at least 2008 (CDL). The data flags 12 vulnerable bare months over the next three seasons on the FAO-56 calendar, under frost, drought or the 25 mm storms of March–July. A cover crop in each bare window cuts the count to 4, but the soil it saves is about 13% (RUSLE, T5d V6): the riskiest months are May and June under young crops, which the month count treats as covered. This is one season of model output, checked against the app's code (below) and against 25 years of records (T5d)." }
+            - lead: { b: "The same formulas in Buin, Chile (demo farm, canal-irrigated).", t: "GRACE shows the region's water store about 20 cm below its 2004–2009 level [VERIFIED: docs/DEMO.md]. Because the field draws on canals, irrigation_risk takes 15 points off the water score of every strategy, and the plan flags \"water storage\" as a risk to check locally [VERIFIED: comparator.rb, SUPPLY_RISK = 15]." }
+            - h3: "Cross-check: the app's own services give the same answer"
+            - p: "docs/proposal/ames_cross_check.rb feeds the same 2025 data, as monthly means, into the production Weather::Et0.monthly, Crops::WaterNeed and Crops::RotationCheck. Run on 15 Nov 2026 with mise exec -- bin/rails runner docs/proposal/ames_cross_check.rb in the project's own environment. It now also totals the strategies with the app's own water shares:"
+            - table:
+                caption: "Cross-check against the production services"
+                rows:
+                  - ["Check", "App services", "Worked example", "Result"]
+                  - ["ET0, Jun–Aug", "129.3 / 138.0 / 114.7 mm", "132.3 / 138.7 / 114.1 mm", "App 0.5% higher to 2.3% lower"]
+                  - ["ET0, Jan–Feb", "16.1 / 21.6 mm", "18.1 / 25.4 mm", "App 11–15% lower: monthly means lose the daily Tmax/Tmin spread, as the script header predicts"]
+                  - ["Corn ETc / effective rain / deficit", "497 / 408 / 111 mm", "506 / 408 / 119 mm", "Same rain; ETc 1.8% lower"]
+                  - ["Soybean", "490 / 371 / 124 mm", "499 / 365 / 138 mm", "Within 3%"]
+                  - ["Spring wheat", "408 / 306 / 150 mm", "428 / 297 / 165 mm", "Within 5%"]
+                  - ["Sunflower", "408 / 382 / 76 mm", "418 / 382 / 83 mm", "Within 3%"]
+                  - ["Pest break (current / small grain / other family)", "100 / 75 / 100", "100 / 75 / 100", "Identical"]
+                  - ["Strategy totals with the app's water shares", "82 / 68 / 60 (water 78 / 78 / 90)", "82 / 68 / 60 (water 76 / 74 / 88)", "Ranking and totals identical"]
+            - p: "The worked example reruns cleanly: all 24 of its checks pass."
+            - h3: "Robustness: does the answer change if one input changes?"
+            - table:
+                caption: "Robustness of the ranking"
+                rows:
+                  - ["Variant", "Current", "Small grain", "Other family", "Winner"]
+                  - ["Baseline (3DEP slope 4.05%)", "82", "68", "60", "Current"]
+                  - ["SSURGO mapped slope 8% (the steep-slope penalty applies)", "71", "60", "49", "Current"]
+                  - ["No harvester", "82", "66", "60", "Current"]
+                  - ["No goals (all weights 1)", "82", "69", "66", "Current"]
+            - h3: "Water-limited yield (FAO-56 soil buffer, FAO-33 yield response)"
+            - p: "The soil buffer is RAW = p × 1000 × AWC × Zr, with AWC 0.21 from SSURGO and p and Zr from FAO-56 Table 22. The rain deficit beyond the buffer is stress, and FAO-33 converts it to yield:"
+            - formula: "1 − Ya / Ym = Ky × (1 − ETa / ETc)"
+            - table:
+                caption: "Water-limited yield, 2025"
+                rows:
+                  - ["Crop", "Deficit (mm)", "Soil buffer RAW (mm)", "Stress (mm)", "ETa/ETc", "Ky", "Yield factor"]
+                  - ["Corn", "119", "116", "4", "0.993", "1.25", "0.991"]
+                  - ["Soybean", "138", "63", "75", "0.85", "0.85", "0.872"]
+                  - ["Spring wheat", "165", "116", "50", "0.884", "1.15", "0.867"]
+                  - ["Sunflower", "83", "76", "7", "0.982", "0.95", "0.983"]
+            - p: "The model gives soybean a 13% cut in 2025 because its shallow root zone (0.6 m, the low end of FAO-56 Table 22) holds half the buffer corn has. It did not happen: Story County soybeans yielded 4.2% above trend (NASS). With 1.3 m roots, or with gauge-based rain, the modelled cut falls to 0–2%. Over 2001–2025 the same model ranks drought insurance losses well but does not track yields (T5d, V2), so the buffer belongs in a drought flag, not a yield forecast. The app itself still ignores stored soil water (docs/FIELDS.md); this buffer exists only in the proposal script."
+            - h3: "Pests the daily data can already flag"
+            - ul:
+                - "Tar spot (corn): 20 of the 150 corn-season days had a 30-day mean temperature of 18–23 °C, the most predictive range in the rule documented in pest_weather_rules.md. The first was 16 Jun and the longest run 16 days. Only 4 days reached a daily mean RH of 90% or more; the rule's humidity term is hourly, so that count is a proxy."
+                - "Fall armyworm: 1,402–1,890 degree-days from May to October, enough for 3.6–3.9 generations after arrival. Two published thresholds were used (du Plessis 2020; Malekera 2022). The arrival date needs FAMEWS or trap data."
+                - "Needs hourly data, which the Sonda or POWER hourly will supply: gray leaf spot, northern corn leaf blight and Asian soybean rust (current rotation). The small-grain rotation adds stripe, leaf and stem rust and Fusarium head blight."
+                - "Backtest (T5d, V5): over 2001–2025 every rule leans the right way against insured disease and insect losses in Central Iowa (Spearman 0.14 to 0.32), but none is significant. The rules say when to scout; they need leaf-wetness hours and scouting or trap records before they can say more."
+            - h3: "Nitrogen and margin per strategy (illustrative inputs)"
+            - p: "These two results rest on 20 inputs tagged placeholder in the script: yields, prices, costs and N rates. Real values replace them through docs/proposal/ames_inputs.json once the NASS, AMS and ERS/ISU keys exist (U-20). They show the calculation the Costs and Markets module will run, not a forecast."
+            - table:
+                caption: "Nitrogen balance and margin per strategy"
+                rows:
+                  - ["Strategy", "N applied + fixed − removed, 3 seasons (kg N/ha)", "Margin, $/ha/yr", "Corn −20%", "Soybean +20%"]
+                  - ["Current", "150 + 224 − 631 = −257 (partial balance) · −259 (soil mined)", "614", "478", "789"]
+                  - ["Small grain", "240 + 112 − 484 = −132", "473", "336", "560"]
+                  - ["Other family", "340 + 0 − 303 = +37", "409", "273", "409"]
+            - p: "The margin ranking agrees with the agronomic ranking in all four price scenarios in the script. What the balance column adds is a cost the score does not show: in this partial balance (fertiliser plus fixation minus grain removal) the current rotation removes the most nitrogen. The backtest tested the margin idea on 2008–2025 with real NASS yields and prices (T5d, V7): choosing the crop each spring by expected margin earned $255/ha less over 18 years than the farmer's strict alternation, and $1,629/ha more than continuous corn. That is the trade-off a farmer should talk over with an adviser."
+            - h3: "What the Sonda measures that the satellites cannot (from the same run)"
+            - table:
+                caption: "Wind sensitivity of the corn result"
+                rows:
+                  - ["Wind at 2 m (m/s)", "Corn ETc (mm)", "Deficit (mm)", "Corn yield factor"]
+                  - ["1.0", "481", "98", "1.000"]
+                  - ["2.0 (FAO-56 default used above)", "497", "112", "1.000"]
+                  - ["3.0", "510", "124", "0.979"]
+                  - ["4.0", "521", "134", "0.956"]
+            - p: "Wind moves the corn yield factor by up to 4.4% between 2 and 4 m/s, but NASA POWER publishes daily wind at 2 m for every pin, and the worked example now uses it, so an anemometer is not what the Sonda adds. Leaf wetness is: every disease rule counts wetness hours, and the humidity proxy showed no significant link to real losses (T5d, V5). Rain is the other: NASA POWER read 12% below the 59 CoCoRaHS gauges near Ames in every season of 2008–2025 (T5d, V1). Each sensor in the design has a validation metric against its NASA counterpart:"
+            - ul:
+                - "Air temperature and humidity: bias and RMSE of daily Tmin/Tmax against POWER, and hours at RH 90% or more against POWER hourly."
+                - "Soil moisture: correlation of daily anomalies against SMAP L4."
+                - "Rain: bias of event totals and the hit rate for 25 mm days against IMERG."
+                - "Radiation: bias of daily MJ/m² against POWER ALLSKY."
+        t5d:
+          title: "T5d · Backtest 2001–2025: would %{app_name} have been right on this field?"
+          blocks:
+            - p: "T5c shows that the formulas run and match the app. This section asks the harder question: on the same field (42.0, −93.75, Story County, Iowa), if %{app_name}'s calculations had been run every season from 2001 to 2025, would they have matched what really happened? Each study states its pass criterion before the results were seen, uses only data available before each decision, and scores %{app_name} against records it does not read: rain gauges, county yields, crop insurance losses by cause, field trials and satellite images. Nothing is fitted to the outcome; every coefficient comes from FAO, USDA or the cited papers. [VERIFIED: docs/proposal/validation/]"
+            - evidence: "See the backtest evidence"
+            - table:
+                caption: "Eight studies, each with its criterion set before the results"
+                rows:
+                  - ["Study", "Question", "Truth (independent record)", "Criterion, set before the results", "Result", "Verdict"]
+                  - ["V1 data", "Is the NASA data at the pin factual?", "59 CoCoRaHS gauges within 30 km; Daymet 1 km", "Tmax and Tmin RMSE ≤ 2.5 °C; May–Sep POWER rain within ±15% of gauges in ≥ 80% of years", "Tmax 1.7 °C, Tmin 2.4 °C, frost days agree 95%. POWER rain below the gauges in all 18 seasons (−12% on average), within 15% in 67%. IMERG within 15% in 83%", "FAIL (rain)"]
+                  - ["V2 yield", "Would the water model have flagged the bad years?", "NASS Story County yields (detrended); RMA losses by cause", "r ≥ 0.5 with the yield anomaly and 2012 among the 3 lowest modelled years", "r = 0.03 (corn), −0.05 (soybean). Ranks drought + heat insurance losses well (ρ 0.61 and 0.80, p ≤ 0.001); 2012 lowest. Calls 22–24 of 25 seasons stressed", "FAIL"]
+                  - ["V3 crop choice", "Does the crop evidence point at the crops that thrive?", "CDL 2008–2025; NASS yields", "Corn and soybean ranked above wheat and sunflower; GAEZ yield within ±30% of NASS", "GAEZ rates all 8 crops 10000 (cannot rank). Water criterion ranks wheat and sunflower first. GAEZ maize +20%, soybean +99% vs NASS", "FAIL"]
+                  - ["V4 rotation", "Is the rotation advice backed by evidence?", "Zhao et al. 2022: 670 trials, maize after soybean, Ames-like climate, farm N rates", "95% interval of the soybean pre-crop effect excludes zero", "+9.9% maize yield [7.2 to 13.2%]; +46% without N fertiliser. The farmer's strict alternation meets every comparator rule", "PASS"]
+                  - ["V5 pests", "Do the pest weather rules match real losses?", "RMA disease, mycotoxin and insect losses, Central Iowa district", "Reported, not scored", "All five rules lean the right way (ρ 0.14–0.32), none significant; first favourable day about 3 months before the main loss month", "REPORTED"]
+                  - ["V6 erosion", "How much soil does each rotation lose, and how much does a cover save?", "RUSLE (AH-703) on Daymet rain, SSURGO K and slope length", "The app's erosion score orders the strategies as RUSLE does", "Order holds (small grain < current < other family). Rye cover saves 13–14%. Absolute losses (17–24 t/ha/yr) rest on assumed residue and cover values", "PASS"]
+                  - ["V7 money and operations", "Would choosing by expected margin have paid? Can the farm plant on time?", "NASS yields, prices, days suitable for fieldwork, planting progress", "Margin rule's realised margin ≥ the farmer's, 2008–2025", "Margin rule $11,995/ha vs farmer $12,250 vs continuous corn $10,366 vs hindsight $13,567. One 12-row planter covers 400 ha in all 25 springs. Iowa corn is 50% planted 25 Apr–19 May, not 1 Apr", "FAIL"]
+                  - ["V8 timeline", "Do the timeline's crop and bare months match the field?", "Landsat + Sentinel-2 monthly NDVI 2013–2025 with the CDL crop", "≥ 80% monthly agreement and both season edges within one month in ≥ 80% of years", "76% agree; edges within a month in 8% of seasons. A green canopy appears 2.2 months after the FAO-56 planting month; Nov–Dec open soil in 26 of 26 views", "FAIL"]
+            - h3: "Answers to the questions this proposal must answer"
+            - ul:
+                - "Could %{app_name} have predicted the facts on this field? Partly. Temperature and frost from NASA POWER are reliable at the pin (V1). Rain is not: POWER reads about 12% low against local gauges every season, while IMERG passes the same test. The water model is a good drought-disaster flag (it ranks 2012 and the insured drought years correctly) but not a yield forecast (V2)."
+                - "Can it suggest a better rotation or a replacement crop? A better rotation, yes, and the evidence is strong: 670 field trials give +9.9% corn yield after soybean at farm nitrogen rates (V4), and RUSLE confirms the erosion ranking (V6). A replacement crop, not yet: GAEZ suitability cannot rank crops here, and the water criterion alone would point at wheat and sunflower (V3). Ranking crops needs the margin criterion of Gate 3 with real yields and prices, and even then a simple margin-switching rule did not beat the farmer's alternation (V7)."
+                - "Can it help prevent pests and disease? It can say when weather favours a disease, as a reminder to scout; it cannot yet say a crop will be hit. No weather rule tracked real losses significantly (V5). Leaf-wetness hours and scouting or trap records are needed, which is the strongest case for the Sonda (T5b)."
+                - "Can it inform costs, supplies, people, equipment and land productivity? The calculations work on real data: field-capacity checks against NASS days suitable for fieldwork (one 12-row planter covers 400 ha in every spring since 2001), planting windows from NASS progress, nitrogen balances and margins per strategy. What is proven is the value of rotating against continuous corn ($1,629/ha over 18 years, V7); what is not proven is that %{app_name} beats an experienced farmer's practice. Costs remain placeholders until ISU or ERS budgets are loaded (U-26)."
+            - h3: "What changes because of this"
+            - ul:
+                - "Read rain for the water need from IMERG (already fetched for storms) instead of POWER (U-27)."
+                - "Take planting months from NASS progress or GEOGLAM crop calendars, not the FAO-56 table (U-28)."
+                - "Drive the timeline's crop and bare months from the observed NDVI the app already fetches, and count May–June under young crops as exposed (U-29)."
+                - "Show the water model as a drought-risk flag, never as a yield number, until it is calibrated (U-30)."
+                - "Report erosion as RUSLE soil loss with documented residue and cover inputs and a published Iowa reference (U-31)."
+                - "Validate the disease rules with leaf-wetness hours and scouting records in the pilot (U-32)."
+            - lead: { b: "Limits of this backtest.", t: "One field and one county; yields and insurance losses are county aggregates; insured losses are a thin proxy for disease; costs are placeholders; the RUSLE losses rest on assumed residue and cover values. Reproduce with mise exec -- bin/rails runner docs/proposal/validation/fetch.rb, then mise exec -- ruby docs/proposal/validation/run_all.rb and mise exec -- ruby docs/proposal/claims_audit.rb." }
+        t6:
+          title: "T6 · Evidence and validation"
+          blocks:
+            - p: "The software rests on working code and documented sources. The value to farmers has not been tested with any farmer yet [VERIFIED: team overview §5, \"We have not measured outcomes with farmers yet\"]. So Gate 1 is about evidence, not features."
+            - h3: "What is evidenced today"
+            - ul:
+                - "A live system at aluni.us, deployed automatically from main, with a two-farm demo script [VERIFIED: ROADMAP.md, DEMO.md]."
+                - "13 data sources fetched per field pin, each value labelled with its dataset [VERIFIED: FIELDS.md]."
+                - "About 60 data-source files with captured requests and licence verdicts [VERIFIED: docs/data_sources/, DATA_SOURCES.md]."
+                - "Automated checks: RSpec, RuboCop, Brakeman, Rust checks [VERIFIED: README.md]. The decision engine is reproduced on a real field (Ames, 2025) by a script with 24 passing checks, and its results match the production services under bin/rails runner (T5c)."
+                - "A 25-year backtest on the Ames field (T5d) scores eight claims against independent records: 2 pass, 1 is reported, 5 fail with a stated cause and fix. docs/proposal/claims_audit.rb recomputes 40 figures in this document."
+                - "Known method limits, already stated by the team: NASA POWER is about 50 km and GAEZ about 9 km; water need ignores stored soil water [VERIFIED: FIELDS.md, team overview §11]."
+            - h3: "TRL register (NASA scale; self-assessed, not independently reviewed)"
+            - table:
+                caption: "TRL register"
+                rows:
+                  - ["Component", "TRL now", "Evidence", "Target TRL", "De-risking step", "Gate"]
+                  - ["Rotation comparator, timeline, evidence", "5–6", "Live with real NASA data at two demo pins; reproduced and cross-checked on a third real field (T5c); backtested 2001–2025 on that field (T5d: 2 pass, 5 fail); no real users yet", "7", "Season-long pilot with 10+ farmers", "G1"]
+                  - ["Gemini \"why\" with guardrails", "6", "In production, capped, falls back to rule text", "7", "Pilot review of narration accuracy", "G1"]
+                  - ["iOS and Android shells", "4–5", "Built, not in the stores [VERIFIED: team overview §10]", "7", "Store release, TalkBack/VoiceOver tests", "G1"]
+                  - ["Season Execution Plan; People, Equipment, Supplies", "1–2", "Concept in this document", "6", "Clickable prototype, then a pilot build", "G2"]
+                  - ["Costs, Budget, Markets", "1–2", "Sources documented; nothing built", "6", "One-country price feed + cost per ha", "G3"]
+                  - ["Sonda Lite / Pro", "2", "Design doc and a 3D catalogue page", "6", "EVT then DVT field season", "HW gates"]
+            - h3: "Known/unknown register"
+            - p: "Nothing in this document may rest on these items until they are resolved. Owners are [UNKNOWN] until the team assigns them (U-04)."
+            - table:
+                caption: "Known/unknown register"
+                rows:
+                  - ["ID", "Open item", "Depends on it", "Resolution action", "Due"]
+                  - ["U-01", "Overview says MODIS, ECOSTRESS and GRACE are \"next\"; ROADMAP.md marks them done", "E4, T5, submission text", "Check production; fix the overview", "Before submission"]
+                  - ["U-02", "Overview: \"15 sources, 6 from NASA\"; repo: 9 NASA datasets; FIELDS.md still says AppEEARS and FAO-56 not connected", "E4, T5", "Count from the registry; update FIELDS.md", "Before submission"]
+                  - ["U-03", "No LICENSE file in the repo root", "T15, T8", "Choose and add a licence", "Before submission"]
+                  - ["U-04", "Team names, roles, hours", "T10, T16", "Fill overview §14", "Before submission"]
+                  - ["U-05", "Farmers' use of and willingness to pay for the integrated tool", "T7, T8, T12", "Gate 1 pilot", "G1"]
+                  - ["U-06", "What BAU costs farmers (time, adviser fees, losses)", "T1, T12", "Pilot interviews", "G1"]
+                  - ["U-09", "Does the BG95-M3 grant cover the Pro host? PTCRB/carrier needed?", "T5b, T15", "Ask a test lab and Quectel", "HW DVT"]
+                  - ["U-10", "Chile (SUBTEL) and EU radio rules", "T15", "Ask a test lab", "HW DVT"]
+                  - ["U-11", "Real data per device per month (A-1 uses 5 MB)", "T11", "Measure on EVT", "HW EVT"]
+                  - ["U-13", "Gemini input tokens per narration (output is capped and priced)", "T11", "Log token counts for one week", "G1"]
+                  - ["U-15", "Pilot travel and farmer incentives", "T11", "Site plans for York and Buin", "G1"]
+                  - ["U-16", "Machine-data import standard for the Equipment module", "T5", "Survey pilot farms' machines", "G2"]
+                  - ["U-17", "farmOS integration effort (Option A)", "T4", "2-day spike", "G1"]
+                  - ["U-18", "Commercial platform API terms (Option D)", "T4", "Read 2 platforms' terms", "G2"]
+                  - ["U-19", "Farm-data privacy duties in the US and Chile", "T15", "Legal review", "G2"]
+                  - ["U-20", "NASS, AMS, api.data.gov keys not configured; no FAOSTAT token route [VERIFIED: DATA_SOURCES.md]", "Module 9", "Apply for keys; bulk files meanwhile", "G3"]
+                  - ["U-21", "Radiation sensor part for the Pro", "T5b", "Pick a part", "HW EVT"]
+                  - ["U-22", "Small Sonda parts and PCB solder-joint count", "T5b, T11", "First layout and full quote", "HW DVT"]
+                  - ["U-23", "Gate dates and decision owner", "E12, T9, T16", "Team sets them", "Before submission"]
+                  - ["U-24", "Exposed-month baseline on each pilot field (the Ames example in T5c is the method)", "T2, T17", "Run the timeline at enrolment", "G1"]
+            - h3: "Added in draft 0.2 (raised by the worked example)"
+            - table:
+                caption: "Register items added in draft 0.2"
+                rows:
+                  - ["ID", "Open item", "Depends on it", "Resolution action", "Due"]
+                  - ["U-25", "Leaf-wetness part for the Pro (every disease rule counts wetness hours). Wind comes from NASA POWER WS2M, so an anemometer is optional", "T5b, T5c", "Pick parts for the SDI-12 port and price them", "HW EVT"]
+                  - ["U-26", "20 placeholder inputs behind the nitrogen and margin results (yields, prices, costs, N rates), plus the Ames farmer's own profile answers", "T5c, T12", "Fill docs/proposal/ames_inputs.json from NASS, AMS and ISU/ERS (needs the U-20 keys)", "G1"]
+                  - ["U-27", "The water need reads POWER rain, which is 12% below local gauges; IMERG passes (V1)", "T5c, module 2", "Switch Crops::WaterNeed to IMERG rain; rerun T5c", "G1"]
+                  - ["U-28", "Planting months come from the FAO-56 table (corn 1 April); Iowa plants late April to mid May (V7, V8)", "T5c, module 2", "Use NASS progress or GEOGLAM calendars per region", "G1"]
+                  - ["U-29", "The timeline counts the field as covered from planting; NDVI shows open soil until July and in Nov-Dec (V8)", "O2, T5c", "Drive crop months from observed NDVI", "G1"]
+                  - ["U-30", "The water model does not track yields (r near 0, V2)", "E8, T5c", "Present as drought risk only; calibrate before any yield figure", "G1"]
+                  - ["U-31", "RUSLE residue and cover inputs are assumptions; no published Iowa soil-loss reference documented (V6)", "O2, T5d", "Document NRCS residue values and an Iowa reference", "G1"]
+                  - ["U-32", "Pest rules show no significant link to insured losses (V5)", "Module 3, T5b", "Pilot: leaf wetness plus scouting records", "HW EVT"]
+            - lead: { b: "Resolved since draft 0.1:", t: "soil probe chosen for EVT (U-07, Seeed S-Soil MT-02B); power, enclosure and charger priced (U-08); hosting after credits $24.46/month (U-12); labour rates from BLS (U-14)." }
+            - note: "register"
+            - lead: { b: "Assumptions log:", t: "A-1 (5 MB a month per Pro device, illustration only; switching value about 33 MB, T5b). No other planning assumption is used." }
+            - note: "register"
+        t7:
+          title: "T7 · Market, users and competitors"
+          blocks:
+            - p: "The gap %{app_name} can claim is NASA evidence per field, with its source shown, joined to season execution, free and in two languages. No competitor reviewed does all of that. Whether farmers value it is not yet proven (U-05)."
+            - h3: "Segments (already coded in %{app_name}'s segment classifier [VERIFIED: docs/ONBOARDING.md])"
+            - table:
+                caption: "Segments"
+                rows:
+                  - ["Segment", "Rule in the app", "Likely need from the vision modules [DESIGN]", "Demand evidence"]
+                  - ["Smallholder subsistence", "Under 2 ha, solo or family, low budget, own use or local market", "Plan, alerts, Spanish, phone first; little equipment or inventory", "[UNKNOWN]"]
+                  - ["Small commercial", "Under 20 ha, sells beyond own use", "Tasks, supplies, cost per strategy", "[UNKNOWN]"]
+                  - ["Mid mechanized", "20–200 ha, or a tractor plus planter/harvester with a small team or crew", "Equipment registry, People and Tasks, budgets, Sonda Pro", "[UNKNOWN]"]
+                  - ["Large commercial", "Over 200 ha, or a crew selling wholesale, contract or export", "Probably already has a platform; %{app_name} as an evidence layer", "[UNKNOWN]"]
+            - lead: { b: "Size reference:", t: "more than 475 million farms under 2 ha, and only 1% of farms over 50 ha, which hold about two-thirds of the land [VERIFIED: FAO, Lowder et al., via People Food and Nature]. Serviceable and obtainable shares: [UNKNOWN]. The format asks for bottom-up demand, so this waits for the pilot." }
+            - h3: "Competitors and substitutes"
+            - table:
+                caption: "Competitors and substitutes"
+                rows:
+                  - ["Product", "What it covers", "Price", "Difference from %{app_name}", "Source"]
+                  - ["Climate FieldView (Bayer)", "Field data, yield analysis, imagery, prescriptions; row crops", "Basic free; Plus from $649/yr; FieldView Drive 2.0 $499", "Paid analytics; not rotation-first; English-first", "[VERIFIED (secondary): softwares.com, yespress.io]; tiers $249/$649/$1,399 on a climate.com pricing page [VERIFIED]"]
+                  - ["Farmbrite", "All-in-one records: crops, livestock, accounting, tasks", "Crop plans from $29/mo; Essentials $59/mo, up to 10 team members", "Strong on operations; no NASA rotation evidence found", "[VERIFIED (secondary): Capterra, FitGap]"]
+                  - ["farmOS", "Open-source records: assets incl. equipment, maintenance logs, inventory, sensors", "Free (GPL); hosted from $50/yr", "Records, not decision support; possible partner (Option A)", "[VERIFIED: farmos.org]; hosting price [VERIFIED (secondary): SourceForge]"]
+                  - ["Extension offices, agronomists", "Local advice", "[UNKNOWN]", "%{app_name} sends farmers in with concrete questions, not instead", "Team overview §5"]
+            - lead: { b: "Unfair advantage.", t: "Following the Lean Canvas advice, this stays blank until the pilot shows one. Candidates to test: per-field NASA evidence with provenance, open source, and Spanish parity." }
+            - lead: { b: "Stakeholders [DESIGN]:", t: "farmers (users, decide); farm workers and managers (users of Tasks); extension services and cooperatives (channel, possible payers); NASA and data providers (sources; attribution); hardware suppliers and test labs; Space Apps judges (immediate)." }
+        t8:
+          title: "T8 · Operating model"
+          blocks:
+            - p: "Today %{app_name} runs at about $0 on cloud credits, with operator switches that pause AI, jobs, mail and push [VERIFIED: CLAUDE.md, DEPLOY.md]. After the credits, the same VM costs $24.46 a month, and Gemini is capped at $153.60 a month (T11). Who pays later is open."
+            - ul:
+                - "Service: one GCE VM running web, worker, Postgres and Redis through Kamal; deploys about 3 minutes from a push to main [VERIFIED: team overview §13]."
+                - "Scaling: add Puma and Sidekiq containers; observations are cached per field, so traffic does not multiply outside API calls [VERIFIED: team overview §12]."
+                - "Support and operations staff: [UNKNOWN] (U-04)."
+            - h3: "Revenue options [DESIGN], none validated (U-05)"
+            - table:
+                caption: "Revenue options"
+                rows:
+                  - ["Option", "Who pays", "Fits segment", "Risk"]
+                  - ["Free core, open source", "Grants and credits", "All", "Grant dependence"]
+                  - ["Sonda hardware plus a connectivity plan", "Farmer", "Mid mechanized, small commercial", "Hardware margin and support"]
+                  - ["Institutional licence: adviser dashboards, cohort reports", "Extension services, cooperatives, NGOs", "Smallholders through intermediaries", "Long sales cycles"]
+                  - ["Premium operations modules (budgets, multi-user)", "Farmer", "Small commercial, mid mechanized", "Competes with Farmbrite pricing"]
+            - p: "Unit economics (customer acquisition cost, payback, churn): [UNKNOWN]. They come from the pilot, not from this document."
+        t9:
+          title: "T9 · Implementation plan and gates"
+          blocks:
+            - p: "Four gated phases run in sequence, with a parallel hardware track. Each phase starts only when the previous gate passes. All dates are [DESIGN] targets with no reference-class check yet. Per the format, treat them as optimistic and add buffer once the team's capacity is known (U-04, U-23)."
+            - h3: "Roadmap · 4 software phases, 3 hardware phases, 5 gates"
+            - figure: "The software phases run in sequence behind G1–G3. The hardware track starts after submission and has its own two gates."
+            - table:
+                caption: "Work packages"
+                rows:
+                  - ["WP", "Phase", "Deliverables", "Depends on"]
+                  - ["WP0", "Hackathon close (Nov 2026)", "Fix U-01–U-04 and U-23; submit this proposal with the live demo", "–"]
+                  - ["WP1", "Validate (target Dec 2026–Feb 2027)", "Shells in the stores; 10+ pilot farmers in York and Buin; usability sessions before and after the UX plan (team overview §17); baselines U-05, U-06, U-24; farmOS spike (U-17)", "WP0"]
+                  - ["WP2", "Operations core (target Mar–Jun 2027)", "Season Execution Plan; People and Tasks (multi-user farms); Equipment registry and maintenance; Supplies and stock; observed vs planned bare months", "G1 pass"]
+                  - ["WP3", "Economics (target Jul–Sep 2027)", "Cost items per operation; price feeds for 2 countries; gross margin criterion; monthly cash view", "G2 pass"]
+                  - ["HW1", "EVT (target Q1 2027)", "10 units from dev boards; payload defined (U-11); Seeed and DFRobot probes compared; leaf-wetness part added (U-25); small parts quoted (U-22)", "WP0"]
+                  - ["HW2", "DVT (target Q2–Q3 2027)", "Custom PCB, 20–30 units, one field season, calibration per soil texture; ingestion API in Rails", "HW gate 1"]
+                  - ["HW3", "Certify + PVT (target Q4 2027 or later)", "Lite certification first; 100-unit pilot batch", "HW gate 2"]
+            - h3: "Gate criteria [DESIGN; thresholds for the team to confirm]"
+            - table:
+                caption: "Gate criteria"
+                rows:
+                  - ["Gate", "Pass when", "Owner"]
+                  - ["G1 Validate", "O1 met (under 5 min, 4 of 5 unaided); at least 6 of 10 pilot farmers say they would use a season plan with tasks; U-05/U-06/U-24 baselines recorded", "[UNKNOWN]"]
+                  - ["G2 Operations", "At least 3 of 10 pilot farmers log operations weekly for 6 weeks (O3); one institutional partner shows interest in writing", "[UNKNOWN]"]
+                  - ["G3 Economics", "Cost per ha shown for every strategy in 2 countries (O4); price-feed licences confirmed", "[UNKNOWN]"]
+                  - ["HW gate 1", "EVT readings paired with SMAP and IMERG for 60 days on 2 pilot fields; BOM inside the price ceiling", "[UNKNOWN]"]
+                  - ["HW gate 2", "DVT survives one season (IP67, battery); the certification path is confirmed and costed (U-09, U-10)", "[UNKNOWN]"]
+            - lead: { b: "Change control:", t: "the scope list in T3 is the baseline. Any new module needs a gate decision, because scope creep is the top risk (T14)." }
+        t10:
+          title: "T10 · Resources and team"
+          blocks:
+            - p: "The team has shipped a working full-stack product in the hackathon window: 102 commits, Rails, Rust, two native shells and nine NASA datasets [VERIFIED: git log, ROADMAP.md]. Names, roles and time commitment are not in the overview (U-04)."
+            - table:
+                caption: "Roles needed"
+                rows:
+                  - ["Role needed", "Phase", "Filled by", "Commitment", "Gap / mitigation [DESIGN]"]
+                  - ["Product lead / sponsor", "All", "[UNKNOWN]", "[UNKNOWN]", "Name one accountable owner"]
+                  - ["Rails + Hotwire engineer(s)", "WP1–WP3", "AstroMichis team [UNKNOWN who]", "[UNKNOWN]", "–"]
+                  - ["Agronomist / extension partner", "WP1–WP3", "None", "–", "Recruit via an extension office at each pilot site"]
+                  - ["Embedded firmware engineer (ESP-IDF, cellular)", "HW1–HW3", "None known", "–", "Critical gap for the hardware track"]
+                  - ["Hardware / mechanical (PCB, enclosure, IP67)", "HW2–HW3", "None known", "–", "Contract design house or university lab"]
+                  - ["Field pilot coordinator (US, Chile)", "WP1", "[UNKNOWN]", "–", "One per site"]
+                  - ["Compliance and legal (radio, privacy, licences)", "HW3, G2", "None", "–", "Test lab advice; pro-bono legal clinic"]
+        t11:
+          title: "T11 · Cost model"
+          blocks:
+            - p: "Gate 1 costs $25,538 (base, AACE Class 5: −50% / +100%, so $12,769–$51,075). The table below is the whole calculation: a quantity times a sourced rate on every line. Quantities are [DESIGN] and the team can change them; the rates are not."
+            - lead: { b: "Estimate class:", t: "AACE Class 5 (0–2% definition; −20/−50% to +30/+100%). Optimism bias: apply the HM Treasury upper bound, as the format guide says: 200% for equipment/development (the hardware track and new modules) and 41% for outsourcing (opex), when each base is known." }
+            - table:
+                caption: "Gate 1 budget (12 weeks)"
+                rows:
+                  - ["Gate 1 line (12 weeks)", "Quantity [DESIGN]", "Rate", "Rate source", "USD"]
+                  - ["Software development (WP1: shells, pilot fixes, UX plan)", "240 h (0.5 FTE × 12 wk × 40 h)", "$63.20/h", "BLS 2024 median pay, software developers [VERIFIED: BLS OOH]", "15,168.00"]
+                  - ["Agronomist / pilot lead (York, Buin)", "120 h (0.25 FTE)", "$37.87/h", "BLS 2024 median pay, agricultural and food scientists [VERIFIED: BLS OOH]", "4,544.40"]
+                  - ["Sonda Pro EVT units", "10", "$522.65 each: Pro BOM $493.73 with the BG95 module ($26.07) swapped for a BG95-M3 Zero dev board ($54.99)", "T5b; [VERIFIED: Waveshare]", "5,226.50"]
+                  - ["Hosting, e2-medium VM, us-central1", "3 months", "$24.46/month (disk and egress extra)", "[VERIFIED (secondary): Economize, VPSBenchmarks]", "73.38"]
+                  - ["Gemini 2.5 Flash narration, cost ceiling", "90 days × 2,000 requests/day cap × 1,024 max output tokens", "$2.50 per 1M output tokens", "Cap and token limit [VERIFIED: ROADMAP.md, ONBOARDING.md]; price [VERIFIED (secondary): Requesty, Maxim]", "460.80"]
+                  - ["Connectivity, 10 Pro units", "10 SIMs + 3 months", "$3/SIM, $1/month, $0.03/MB (A-1: 5 MB/month)", "[VERIFIED: hologram.io]", "64.50"]
+                  - ["Total, Gate 1", "", "", "", "25,537.58"]
+            - note: "bom"
+            - p: "The Gemini line is a ceiling: it assumes every daily request hits the cap at full output length. Input tokens are extra at $0.30 per 1M. Not included: pilot travel and farmer incentives (U-15), and the small Sonda parts listed in T5b."
+            - lead: { b: "Whole-life running cost after Gate 1 (per month):", t: "VM $24.46 + Gemini at most $153.60 (30 days at the output ceiling) + $1.15 per Pro device in the field." }
+        t12:
+          title: "T12 · Financial and social viability"
+          blocks:
+            - p: "Costs are now sourced (T11); revenue is not, because willingness to pay comes from the pilot (U-05). This section fixes the tests the numbers must pass at Gate 2. Per-field economics are already shown on illustrative inputs in T5c: $614, $473 and $409 per ha a year for the three Ames strategies."
+            - ul:
+                - "Social value (non-monetized, to be measured): fewer exposed bare months (O2); water and nitrogen use per strategy; earlier frost, heat and rain warnings; NASA evidence reaching Spanish-speaking smallholders [VERIFIED as team-stated aims: team overview §5]."
+                - "Hardware unit test [DESIGN]: price per Sonda must be at least full BOM + assembly + certification amortised over the batch + 12 months of connectivity. That sum is the switching value. With today's figures it is at least $507.53 per Pro ($493.73 BOM + 12 × $1.15 connectivity), before certification (U-09) and small parts (U-22)."
+            - note: "bom"
+            - ul:
+                - "Software test [DESIGN]: yearly hosting + AI + support per active farm must be covered by grants or the institutional licence (T8). The fixed platform cost is $24.46 a month for the VM, plus at most $153.60 a month for Gemini at its cap, shared across every farm on the platform."
+                - "Scenarios (downside / base / upside): to be built at Gate 2 from pilot data. No figures here, to avoid an upside-only model."
+        t13:
+          title: "T13 · Funding structure"
+          blocks:
+            - p: "The only resources confirmed today are in-kind: Google Cloud credits and Gemini on Vertex, Cloudflare, Meteomatics' hackathon offer and free public data [VERIFIED: team overview §14, DEPLOY.md]. Everything else is a candidate."
+            - table:
+                caption: "Funding sources"
+                rows:
+                  - ["Source", "Amount", "Status", "Linked gate"]
+                  - ["Google Cloud credits", "[UNKNOWN] remaining", "Committed (in use)", "WP0–WP1"]
+                  - ["Meteomatics hackathon offer", "[UNKNOWN] term", "Committed (in use)", "WP0–WP1"]
+                  - ["Space Apps recognition or follow-on programmes", "[UNKNOWN]", "Indicative", "G1"]
+                  - ["Agricultural research or innovation grants (US, Chile)", "[UNKNOWN]", "Not researched", "G1–G2"]
+                  - ["Extension services or cooperatives (licence or pilot partner)", "[UNKNOWN]", "Not contacted", "G2"]
+                  - ["Hardware pre-orders from pilot farms", "[UNKNOWN]", "Not offered", "HW gate 2"]
+        t14:
+          title: "T14 · Risks, assumptions, dependencies"
+          blocks:
+            - p: "The biggest risk is not technical. The vision could grow into a generic farm-management tool and lose what makes %{app_name} different, while a small team spreads itself across software and hardware. Probability and impact are [DESIGN] team estimates (H/M/L), not measured."
+            - table:
+                caption: "Risk register"
+                rows:
+                  - ["ID", "Risk (cause → event → effect)", "P", "I", "Response", "Early warning", "Source"]
+                  - ["R1", "Many modules → scope creep → no module reaches TRL 7", "H", "H", "Gates; operations modules only after G1; accounting out of scope", "WP2 slips more than one month", "[DESIGN]"]
+                  - ["R2", "Farmers don't log operations → the plan stays advice", "M", "H", "Pre-filled tasks from the plan; one tap to confirm; kill criterion K1", "Under 3 of 10 weekly loggers", "[DESIGN]"]
+                  - ["R3", "Coarse data (POWER about 50 km, GAEZ about 9 km) misleads a small field", "M", "M", "Each value shows dataset and resolution; comparison is relative; Sonda adds ground truth", "Pilot farmer disputes", "[VERIFIED: team overview §11]"]
+                  - ["R4", "Hardware BOM and certification cost exceed what farmers pay", "M", "H", "Lite first; host SDoC path; price ceiling at HW gate 1", "Small-parts quote (U-22)", "[DESIGN]"]
+                  - ["R5", "No firmware or hardware skills on the team", "H", "H", "Recruit or partner before HW2", "No named owner by EVT", "T10"]
+                  - ["R6", "AppEEARS runs one task at a time per account → new fields wait hours for SMAP, MODIS, ECOSTRESS", "H", "L", "Queue and show waiting states; more accounts [UNKNOWN if allowed]", "Pilot onboarding delays", "[VERIFIED: DEMO.md]"]
+                  - ["R7", "Outside services fail or rate-limit", "M", "M", "Retries with backoff; background jobs; pause switches", "Error rates", "[VERIFIED: ROADMAP.md, team overview §11]"]
+                  - ["R8", "AI narration states something wrong", "L", "M", "Gemini only narrates computed facts; rule text when off", "Pilot review", "[VERIFIED: FIELDS.md]"]
+                  - ["R9", "Credits end → hosting and AI costs appear", "M", "M", "Priced: VM $24.46/month, Gemini at most $153.60/month (T11); budget alert and pause switches", "GCP billing alert", "[VERIFIED: DEPLOY.md]"]
+                  - ["R10", "A data licence bars a commercial tier", "L", "M", "Licence verdicts already recorded; excluded sources listed", "New source added", "[VERIFIED: DATA_SOURCES.md]"]
+            - lead: { b: "Dependencies:", t: "NASA POWER, AppEEARS and Earthdata; Planetary Computer; FAO GAEZ; USDA and USGS services; Meteomatics; Vertex AI; GCP; Cloudflare; app stores for the shells; a cellular carrier and test lab for the Pro [VERIFIED: FIELDS.md, CLAUDE.md, DEVICES.md]." }
+        t15:
+          title: "T15 · Legal, regulatory and compliance"
+          blocks:
+            - p: "Two items block a public launch: %{app_name} has no visible licence, and the hardware has no certification path. Neither is hard to fix, but neither is fixed yet."
+            - table:
+                caption: "Compliance requirements"
+                rows:
+                  - ["Requirement", "Authority", "Status", "Lead time", "Risk if missed"]
+                  - ["Open-source licence for the repo", "Team", "No LICENSE file in the repo root (U-03)", "Hours", "\"Open source\" claim not legally true"]
+                  - ["Data licences and attribution", "Each provider", "Verdicts recorded per source; non-commercial sources excluded [VERIFIED: DATA_SOURCES.md]", "Ongoing", "Takedown or redistribution breach"]
+                  - ["Radio certification, US", "FCC Part 15", "Not started", "3–16 weeks; up to 6–9 months with PTCRB [VERIFIED (secondary): MarkReady]", "Cannot sell the Sonda"]
+                  - ["Radio certification, Chile and EU", "SUBTEL; CE/RED", "[UNKNOWN] (U-10)", "[UNKNOWN]", "Cannot pilot the Pro in Buin"]
+                  - ["Farm and personal data privacy", "US, Chile law", "Passkeys, Active Record encryption, export to CSV/JSON in place [VERIFIED: CLAUDE.md, team overview §11]; legal duties [UNKNOWN] (U-19)", "[UNKNOWN]", "Trust and compliance"]
+                  - ["App store publishing", "Apple, Google", "Shells built, not submitted [VERIFIED: team overview §10]", "Review times [UNKNOWN]", "No push alerts on phones"]
+        t16:
+          title: "T16 · Governance and decision rights"
+          blocks:
+            - p: "One person must own each gate. Today no owner is named (U-04, U-23). Proposed RACI [DESIGN]:"
+            - table:
+                caption: "RACI"
+                rows:
+                  - ["Decision", "Product lead", "Engineering", "Hardware lead", "Agronomy partner", "Team (all)"]
+                  - ["Pass or kill a gate", "A", "C", "C", "C", "I"]
+                  - ["Add a module to scope", "A", "R", "C", "C", "I"]
+                  - ["Hardware price ceiling and BOM", "C", "I", "A/R", "I", "I"]
+                  - ["Pilot design and farmer consent", "A", "C", "I", "R", "I"]
+                  - ["Data source and licence approval", "A", "R", "I", "C", "I"]
+        t17:
+          title: "T17 · KPIs and benefits"
+          blocks:
+            - p: "The team's own UX targets are the first KPIs; the farm-outcome KPIs follow once baselines exist."
+            - table:
+                caption: "KPIs"
+                rows:
+                  - ["KPI", "Target", "Source of the target", "When"]
+                  - ["Time from landing to Your plan, new user", "Under 5 min", "[VERIFIED: team overview §17]", "G1"]
+                  - ["New users reaching Your plan unaided", "4 of 5", "[VERIFIED: team overview §17]", "G1"]
+                  - ["Screen-reader flows completed (sign-up, add field, read plan)", "All, iOS and Android", "[VERIFIED: team overview §17]", "G1"]
+                  - ["Screens that differ between app and website", "None except native navigation", "[VERIFIED: team overview §17]", "G1"]
+                  - ["Exposed bare months, chosen vs current rotation", "−50%", "[DESIGN]; baseline U-24", "1 season"]
+                  - ["Pilot farmers logging operations weekly", "3 of 10", "[DESIGN]", "G2 + 6 weeks"]
+                  - ["Sonda days paired with SMAP/IMERG", "60 days, 2 fields", "[DESIGN]", "HW gate 1"]
+            - lead: { b: "Dis-benefits to watch:", t: "extra data entry for farmers; over-reliance on the tool (mitigated by the \"Talk this over with your adviser\" list [VERIFIED: team overview §2])." }
+        t18:
+          title: "T18 · Kill criteria"
+          blocks:
+            - p: "These are agreed before the work starts, so evidence, not momentum, decides. Thresholds are [DESIGN] for the team to confirm."
+            - table:
+                caption: "Kill criteria"
+                rows:
+                  - ["ID", "Gate", "Stop if", "Data source"]
+                  - ["K1", "G2", "Fewer than 3 of 10 pilot farmers log operations weekly after 6 weeks → drop modules 6–9, keep the comparator", "Operation logs"]
+                  - ["K2", "G1", "O1 not met after one redesign round", "Usability sessions"]
+                  - ["K3", "HW gate 1", "Full Lite BOM above the team's price ceiling, or readings cannot be paired with SMAP/IMERG for the same pin", "EVT data, quotes"]
+                  - ["K4", "HW gate 2", "Pro certification only by the PTCRB/carrier path with no funder for it → ship Lite only", "Test-lab quote"]
+                  - ["K5", "G2", "No institutional partner or grant shows interest in writing → stay a free open-source tool, stop the paid tiers", "Partner pipeline"]
+        open_questions:
+          title: "Open questions for the team (before submission)"
+          blocks:
+            - checklist:
+                - "U-01 / U-02: confirm in production which NASA datasets are live, then align the overview, FIELDS.md and this proposal."
+                - "U-03: pick a licence and add a LICENSE file."
+                - "U-04: names, roles and hours for each member; who owns each gate."
+                - "U-23: dates for G1 and the first hardware gate."
+                - "Choose between Option A (comparator + farmOS) and Option B (build operations modules in Rails) for WP2, or defer to the G1 spike."
+                - "Set the Sonda Lite price ceiling that K3 tests against."
+                - "Confirm or change every [DESIGN] threshold in T2, T9 and T18."
+                - "U-25: approve adding a leaf-wetness sensor to the Sonda Pro (an anemometer only if pilot sites show POWER wind is off)."
+                - "U-26: put real NASS, AMS and ISU/ERS values in docs/proposal/ames_inputs.json and rerun the worked example."
+                - "U-27 to U-32: decide which backtest fixes (T5d) go into WP1."
+        sources:
+          title: "Sources"
+          blocks:
+            - lead: { b: "Repo files read on 15 Nov 2026 (local, not linked):", t: "README.md, CLAUDE.md, docs/ROADMAP.md, docs/DEVICES.md, docs/FIELDS.md, docs/DATA_MODEL.md, docs/DATA_SOURCES.md, docs/DEMO.md, docs/ONBOARDING.md (partial), app/models/farmer_profile.rb, docs/proposal/ames_worked_example.rb and ames_cross_check.rb, docs/data_sources/pest_weather_rules.md and nutrient_removal.md; team document %{app_name}: Project Overview (15 Nov 2026); Integrated Project Proposal Format (uploaded)." }
+            - h3: "Web pages"
+            - ul:
+                - "FAO: What do we really know about the number and distribution of farms (Lowder, Skoet, Singh 2014)"
+                - "People Food and Nature: Defining and estimating smallholder and family farms"
+                - "CIMMYT repository: farm number estimates 2020/2030"
+                - "ReliefWeb: FAO Status of the World's Soil Resources (2015)"
+                - "UN News: Soil erosion must be stopped"
+                - "FAO Global Soil Partnership: SWSR 2026 launch"
+                - "DevelopmentAid: FAO report warns soil degradation is worsening"
+                - "DigiKey UK: ESP32-S3-WROOM-1-N8R8"
+                - "RS UK: Quectel BG95M3LA-64-SGNS"
+                - "Farnell IE: ATECC608B-SSHDA-B"
+                - "SOS electronic: SHT45-AD1F-R2"
+                - "NovaLynx: Rain and snow store"
+                - "METER Group: 2025 G.A. Harris Fellowship price sheet"
+                - "Waveshare: BG95-M3 Zero"
+                - "Hologram: pricing"
+                - "Telnyx: IoT data plans"
+                - "JLCPCB: PCB prototype assembly pricing"
+                - "MarkReady: FCC certification cost and SDoC vs certification (secondary)"
+                - "Climate FieldView pricing page; softwares.com: FieldView pricing; yespress.io: Climate (secondary)"
+                - "Capterra: Farmbrite pricing; FitGap: Farmbrite (secondary)"
+                - "farmOS: Managing assets; farmOS: Inventory tracking; The Drop Times: farmOS project; SourceForge: farmOS (secondary)"
+            - h3: "Added for the worked example, BOM and budget"
+            - ul:
+                - "BLS: Software developers, OOH (2024 median pay)"
+                - "BLS: Agricultural and food scientists, OOH (2024 median pay)"
+                - "Economize: GCE e2-medium pricing; VPSBenchmarks: e2-medium (secondary)"
+                - "Requesty: Gemini 2.5 Flash on Vertex; Maxim: Gemini 2.5 Flash cost (secondary)"
+                - "RobotShop: Seeed S-Soil MT-02B"
+                - "NovaLynx: Rain and snow store"
+                - "Adafruit: Voltaic 6 V 6 W panel"
+                - "BatterySpace: LiFePO4 18650 1,500 mAh"
+                - "DigiKey: TI BQ24650"
+                - "RS UK: Hammond 1555F2GY"
+                - "Little Bird: DFRobot SEN0601"
+                - "exchange-rates.org: EUR/USD; currency.me.uk: GBP/USD"
+                - "Repo: farm_data_42.0_-93.75.csv / .json, config/demo_farms.yml, config/crops/agronomy.yml, app/services/rotations/comparator.rb, app/services/rotations/timeline.rb, app/services/crops/rotation_check.rb, docs/proposal/ames_worked_example.rb"
+                - "Backtest data (fetched 15 Nov 2026 by docs/proposal/validation/fetch.rb): NASA POWER daily, hourly and climatology; GPM IMERG via POWER; Daymet single pixel; CoCoRaHS daily reports; USDA RMA cause of loss 2001–2025; USDA NASS QuickStats; USDA CDL; SSURGO (Soil Data Access); FAO GAEZ v4; Landsat and Sentinel-2 NDVI via Microsoft Planetary Computer"
+                - "Zhao, Zang et al. 2022, Nature Communications 13:4926, data on figshare 20290923 (CC BY 4.0)"
+                - "Renard et al. 1997, USDA Agriculture Handbook 703 (RUSLE); Renard and Freimund 1994 (R factor); McCool et al. 1987, 1989 (LS); Richardson et al. 1983 (erosivity exponent); FAO-33 (Ky); FAO-56 Tables 12 and 22 and Eq. 76"
+            - p: "Prices were read from search-result extracts of these pages on 15 Nov 2026. Re-check each one before quoting it to a funder."

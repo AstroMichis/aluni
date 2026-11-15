@@ -1,0 +1,74 @@
+{
+  "Table": [
+    [
+      "muname",
+      "compname",
+      "comppct_r",
+      "slope_r",
+      "slopelenusle_r",
+      "tfact",
+      "hzdept_r",
+      "hzdepb_r",
+      "kwfact",
+      "kffact",
+      "awc_r",
+      "om_r"
+    ],
+    [
+      "Clarion loam, Bemis moraine, 6 to 10 percent slopes",
+      "Clarion",
+      "90",
+      "8",
+      "40",
+      "5",
+      "0",
+      "20",
+      ".24",
+      ".24",
+      "0.21",
+      "3.5"
+    ],
+    [
+      "Clarion loam, Bemis moraine, 6 to 10 percent slopes",
+      "Clarion",
+      "90",
+      "8",
+      "40",
+      "5",
+      "20",
+      "41",
+      ".28",
+      ".28",
+      "0.18",
+      "2.5"
+    ],
+    [
+      "Clarion loam, Bemis moraine, 6 to 10 percent slopes",
+      "Clarion",
+      "90",
+      "8",
+      "40",
+      "5",
+      "41",
+      "61",
+      ".32",
+      ".32",
+      "0.18",
+      "0.75"
+    ],
+    [
+      "Clarion loam, Bemis moraine, 6 to 10 percent slopes",
+      "Clarion",
+      "90",
+      "8",
+      "40",
+      "5",
+      "61",
+      "200",
+      ".37",
+      ".37",
+      "0.18",
+      "0.25"
+    ]
+  ]
+}

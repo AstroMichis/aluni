@@ -32,7 +32,43 @@ RSpec.describe Rotations::Timeline do
     expect(october.risks).to include("storm")
     expect(october).to be_vulnerable
     expect(line.stormy_bare).to eq(2) # October of the soybean seasons; the corn is still in the ground
-    expect(line.months.select(&:growing?)).to all(satisfy { |m| !m.vulnerable? })
+    # A crop that has closed its canopy protects the soil; a young one does not (FAO-56 effective full cover).
+    expect(line.months.select { |m| m.growing? && !m.establishing? }).to all(satisfy { |m| !m.vulnerable? })
+    expect(line.months.select(&:vulnerable?)).to all(be_open_soil)
+  end
+
+  it "counts a young crop's months before FAO-56 full cover as open soil" do
+    line = timeline.for(%w[glycine-max zea-mays glycine-max])
+    young = ->(crop, season) { line.months.select { |m| m.crop == crop && m.year == year + season && m.establishing? }.map(&:month) }
+
+    # Soybeans (planted in May): initial 20 + development 30 days, so May and June are still open.
+    expect(young.call("glycine-max", 0)).to eq([ 5, 6 ])
+    # Corn on the field's own April planting: initial 30 + development 40 days, so April and May.
+    expect(young.call("zea-mays", 1)).to eq([ 4, 5 ])
+    expect(line.establishing).to eq(6)
+    expect(line.exposed_with_cover).to be >= line.vulnerable.count(&:establishing?) # a cover crop cannot sit under a young crop
+  end
+
+  it "plants by the region's calendar (USDA NASS progress) before the FAO-56 row" do
+    record.field_crops.find_by(crop_name: "Corn").update!(planting_month: nil, harvest_month: nil)
+    corn_months = lambda do |area|
+      record.farm.update!(country_code: "US", admin_area: area)
+      line = described_class.new(Fields::Farm.for(user).field(record.id), first_year: year).for(%w[zea-mays glycine-max zea-mays])
+      line.months.select { |m| m.crop == "zea-mays" && m.year == year }.map(&:month)
+    end
+
+    expect(corn_months.call("Nebraska")).to eq((4..8).to_a) # no calendar here yet: the FAO-56 row, April
+    expect(corn_months.call("iowa")).to eq((5..9).to_a)     # Iowa: half the corn is planted by about 6 May
+  end
+
+  it "reads dry months from the IMERG rain when the field has it" do
+    expect(timeline.weather[7]).to include("dry") # POWER only: 2.5 mm/day against 5.6 of demand
+
+    months = (1..12).map { |m| { "month" => m, "heavy_days" => 0.1, "rain_mm" => m == 7 ? 150 : 40 } }
+    create(:field_observation, field: record, source: "gpm_imerg", payload: { "years" => 20, "months" => months })
+    with_imerg = described_class.new(Fields::Farm.for(user).field(record.id), first_year: year)
+
+    expect(with_imerg.weather[7]).not_to include("dry") # IMERG: 150 mm in July, about 4.8 mm/day
   end
 
   it "uses the field's own months for its current crop and carries a southern season into January" do

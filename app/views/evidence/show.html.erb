@@ -1,0 +1,110 @@
+<% app_name = t("app_name") %>
+<% content_for :title, t(".title", app_name: app_name) %>
+<% content_for :description, t(".description", app_name: app_name) %>
+<% field = @snapshot["field"] %>
+<% counts = @snapshot["summary"].values.tally %>
+
+<div class="landing evidence">
+  <nav class="landing__nav" data-controller="landing-nav" aria-label="<%= t(".nav_label") %>">
+    <div class="container landing__nav-inner">
+      <%= link_to root_path, class: "landing__brand", aria: { label: t(".back_home") } do %>
+        <span class="landing__wordmark"><%= app_name %></span>
+      <% end %>
+      <div class="cluster cluster--sm">
+        <%= render "shared/devices_link" %>
+        <%= render "shared/language_toggle" %>
+        <%= render "shared/access_buttons" %>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main" class="container evidence__main">
+    <header class="evidence__hero stack stack--md" aria-labelledby="evidence-title">
+      <span class="badge badge--accent evidence__eyebrow"><%= t(".eyebrow") %></span>
+      <h1 id="evidence-title" class="text-display evidence__title"><%= t(".headline", app_name: app_name) %></h1>
+      <p class="evidence__lede"><%= t(".lede", app_name: app_name, place: field["place"], from: field["from"], to: field["to"]) %></p>
+      <ul class="evidence__tally cluster cluster--sm" role="list" aria-label="<%= t(".tally_label") %>">
+        <% { "PASS" => "pass", "REPORTED" => "reported", "FAIL" => "fail" }.each do |verdict, key| %>
+          <li class="<%= evidence_badge(verdict) %>"><%= t(".tally.#{key}", count: counts.fetch(verdict, 0)) %></li>
+        <% end %>
+      </ul>
+      <div class="cluster cluster--sm">
+        <a class="btn btn--primary" data-turbo="false" href="#studies"><%= t(".cta_studies") %></a>
+        <%= link_to t(".cta_plan"), plan_path, class: "btn btn--secondary" %>
+      </div>
+    </header>
+
+    <section class="evidence__section" aria-labelledby="evidence-method">
+      <h2 id="evidence-method" class="evidence__heading"><%= t(".method.title") %></h2>
+      <p class="evidence__text"><%= t(".method.lede", app_name: app_name) %></p>
+      <ul class="evidence__principles" role="list">
+        <% EvidenceController::PRINCIPLES.each do |key| %>
+          <li class="evidence__principle"><strong><%= t(".method.principles.#{key}.title") %></strong> <%= t(".method.principles.#{key}.body") %></li>
+        <% end %>
+      </ul>
+    </section>
+
+    <section id="studies" class="evidence__section" aria-labelledby="evidence-studies">
+      <h2 id="evidence-studies" class="evidence__heading"><%= t(".studies_title") %></h2>
+      <p class="evidence__text"><%= t(".studies_lede") %></p>
+      <ol class="evidence__studies" role="list">
+        <% EvidenceController::STUDIES.each do |id| %>
+          <% study = @studies.fetch(id) %>
+          <% vars = evidence_vars(study).merge(app_name: app_name) %>
+          <li id="study-<%= id %>" class="evidence__study">
+            <div class="evidence__study-head">
+              <span class="evidence__study-id text-mono"><%= id.upcase %></span>
+              <h3 class="evidence__study-title"><%= t(".studies.#{id}.question", app_name: app_name) %></h3>
+              <span class="<%= evidence_badge(study["verdict"]) %>"><%= t(".verdicts.#{study['verdict'].downcase}") %></span>
+            </div>
+            <dl class="evidence__facts">
+              <dt><%= t(".labels.truth") %></dt><dd><%= t(".studies.#{id}.truth", **vars) %></dd>
+              <dt><%= t(".labels.criterion") %></dt><dd><%= t(".studies.#{id}.criterion", **vars) %></dd>
+              <dt><%= t(".labels.result") %></dt><dd><%= t(".studies.#{id}.result", **vars) %></dd>
+              <dt><%= t(".labels.meaning") %></dt><dd><%= t(".studies.#{id}.meaning", **vars) %></dd>
+            </dl>
+          </li>
+        <% end %>
+      </ol>
+    </section>
+
+    <section class="evidence__section" aria-labelledby="evidence-answers">
+      <h2 id="evidence-answers" class="evidence__heading"><%= t(".answers_title") %></h2>
+      <div class="evidence__answers">
+        <% EvidenceController::QUESTIONS.each do |key| %>
+          <article class="evidence__answer">
+            <h3 class="evidence__answer-q"><%= t(".answers.#{key}.question", app_name: app_name) %></h3>
+            <p class="evidence__answer-short"><strong><%= t(".answers.#{key}.short") %></strong></p>
+            <p class="evidence__text"><%= t(".answers.#{key}.body", app_name: app_name) %></p>
+          </article>
+        <% end %>
+      </div>
+    </section>
+
+    <section class="evidence__section" aria-labelledby="evidence-fixes">
+      <h2 id="evidence-fixes" class="evidence__heading"><%= t(".fixes_title", app_name: app_name) %></h2>
+      <p class="evidence__text"><%= t(".fixes_lede", app_name: app_name) %></p>
+      <ul class="evidence__fixes" role="list">
+        <% EvidenceController::FIXES.each do |key, status| %>
+          <li class="evidence__fix">
+            <span class="badge badge--<%= status == 'done' ? 'success' : 'warning' %>"><%= t(".fix_status.#{status}") %></span>
+            <span class="evidence__fix-id text-mono"><%= key.upcase.sub("U", "U-") %></span>
+            <span><%= t(".fixes.#{key}", **evidence_vars(@studies["v8"])) %></span>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+
+    <section class="evidence__section" aria-labelledby="evidence-limits">
+      <h2 id="evidence-limits" class="evidence__heading"><%= t(".limits.title") %></h2>
+      <p class="evidence__text"><%= t(".limits.body") %></p>
+      <h3 class="evidence__subheading"><%= t(".reproduce.title") %></h3>
+      <p class="evidence__text"><%= t(".reproduce.body") %></p>
+      <ol class="evidence__commands" role="list">
+        <% EvidenceController::REPRODUCE.each do |command| %><li><code><%= command %></code></li><% end %>
+      </ol>
+      <p class="evidence__meta"><%= t(".generated", date: l(Date.parse(@snapshot["generated_on"]), format: :long), lat: field["lat"], lon: field["lon"]) %></p>
+    </section>
+  </main>
+  <%= render "shared/public_footer" %>
+</div>

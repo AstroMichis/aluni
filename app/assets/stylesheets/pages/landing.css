@@ -24,6 +24,32 @@ html:has(.landing) { scroll-behavior: smooth; }
   border-bottom-color: var(--color-border-subtle);
 }
 
+/* The reviewers' strip (shared/_judges_bar) on top of the fixed nav: always in view, one line
+   from 768px, two compact links on phones. */
+.landing__nav--with-bar { padding-block: 0 var(--space-3); }
+.judges-bar {
+  background: color-mix(in srgb, var(--color-accent) 18%, var(--color-bg-primary));
+  border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
+  margin-bottom: var(--space-3);
+}
+.judges-bar__inner { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-3); padding-block: var(--space-1); font-size: var(--text-sm); }
+.judges-bar__kicker { color: var(--color-accent-text); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; font-size: var(--text-xs); }
+.judges-bar__link {
+  display: inline-flex;
+  gap: var(--space-2);
+  min-height: 44px;
+  align-items: center;
+  padding-inline: var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+.judges-bar__link:hover,
+.judges-bar__link:focus-visible { background: color-mix(in srgb, var(--color-accent) 22%, transparent); }
+.judges-bar__link strong::after { content: " \2192"; }
+.judges-bar__detail { display: none; color: var(--color-text-secondary); }
+@media (min-width: 768px) { .judges-bar__detail { display: inline; } }
+
 .landing__nav-inner {
   display: flex;
   align-items: center;

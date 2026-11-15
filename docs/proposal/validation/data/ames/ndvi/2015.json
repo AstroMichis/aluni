@@ -1,0 +1,83 @@
+[
+  {
+    "month": "2015-01",
+    "ndvi": 0.001,
+    "date": "2015-01-09",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_027031_20150109_02_T1"
+  },
+  {
+    "month": "2015-02",
+    "ndvi": null
+  },
+  {
+    "month": "2015-03",
+    "ndvi": 0.074,
+    "date": "2015-03-31",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_026031_20150331_02_T1"
+  },
+  {
+    "month": "2015-04",
+    "ndvi": 0.091,
+    "date": "2015-04-16",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_026031_20150416_02_T1"
+  },
+  {
+    "month": "2015-05",
+    "ndvi": 0.093,
+    "date": "2015-05-09",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_027031_20150509_02_T1"
+  },
+  {
+    "month": "2015-06",
+    "ndvi": 0.191,
+    "date": "2015-06-10",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_027031_20150610_02_T1"
+  },
+  {
+    "month": "2015-07",
+    "ndvi": 0.412,
+    "date": "2015-07-12",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_027031_20150712_02_T1"
+  },
+  {
+    "month": "2015-08",
+    "ndvi": 0.476,
+    "date": "2015-08-14",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_026031_20150814_02_T1"
+  },
+  {
+    "month": "2015-09",
+    "ndvi": 0.15,
+    "date": "2015-09-15",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_026031_20150915_02_T1"
+  },
+  {
+    "month": "2015-10",
+    "ndvi": 0.077,
+    "date": "2015-10-25",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_026031_20151025_02_T1"
+  },
+  {
+    "month": "2015-11",
+    "ndvi": 0.058,
+    "date": "2015-11-01",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_027031_20151101_02_T1"
+  },
+  {
+    "month": "2015-12",
+    "ndvi": 0.199,
+    "date": "2015-12-04",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20151204T170702_R069_T15TVG_20210413T115328"
+  }
+]

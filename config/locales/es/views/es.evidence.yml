@@ -1,0 +1,136 @@
+es:
+  evidence:
+    show:
+      title: "%{app_name}: la evidencia"
+      description: "Una prueba retrospectiva de 25 años que compara los cálculos de %{app_name} con lo que de verdad pasó en un campo de Iowa: pluviómetros, rendimientos del condado, pérdidas aseguradas, ensayos de campo e imágenes satelitales."
+      nav_label: "Sitio"
+      back_home: "Volver al inicio"
+      eyebrow: "Para evaluadores"
+      headline: "¿%{app_name} habría acertado? Lo comprobamos con 25 años de registros."
+      lede: "Corrimos los cálculos de %{app_name} sobre un campo real (%{place}) en cada temporada de %{from} a %{to}, y los comparamos con registros que la app nunca lee. Algunos resistieron, otros no, y la app cambió por eso."
+      tally_label: "Veredictos de los ocho estudios"
+      tally:
+        pass:
+          one: "1 aprobado"
+          other: "%{count} aprobados"
+        reported:
+          one: "1 informado"
+          other: "%{count} informados"
+        fail:
+          one: "1 reprobado"
+          other: "%{count} reprobados"
+      cta_studies: "Ver los ocho estudios"
+      cta_plan: "Leer el plan de acción"
+      method:
+        title: "Cómo funciona la prueba"
+        lede: "Cada estudio hace una pregunta que un agricultor o un jurado le haría a %{app_name}, elige un registro independiente de lo que pasó y fija la nota de aprobación antes de ver el resultado."
+        principles:
+          preregistered:
+            title: "La nota se fija primero."
+            body: "Cada criterio quedó escrito antes de ver los resultados, y un reprobado sigue siendo un reprobado."
+          independent:
+            title: "Verdad independiente."
+            body: "Pluviómetros, rendimientos de condado del USDA, pérdidas aseguradas por causa, ensayos de campo publicados e imágenes satelitales; la app no lee ninguno."
+          unfitted:
+            title: "Nada ajustado."
+            body: "Cada coeficiente viene de la FAO, del USDA o de los artículos citados, así que la prueba es fuera de muestra por construcción."
+          reproducible:
+            title: "Reproducible."
+            body: "Los datos son públicos y los scripts están en el repositorio; cualquiera puede recalcular cada número de esta página."
+      studies_title: "Los ocho estudios"
+      studies_lede: "Cada tarjeta muestra la pregunta, el registro usado como verdad, la nota fijada de antemano, el resultado y lo que significa."
+      verdicts:
+        pass: "Aprobado"
+        fail: "Reprobado"
+        reported: "Informado"
+      labels:
+        truth: "Verdad"
+        criterion: "Nota de aprobación"
+        result: "Resultado"
+        meaning: "Qué significa"
+      studies:
+        v1:
+          question: "¿Los datos de la NASA en el campo son fieles?"
+          truth: "%{gauges} pluviómetros voluntarios de CoCoRaHS a menos de 30 km y la grilla meteorológica Daymet de 1 km."
+          criterion: "Máximas y mínimas diarias dentro de 2,5 °C (RMSE), y lluvia de temporada dentro del 15 %% de los pluviómetros en al menos el 80 %% de los años."
+          result: "La temperatura aprueba: máximas dentro de %{tmax_rmse} °C y mínimas dentro de %{tmin_rmse} °C; los días de helada coinciden el %{frost_agreement} %% de las veces. La lluvia de NASA POWER salió baja en %{power_low_seasons} de %{seasons} temporadas (%{power_bias} %% en promedio) y quedó dentro del 15 %% solo en el %{power_within} %%; la lluvia de NASA GPM IMERG quedó dentro del 15 %% en el %{imerg_within} %%."
+          meaning: "La temperatura y las heladas son confiables en el punto. Para la lluvia, %{app_name} ahora lee IMERG en vez de POWER."
+        v2:
+          question: "¿El modelo de agua habría marcado los años malos?"
+          truth: "Rendimientos del condado de Story según USDA NASS (sin la tendencia) y pérdidas aseguradas por causa del USDA, de 2001 a 2025."
+          criterion: "Una correlación de al menos 0,5 con la anomalía de rendimiento, y 2012 entre los tres años más secos del modelo."
+          result: "Ordena bien las pérdidas aseguradas por sequía y calor (%{rho_corn} en maíz, %{rho_soy} en soya) y pone 2012 primero, pero no sigue los rendimientos (correlación %{r_corn} en maíz, %{r_soy} en soya): marca con estrés %{stressed_min} a %{stressed_max} de 25 temporadas. En 2025, cuando el modelo recortaba la soya un 13 %%, la soya del condado de Story rindió %{soy_2025} %% sobre la tendencia."
+          meaning: "La necesidad de agua es una alerta de sequía, no un pronóstico de cosecha, y la app ahora lo dice."
+        v3:
+          question: "¿La evidencia de cultivos apunta a los que prosperan aquí?"
+          truth: "Los cultivos sembrados en el punto (Cropland Data Layer del USDA, 2008 a 2025) y los rendimientos de USDA NASS."
+          criterion: "Maíz y soya por encima de trigo y girasol, y el rendimiento alcanzable de FAO GAEZ dentro del 30 %% del real."
+          result: "FAO GAEZ da a los %{crops} cultivos la aptitud máxima (%{suitability}), así que aquí no puede ordenarlos. Solo con el agua se preferiría %{water_first}. El maíz de GAEZ quedó %{maize_gap} %% sobre el real y la soya %{soy_gap} %% sobre el real."
+          meaning: "Sugerir un cultivo de reemplazo necesita rendimientos y precios (un margen), no solo aptitud y agua."
+        v4:
+          question: "¿El consejo de rotación tiene respaldo?"
+          truth: "Un metaanálisis de ensayos de campo (Zhao et al. 2022): %{trials} comparaciones de %{sites} sitios con un clima como el de Ames, con las dosis de nitrógeno que usan los agricultores."
+          criterion: "El intervalo del 95 %% del efecto de la soya previa sobre el rendimiento del maíz debe excluir el cero."
+          result: "El maíz después de soya rinde %{gain} %% más que después de un cultivo no leguminoso (intervalo del 95 %%: %{low} a %{high} %%); sin fertilizante nitrogenado la ganancia es de %{gain_no_n} %%. La alternancia de maíz y soya del agricultor cumple todas las reglas que revisa el comparador."
+          meaning: "El consejo de rotación se apoya en cientos de ensayos de campo, no solo en puntos."
+        v5:
+          question: "¿Las reglas climáticas de plagas y enfermedades coinciden con pérdidas reales?"
+          truth: "Pérdidas aseguradas del USDA por enfermedad, micotoxinas e insectos en los doce condados del centro de Iowa."
+          criterion: "Se informa, no se califica: correlación de rangos y anticipación para cada una de las %{rules} reglas."
+          result: "Todas las reglas apuntan en la dirección correcta (correlaciones de %{rho_min} a %{rho_max}), pero ninguna es significativa; el primer día favorable llega unos %{lead} meses antes del mes de la pérdida principal."
+          meaning: "Las reglas dicen cuándo revisar el cultivo, no que será atacado. Hacen falta mojado foliar y registros de monitoreo: el mejor argumento para la estación de campo."
+        v6:
+          question: "¿Cuánto suelo pierde cada rotación y cuánto ahorra un cultivo de cobertura?"
+          truth: "La ecuación de pérdida de suelo del USDA (RUSLE) con la lluvia, la erodabilidad del suelo y la pendiente del campo."
+          criterion: "El puntaje de erosión de la app debe ordenar las rotaciones como lo hace RUSLE."
+          result: "El orden se mantiene. Una cobertura de centeno ahorra de %{saved_min} a %{saved_max} %% del suelo perdido cada año, mucho menos de lo que sugiere contar meses descubiertos, porque la lluvia más erosiva cae de mayo a septiembre bajo cultivos jóvenes. Las pérdidas (%{loss_min} a %{loss_max} t/ha al año) dependen de valores supuestos de rastrojo y cobertura."
+          meaning: "El orden es sólido; la línea de tiempo ahora cuenta los cultivos jóvenes como suelo abierto."
+        v7:
+          question: "¿Elegir el cultivo por margen esperado habría convenido?"
+          truth: "Rendimientos del condado de Story y precios de Iowa de USDA NASS, %{years} temporadas, con costos provisorios."
+          criterion: "Una regla de margen debe ganar al menos lo mismo que la alternancia estricta de maíz y soya del agricultor."
+          result: "La regla de margen ganó US$%{aluni} por hectárea frente a US$%{farmer} del agricultor, US$%{corn_always} con maíz continuo y US$%{foresight} sabiendo el futuro. Una sembradora de 12 hileras cubre 400 ha en las %{springs} primaveras; en Iowa la mitad del maíz se siembra entre el %{planted_first} y el %{planted_last}, no el 1 de abril."
+          meaning: "Rotar conviene claramente frente al maíz continuo, pero una regla de margen simple no le gana a un agricultor con experiencia. %{app_name} apoya el criterio del agricultor, no lo reemplaza."
+        v8:
+          question: "¿Los meses con cultivo y descubiertos de la línea de tiempo coinciden con el campo?"
+          truth: "Imágenes satelitales Landsat y Sentinel-2 del campo, una vista despejada al mes, de 2013 a 2025, con el cultivo de cada año."
+          criterion: "Al menos el 80 %% de los meses coinciden, y la siembra y la cosecha a menos de un mes del reverdecer y del secado vistos por satélite."
+          result: "Solo coincidió el %{agreement} %% de %{months} meses: el follaje se cierra unos %{lag} meses después del mes de siembra de la tabla, y noviembre y diciembre fueron suelo abierto en %{nov_dec_open} de %{nov_dec_views} vistas. Con la regla que la app usa ahora (meses de siembra reales, cultivos jóvenes como suelo abierto) la coincidencia sube al %{app_rule_agreement} %%."
+          meaning: "La línea de tiempo ahora siembra cuando siembran los agricultores de la región y muestra el suelo abierto hasta que el cultivo lo cubre."
+      answers_title: "Respuestas a las preguntas que importan"
+      answers:
+        facts:
+          question: "¿%{app_name} habría podido predecir los hechos en este campo?"
+          short: "En parte."
+          body: "La temperatura y las heladas de la NASA son confiables en el punto; la lluvia de NASA GPM IMERG aprueba y la de NASA POWER sale baja. %{app_name} detecta los desastres de sequía, pero no pronostica una cosecha."
+        rotation:
+          question: "¿Puede sugerir una mejor rotación o un cultivo de reemplazo?"
+          short: "Una mejor rotación, sí. Un cultivo de reemplazo, todavía no."
+          body: "El consejo de rotación tiene el respaldo de cientos de ensayos de campo y del modelo de erosión. Ordenar cultivos de reemplazo necesita rendimientos y precios, que el plan de acción agrega como criterio de margen."
+        pests:
+          question: "¿Puede ayudar a prevenir plagas y enfermedades?"
+          short: "Dice cuándo revisar el cultivo."
+          body: "Las reglas climáticas apuntan a las temporadas correctas, pero no siguieron las pérdidas reales de forma significativa. Lo siguiente son sensores de mojado foliar y registros de monitoreo."
+        operations:
+          question: "¿Puede orientar costos, insumos, personal, maquinaria y productividad de la tierra?"
+          short: "Los cálculos funcionan con datos reales."
+          body: "La capacidad de siembra frente a los días aptos para trabajar el campo, las fechas reales de siembra, los balances de nitrógeno y los márgenes corren con datos públicos. Lo probado es el valor de rotar; lo no probado es que %{app_name} le gane a un agricultor con experiencia."
+      fixes_title: "Qué cambió en %{app_name} por esto"
+      fixes_lede: "Cada estudio reprobado nombró una causa. Estos son los cambios, y los dos que siguen abiertos."
+      fix_status:
+        done: "Hecho"
+        open: "Abierto"
+      fixes:
+        u27: "La necesidad de agua lee la lluvia de NASA GPM IMERG, que aprobó frente a los pluviómetros, en vez de la de NASA POWER."
+        u28: "Los cultivos se siembran en el mes en que los siembran los agricultores de la región (avance de cultivos de USDA NASS) antes que en la tabla FAO-56."
+        u29: "La línea de tiempo cuenta los meses de un cultivo joven como suelo abierto hasta que el follaje se cierra; la coincidencia con el satélite subió al %{app_rule_agreement} %%."
+        u30: "La necesidad de agua se presenta como riesgo de sequía, nunca como una cifra de cosecha."
+        u31: "La erosión como pérdida de suelo en toneladas, con valores documentados de rastrojo y cobertura y una referencia publicada."
+        u32: "Las reglas de enfermedades, contrastadas con mojado foliar y registros de monitoreo en el piloto."
+      limits:
+        title: "Límites"
+        body: "Un campo y un condado; los rendimientos y las pérdidas aseguradas son totales del condado; las pérdidas aseguradas son un registro pobre de enfermedades; los costos son provisorios; las pérdidas de suelo dependen de valores supuestos de rastrojo y cobertura. Los campos piloto del plan de acción amplían la prueba."
+      reproduce:
+        title: "Córrelo tú mismo"
+        body: "Los datos son públicos; los scripts están en docs/proposal/validation del repositorio."
+      generated: "Resultados generados el %{date} para el punto en %{lat}, %{lon}."
