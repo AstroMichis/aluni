@@ -25,39 +25,46 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 3. **Three or more strategies side by side**, with scores per criterion and why, evidence, benefits, gaps and risks. This part exists today.
 4. **"Talk this over with your adviser"**: the risks that need local judgment.
 
-## Where we are (2026-11-15)
+## Checkpoint (2026-11-15, end of day)
 
-**Done:**
-- The comparator: the current rotation plus legume, small-grain, other-family and perennial strategies, scored on fit, pest break, soil health, nitrogen, water, erosion and workload, weighted by goals, with benefits, evidence, gaps and risks, and a Gemini "why".
-- Screens for fields, crops, rotation, calendar, weather (past season), reports and export.
-- NASA POWER climate and season.
-- GAEZ suitability.
-- SSURGO, 3DEP and CDL (US only).
+**In production (aluni.us, auto-deploy from `main`):**
+- **Your plan.** Finishing the profile opens the rotation comparison, and a "Your rotation plan" card sits above the home dial. The comparator offers the current rotation plus legume, small-grain, other-family and perennial strategies, with scores, evidence, benefits, gaps, risks and a Gemini "why".
+- **Crop data.** FAO-56 water need for 20 of 27 crops, with southern-hemisphere seasons. FAO ECOCROP requirements for 25 of 27 (tomato and cabbage pending: ECOCROP uses older names).
+- **The profile's priorities in the comparator.** Conservation practices, cautious risk tolerance, contract or export sales.
+- **"Your field from space".** Monthly NDVI over the last year from **Landsat (NASA/USGS)** and Sentinel-2 through Planetary Computer, with bare-soil windows and the cover-crop opportunity, on the field and on the plan.
+- **Data sources.** NASA POWER climate and season, GAEZ suitability, the landing field finder (Nominatim), and SSURGO, 3DEP and CDL in the US.
+- **Gemini on Vertex AI.** No key, trial credits, a 2000-request daily cap that pauses itself.
+- **Clients ready but not on a screen yet.** Meteomatics forecast (credentials loaded), Planetary Computer.
+- **Field station catalogue** (`/devices`) with a 3D product viewer (`docs/DEVICES.md`).
 
-**Missing:**
-- **NASA breadth.** Only POWER, plus GIBS as a picture. The challenge lists SMAP, ECOSTRESS, GPM, Landsat/MODIS, GRACE and SRTM.
-- **Bare-field periods.** Nothing detects them.
-- **A real forecast.** The forecast option shows the past season.
+**Known issue:** Planetary Computer rate-limits bursts (429). Backfilling 4 fields at once (Sidekiq 3 jobs × 4 threads) failed 3 of them; one at a time works. Fix next: fewer threads per field (2) and a longer, backed-off retry on 429 in `PlanetaryComputer::Client`.
+
+**Still missing:**
+- **NASA breadth.** Done: POWER, Landsat. Missing from the challenge list: SMAP, ECOSTRESS, GPM, MODIS, GRACE, SRTM.
+- **A real forecast.** The forecast option still shows the past season.
 - **Alerts.** None are sent.
 - **Global soil and slope.** Outside the US they depend on the farmer.
+- **The 3-season timeline** per strategy (bare and vulnerable bands).
 
 ## P0: the demo tells the whole story
 
 | | Item | Status |
 |---|---|---|
 | P0.1 | Gemini on (Vertex, daily cap 2000) | ✅ |
-| P0.2 | Finishing the profile opens **Your plan**; a "Your rotation plan" card sits above the home dial | ✅ `feature/p0-tu-plan` |
-| P0.3 | Water need for 20 of 27 catalog crops (FAO-56 Tables 11/12), with seasons flipped south of 15°S | ✅ `feature/p0-tu-plan` |
-| P0.3b | ECOCROP requirements: run `rake ecocrop:extract` with the OpenCLIM CSV and commit `config/ecocrop.yml` | ⏳ needs the CSV download |
-| P0.4 | Use the profile's priorities: conservation practices count as the soil health goal; a cautious farmer sees "new crop" risks; contract or export sales see "check your buyer" | ✅ `feature/p0-tu-plan` |
+| P0.2 | Finishing the profile opens **Your plan**; a "Your rotation plan" card sits above the home dial | ✅ #21 |
+| P0.3 | Water need for 20 of 27 catalog crops (FAO-56 Tables 11/12), with seasons flipped south of 15°S | ✅ #21 |
+| P0.3b | ECOCROP requirements (`config/ecocrop.yml`, 25 of 27; the task reads the Latin-1 CSV and maps older names) | ✅ #21; tomato and cabbage pending |
+| P0.4 | Use the profile's priorities: conservation practices count as the soil health goal; a cautious farmer sees "new crop" risks; contract or export sales see "check your buyer" | ✅ #21 |
 | P0.5 | Count second and cover crops (today the comparator and calendar read only `role: main`) | ⏳ |
 | P0.6 | Use irrigation water source and soil depth, salinity and drainage in the water and fit scores | ⏳ |
 
 ## P1: NASA depth (each item checks one dataset off the challenge list)
 
+Suggested next order: SRTM/NASADEM global slope (quick, same Planetary Computer point API), GPM IMERG, SMAP, then MODIS, GRACE and ECOSTRESS.
+
 | Item | Dataset | How |
 |---|---|---|
-| Crop health and **bare-field periods** | Sentinel-2 / Landsat NDVI | `PlanetaryComputer::Client#ndvi` exists. Store a FieldObservation and draw it on the timeline. |
+| ✅ Crop health and **bare-field periods** | Landsat (NASA/USGS) + Sentinel-2 NDVI | Done (#22): `monthly_ndvi`, the `vegetation` observation, `Fields::Vegetation`, "Your field from space". Next: draw it on the 3-season timeline. |
 | Long-term vegetation baseline and anomalies | MODIS NDVI (16-day, 20+ years) | AppEEARS or Planetary Computer |
 | **Global slope** for erosion | SRTM / NASADEM | Planetary Computer point value; replaces US-only 3DEP outside the US |
 | Extreme rain frequency | GPM IMERG | Earthdata credentials already in credentials |
