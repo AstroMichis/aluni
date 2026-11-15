@@ -1,0 +1,16 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% back = params[:return_to] == "team" ? app_team_path : app_farm_path %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: back, back_label: t("app.fields.edit.cancel"), title: t(".crumb") %>
+
+  <main id="main" class="screen__body">
+    <header class="screen__header">
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <p class="screen__lede"><%= t(".lede") %></p>
+    </header>
+
+    <%= render "app/fields/edit_form", subject: @farm, groups: @profile.groups(:farm), url: app_farm_path, cancel_path: back,
+               extra: params[:return_to] == "team" ? { "return_to" => "team" } : {} %>
+  </main>
+</div>

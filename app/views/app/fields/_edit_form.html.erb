@@ -1,0 +1,36 @@
+<%# One form for every answer of the farm or a field: the essential ones
+    first, the rest under "More details" (open when a source has suggestions
+    there). Each source suggestion sits beside its field with a box to take it.
+    Locals: subject, groups (group => data), url, cancel_path, extra (hidden params). %>
+<% editable = groups.values.flatten.select(&:column) %>
+<% essential = editable.select(&:essential) %>
+<% more = groups.transform_values { |data| data.select { |d| d.column && !d.essential } }.reject { |_, data| data.empty? } %>
+<% suggested = more.values.flatten.any? { |d| subject.reading(d).state == :to_confirm } %>
+<%= form_with url: url, method: :patch, class: "edit-form" do %>
+  <% local_assigns.fetch(:extra, {}).each do |name, value| %><input type="hidden" name="<%= name %>" value="<%= value %>"><% end %>
+  <% if essential.any? %>
+    <fieldset class="edit-form__group edit-form__group--essential" id="group-essential">
+      <legend class="reading-group__title"><%= t("app.fields.edit.essential") %></legend>
+      <p class="edit-form__hint"><%= t("app.fields.edit.essential_hint") %></p>
+      <%= render partial: "app/fields/edit_field", collection: essential, as: :datum, locals: { subject: subject } %>
+    </fieldset>
+  <% end %>
+  <% if more.any? %>
+    <details class="edit-form__more"<%= " open" if suggested || essential.empty? %>>
+      <summary class="edit-form__more-summary"><%= t("app.fields.edit.more") %></summary>
+      <% more.each do |group, data| %>
+        <fieldset class="edit-form__group" id="group-<%= group %>">
+          <legend class="reading-group__title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><%= render "shared/glyph", name: group_glyph(group) %></svg>
+            <%= t("app.fields.groups.#{group}") %>
+          </legend>
+          <%= render partial: "app/fields/edit_field", collection: data, as: :datum, locals: { subject: subject } %>
+        </fieldset>
+      <% end %>
+    </details>
+  <% end %>
+  <div class="edit-form__actions">
+    <%= link_to t("app.fields.edit.cancel"), cancel_path, class: "btn btn--ghost" %>
+    <button type="submit" class="btn btn--primary"><%= t("app.fields.edit.save") %></button>
+  </div>
+<% end %>

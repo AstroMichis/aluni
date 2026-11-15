@@ -1,0 +1,96 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: app_root_path, back_label: t("app.fields.back_to_menu"), title: t("app.crops.show.crumb"), section: :crops %>
+
+  <main id="main" class="screen__body">
+    <header class="screen__header">
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <p class="screen__lede"><%= t(".lede") %></p>
+    </header>
+
+    <% @farm.fields.each do |field| %>
+      <% seasons = field.seasons %>
+      <% findings = Crops::RotationCheck.new(seasons).findings %>
+      <% potential = Crops::Potential.new(field.observation("gaez")) %>
+      <% current_family = Crops::Catalog.family(field.current_crop) %>
+      <section class="screen__section rotation" aria-labelledby="rotation-<%= field.key %>">
+        <h2 class="screen__section-title" id="rotation-<%= field.key %>"><%= link_to field_name(field), app_field_path(field.key) %></h2>
+
+        <% if seasons.any? %>
+          <ol class="seasons" role="list">
+            <%# The last four seasons fit a phone; the checks read them all. %>
+            <% seasons.last(4).each do |label, crop| %>
+              <li class="season season--<%= season_kind(label) %><%= " season--flag" if findings.any? { |f| f.years.include?(label) } %>">
+                <span class="season__label text-mono"><%= season_label(label) %></span>
+                <span class="season__crop"><%= crop_name(crop) %></span>
+                <% if (family = Crops::Catalog.family(crop)) %><span class="season__family"><%= t("app.crops.families.#{family}") %></span><% end %>
+              </li>
+            <% end %>
+          </ol>
+        <% else %>
+          <p class="screen__lede"><%= t(".no_history") %></p>
+        <% end %>
+        <% if field.cdl_proposal.any? %>
+          <p class="choice-set__hint"><%= link_to t(".cdl_waiting", count: field.cdl_proposal.size), app_field_path(field.key, anchor: "group-history") %></p>
+        <% end %>
+
+        <%= form_with url: plan_app_crops_path, method: :patch, class: "plan-form" do %>
+          <input type="hidden" name="field" value="<%= field.key %>">
+          <label class="input-group">
+            <span class="input-group__label"><%= t(".plan_label", year: Date.current.year + 1) %></span>
+            <select class="input select" name="crop">
+              <option value=""><%= t(".plan_none") %></option>
+              <% plan_key = Crops::Catalog.find(field.plan)&.key if field.plan %>
+              <% Crops::Catalog.entries.each_key do |key| %><option value="<%= key %>"<%= " selected" if plan_key == key %>><%= crop_name(key) %></option><% end %>
+            </select>
+          </label>
+          <button type="submit" class="btn btn--secondary btn--sm"><%= t(".plan_save") %></button>
+        <% end %>
+
+        <ul class="findings" role="list">
+          <% if findings.empty? && seasons.size > 1 %>
+            <li class="finding finding--ok"><%= t(".findings.ok") %></li>
+          <% end %>
+          <% findings.each do |finding| %>
+            <li class="finding finding--<%= finding.kind %>">
+              <span class="finding__kind"><%= t(".findings.#{finding.kind}.label") %></span>
+              <%= t(".findings.#{finding.kind}.text", crop: finding.crop ? crop_name(finding.crop) : nil, years: finding.years.map { |y| season_label(y) }.to_sentence) %>
+            </li>
+          <% end %>
+        </ul>
+
+        <% if potential.available? %>
+          <div class="potential-list">
+            <h3 class="compare-card__title"><%= t(".potential_title") %></h3>
+            <p class="choice-set__hint"><%= t(".potential_note", level: t("app.crops.input_levels.#{potential.input_level.to_s.downcase}", default: potential.input_level)) %></p>
+            <ul class="meter-list" role="list">
+              <% potential.ranked.first(6).each do |row| %>
+                <li class="meter-list__row">
+                  <span class="meter-list__name">
+                    <%= row.entry ? crop_name(row.entry.key) : row.gaez %>
+                    <% if row.entry&.legume? %><span class="tag"><%= t(".legume") %></span><% end %>
+                    <% if current_family && row.entry&.family == current_family %><span class="tag tag--warning"><%= t(".same_family") %></span><% end %>
+                  </span>
+                  <span class="meter-list__bar"><span class="meter-list__fill" style="--share: <%= (row.suitability / 10000.0).round(3) %>"></span></span>
+                  <span class="meter-list__value"><%= t("app.crops.suitability.#{row.suitability_class}") %><%= " · #{t("app.crops.attainable", value: chart_number(row.yield_t))}" if row.yield_t %></span>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <% comparison = Rotations::Comparator.new(field, profile: Current.user.farmer_profile) %>
+        <div class="compare-card">
+          <h3 class="compare-card__title"><%= t(".compare.title") %></h3>
+          <% if comparison.ready? && (best = comparison.best) %>
+            <p class="compare-card__text"><%= t(".compare.best", strategy: strategy_title(best), best: best.total || "–", current: comparison.strategies.first.total || "–") %></p>
+          <% else %>
+            <p class="compare-card__text"><%= t(".compare.not_ready") %></p>
+          <% end %>
+          <%= link_to t(".compare.open"), app_field_rotation_path(field.key), class: "btn btn--primary btn--sm" %>
+        </div>
+      </section>
+    <% end %>
+  </main>
+</div>

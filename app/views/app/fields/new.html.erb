@@ -1,0 +1,44 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% steps = @profile.steps %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: app_fields_path, back_label: t("app.fields.back_to_fields"), title: t(".crumb") %>
+  <%= render "app/fields/plot_defs" %>
+
+  <%= form_with url: app_fields_path, method: :post, id: "main", class: "screen__body field-wizard",
+                data: { controller: "field-wizard", field_wizard_current_class: "field-wizard__step--current",
+                        field_wizard_empty_value: t(".review_empty"), field_wizard_edit_value: t(".review_edit"),
+                        action: "keydown.enter->field-wizard#enter" } do %>
+    <div class="field-wizard__progress" role="progressbar" aria-label="<%= t(".progress") %>"
+         aria-valuemin="1" aria-valuemax="<%= steps.size %>" aria-valuenow="1" data-field-wizard-target="progress">
+      <span class="field-wizard__progress-bar" data-field-wizard-target="bar"></span>
+    </div>
+
+    <% steps.each_with_index do |step, i| %>
+      <section class="field-wizard__step<%= " field-wizard__step--current" if i.zero? %>"
+               data-field-wizard-target="step" aria-labelledby="step-<%= step.key %>" <%= "hidden" unless i.zero? %>>
+        <p class="field-wizard__count text-mono"><%= t(".count", number: i + 1, total: steps.size) %></p>
+        <h1 class="field-wizard__question" id="step-<%= step.key %>" tabindex="-1"><%= t(".steps.#{step.key}.question") %></h1>
+        <%= render "shared/aluni", message: t(".steps.#{step.key}.aluni") %>
+
+        <%= render "app/fields/onboarding/#{step.input}", step: step %>
+
+        <% feeds = step.data.flat_map(&:feeds).uniq - ["all"] %>
+        <% if feeds.any? %>
+          <p class="field-wizard__why"><%= t(".why", uses: feeds.map { |feed| t("app.fields.feeds.#{feed}") }.to_sentence) %></p>
+        <% end %>
+
+        <div class="field-wizard__nav">
+          <% unless i.zero? %>
+            <button type="button" class="btn btn--ghost" data-action="field-wizard#back"><%= t(".back") %></button>
+          <% end %>
+          <% if i < steps.size - 1 %>
+            <button type="button" class="btn btn--primary" data-action="field-wizard#next"><%= t(".next") %></button>
+          <% else %>
+            <button type="submit" class="btn btn--primary"><%= t(".save") %></button>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+  <% end %>
+</div>

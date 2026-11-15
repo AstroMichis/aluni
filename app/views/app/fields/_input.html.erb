@@ -1,0 +1,64 @@
+<%# The input for one datum, in the add-a-field form and in a card's edit
+    form. Locals: datum, name (the param name), current (the value now, or
+    nil), preview (add-a-field only: a crop redraws the preview plot). %>
+<% if datum.key == "location" %>
+  <div class="pin-input" data-controller="geolocate"
+       data-geolocate-locating-value="<%= t("app.fields.pin.locating") %>"
+       data-geolocate-denied-value="<%= t("app.fields.pin.denied") %>"
+       data-geolocate-unsupported-value="<%= t("app.fields.pin.unsupported") %>">
+    <div class="form-row form-row--two">
+      <label class="input-group">
+        <span class="input-group__label"><%= t("app.fields.pin.latitude") %></span>
+        <input class="input" type="number" step="any" min="-90" max="90" name="<%= name %>[latitude]" value="<%= Array(current)[0] %>" data-geolocate-target="latitude" required>
+      </label>
+      <label class="input-group">
+        <span class="input-group__label"><%= t("app.fields.pin.longitude") %></span>
+        <input class="input" type="number" step="any" min="-180" max="180" name="<%= name %>[longitude]" value="<%= Array(current)[1] %>" data-geolocate-target="longitude" required>
+      </label>
+    </div>
+    <input type="hidden" data-geolocate-target="text">
+    <button type="button" class="btn btn--secondary btn--sm" data-action="geolocate#locate"><%= t("app.fields.pin.use_my_location") %></button>
+    <p class="choice-set__hint" data-geolocate-target="status" role="status"></p>
+  </div>
+<% elsif datum.column == "crops.history" %>
+  <div class="history-form">
+    <% 3.times.map { |n| (Date.current.year - 1 - n).to_s }.each do |year| %>
+      <label class="input-group history-form__year">
+        <span class="input-group__label text-mono"><%= year %></span>
+        <input class="input" type="text" name="<%= name %>[<%= year %>]" value="<%= current.to_h[year] %>" list="crop-names" maxlength="100" autocomplete="off">
+      </label>
+    <% end %>
+  </div>
+  <%= render "app/fields/crop_names" %>
+<% elsif datum.column == "crops.current" %>
+  <input class="input" type="text" name="<%= name %>" value="<%= current %>" list="crop-names" maxlength="100" autocomplete="off"
+         aria-label="<%= datum_label(datum) %>" placeholder="<%= t("app.fields.placeholders.crop") %>"
+         <% if local_assigns[:preview] %>data-action="input->field-wizard#preview"<% end %>>
+  <%= render "app/fields/crop_names" %>
+<% elsif datum.months %>
+  <select class="input select" name="<%= name %>" aria-label="<%= datum_label(datum) %>">
+    <option value=""><%= t("app.fields.pick_month") %></option>
+    <% datum.options.each do |month| %>
+      <option value="<%= month %>"<%= " selected" if current.to_s == month %>><%= option_label(datum, month) %></option>
+    <% end %>
+  </select>
+<% elsif datum.options.any? %>
+  <% if datum.multiple %><input type="hidden" name="<%= name %>[]" value=""><% end %>
+  <div class="choice">
+    <% datum.options.each do |option| %>
+      <label class="choice__chip">
+        <input type="<%= datum.multiple ? "checkbox" : "radio" %>" name="<%= name %><%= "[]" if datum.multiple %>" value="<%= option %>"
+               <%= "checked" if Array(current).map(&:to_s).include?(option) %>>
+        <span><%= option_label(datum, option) %></span>
+      </label>
+    <% end %>
+  </div>
+<% elsif datum.number %>
+  <span class="edit-field__number">
+    <input class="input" type="number" inputmode="decimal" min="0" step="any" name="<%= name %>" value="<%= current %>" aria-label="<%= datum_label(datum) %>">
+    <% if local_assigns[:suffix] %><span class="edit-field__suffix"><%= suffix %></span><% end %>
+  </span>
+<% else %>
+  <input class="input" type="text" maxlength="100" name="<%= name %>" value="<%= current unless current.is_a?(Hash) %>"
+         aria-label="<%= datum_label(datum) %>" placeholder="<%= t("app.fields.placeholders.#{datum.key}", default: t("app.fields.placeholders.default")) %>">
+<% end %>

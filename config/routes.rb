@@ -44,46 +44,6 @@ Rails.application.routes.draw do
   scope "(:locale)", locale: /en|es/ do
     root "pages#home"
 
-    # The main menu dial: a web preview for now, the app's first screen later.
-    get "menu", to: "pages#menu", as: :menu
-    # The menu sections (fields, crops, weather, team, reports): a preview on the session draft (Fields::Draft).
-    scope "menu", as: "menu" do
-      resources :fields, only: %i[index show new create] do
-        collection do
-          get :farm
-          get :sources
-          delete :preview, action: :reset
-        end
-      end
-      patch "fields/:subject/readings/:datum", to: "field_readings#update", as: :field_reading
-
-      # Sections 2 to 5, on the same farm preview.
-      resource :crops, only: :show do
-        get :rotation
-        get :calendar
-        patch :plan
-      end
-      resource :weather, only: :show, controller: "weather" do
-        get :alerts
-        patch :alerts, action: :update_alerts
-      end
-      resource :staff, only: :show, controller: "staff" do
-        get :tasks
-        get :roles
-        post :members, action: :create_member
-        patch "members/:id", action: :update_member, as: :member
-        delete "members/:id", action: :destroy_member
-        post :tasks, action: :create_task
-        patch "tasks/:id", action: :update_task, as: :task
-        delete "tasks/:id", action: :destroy_task
-      end
-      resource :reports, only: :show do
-        get :harvest
-        get :export
-        get :download, constraints: { format: /json|csv/ }
-      end
-    end
-
     # Passkey sign-in and sign-up (browsers and native shells; NATIVE_WEB_ACCESS=0 closes them to browsers).
     get    "sign_in",         to: "sessions#new",          as: :sign_in
     post   "sign_in/options", to: "sessions#options",      as: :sign_in_options
@@ -100,6 +60,36 @@ Rails.application.routes.draw do
     # Authenticated area (native shells).
     namespace :app do
       root "home#show"
+
+      # The menu sections, on the person's own farm (Fields::Farm) and what the
+      # public data sources say about each field's pin (FieldObservation).
+      resources :fields, only: %i[index show new create edit update] do
+        get :sources, on: :collection
+        member do
+          post :refresh
+          post :confirm
+        end
+        # The rotation comparison and each strategy's "why" (loaded lazily).
+        resource :rotation, only: :show, controller: "rotations" do
+          get "why/:strategy", action: :why, as: :why
+        end
+      end
+      resource :farm, only: %i[show edit update]
+      resource :crops, only: :show do
+        get :rotation
+        get :calendar
+        patch :plan
+      end
+      resource :weather, only: :show, controller: "weather" do
+        get :alerts
+        patch :alerts, action: :update_alerts
+      end
+      resource :team, only: :show, controller: "team"
+      resource :reports, only: :show do
+        get :harvest
+        get :export
+        get :download, constraints: { format: /json|csv/ }
+      end
       # The onboarding chat: one page, Turbo Stream actions for every turn.
       resource :onboarding, only: :show, controller: "onboarding" do
         post :message

@@ -2,16 +2,805 @@ es:
   app:
     home:
       show:
-        title: "Inicio"
-        greeting: "Hola, %{name}."
-        lede: "Aquí empieza Aluni. Las primeras pantallas llegarán aquí."
-        passkeys: "Administrar llaves de acceso"
-        sign_out: "Cerrar sesión"
-        recap_title: "Tu finca de un vistazo"
-        talk_to: "Hablar con %{app_name}"
-        recap:
-          farm: "Finca"
-          pin: "Punto del campo"
-          area: "Superficie"
-          segment: "Perfil"
-          goals: "Objetivos"
+        greeting: Hola, %{name}.
+        lede: 'Gira la rueda para elegir a dónde ir: tus terrenos, cultivos, clima, equipo o reportes.'
+        talk_to: Hablar con %{app_name}
+        eyebrow: Menú principal
+        dial_label: Secciones del menú
+        hint: Gira la rueda con el dedo, el mouse o las flechas del teclado. Toca el centro para abrir.
+        kicker: "%{number} / %{total}"
+        open: Abrir
+        open_section: Abrir %{title}
+        add_field: Agregar un terreno nuevo
+        back: Volver al menú
+        soon: Próximamente
+        sections:
+          fields:
+            short: Terrenos
+            title: Mis terrenos
+            description: Tus parcelas, su suelo y su historial.
+            lede: Cada terreno que trabajas, con su ubicación, su perfil de suelo y los cultivos que ha tenido.
+            options:
+              add:
+                title: Agregar un terreno
+                body: Marca un punto y responde unas preguntas. Lo demás sale de la ubicación.
+              list:
+                title: Mis terrenos
+                body: Cada terreno con su cultivo, su suelo y lo que todavía falta.
+              sources:
+                title: De dónde salen tus datos
+                body: Cada valor con su fuente y qué tanto puedes confiar en él.
+          crops:
+            short: Cultivos
+            title: Mis cultivos
+            description: Lo que está creciendo, la rotación y consejos para producir más.
+            lede: Lo que hay en la tierra hoy, lo que viene después y consejos para mejorar cada cosecha.
+            options:
+              current:
+                title: Creciendo ahora
+                body: Cada cultivo con su etapa y los días desde la siembra.
+              rotation:
+                title: Planificador de rotación
+                body: Compara rotaciones lado a lado antes de decidir.
+              calendar:
+                title: Calendario de cultivo
+                body: Ventanas de siembra, cuidado y cosecha para tu zona.
+          weather:
+            short: Clima
+            title: Clima
+            description: Pronóstico, lluvia y humedad del suelo en tus terrenos.
+            lede: El pronóstico donde cultivas, con lluvia, heladas y qué tan húmeda está la raíz.
+            options:
+              forecast:
+                title: Pronóstico
+                body: Siete días de temperatura, lluvia y viento.
+              moisture:
+                title: Lluvia y humedad del suelo
+                body: Lo que llovió esta semana y cuánta agua guarda el suelo.
+              alerts:
+                title: Alertas de clima
+                body: Heladas, calor y tormentas, antes de que lleguen a tus terrenos.
+          staff:
+            short: Equipo
+            title: Mi equipo
+            description: Las personas que trabajan contigo y sus tareas.
+            lede: Quién trabaja en cada terreno, qué está haciendo y qué puede ver.
+            options:
+              team:
+                title: Integrantes
+                body: Invita a las personas que trabajan contigo.
+          reports:
+            short: Reportes
+            title: Reportes
+            description: Temporadas, rendimientos y costos en un solo lugar.
+            lede: Un resumen claro de cada temporada para planear la siguiente y compartirlo.
+            options:
+              season:
+                title: Resumen de temporada
+                body: Cultivos, clima y resultados de la temporada.
+              yield:
+                title: Rendimiento y costos
+                body: Compara producción y gastos entre terrenos.
+              export:
+                title: Exportar
+                body: Descarga un reporte para compartir con tu asesor o comprador.
+        menu_title: Menú · %{app_name}
+        account: Cuenta
+    fields:
+      back_to_menu: Volver al menú
+      back_to_fields: Volver a mis terrenos
+      layers:
+        us: 'Tu finca está en EE. UU.: además de los datos globales usamos fuentes nacionales más finas, como el mapa de suelos y el de cultivos.'
+        global: 'Tu finca está fuera de EE. UU.: trabajamos con datos globales, que son menos precisos. Lo que nos cuentes los corrige.'
+      layers_short:
+        global: Global
+        us: EE. UU.
+      units:
+        hectares: "%{value} ha"
+        hectares_short: ha
+        acres: "%{value} acres"
+      states:
+        answered: Respondido
+        unanswered: Agrégalo cuando quieras
+        auto: Completado
+        to_confirm: Espera tu confirmación
+        confirmed: Confirmado
+        pending: Se completará solo
+        failed: La fuente no respondió
+        needs_pin: Necesita el punto del terreno
+        gap: Todavía sin fuente aquí
+      state_labels:
+        answered: Tu respuesta
+        unanswered: Sin responder
+        auto: Automático
+        to_confirm: Por confirmar
+        confirmed: Confirmado por ti
+        pending: En camino
+        failed: Error de la fuente
+        needs_pin: Sin punto
+        gap: Sin fuente
+      confidence:
+        high: Parcela · confianza alta
+        medium: Zona · confianza media
+        low: Contexto regional
+      origins:
+        ask: Te preguntamos
+        confirm: Lo confirmas
+        auto: Automático
+      groups:
+        place: Lugar
+        profile: Tú
+        resources: Recursos
+        market: Mercado
+        goals: Metas
+        plot: El terreno
+        crop: Cultivo
+        soil: Suelo
+        terrain: Relieve
+        climate: Clima de largo plazo
+        history: Historial de cultivos
+        data_sources: Fuentes de datos
+      feeds:
+        all: todo lo demás
+        confidence: saber cuánto confiar en cada dato
+        interface: cómo te habla la app
+        calendar: el calendario de siembra
+        water: cuánta agua necesita un cultivo
+        risk: los riesgos del clima
+        suitability: saber qué cultivos son aptos
+        baseline: tu rotación actual, el punto de partida
+        scoring: el puntaje de cada opción
+        feasibility: saber qué es posible para ti
+        classification: tu perfil
+        rotation_rules: las reglas de rotación
+        erosion: el riesgo de erosión
+      classification:
+        segment: Perfil
+        team: Equipo
+        budget_level: Presupuesto
+        goals: Meta principal
+      data:
+        region:
+          label: Región
+        role:
+          label: Tu rol
+        experience:
+          label: Experiencia
+        team:
+          label: Quién trabaja la finca
+        team_size:
+          label: Tamaño del equipo
+        land_tenure:
+          label: Tierra
+        units:
+          label: Unidades
+        budget_level:
+          label: Presupuesto
+        equipment:
+          label: Equipo y maquinaria
+        livestock:
+          label: Animales
+        practices:
+          label: Prácticas
+        market_channels:
+          label: Dónde vendes
+        goals:
+          label: Metas
+        risk_tolerance:
+          label: Disposición al riesgo
+        name:
+          label: Nombre
+        location:
+          label: Punto
+        area:
+          label: Área
+          unit_label: Unidad de área
+        irrigation:
+          label: Riego
+        water_source:
+          label: Fuente de agua
+        cropping_intensity:
+          label: Cultivos por año
+        current_crop:
+          label: Cultivo de esta temporada
+        planting_month:
+          label: Mes de siembra
+        harvest_month:
+          label: Mes de cosecha
+        crop_history:
+          label: Historial de cultivos
+        soil_texture:
+          label: Textura del suelo
+          value: "%{sand} % arena · %{clay} % arcilla"
+        soil_drainage:
+          label: Drenaje
+        soil_ph:
+          label: pH
+        soil_depth:
+          label: Profundidad del suelo
+        soil_fertility:
+          label: Fertilidad
+        soil_salinity:
+          label: Salinidad
+        soil_problems:
+          label: Problemas que ves
+        soil_series:
+          label: Unidad del levantamiento de suelos
+        organic_matter:
+          label: Materia orgánica
+          value: "%{value} %"
+        water_capacity:
+          label: Agua que retiene el suelo
+          value: "%{value} cm por cm de suelo"
+        elevation:
+          label: Altitud
+          value: "%{value} m"
+        slope:
+          label: Pendiente
+          value: "%{value} %"
+        temp_normal:
+          label: Temperatura media
+          value: "%{value} °C en un año típico"
+        rain_normal:
+          label: Lluvia
+          value: "%{value} mm en un año típico"
+        frost_normal:
+          label: Días con helada
+          value: "%{value} días en un año típico"
+      index:
+        title: Mis terrenos · %{app_name}
+        lede: Tus terrenos con su cultivo, su suelo y lo que todavía falta.
+        crumb: Mis terrenos
+        headline: Mis terrenos
+        summary:
+          one: "%{count} terreno · %{area} en total"
+          other: "%{count} terrenos · %{area} en total"
+        no_crop: Sin cultivo todavía
+        add: Agregar un terreno
+        add_hint: Marca un punto y responde unas preguntas
+        no_fields: Todavía no tienes terrenos.
+        greeting:
+          one: Hola. Hay una cosa esperándote en tu finca.
+          other: Hola. Hay %{count} cosas esperándote en tu finca.
+        greeting_done: 'Tus terrenos están completos: ya podemos comparar rotaciones.'
+        farm_todo:
+          one: Un dato de la finca por revisar
+          other: "%{count} datos de la finca por revisar"
+        no_pin: Sin punto todavía
+      show:
+        title: "%{name} · %{app_name}"
+        empty_message: Este terreno está listo. Cuéntame qué siembras aquí y lo verás crecer.
+        add_crop: Agregar tu cultivo
+        repeat: Se repite
+        tips:
+          fallow: Un terreno en descanso recupera suelo. Un cultivo de cobertura lo mantiene protegido y suma materia orgánica para la próxima temporada.
+          stalk: Alternar este cultivo con una leguminosa corta el ciclo de plagas del suelo. Un cultivo de cobertura después de la cosecha protege la tierra en invierno.
+          grain: Los cereales pequeños cubren pronto el suelo y cortan el ciclo de plagas del maíz y la soya. Su paja suma materia orgánica.
+          leafy: 'Este cultivo fija nitrógeno: lo que siembres después lo aprovecha. Evita repetirlo dos años seguidos para que no se acumulen enfermedades.'
+          bush: Estos cultivos remueven mucho el suelo. Rotarlos con un cereal o un cultivo de cobertura ayuda a que recupere su estructura.
+        plant: Sembrar
+        image_alt: Vista satelital alrededor de %{name}
+        image_caption: NASA GIBS, unos 40 km alrededor del punto
+        cdl: El mapa de cultivos de EE. UU. muestra %{years}. ¿Guardar estas temporadas como tuyas?
+        edit: Editar terreno
+        suggestions:
+          title:
+            one: Una sugerencia de las fuentes de datos
+            other: "%{count} sugerencias de las fuentes de datos"
+          body: Acéptalas todas de una vez o revísalas una por una en el formulario.
+          confirm_all: Confirmar todas
+          review: Revisar una por una
+        compare: Comparar rotaciones
+      new:
+        title: Agregar un terreno · %{app_name}
+        crumb: Agregar un terreno
+        progress: Avance
+        count: Paso %{number} de %{total}
+        why: Lo usamos para %{uses}.
+        back: Atrás
+        next: Continuar
+        finish: Ver mis terrenos
+        optional: Puedes saltarlo.
+        save: Guardar terreno
+        review_empty: Sin responder
+        review_edit: Editar
+        pin_note: El punto es todo lo que necesitan las fuentes de datos. No se pregunta nada más del lugar.
+        history_note: En Estados Unidos el mapa de cultivos propondrá estas temporadas en la página del terreno.
+        steps:
+          location:
+            question: "¿Dónde está este terreno?"
+            aluni: Comparte tu ubicación o escribe las coordenadas. Con el punto leo su clima, su suelo y el potencial de sus cultivos.
+          details:
+            question: Cuéntame del terreno
+            aluni: Un nombre que reconozcas, su tamaño y cómo recibe agua.
+          crop:
+            question: "¿Qué tienes sembrado ahora?"
+            aluni: Lo que siembras hoy es el punto de partida con el que comparo rotaciones.
+          history:
+            question: "¿Qué sembraste antes?"
+            aluni: Con las últimas temporadas veo si se repite una familia de cultivos.
+          done:
+            question: Revisa y guarda
+            aluni: Este es el terreno que describiste. Guárdalo y busco sus datos.
+        review_note: Puedes cambiar cualquier respuesta después desde la página del terreno.
+      sources:
+        title: De dónde salen tus datos · %{app_name}
+        eyebrow: Fuentes y confianza
+        headline: De dónde salen tus datos
+        lede: Solo te preguntamos lo que tu ubicación no puede decirnos. Lo demás sale de fuentes públicas, cada una con su escala y con qué tanto se puede confiar en ella.
+        legend_title: Cómo leer esta página
+        origins:
+          ask: 'Solo tú lo sabes: ninguna fuente lo cubre.'
+          confirm: Lo deducimos de tu ubicación y tú nos dices si coincide.
+          auto: Lo tomamos de fuentes públicas. Siempre puedes verlo y corregirlo.
+        confidence:
+          high: 'Medido a 30 m o menos: describe tu terreno.'
+          medium: 'Medido entre 250 m y 9 km: describe tu zona.'
+          low: 'Medido a 25 km o más: es el clima de tu región, no de tu parcela.'
+        levels:
+          farm: Tu finca
+          field: Cada terreno
+        no_source: Ninguna fuente todavía
+        feeds: Se usa para %{uses}.
+        gaps_title: Lo que ninguna fuente cubre todavía
+        gaps_lede: Estos datos te los preguntaremos a ti hasta encontrar una fuente confiable.
+        statuses:
+          reference: datos dentro de la app
+          planned: próxima fase
+          gap: sin documentar todavía
+      untitled: Terreno %{number}
+      tabs:
+        label: Secciones de Mis terrenos
+        fields: Terrenos
+        farm: Mi finca
+        sources: Fuentes
+      sections_label: Secciones de esta página
+      season_period: 'Temporada medida: %{from} a %{to}'
+      progress: "%{done} de %{total} listos"
+      actions:
+        proposal: 'Se guardaría como: %{value}'
+      placeholders:
+        default: Escríbelo aquí
+        name: 'Por ejemplo: Lote junto al camino'
+        field_notes: Charcos después de llover, malezas, una esquina que nunca rinde...
+        soil_test: Laboratorio, fecha y resultados principales
+        crop: 'Por ejemplo: maíz'
+      todo:
+        title: Lo que falta
+        done: Ya tengo todo lo que necesito. Puedo comparar rotaciones para ti.
+        message:
+          one: Me falta una cosa para poder comparar rotaciones aquí.
+          other: Me faltan %{count} cosas para poder comparar rotaciones aquí.
+        verbs:
+          to_confirm: Confirmar
+          unanswered: Responder
+      create:
+        added: Terreno agregado. Ya estoy buscando sus datos.
+        too_many: Es el máximo de terrenos que admite una finca por ahora.
+        invalid: El terreno necesita al menos un punto válido.
+      reset:
+        reset: De vuelta a la finca de ejemplo.
+      no_area: Área sin indicar
+      pick_month: Elige un mes
+      pin:
+        latitude: Latitud
+        longitude: Longitud
+        use_my_location: Usar mi ubicación
+        locating: Buscando tu ubicación...
+        denied: No se permitió la ubicación. Escribe las coordenadas.
+        unsupported: Este dispositivo no puede compartir su ubicación. Escribe las coordenadas.
+      crop_sources:
+        farmer: tú
+        cdl: mapa de cultivos
+        assistant: chat
+      data_sources:
+        title: Datos de este punto
+        fetched: hace %{time}
+        refresh: Actualizar datos
+        needs_pin: Agrega el punto de este terreno y busco su clima, su suelo y el potencial de sus cultivos.
+        states:
+          ok: Listo
+          empty: Sin datos aquí
+          out_of_coverage: No disponible en este país
+          failed: No respondió
+          waiting: En camino
+      refresh:
+        queued: Volviendo a consultar las fuentes de datos. Tarda un minuto.
+      edit:
+        title: Editar %{name} · %{app_name}
+        headline: Editar %{name}
+        lede: Todas las respuestas de este terreno en un solo lugar. Marca una sugerencia para usar lo que dice una fuente de datos.
+        use_suggestion: 'Usar lo que dice %{source}: %{value}'
+        cancel: Cancelar
+        save: Guardar cambios
+        essential: Lo esencial
+        essential_hint: Estas pocas respuestas son todo lo que necesita la comparación de rotaciones.
+        more: Más detalles (opcional)
+      update:
+        saved: Terreno guardado.
+      confirm:
+        confirmed:
+          zero: No había nada que confirmar.
+          one: Una sugerencia guardada como tuya.
+          other: "%{count} sugerencias guardadas como tuyas."
+    crops:
+      tabs:
+        now: Ahora
+        rotation: Rotación
+        calendar: Calendario
+      families:
+        poaceae: Gramíneas (Poaceae)
+        fabaceae: Leguminosas (Fabaceae)
+        solanaceae: Solanáceas (Solanaceae)
+        asteraceae: Compuestas (Asteraceae)
+        brassicaceae: Crucíferas (Brassicaceae)
+        euphorbiaceae: Euforbiáceas (Euphorbiaceae)
+        convolvulaceae: Convolvuláceas (Convolvulaceae)
+        rubiaceae: Rubiáceas (Rubiaceae)
+        amaryllidaceae: Amarilidáceas (Amaryllidaceae)
+        amaranthaceae: Amarantáceas (Amaranthaceae)
+        malvaceae: Malváceas (Malvaceae)
+      show:
+        title: Mis cultivos · %{app_name}
+        crumb: Mis cultivos
+        headline: Mis cultivos
+        summary: 'Creciendo ahora: %{crops}, en %{area}.'
+        none: Todavía no hay nada sembrado.
+        season: De %{from} a %{to}
+        plant: Elegir un cultivo
+      rotation:
+        title: Rotación · %{app_name}
+        headline: Rotación
+        lede: Las temporadas de cada terreno, lo que planeas después y algunas revisiones básicas. Señalan qué mirar; la comparación de estrategias llegará con el motor de rotaciones.
+        labels:
+          plan: Planeado
+        no_history: Todavía no hay temporadas registradas en este terreno.
+        plan_label: Plan para %{year}
+        plan_none: Sin decidir
+        plan_save: Guardar plan
+        findings:
+          ok: Aquí no se rompe ninguna regla básica de rotación.
+          same_family:
+            label: Misma familia
+            text: "%{crop} sigue a un cultivo de su misma familia (%{years}). Las plagas y enfermedades de esa familia se mantienen."
+          monoculture:
+            label: Mismo cultivo
+            text: "%{crop} tres temporadas o más seguidas (%{years})."
+          no_legume:
+            label: Sin leguminosa
+            text: Ninguna leguminosa en %{years}. Una leguminosa deja nitrógeno para el siguiente cultivo.
+        compare:
+          title: Comparar estrategias
+          best: 'Mejor opción ahora: %{strategy} (%{best} frente a %{current} de tu rotación actual).'
+          not_ready: Agrega el cultivo de esta temporada para comparar rotaciones.
+          open: Abrir la comparación
+        cdl_waiting:
+          one: Una temporada del mapa de cultivos espera tu confirmación
+          other: "%{count} temporadas del mapa de cultivos esperan tu confirmación"
+        potential_title: Lo que se da bien aquí
+        potential_note: Aptitud según FAO GAEZ en tu punto (de temporal, %{level}).
+        legume: leguminosa
+        same_family: misma familia que ahora
+      calendar:
+        title: Calendario de cultivo · %{app_name}
+        headline: Calendario de cultivo
+        lede: La siembra y la cosecha de cada terreno frente al periodo sin heladas de esta temporada.
+        frost_free: Sin heladas
+        missing: Agregar meses de siembra y cosecha
+        note: 'Periodo sin heladas según NASA POWER (contexto regional): última helada de primavera %{last}; primera helada de otoño %{first}.'
+        no_weather: El periodo sin heladas aparece cuando llegue el clima del punto del terreno principal.
+      names:
+        zea-mays: Maíz
+        sorghum-bicolor: Sorgo
+        triticum-aestivum: Trigo
+        avena-sativa: Avena
+        hordeum-vulgare: Cebada
+        secale-cereale: Centeno
+        oryza-sativa: Arroz
+        saccharum-officinarum: Caña de azúcar
+        pennisetum-glaucum: Mijo perla
+        glycine-max: Soya
+        phaseolus-vulgaris: Frijol
+        medicago-sativa: Alfalfa
+        cicer-arietinum: Garbanzo
+        arachis-hypogaea: Maní
+        pisum-sativum: Arveja
+        vigna-unguiculata: Caupí
+        solanum-tuberosum: Papa
+        solanum-lycopersicum: Tomate
+        helianthus-annuus: Girasol
+        brassica-napus: Canola
+        brassica-oleracea: Repollo
+        manihot-esculenta: Yuca
+        ipomoea-batatas: Camote
+        coffea-arabica: Café
+        allium-cepa: Cebolla
+        beta-vulgaris: Remolacha azucarera
+        gossypium-hirsutum: Algodón
+      suitability:
+        very_high: Aptitud muy alta
+        high: Aptitud alta
+        good: Aptitud buena
+        medium: Aptitud media
+        moderate: Aptitud moderada
+        marginal: Marginal
+        very_marginal: Muy marginal
+        not_suitable: No apto
+      attainable: "%{value} t/ha alcanzables"
+      gaez_note: FAO GAEZ, de temporal, clima 1981-2010, unos 9 km alrededor del punto.
+      no_gaez: FAO GAEZ no cubre este cultivo.
+      gaez_pending: El potencial del cultivo viene en camino.
+      input_levels:
+        high: insumos altos
+        low: insumos bajos
+      fit:
+        pending: Los requisitos de este cultivo (FAO ECOCROP) todavía no están cargados.
+        factors:
+          temperature: Temperatura
+          rain: Lluvia
+          ph: pH
+          texture: Textura
+          drainage: Drenaje
+        statuses:
+          optimal: óptimo
+          possible: posible
+          outside: fuera de su rango
+          unknown: sin saber todavía
+      water:
+        need: Necesita unos %{need} mm en su temporada; la lluvia usual cubre unos %{effective} mm (faltan %{deficit} mm).
+        note: Normales de NASA POWER con coeficientes FAO-56. No cuenta el agua que el suelo guarda de antes, así que en zonas húmedas el faltante sale alto.
+    weather:
+      tabs:
+        season: Esta temporada
+        alerts: Alertas
+      show:
+        title: Clima · %{app_name}
+        crumb: Clima
+        headline: El clima de esta temporada
+        lede: Del %{from} al %{to}, día por día.
+        regional: 'Contexto regional: valores de NASA POWER para una celda de unos 50 km alrededor de tu finca, no de tu terreno.'
+        kpis:
+          rain: Lluvia
+          temp: Temperatura media
+          frost_days: Días con helada
+          heat_days: Días sobre 32 °C
+          wetness: Humedad en la raíz
+        charts:
+          temp:
+            title: Temperatura diaria
+            note: Banda de mínima a máxima, línea para la media del día
+            frost_line: 0 °C
+            summary: Temperatura diaria de %{low} a %{high} °C durante la temporada.
+            point: "%{low} a %{high} °C · media %{mean} °C"
+          rain:
+            title: Lluvia por semana
+            note: Milímetros sumados en 7 días
+            week: Semana desde el %{date}
+            summary: "%{total} mm en la temporada; la semana más lluviosa tuvo %{wettest} mm."
+          moisture:
+            title: Humedad en la zona de raíces
+            note: 0 seco, 1 saturado
+            summary: Humedad en la zona de raíces entre %{low} y %{high} durante la temporada.
+        table:
+          title: Ver los datos por mes
+          month: Mes
+          rain: Lluvia (mm)
+          tmin: Mínima media (°C)
+          tmax: Máxima media (°C)
+          wetness: Raíz (0 a 1)
+          rain_normal: Lluvia típica (mm)
+          temp_normal: Media típica (°C)
+        forecast:
+          title: Pronóstico
+          body: 'El pronóstico todavía no está conectado: ninguna de nuestras fuentes documentadas lo ofrece. Mientras tanto te muestro lo que ha pasado esta temporada.'
+      alerts:
+        title: Alertas de clima · %{app_name}
+        headline: Alertas de clima
+        lede: Elige de qué quieres enterarte. Abajo, lo que esta temporada te habría enviado.
+        prefs_title: Avísame de
+        prefs_hint: Las alertas llegarán a tu teléfono cuando estén activas. Por ahora ajustan esta página.
+        save: Guardar
+        kinds:
+          frost:
+            label: Helada
+            event: Mínima de %{value} °C
+          heat:
+            label: Calor extremo
+            event: Máxima de %{value} °C
+          heavy_rain:
+            label: Lluvia fuerte
+            event: "%{value} mm en un día"
+          dry_spell:
+            label: Racha seca
+            event: "%{days} días casi sin lluvia"
+        frost_free:
+          title: Periodo sin heladas
+          last_spring: 'Última helada de primavera:'
+          first_fall: 'Primera helada de otoño:'
+          none: ninguna esta primavera
+          not_yet: ninguna hasta el %{date}
+        timeline_title: Esta temporada
+        timeline_aluni:
+          zero: Con lo que elegiste, esta temporada habría sido tranquila.
+          one: Con lo que elegiste, esta temporada te habría enviado una alerta.
+          other: Con lo que elegiste, esta temporada te habría enviado %{count} alertas.
+      picker_label: Terreno
+      no_season:
+        needs_pin: Este terreno todavía no tiene punto. Agrégalo y leo el clima ahí.
+        pending: Estoy consultando a NASA POWER sobre este punto. Vuelve en un minuto.
+        failed: NASA POWER no respondió esta vez. Intenta actualizar desde la página del terreno.
+        open_field: Abrir el terreno
+    reports:
+      tabs:
+        season: Temporada
+        harvest: Cosecha
+        export: Exportar
+      show:
+        title: Reporte de temporada · %{app_name}
+        crumb: Reportes
+        eyebrow: "%{from} a %{to}"
+        headline: Reporte de temporada
+        lede:
+          one: Un terreno, %{area}.
+          other: "%{count} terrenos, %{area}."
+        print: Imprimir o guardar como PDF
+        export: Descargar los datos
+        crops_title: Área por cultivo
+        weather_title: Clima
+        fields_title: Terreno por terreno
+        team_title: Equipo
+        table:
+          field: Terreno
+          crop: Cultivo
+          area: Área
+          plan: Próxima temporada
+          flags: Revisiones de rotación
+          ready: Datos
+          no_plan: Sin decidir
+          no_flags: Ninguna
+        team_size:
+          one: una persona
+          other: "%{count} personas"
+      harvest:
+        title: Cosecha · %{app_name}
+        headline: Cosecha alcanzable
+        lede: Lo que FAO GAEZ estima que puede rendir la mejor tierra alrededor de cada punto con el cultivo de esta temporada.
+        total: "%{value} t en este terreno"
+        note: Peso seco, de temporal, clima 1981-2010. Una referencia, no un pronóstico.
+        own:
+          title: Tus propios rendimientos
+          body: Registrar tus cosechas necesita su propio lugar en tu perfil. Es el siguiente paso de este reporte.
+      export:
+        title: Exportar · %{app_name}
+        headline: Exporta tus datos
+        lede: 'Todo lo que tiene la finca, con la fuente y la confianza de cada valor. Tus datos son tuyos: llévalos a tu asesor, a tu comprador o a otra herramienta.'
+        download: Descargar
+        open_report: Abrir el reporte
+        formats:
+          csv:
+            title: Hoja de cálculo
+            text: 'Una fila por valor: terreno, dato, estado, valor, fuente y confianza.'
+          json:
+            title: Datos completos
+            text: Los mismos valores más tus planes, equipo y tareas, para otra herramienta.
+          print:
+            badge: PDF
+            title: Reporte para imprimir
+            text: El reporte de temporada, listo para imprimir o guardar como PDF.
+      aluni: Las exportaciones salen de lo que ves aquí, en esta sesión del navegador.
+    screens:
+      saved: Guardado.
+      invalid: Ese valor no encaja. Revísalo, por favor.
+      too_many: Llegaste al límite.
+    team:
+      show:
+        title: Mi equipo · %{app_name}
+        crumb: Mi equipo
+        headline: Mi equipo
+        lede: Quién trabaja la finca y con qué, como me lo contaste.
+        aluni: Cambia lo que quieras aquí y lo tendré en cuenta al sugerir rotaciones.
+        talk: Cuéntale más a %{app_name}
+        edit: Editar
+    farms:
+      show:
+        title: Mi finca · %{app_name}
+        headline: Mi finca
+        lede: 'Lo que aplica a todos tus terrenos: clima, agua, recursos, mercado y prioridades.'
+        profile_label: Tu perfil
+        talk: Cuéntale más a %{app_name}
+        edit: Editar perfil y finca
+      edit:
+        title: Editar mi finca · %{app_name}
+        crumb: Mi finca
+        headline: Tu perfil y tu finca
+        lede: Cambia lo que quieras y guarda una sola vez. Lo que dejes vacío queda como está.
+      update:
+        saved: Perfil guardado.
+    rotations:
+      show:
+        title: Rotaciones de %{name} · %{app_name}
+        eyebrow: Temporadas %{from} a %{to}
+        headline: Comparar rotaciones
+        lede: Tu rotación actual frente a otras opciones, puntuadas con los datos de este terreno y ponderadas por tus metas.
+        not_ready: Cuéntame qué crece aquí esta temporada y comparo rotaciones.
+        add_crop: Agregar el cultivo de esta temporada
+        summary_better: "%{strategy} obtiene %{best} frente a %{current} de lo que haces ahora. Revisa la evidencia y los riesgos antes de decidir."
+        summary_current: Tu rotación actual se sostiene bien frente a las otras opciones con lo que sé.
+        weights_title: Cómo se calcula el puntaje
+        your_goal: tu meta
+        current: Lo que haces ahora
+        best: Mejor puntuada
+        alternative: Alternativa
+        benefits: Mejor que ahora
+        evidence: Evidencia
+        risks: Revisar en tu zona
+        gaps: Lo que no sabemos
+        use_as_plan: Usar como plan para %{year}
+        disclaimer: Los puntajes combinan datos públicos de tu punto con reglas prácticas. Apoyan tu criterio y a tus expertos locales; nunca los reemplazan.
+      score: "%{value}/100"
+      no_data: sin datos
+      strategies:
+        current:
+          title: Seguir con la rotación actual
+          why: Continúa lo que ha hecho el terreno, como punto de partida para comparar.
+        legume:
+          title: Meter una leguminosa
+          why: "%{crop} aporta nitrógeno y corta el ciclo de plagas; su punto más fuerte aquí es %{lead}."
+        small_grain:
+          title: Agregar un cereal pequeño
+          why: "%{crop} cubre pronto el suelo y corta el ciclo de los cultivos en hilera; lo más fuerte aquí: %{lead}."
+        other_family:
+          title: Cambiar de familia de cultivo
+          why: "%{crop} es el cultivo mejor adaptado de otra familia en tu punto; lo más fuerte aquí: %{lead}."
+        perennial:
+          title: Descansar con forraje perenne
+          why: 'Dos años de %{crop} recuperan el suelo y alimentan animales; lo más fuerte aquí: %{lead}.'
+      criteria:
+        crop_fit:
+          short: Aptitud
+          how: Aptitud FAO GAEZ del cultivo de cada temporada en tu punto.
+          benefit: Los cultivos se adaptan mejor a tu tierra y tu clima.
+        pest_break:
+          short: Corte de plagas
+          how: Ninguna familia dos temporadas seguidas y ningún cultivo tres veces seguidas.
+          benefit: Corta el ciclo de plagas y enfermedades.
+        soil_health:
+          short: Salud del suelo
+          how: Leguminosas, más familias y cultivos que cubren el suelo.
+          benefit: Recupera suelo y materia orgánica.
+        nitrogen:
+          short: Nitrógeno
+          how: Temporadas con leguminosa, que fija su propio nitrógeno.
+          benefit: Necesita menos fertilizante nitrogenado.
+        water:
+          short: Agua
+          how: Cuánto de lo que piden los cultivos cubre la lluvia usual (FAO-56, NASA POWER).
+          benefit: Se ajusta mejor a la lluvia que recibes.
+        erosion:
+          short: Erosión
+          how: Los cultivos en hilera en tu pendiente dejan el suelo expuesto.
+          benefit: Mantiene el suelo en su lugar.
+        workload:
+          short: Carga de trabajo
+          how: Menos cultivos distintos y maquinaria que ya tienes.
+          benefit: Es más sencilla de manejar.
+      evidence:
+        suitability: "%{crop}: %{class} en tu punto."
+        water: "%{crop} necesita unos %{need} mm; la lluvia usual cubre unos %{effective} mm."
+        slope: Pendiente de %{value} %.
+        same_family: "%{crop} seguiría a su propia familia."
+        monoculture: "%{crop} tres temporadas o más seguidas."
+        no_legume: Ninguna leguminosa en cuatro temporadas.
+      risks:
+        dry: De temporal, y la lluvia usual de la temporada no llega a la mitad de lo que pide un cultivo. Revisa la humedad del suelo y la experiencia local.
+        low_suitability: Un cultivo tiene aptitud baja en tu punto según FAO GAEZ.
+        harvester: Los cereales pequeños necesitan cosechadora; tu equipo no la incluye.
+        same_family: Las plagas de una misma familia podrían mantenerse.
+        establishment: La alfalfa tarda una temporada en establecerse y necesita mercado o animales.
+      gaps:
+        market: 'Precios y compradores: todavía no hay fuente para tu mercado local.'
+        soil: La textura de tu suelo todavía no está confirmada.
+        ecocrop: Los requisitos de temperatura y pH de los cultivos (FAO ECOCROP) todavía no están cargados.
+        suitability: FAO GAEZ no tiene valor para algunos de estos cultivos en tu punto.
+        water: Por ahora la necesidad de agua solo se conoce para maíz y soya (FAO-56).
+        slope: La pendiente todavía no se conoce fuera de Estados Unidos.

@@ -19,6 +19,10 @@ Every outside service has one client class, a switchboard guard, structured erro
 
 One class per provider under `app/services/<provider>/client.rb`: Faraday with JSON middleware and `faraday-retry`, explicit timeouts, structured error classes, `Platform::Switchboard.guard!(:service)` before each call (or `Platform::FaradayPauseGuard` as middleware for clients with several connections), a `PlatformSwitch::SERVICES` entry and a `Platform::Features` flag when the integration ships off by default.
 
+## Public data sources
+
+`DataSources::Client` is the base of the no-account data clients (`NasaPower::Client`, `Gaez::Client`, `Ssurgo::Client`, `Usgs::ElevationClient`, `Cdl::Client`, `Fcc::Client`): Faraday with retries and timeouts, one error class, and `Platform::Switchboard.guard!(:data)` before each request (`PlatformSwitch::SERVICES` includes `data`, on by default). Only `Fields::FetchObservationsJob` calls them; see `docs/FIELDS.md`.
+
 ## Inbound webhooks (shape, not built)
 
 `namespace :webhooks` is outside the locale scope. Each provider gets an `ActionController::API` controller (no session, no CSRF) that caps the body from `Content-Length` (413), verifies the provider's signature with `ActiveSupport::SecurityUtils.secure_compare`, records the delivery in a `webhook_events` table with a unique `(source, dedupe_key)` so redeliveries are no-ops that still answer 200, and enqueues a job that re-fetches the object from the provider before acting. A webhook controller never mutates business state in the request. Wrap the route in `constraints: ->(_r) { Platform::Features.<provider>? }` so it 404s until the integration is turned on. Rack::Attack throttles `/webhooks` at 100/min per IP.

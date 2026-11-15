@@ -1,78 +1,61 @@
 # The menu sections (My fields, My crops, Weather, My team, Reports)
 
-The farm, its fields, the add-a-field conversation and where each datum comes from. A working web preview under `/menu/fields`: the person's answers are used everywhere but kept only in their session, nothing in the database. The sample farm shows until they add a field of their own.
+After the onboarding chat, `/app` is the menu dial (`App::HomeController`, layout `app_screen`). Each section reads and writes the person's own farm: the onboarding models (`FarmerProfile`, `Farm`, `Field`, `FieldCrop`, `docs/ONBOARDING.md`) and what the public data sources returned for each field's pin (`FieldObservation`). There is no sample data.
 
 ## Screens
 
 | Path | What it does |
 |---|---|
-| `GET /menu/fields` | Tab "Fields": every field as an illustrated plot with its progress, Aluni's greeting with what is waiting, add a field |
-| `GET /menu/fields/farm` | Tab "My farm": profile (classification), what is left, the farm data by group, editable |
-| `GET /menu/fields/sources` | Tab "Sources": every datum with its origin, sources per layer, scale, confidence, use; the gaps |
-| `GET /menu/fields/:id` | One field: the plot (empty with a pin and a crop picker, or the crop growing), Aluni's tip, what is left (links to each card), section chips that follow the scroll, history, data by group, editable |
-| `GET /menu/fields/new`, `POST /menu/fields` | The add-a-field conversation as one form: one question per screen, a live plot for the crop, ranked goals, a review step, then the field is created and opened. Farm steps already answered are skipped |
-| `PATCH /menu/fields/:subject/readings/:datum` | Confirm (`confirm=1`), answer or correct one datum of `farm` or a field |
-| `DELETE /menu/fields/preview` | Start over: back to the sample farm |
+| `/app` | The dial; "Add a new field"; account menu (language, theme, the chat, passkeys, sign out) |
+| `/app/fields`, `/app/fields/:id` | Fields with progress; a field, read only: plot, GIBS view, source suggestions ("Confirm all"), what is left, crop history, data by group, data-source status and "Refresh data" |
+| `/app/fields/:id/edit`, `PATCH /app/fields/:id`, `POST /app/fields/:id/confirm` | One form for every answer of the field, each source suggestion beside its field with a box to take it; "Confirm all" takes every suggestion |
+| `/app/farm`, `/app/farm/edit` | The profile (segment, team, budget, goals) and farm data, and one form to edit them |
+| `/app/fields/sources` | Every datum with origin, sources per layer and status, gaps |
+| `/app/fields/new` | Add a field: pin (geolocate or coordinates), name, area, watering, crop, past seasons, review |
+| `/app/crops` (`/rotation`, `/calendar`) | Crop per field with GAEZ suitability, attainable yield and ECOCROP fit; seasons, plan for next year, rotation checks, "what grows well here"; planting to harvest against the frost-free stretch |
+| `/app/weather` (`/alerts`) | Season so far and 30-year normals at a field's pin (NASA POWER); alerts kept in `FarmerProfile#notification_preferences["weather"]` |
+| `/app/team` | The profile's role, team, team size, tenure, budget, equipment, livestock, practices; "Edit" opens the farm form |
+| `/app/reports` (`/harvest`, `/export`) | Season summary (prints clean), GAEZ attainable harvest per field, CSV and JSON export |
 
-Every form redirects back to its page and Turbo morphs it (`turbo_refreshes_with method: :morph, scroll: :preserve` in `fields/_bar`): the card, the plot, the progress and the to-do list update together and the scroll stays put. A new crop gives the plot a new id, so it grows in again.
+Forms redirect to the page they belong to and Turbo morphs it (`shared/_screen_bar`).
 
-## Pieces
+## Only the essentials are asked
 
-| File | Role |
-|---|---|
-| `config/field_profile.yml` | The registry: every datum (origin per layer, sources, snapshot paths, options, feeds) and the onboarding steps. Validated by `Fields::Profile` |
-| `app/services/fields/farm.rb` | `Fields::Farm.build(data)`: the farm and its fields from one data shape, `reading(datum)`, `todo`, `progress`, `classification`, `needs?(step)` |
-| `app/services/fields/draft.rb` | Where the data shape is kept: the session today. Without a draft, the sample (`config/samples/farm.yml`) |
-| `app/services/fields/answer_service.rb` | Validates and applies one confirmation, answer or correction; returns the new data |
-| `app/services/fields/add_field_service.rb` | Turns the conversation's answers into a field (and the farm, the first time); returns the new data and the field key |
-| `FieldsController`, `FieldReadingsController` | Thin: draft in, service, draft out, redirect |
+Five answers drive the comparison and are the only ones the to-do list and progress count (`essential: true` in the registry): the field's pin, its watering, this season's crop, the seasons before (proposed by the US crop map) and up to three goals. Every other answer sits under "More details (optional)" in the edit forms; the data sources and the onboarding chat fill most of it.
 
-### The data shape
+## Rotation comparison
 
-```ruby
-{ "sample" => true | nil,
-  "answers" => { datum_key => value },          # farm: what the person said or corrected
-  "confirmed" => [datum_key],                   # farm: inferred values they agreed with
-  "fields" => { key => { "answers" => {}, "confirmed" => [], "snapshot" => bool } } }
-```
+`/app/fields/:id/rotation` (`App::RotationsController`, `Rotations::Comparator`) compares the current rotation with at least two alternatives over the next three seasons: bring in a legume (when the rotation has none), add a small grain, change crop family, rest with perennial forage (with animals or a soil-health goal). Seven criteria score each strategy 0-100: crop fit (FAO GAEZ suitability at the pin), pest break (`Crops::RotationCheck`; a perennial stand counts once), soil health, nitrogen (legume seasons), water (how much of the crops' need the usual rain covers), erosion (row crops on the USGS slope) and workload (distinct crops, a combine for small grains). The farmer's goals weigh their criteria three times. Each strategy carries why, evidence with its source, benefits against the current rotation, gaps (always market prices) and risks to check locally. `Rotations::NarrateService` lets Gemini write the "why" in two sentences from those facts only, cached, in a lazy Turbo frame; without Gemini the rule text stays. "Use as plan" saves the strategy's first crop as next season (`Crops::PlanService`).
 
-### When the profile model arrives
+## Water per crop
 
-Replace `Fields::Draft` with a class that reads and writes the farm and field tables in this shape (or have the models expose it), and point the controllers at it. The services, `Fields::Farm`, the views and the specs stay as they are. `answers` maps to the profile columns (or a `jsonb`), `confirmed` to a list per farm and field, `snapshot` to the stored snapshot of each field.
+`Crops::WaterNeed` sets a crop's season need (FAO-56 single Kc curve) against the usual rain at the pin: `Weather::Et0` computes the monthly FAO-56 Penman-Monteith reference ET from NASA POWER normals (T2M, RH2M, WS2M, ALLSKY_SFC_SW_DWN, the cell elevation), effective rain follows the FAO/CROPWAT formula. Coefficients exist only where `docs/data_sources/fao56_crop_coefficients.md` captured them (corn and soybeans, `fao56` in `config/crops.yml`); other crops show the water need as a gap. It ignores water stored in the soil, so the comparison uses it relatively and the dry risk only fires when season rain is under half the need.
 
-## Reading states
+## Data from the pin
 
-`answered`, `unanswered` (asked data); `auto`, `to_confirm`, `confirmed`, `corrected` (inferred data; a correction is the person's value and wins); `pending` (a documented source, not connected yet); `gap` (no documented source: the person is asked, and their answer counts as `answered`). The to-do list holds `to_confirm`, `unanswered` and `gap`, except optional data. Progress counts what the person can settle (asked, confirm-origin and gap data that are not optional).
+`Fields::FetchObservationsJob(field_id)` runs when a pin is set or moved (`Field#after_commit`) and on "Refresh data". It stores one `FieldObservation` per source (status ok, empty, out_of_coverage, failed):
 
-## The snapshot contract (for the data work)
+| Source | Client | Coverage | Feeds |
+|---|---|---|---|
+| `fcc` | `Fcc::Client` | US | US layer on or off; `Farm#country_code`/`admin_area` |
+| `nasa_power` | `NasaPower::Client` | global, ~50 km | daily season (T2M, min, max, rain, root-zone wetness) and climatology (incl. FROST_DAYS) |
+| `gaez` | `Gaez::Client` | global, ~9 km | suitability and attainable yield, rainfed, input level from the profile (budget high or mechanized segment = High) |
+| `ssurgo` | `Ssurgo::Client` | US | map unit, drainage, topsoil sand, clay, organic matter, water capacity, pH |
+| `usgs_elevation` | `Usgs::ElevationClient` | US | elevation, slope |
+| `cdl` | `Cdl::Client` | US | crop per year for the last five years |
 
-The screens read the JSON that `farm_data.py` writes (`farm_data_<lat>_<lon>.json`): `location`, `period`, `climate_summary.*` and `site_attributes.*` (including `crop_<year>`). To light up a datum:
+All clients share `DataSources::Client` (Faraday, retries, timeouts, `Platform::Switchboard.guard!(:data)`). The GIBS picture is a URL (`Onboarding::AreaImage`), loaded by the browser. Not connected yet (next phase, `status: planned` in the registry): AppEEARS products (SRTM, MODIS phenology, HLS, SMAP), GPM IMERG, OpenET, FAO-56. Gaps: SoilGrids and a global reverse geocoder.
 
-1. Produce its value under a stable path in the snapshot.
-2. Add `snapshot:` (name => path) and `snapshot_source:` to the datum in the registry. A path ending in `*` collects every key with that prefix (`site_attributes.crop_*`).
-3. If the value has several parts, add `fields.data.<key>.value` in both locales (`%{name}` per part).
+ECOCROP requirements live in `config/ecocrop.yml`, extracted once from the OpenCLIM CSV with `bin/rails ecocrop:extract CSV=path` (`lib/tasks/ecocrop.rake`); until it exists the fit shows as pending. `config/crops.yml` maps each crop (keyed like `FieldCrop#crop_key`) to aliases, family, plant shape and its GAEZ name.
 
-`spec/services/fields/profile_spec.rb` fails when a registry path is missing from the sample snapshot or when copy is missing.
+## The registry: `config/field_profile.yml`
 
-The preview has one snapshot, so every farm sits at its point (near Ames, Iowa, said on the location step) and only the first field gets parcel data; later fields show what will arrive. `climate_summary` covers the snapshot's `period` (a season so far), not 30-year normals; `climate_normals` and `frost_window` wait for the POWER climatology endpoint.
+Per datum: `column` (where the answer lives: `profile.*`, `farm.*`, `field.*`, `field.soil.*`, `field.location`, `crops.current[.attr]`, `crops.history`), `observation` (paths in a `FieldObservation` payload), `origin` per layer (ask, auto, confirm), `propose` (how a source value becomes the answer: `texture_class`, `drainage_class`, `number`, `cdl_history`), sources and feeds. Answer options come from `Onboarding::Allowlist`, so the chat and the menu share one vocabulary; labels are `onboarding.values.*`.
 
-## Classification
+## Reading and writing
 
-`Farm#classification`: size from the total area (small under 2 ha, medium 2 to 50 ha, large above; thresholds still to validate per country), water access, fertilizer level, the first goal, and the level of detail. Labels reuse the asked data's option labels.
+`Fields::Farm.for(user)` builds the view (`Root` for the farm and profile, `Field` per field). States: answered, unanswered, auto, to_confirm, confirmed, pending, failed, needs_pin, gap. `Fields::SaveService` saves a whole edit form in one transaction through `Onboarding::Allowlist.filter`: blank answers stay as they are, a list sent empty is emptied, only what changed is written, and a ticked suggestion is saved as the farmer's own (SSURGO sand/clay as a texture class, CDL years as `FieldCrop` rows with `source: cdl`); what the farmer typed wins over a ticked suggestion. `Fields::CreateFieldService` adds fields; `Crops::PlanService` keeps next season as a `FieldCrop` for next year; `Weather::AlertsService` the alert choices.
 
-## Known gaps
+## Pending
 
-No documented source yet for: global soil (SoilGrids), drainage outside the US, global reverse geocoding (country and region), and a base map for the pin and outline steps (they show a placeholder). Crop history outside the US, markets, machinery and water access are asked.
-
-## Sections 2 to 5
-
-They run on the same farm preview (`FarmPreview` concern: the draft in, a service, the draft out, a redirect that Turbo morphs) and the same shell (`shared/_screen_bar` with `ScreenHelper::SECTION_TABS`). The menu dial links every option (`MenuHelper::OPTION_PATHS`).
-
-| Section | Screens | Data |
-|---|---|---|
-| My crops `/menu/crops` | Now (each field's crop, family, season, tip), Rotation (seasons, next-season plan, basic checks, readiness to compare strategies), Calendar (planting to harvest against the frost-free stretch) | `config/crops.yml` (family and plant shape; ECOCROP later), `Crops::RotationCheck` (same family twice, same crop three times, no legume in four seasons), `Crops::PlanService` |
-| Weather `/menu/weather` | This season (headline numbers, daily temperature, weekly rain, root-zone moisture, a monthly table, the forecast gap), Alerts (which kinds to receive, the frost-free stretch, what this season would have sent) | `Weather::Season` reads the daily NASA POWER rows of the CSV `farm_data.py` writes (`series:` in the sample) and matches its summary; `Weather::AlertsService` |
-| My team `/menu/staff` | Team (members, role, fields), Tasks (add, complete, remove, overdue), Roles (what each role can do) | `Staff::Roles`, `Staff::SaveMemberService`, `RemoveMemberService`, `SaveTaskService`, `RemoveTaskService` |
-| Reports `/menu/reports` | Season (area by crop, weather, field by field, team; prints clean), Harvest (yield per field, compared within a crop), Export (CSV and JSON downloads) | `Reports::Export`; yield is the field datum `yield` |
-
-Honest gaps shown on screen: no forecast source, no county yields without a NASS key (US only), the rotation comparison waits for the engine (the screen shows what each strategy will carry: why, evidence, benefits, gaps, risks).
+Own yields need a column (Reports shows GAEZ's attainable yield meanwhile); team members and tasks need their own models; the forecast has no documented source.

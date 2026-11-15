@@ -6,10 +6,6 @@ class PagesController < ApplicationController
   def home
   end
 
-  # The main menu dial (sections and geometry in MenuHelper).
-  def menu
-  end
-
   # GET /locale/:new_locale: persist the choice and go back where the person
   # was, with the prefix swapped.
   def set_locale

@@ -1,0 +1,23 @@
+<%# What each public data source returned for this field's pin, and a way to ask again. Locals: field. %>
+<section class="screen__section source-status" id="data-sources" aria-labelledby="data-sources-title" data-section-nav-target="section">
+  <h2 class="reading-group__title" id="data-sources-title">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><%= render "shared/glyph", name: "sources" %></svg>
+    <%= t("app.fields.data_sources.title") %>
+  </h2>
+  <% if field.located? %>
+    <ul class="source-status__list" role="list">
+      <% FieldObservation::SOURCES.each do |source| %>
+        <% observation = field.observation(source) %>
+        <% state = observation&.status || "waiting" %>
+        <li class="source-status__item source-status__item--<%= state %>">
+          <span class="source-status__name"><%= @profile.observation_sources.fetch(source).name %></span>
+          <span class="source-status__state"><%= t("app.fields.data_sources.states.#{state}") %></span>
+          <% if observation&.fetched_at %><span class="source-status__time"><%= t("app.fields.data_sources.fetched", time: time_ago_in_words(observation.fetched_at)) %></span><% end %>
+        </li>
+      <% end %>
+    </ul>
+    <%= button_to t("app.fields.data_sources.refresh"), refresh_app_field_path(field.key), method: :post, class: "btn btn--secondary btn--sm" %>
+  <% else %>
+    <%= render "shared/aluni", message: t("app.fields.data_sources.needs_pin") %>
+  <% end %>
+</section>

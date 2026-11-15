@@ -12,6 +12,7 @@ Infrastructure tables first, then the product tables the onboarding chat fills (
 | `action_push_native_devices` | The gem's device table, mirrored from `device_tokens` by `Notifications::PushDevices` | `owner` (polymorphic), `platform` (apple/google), `token`; unique `(platform, token)` |
 | `web_push_subscriptions` | Browsers that agreed to Web Push | `user_id`, `endpoint`, `p256dh`, `auth`, `user_agent`, `last_used_at`; unique `(user_id, endpoint)` |
 | `notification_deliveries` | One `NotificationRouter.deliver` call | `purpose`, `recipient` (polymorphic), `idempotency_key` (unique), `status` (enum queued 0, sent 1, skipped 2, failed 3), `channel`, `sent_at`, `provider_message_id`, `attempts` (jsonb), `failed_reason` |
+| `field_observations` | What one public data source returned for a field's pin (`Fields::FetchObservationsJob`) | `field_id`, `source` (fcc, nasa_power, gaez, ssurgo, usgs_elevation, cdl), `status` (enum ok 0, empty 10, out_of_coverage 20, failed 30), `payload` (jsonb), `error`, `fetched_at`; unique `(field_id, source)` |
 
 Associations: `User has_many :sessions, :passkeys, :device_tokens, :web_push_subscriptions` and `:notification_deliveries (as: :recipient)`, all `dependent: :destroy`.
 

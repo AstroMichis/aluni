@@ -1,0 +1,41 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% planted = @farm.fields.reject(&:empty?) %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: app_root_path, back_label: t("app.fields.back_to_menu"), title: t("app.reports.show.crumb"), section: :reports %>
+
+  <main id="main" class="screen__body">
+    <header class="screen__header">
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <p class="screen__lede"><%= t(".lede") %></p>
+    </header>
+
+    <% if planted.empty? %>
+      <p class="screen__lede"><%= t("app.crops.show.none") %></p>
+    <% end %>
+
+    <ul class="harvest" role="list">
+      <% planted.each do |field| %>
+        <% potential = Crops::Potential.new(field.observation("gaez")) %>
+        <% row = potential.for(field.current_crop) %>
+        <li class="harvest__row">
+          <span class="harvest__name"><%= field_name(field) %> <small><%= crop_name(field.current_crop) %> · <%= field_area(field) %></small></span>
+          <% if row&.yield_t %>
+            <span class="harvest__value"><%= t("app.crops.attainable", value: chart_number(row.yield_t)) %>
+              <small><%= t(".total", value: chart_number(row.yield_t * field.area_hectares, 0)) %></small></span>
+            <span class="meter-list__bar"><span class="meter-list__fill" style="--share: <%= [ row.suitability.to_f / 10000, 1 ].min.round(3) %>"></span></span>
+          <% else %>
+            <span class="harvest__missing"><%= Crops::Catalog.gaez_name(field.current_crop) ? t("app.crops.gaez_pending") : t("app.crops.no_gaez") %></span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+
+    <p class="choice-set__hint"><%= t(".note") %></p>
+
+    <section class="screen__section gap-card" aria-labelledby="harvest-own">
+      <h2 class="screen__section-title" id="harvest-own"><%= t(".own.title") %></h2>
+      <%= render "shared/aluni", message: t(".own.body") %>
+    </section>
+  </main>
+</div>

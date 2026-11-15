@@ -1,53 +1,50 @@
 # frozen_string_literal: true
 
 module Weather
-  # The season so far at the farm's point: the daily NASA POWER rows that
-  # farm_data.py writes (long format: source,variable,value,unit,date,lat,lon),
-  # summed up for the weather screens. Regional context (about 50 km), never
-  # the field's own values. Thresholds match farm_data.py's summary.
+  # The season so far at a field's pin: the daily NASA POWER values that
+  # Fields::FetchObservationsJob stored (FieldObservation "nasa_power"),
+  # summed up for the weather screens, plus the long-term monthly normals.
+  # Regional context (about 50 km), never the field's own values.
   class Season
     FROST_C = 0.0
-    HEAT_C = 32.0          # farm_data.py heat_stress_days_gt32c
+    HEAT_C = 32.0          # as farm_data.py's heat_stress_days_gt32c
     HEAVY_RAIN_MM = 25.0
     DRY_DAY_MM = 1.0
     DRY_SPELL_DAYS = 10    # shorter runs are not worth an alert
     GROWING = (4..10)      # months when frost and dry spells matter to a crop
-    VARIABLES = %w[air_temp_min air_temp_mean air_temp_max precipitation root_zone_soil_wetness].freeze
+    MONTHS = %w[JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC].freeze
 
     Day = Struct.new(:date, :tmin, :tmean, :tmax, :rain, :wetness, keyword_init: true)
     Event = Struct.new(:kind, :from, :to, :value, keyword_init: true) do
       def days = ((to || from) - from).to_i + 1
     end
 
-    def self.load(path = default_path)
-      return new(read(path)) if Rails.env.test?
+    # From a field's "nasa_power" observation; an empty season when there is none.
+    def self.for(observation)
+      payload = observation&.ok? ? observation.payload.to_h : {}
+      daily = payload["daily"].to_h
+      days = daily["T2M"].to_h.keys.sort.filter_map do |key|
+        values = %w[T2M_MIN T2M T2M_MAX PRECTOTCORR GWETROOT].map { |name| daily.dig(name, key) }
+        next if values.any?(&:nil?)
 
-      @cache ||= {}
-      @cache[path.to_s] ||= new(read(path))
+        tmin, tmean, tmax, rain, wetness = values
+        Day.new(date: Date.strptime(key, "%Y%m%d"), tmin: tmin, tmean: tmean, tmax: tmax, rain: rain, wetness: wetness)
+      end
+      new(days, payload["climatology"].to_h)
     end
 
-    def self.default_path = Rails.root.join(YAML.safe_load(File.read(Fields::Farm::SAMPLE_PATH)).fetch("series"))
+    attr_reader :days, :climatology
 
-    def self.read(path)
-      # NASA POWER rows carry no quoted fields, so a plain split reads them
-      # (other sources' rows, e.g. soil map unit names, may hold commas).
-      rows = Hash.new { |h, date| h[date] = {} }
-      File.foreach(path) do |line|
-        next unless line.start_with?("NASA POWER,")
-
-        _source, variable, value, _unit, date = line.chomp.split(",", 6)
-        rows[Date.iso8601(date)][variable] = Float(value) if VARIABLES.include?(variable)
-      end
-      rows.sort.map do |date, v|
-        Day.new(date: date, tmin: v["air_temp_min"], tmean: v["air_temp_mean"], tmax: v["air_temp_max"],
-                rain: v["precipitation"], wetness: v["root_zone_soil_wetness"])
-      end
-    end
-
-    attr_reader :days
-
-    def initialize(days)
+    def initialize(days, climatology = {})
       @days = days.freeze
+      @climatology = climatology
+    end
+
+    # Month => long-term mean temperature, low, high (°C) and rain (mm/day).
+    def normals
+      MONTHS.each_with_index.to_h do |name, i|
+        [ i + 1, %w[T2M T2M_MIN T2M_MAX PRECTOTCORR].to_h { |p| [ p, climatology.dig(p, name) ] } ]
+      end
     end
 
     def any? = days.any?

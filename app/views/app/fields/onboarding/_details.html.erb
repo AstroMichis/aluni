@@ -1,0 +1,17 @@
+<%# Step: the field's name, its area and how it is watered. %>
+<% step.data.each do |datum| %>
+  <fieldset class="choice-set">
+    <legend class="choice-set__legend"><%= datum_label(datum) %></legend>
+    <% if datum.key == "area" %>
+      <div class="form-row form-row--two">
+        <%= render "app/fields/input", datum: datum, name: "field[area]", current: nil %>
+        <select class="input select" name="field[area_unit]" aria-label="<%= t("app.fields.data.area.unit_label") %>">
+          <% Field.area_units.each_key do |unit| %><option value="<%= unit %>"><%= value_label("area_unit", unit) %></option><% end %>
+        </select>
+      </div>
+    <% else %>
+      <%= render "app/fields/input", datum: datum, name: "field[#{datum.key}]", current: nil %>
+    <% end %>
+    <% unless datum.essential %><p class="choice-set__hint"><%= t("app.fields.new.optional") %></p><% end %>
+  </fieldset>
+<% end %>

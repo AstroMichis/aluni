@@ -1,12 +1,11 @@
 module App
-  # The authenticated home. Until the onboarding chat is complete it only
-  # forwards there; afterwards it shows a recap of the profile and the way
-  # back to the chat ("Talk to Aluni", a placeholder for the next phase).
+  # The authenticated home. Until the onboarding chat is complete it forwards
+  # there; afterwards it is the menu dial, the door to every section.
   class HomeController < BaseController
-    def show
-      return redirect_to app_onboarding_path unless Current.user.onboarding_complete?
+    layout "app_screen"
 
-      @snapshot = Onboarding::ProfileSnapshot.new(user: Current.user).to_h
+    def show
+      redirect_to app_onboarding_path unless Current.user.onboarding_complete?
     end
   end
 end

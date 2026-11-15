@@ -2,14 +2,14 @@
 
 module Reports
   # Everything the farm holds, to take away: every datum of the farm and each
-  # field with its state, value, source and confidence, plus the plan, team
-  # and tasks. JSON keeps the structure; CSV is one row per datum.
+  # field with its state, value, source and confidence; each field's crop
+  # seasons; and what each data source returned. JSON keeps the structure;
+  # CSV is one row per datum.
   class Export
     COLUMNS = %w[subject datum state value source scale confidence].freeze
 
-    def initialize(farm, profile:)
+    def initialize(farm)
       @farm = farm
-      @profile = profile
     end
 
     def filename(extension) = "farm-#{Date.current.iso8601}.#{extension}"
@@ -24,8 +24,7 @@ module Reports
     end
 
     def to_json(*)
-      JSON.pretty_generate("generated_on" => Date.current.iso8601, "sample" => @farm.sample?, "location" => @farm.location,
-                           "readings" => rows, "plans" => @farm.plans, "team" => @farm.team, "tasks" => @farm.tasks)
+      JSON.pretty_generate("generated_on" => Date.current.iso8601, "readings" => rows, "fields" => @farm.fields.map { |field| field_hash(field) })
     end
 
     # RFC 4180: fields with a comma, quote or line break are quoted, quotes doubled.
@@ -34,6 +33,12 @@ module Reports
     end
 
     private
+
+    def field_hash(field)
+      { "id" => field.key, "name" => field.name, "latitude" => field.record.latitude&.to_f, "longitude" => field.record.longitude&.to_f,
+        "crops" => field.record.field_crops.map { |c| c.slice(:season_year, :role, :crop_name, :scientific_name, :planting_month, :harvest_month, :source) },
+        "sources" => field.observations.to_h { |o| [ o.source, { "status" => o.status, "fetched_at" => o.fetched_at&.iso8601 } ] } }
+    end
 
     def flat(values)
       values.size == 1 ? Array(values.values.first).join("; ") : values.map { |k, v| "#{k}=#{v}" }.join("; ")

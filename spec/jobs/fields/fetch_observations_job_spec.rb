@@ -1,0 +1,48 @@
+require "rails_helper"
+
+RSpec.describe Fields::FetchObservationsJob do
+  let(:user) { create(:user) }
+  let(:farm) { create(:farm, user: user, country_code: nil) }
+
+  it "stores one observation per source for a US pin and places the farm" do
+    stub_all_data_sources(us: true)
+    field = create(:field, farm: farm, latitude: 40.95, longitude: -97.50)
+
+    described_class.perform_now(field.id)
+
+    expect(field.observations.pluck(:source, :status).to_h).to eq(
+      "fcc" => "ok", "nasa_power" => "ok", "gaez" => "ok", "ssurgo" => "ok", "usgs_elevation" => "ok", "cdl" => "ok")
+    expect(field.observation("gaez").payload.dig("crops", "Maize", "yield")).to eq(6867.0)
+    expect(field.observation("cdl").payload["years"]).to include((Date.current.year - 1).to_s => "Corn")
+    expect(farm.reload).to have_attributes(country_code: "US", admin_area: "Nebraska")
+  end
+
+  it "keeps only the global layer outside the US" do
+    stub_all_data_sources(us: false)
+    field = create(:field, farm: farm, latitude: 9.93, longitude: -84.08)
+
+    described_class.perform_now(field.id)
+
+    expect(field.observations.where(source: %w[ssurgo usgs_elevation cdl]).pluck(:status).uniq).to eq([ "out_of_coverage" ])
+    expect(field.observation("nasa_power")).to be_ok
+    expect(a_request(:post, /sdmdataaccess/)).not_to have_been_made
+  end
+
+  it "records a failing source and still runs the others" do
+    stub_all_data_sources(us: true)
+    stub_request(:get, %r{gaez-services\.fao\.org/.+/query}).to_return(status: 500)
+    field = create(:field, farm: farm, latitude: 40.95, longitude: -97.50)
+
+    described_class.perform_now(field.id)
+
+    expect(field.observation("gaez")).to be_failed
+    expect(field.observation("gaez").error).to include("Gaez::Client")
+    expect(field.observation("nasa_power")).to be_ok
+  end
+
+  it "is enqueued when a pin is set or moved, not for other edits" do
+    field = create(:field, :unlocated, farm: farm)
+    expect { field.update!(latitude: 40.95, longitude: -97.5) }.to have_enqueued_job(described_class).with(field.id)
+    expect { field.update!(name: "Renamed") }.not_to have_enqueued_job(described_class)
+  end
+end

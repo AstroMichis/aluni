@@ -1,8 +1,0 @@
-<%# Step: the last three seasons. Where the crop map covers the field's point
-    (the US, at the preview's measured point) they come filled in to check. %>
-<% at_snapshot = @farm.sample? || @farm.fields.none?(&:snapshot?) %>
-<% prefill = at_snapshot ? @farm.reading("crop_history").values["years"] : nil %>
-<% if prefill.present? %><p class="layer-note layer-note--us"><%= t("fields.new.history_prefilled") %></p><% end %>
-<% step.data.each do |datum| %>
-  <%= render "fields/input", datum: datum, name: "answers[#{datum.key}]", current: prefill %>
-<% end %>

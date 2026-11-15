@@ -16,6 +16,7 @@ class Field < ApplicationRecord
 
   belongs_to :farm
   has_many :field_crops, -> { order(season_year: :desc, role: :asc) }, dependent: :destroy
+  has_many :observations, class_name: "FieldObservation", dependent: :destroy
 
   enum :location_confidence, { unknown: 0, approximate: 10, confirmed: 20 }, prefix: true
   enum :location_source, { unknown: 0, geolocation: 10, typed: 20, assistant: 30 }, prefix: true
@@ -32,8 +33,17 @@ class Field < ApplicationRecord
   validates :area, numericality: { greater_than: 0 }, allow_nil: true
   validates :soil, json_allowlist: { keys: SOIL, extra_keys: SOIL_SCALARS }
 
+  # A new or moved pin refreshes what the public data sources say about it.
+  after_commit :fetch_observations, if: -> { located? && (saved_change_to_latitude? || saved_change_to_longitude?) }
+
   def located? = latitude.present? && longitude.present?
+
+  def observation(source) = observations.find { |o| o.source == source.to_s }
 
   # Anything but "unknown" and "rainfed" means water is applied.
   def uses_irrigation? = !(irrigation_unknown? || irrigation_rainfed?)
+
+  private
+
+  def fetch_observations = Fields::FetchObservationsJob.perform_later(id)
 end

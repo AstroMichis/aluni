@@ -19,16 +19,6 @@
 }
 .gap-card .screen__section-title { margin-bottom: 0; }
 
-.add-card {
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border-subtle);
-}
-.add-card--collapsible { margin-top: var(--space-4); background: transparent; border-style: dashed; }
-.add-card--collapsible > summary { list-style: none; cursor: pointer; }
-.add-card--collapsible > summary::-webkit-details-marker { display: none; }
-
 .form-row { display: grid; gap: var(--space-3); }
 
 /* My crops: now */
@@ -36,7 +26,7 @@
 
 .crop-card {
   display: grid;
-  grid-template-columns: 112px 1fr;
+  grid-template-columns: 1fr;
   gap: var(--space-4);
   align-items: start;
   padding: var(--space-4);
@@ -44,7 +34,7 @@
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border-subtle);
 }
-.crop-card__plot { display: block; color: inherit; }
+.crop-card__plot { display: block; max-width: 220px; color: inherit; }
 .crop-card__body { display: grid; gap: var(--space-2); min-width: 0; }
 .crop-card__field { font-size: var(--text-xs); color: var(--color-text-tertiary); }
 .crop-card__crop { font-family: var(--font-serif); font-size: var(--text-2xl); font-weight: 400; }
@@ -173,90 +163,6 @@
 .timeline__kind { font-weight: 600; }
 .timeline__text { font-size: var(--text-sm); color: var(--color-text-secondary); }
 
-/* My team */
-.people { display: grid; gap: var(--space-2); margin-top: var(--space-4); }
-
-.person {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: var(--space-3);
-  align-items: center;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-lg);
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border-subtle);
-}
-.person--owner { border-color: color-mix(in srgb, var(--color-accent) 45%, transparent); }
-
-.person__avatar {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-full);
-  background: var(--color-accent-muted);
-  color: var(--color-accent-text);
-  font-weight: 600;
-}
-.person__body { display: grid; gap: 2px; min-width: 0; }
-.person__name { font-weight: 600; }
-.person__meta { font-size: var(--text-sm); color: var(--color-text-secondary); }
-.person__edit { grid-column: 1 / -1; }
-.person__remove { margin-top: var(--space-3); }
-
-.tasks { display: grid; gap: var(--space-2); }
-
-.task {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: var(--space-3);
-  align-items: center;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border-subtle);
-}
-.task--overdue { border-color: color-mix(in srgb, var(--color-warning) 55%, transparent); }
-.task--overdue .task__meta { color: var(--color-warning); }
-
-.task__check {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-full);
-  border: 2px solid var(--color-border-strong);
-  background: transparent;
-  color: transparent;
-  transition: transform var(--transition-fast);
-}
-.task__check svg { width: 20px; height: 20px; }
-.task__check:active { transform: scale(0.92); }
-.task--done .task__check { border-color: var(--color-success); background: var(--color-success-bg); color: var(--color-success); }
-.task--done .task__title { text-decoration: line-through; color: var(--color-text-tertiary); }
-
-.task__body { display: grid; gap: 2px; min-width: 0; }
-.task__title { font-weight: 500; }
-.task__meta { font-size: var(--text-xs); color: var(--color-text-tertiary); }
-
-.role-cards { display: grid; gap: var(--space-3); }
-.role-card {
-  display: grid;
-  gap: var(--space-2);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border-subtle);
-}
-.role-card__name { font-size: var(--text-lg); font-weight: 600; }
-.role-card__text { font-size: var(--text-sm); color: var(--color-text-secondary); }
-.role-card__caps { display: grid; gap: var(--space-1); }
-.role-card__cap { display: flex; gap: var(--space-2); font-size: var(--text-sm); }
-.role-card__cap--off { color: var(--color-text-tertiary); }
-.role-card__mark { width: 16px; color: var(--color-success); font-weight: 700; }
-.role-card__cap--off .role-card__mark { color: var(--color-text-tertiary); }
-.role-card__people { font-size: var(--text-xs); color: var(--color-text-tertiary); }
-
 /* Reports */
 .report__actions { margin-top: var(--space-4); }
 
@@ -309,18 +215,89 @@
 @media (min-width: 641px) {
   .form-row { grid-template-columns: repeat(3, 1fr); }
   .crop-list { grid-template-columns: repeat(2, 1fr); }
-  .crop-card { grid-template-columns: 1fr; }
-  .crop-card__plot { max-width: 240px; }
   .timeline__item { grid-template-columns: 140px 140px 1fr; align-items: baseline; }
-  .role-cards { grid-template-columns: repeat(2, 1fr); }
   .export-card { grid-template-columns: auto 1fr auto; }
   .export-card .btn { grid-column: auto; }
 }
 
 /* The season report prints clean: no chrome, no forms, light paper. */
 @media print {
-  .screen__bar, .screen__tabs, .preview-note, .report__actions, .reading__edit { display: none !important; }
+  .screen__bar, .screen__tabs, .report__actions, .reading__edit { display: none !important; }
   .screen { background: #fff; }
   .report, .report * { color: #000 !important; background: transparent !important; border-color: #bbb !important; box-shadow: none !important; }
   .meter-list__fill { background: #555 !important; }
 }
+
+/* Two inputs side by side from the first breakpoint (pin, area + unit) */
+.form-row--two { grid-template-columns: 1fr 1fr; }
+
+/* GAEZ potential and ECOCROP fit */
+.potential { display: grid; gap: var(--space-2); }
+.potential__line { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.potential__yield { font-size: var(--text-sm); color: var(--color-text-secondary); }
+.tag--very_high, .tag--high { background: var(--color-success-bg); color: var(--color-success); }
+.tag--good, .tag--medium { background: var(--color-info-bg); color: var(--color-info); }
+.tag--moderate, .tag--marginal, .tag--very_marginal, .tag--warning { background: var(--color-warning-bg); color: var(--color-warning); }
+.tag--not_suitable { background: var(--color-danger-bg); color: var(--color-danger); }
+
+.fit { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.fit__check {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-default);
+  font-size: var(--text-xs);
+}
+.fit__factor { color: var(--color-text-secondary); }
+.fit__check--optimal { border-color: color-mix(in srgb, var(--color-success) 60%, transparent); }
+.fit__check--possible { border-color: color-mix(in srgb, var(--color-info) 60%, transparent); }
+.fit__check--outside { border-color: color-mix(in srgb, var(--color-warning) 60%, transparent); }
+.fit__check--unknown { opacity: 0.7; }
+
+.potential-list { display: grid; gap: var(--space-2); margin-top: var(--space-4); }
+.potential-list .meter-list__name { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1); }
+
+/* Which field the weather is read at */
+.field-picker { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-4); }
+
+/* Rotation comparison (app/rotations/show) */
+.weights { margin-top: var(--space-4); }
+.weights > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--color-accent-text); font-weight: 500; }
+.weights__list { display: grid; gap: var(--space-2); margin-top: var(--space-2); }
+.weights__item { display: grid; gap: 2px; padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); background: var(--color-bg-secondary); font-size: var(--text-sm); }
+.weights__item span { color: var(--color-text-secondary); }
+.weights__item .tag { justify-self: start; }
+.weights__item--goal { border-left: 3px solid var(--color-accent); }
+
+.strategies { display: grid; gap: var(--space-4); margin-top: var(--space-6); }
+.strategy {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-subtle);
+}
+.strategy--best { border-color: color-mix(in srgb, var(--color-accent) 60%, transparent); }
+.strategy--current { border-style: dashed; }
+.strategy__head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); }
+.strategy__kicker { font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--color-text-tertiary); }
+.strategy--best .strategy__kicker { color: var(--color-accent-text); }
+.strategy__title { font-family: var(--font-serif); font-size: var(--text-2xl); font-weight: 400; }
+.strategy__total { display: flex; align-items: baseline; gap: 2px; font-variant-numeric: tabular-nums; }
+.strategy__total span { font-size: var(--text-3xl); font-weight: 600; }
+.strategy__total small { color: var(--color-text-tertiary); }
+.strategy__why { color: var(--color-text-primary); }
+.strategy .seasons { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; padding-bottom: 0; }
+.strategy .season { min-width: 0; }
+.strategy .season__family { overflow-wrap: anywhere; }
+.strategy__scores { gap: var(--space-2); }
+.strategy__block { display: grid; gap: var(--space-1); font-size: var(--text-sm); }
+.strategy__block h3 { font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--color-text-tertiary); }
+.strategy__block ul { display: grid; gap: var(--space-1); padding-left: var(--space-4); list-style: disc; color: var(--color-text-secondary); }
+.strategy__block--benefits ul { color: var(--color-success); }
+.strategy__block--risks ul { color: var(--color-warning); }
+.strategy__source { font-size: var(--text-xs); color: var(--color-text-tertiary); }
+.strategy .btn, .strategy form { justify-self: start; }
+.potential__water { font-size: var(--text-sm); color: var(--color-text-secondary); }

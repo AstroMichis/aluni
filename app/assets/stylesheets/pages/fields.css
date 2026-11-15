@@ -39,7 +39,6 @@
 }
 .todo__state--to_confirm { background: var(--color-info-bg); color: var(--color-info); }
 .todo__state--unanswered { background: var(--color-accent-muted); color: var(--color-accent-text); }
-.todo__state--gap { background: var(--color-warning-bg); color: var(--color-warning); }
 
 /* Field cards */
 .field-grid {
@@ -139,7 +138,6 @@
   margin-bottom: var(--space-6);
 }
 .field-hero .plot { max-width: 420px; margin-inline: auto; }
-.field-hero__crop { display: grid; gap: var(--space-3); }
 
 /* Crop history */
 .history {
@@ -163,7 +161,7 @@
 .history__flag { font-size: var(--text-xs); color: var(--color-warning); }
 
 /* Onboarding */
-.onboarding__progress {
+.field-wizard__progress {
   height: 4px;
   margin-bottom: var(--space-6);
   border-radius: var(--radius-full);
@@ -171,7 +169,7 @@
   overflow: hidden;
 }
 
-.onboarding__progress-bar {
+.field-wizard__progress-bar {
   display: block;
   height: 100%;
   background: var(--color-accent);
@@ -179,9 +177,9 @@
   transition: transform var(--transition-slow);
 }
 
-.onboarding__count { font-size: var(--text-xs); color: var(--color-text-tertiary); }
+.field-wizard__count { font-size: var(--text-xs); color: var(--color-text-tertiary); }
 
-.onboarding__question {
+.field-wizard__question {
   margin-top: var(--space-2);
   font-family: var(--font-serif);
   font-size: var(--text-3xl);
@@ -189,13 +187,13 @@
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-tight);
 }
-.onboarding__question:focus { outline: none; }
+.field-wizard__question:focus { outline: none; }
 
-.onboarding__step > * + * { margin-top: var(--space-5); }
+.field-wizard__step > * + * { margin-top: var(--space-5); }
 
-.onboarding__why { font-size: var(--text-sm); color: var(--color-text-tertiary); }
+.field-wizard__why { font-size: var(--text-sm); color: var(--color-text-tertiary); }
 
-.onboarding__nav {
+.field-wizard__nav {
   display: flex;
   justify-content: flex-end;
   gap: var(--space-3);
@@ -203,7 +201,7 @@
   border-top: 1px solid var(--color-border-subtle);
 }
 
-.onboarding__plot { max-width: 320px; margin-inline: auto; }
+.field-wizard__plot { max-width: 320px; margin-inline: auto; }
 
 /* The last step: every answer with a way back. */
 .review { display: grid; gap: var(--space-2); margin: 0; }
@@ -220,33 +218,6 @@
 .review__row dt { font-size: var(--text-xs); color: var(--color-text-tertiary); }
 .review__row dd { grid-row: 2; margin: 0; font-weight: 500; }
 .review__row .btn { grid-row: 1 / 3; grid-column: 2; }
-
-/* Placeholder map (no base map chosen yet) */
-.map-stub {
-  position: relative;
-  border-radius: var(--radius-lg);
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border-subtle);
-  overflow: hidden;
-}
-.map-stub__art { display: block; width: 100%; height: auto; }
-.map-stub__grid { fill: none; stroke: var(--color-border-subtle); stroke-width: 0.6; }
-.map-stub__road { fill: none; stroke: var(--color-border-strong); stroke-width: 2; }
-.map-stub__shape { fill: var(--color-accent-muted); stroke: var(--color-accent); stroke-width: 1.4; stroke-dasharray: 5 3; }
-.map-stub__vertex { stroke: var(--color-accent); stroke-width: 6; stroke-linecap: round; }
-
-.map-stub__coords {
-  position: absolute;
-  right: var(--space-3);
-  bottom: var(--space-2);
-  font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
-}
-
-.found { display: grid; gap: var(--space-2); }
-.found__actions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-2); margin-top: var(--space-2); }
-.found__actions .reading__edit[open] { flex: 1 1 100%; }
-.found__actions .reading__edit .input { margin-top: var(--space-2); }
 
 .history-form { display: grid; gap: var(--space-3); }
 
@@ -303,7 +274,6 @@
   border: 1px solid var(--color-border-default);
   font-size: var(--text-sm);
 }
-.source-chip--missing { border-style: dashed; border-color: var(--color-warning); }
 .source-chip__res { font-size: var(--text-xs); color: var(--color-text-tertiary); }
 .source-chip__note { font-size: var(--text-xs); color: var(--color-warning); }
 
@@ -342,3 +312,54 @@
 @media (forced-colors: active) {
   .source-row, .field-card { border: 1px solid CanvasText; }
 }
+
+/* The satellite view around the pin (NASA GIBS) */
+.area-image { margin: var(--space-4) 0 0; }
+.area-image img {
+  display: block;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-subtle);
+}
+.area-image figcaption { margin-top: var(--space-1); font-size: var(--text-xs); color: var(--color-text-tertiary); }
+
+/* Crop-map seasons waiting for the farmer */
+.history__source { font-size: var(--text-xs); color: var(--color-text-tertiary); }
+.cdl-card {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-info);
+  background: var(--color-info-bg);
+  font-size: var(--text-sm);
+}
+.cdl-card .btn, .cdl-card form { justify-self: start; }
+
+/* What each data source returned for the pin */
+.source-status__list { display: grid; gap: var(--space-1); margin-bottom: var(--space-3); }
+.source-status__item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+  border-left: 3px solid var(--color-border-strong);
+  font-size: var(--text-sm);
+}
+.source-status__item--ok { border-left-color: var(--color-success); }
+.source-status__item--failed { border-left-color: var(--color-danger); }
+.source-status__item--out_of_coverage, .source-status__item--empty { border-left-color: var(--color-text-tertiary); }
+.source-status__state { color: var(--color-text-secondary); }
+.source-status__time { grid-column: 1 / -1; font-size: var(--text-xs); color: var(--color-text-tertiary); }
+
+.field-card__flag { font-size: var(--text-xs); color: var(--color-warning); }
+.screen__talk { margin-top: var(--space-4); }
+
+/* The pin: two coordinates and "use my location" */
+.pin-input { display: grid; gap: var(--space-3); }
+.pin-input .btn { justify-self: start; }

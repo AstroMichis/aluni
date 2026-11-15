@@ -1,0 +1,9 @@
+<%# Which field's pin the weather is read at, when the farm has more than one. %>
+<% if @farm.fields.size > 1 %>
+  <nav class="field-picker" aria-label="<%= t("app.weather.picker_label") %>">
+    <% @farm.fields.each do |field| %>
+      <%= link_to field_name(field), url_for(field: field.key), class: "section-nav__link#{" section-nav__link--current" if field == @field}",
+                  aria: { current: (field == @field ? "page" : nil) } %>
+    <% end %>
+  </nav>
+<% end %>

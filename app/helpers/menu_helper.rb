@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # The main menu dial: its sections, their panel options and the SVG geometry.
-# Copy lives in pages.menu.*; each section key is also its tone (menu.css).
+# Copy lives in app.home.show.*; each section key is also its tone (menu.css).
 #
 # The dial is drawn in a viewBox centred on 0,0. Every wedge is the same path
 # at 12 o'clock, rotated into place, so its texture, label and selected lift
@@ -9,19 +9,19 @@
 module MenuHelper
   SECTIONS = {
     fields:  %i[add list sources],
-    crops:   %i[current rotation calendar tips],
+    crops:   %i[current rotation calendar],
     weather: %i[forecast moisture alerts],
-    staff:   %i[team tasks roles],
+    staff:   %i[team],
     reports: %i[season yield export]
   }.freeze
 
   # Where each option leads (route helper names); an option missing here shows "Coming soon".
   OPTION_PATHS = {
-    fields:  { add: :new_menu_field_path, list: :menu_fields_path, sources: :sources_menu_fields_path },
-    crops:   { current: :menu_crops_path, rotation: :rotation_menu_crops_path, calendar: :calendar_menu_crops_path, tips: :menu_crops_path },
-    weather: { forecast: :menu_weather_path, moisture: :menu_weather_path, alerts: :alerts_menu_weather_path },
-    staff:   { team: :menu_staff_path, tasks: :tasks_menu_staff_path, roles: :roles_menu_staff_path },
-    reports: { season: :menu_reports_path, yield: :harvest_menu_reports_path, export: :export_menu_reports_path }
+    fields:  { add: :new_app_field_path, list: :app_fields_path, sources: :sources_app_fields_path },
+    crops:   { current: :app_crops_path, rotation: :rotation_app_crops_path, calendar: :calendar_app_crops_path },
+    weather: { forecast: :app_weather_path, moisture: :app_weather_path, alerts: :alerts_app_weather_path },
+    staff:   { team: :app_team_path },
+    reports: { season: :app_reports_path, yield: :harvest_app_reports_path, export: :export_app_reports_path }
   }.freeze
 
   INNER = 60
@@ -39,7 +39,7 @@ module MenuHelper
 
   # "01 / 05" for the section at index i.
   def dial_kicker(index)
-    t("pages.menu.kicker", number: format("%02d", index + 1), total: format("%02d", SECTIONS.size))
+    t("app.home.show.kicker", number: format("%02d", index + 1), total: format("%02d", SECTIONS.size))
   end
 
   # An annular wedge centred on 12 o'clock (each spans well under 180 degrees,

@@ -1,0 +1,93 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% totals = @season.totals %>
+<% days = @season.days %>
+<% months = days.each_with_index.select { |d, _| d.date.day == 1 } %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: app_root_path, back_label: t("app.fields.back_to_menu"), title: t(".crumb"), section: :weather %>
+
+  <main id="main" class="screen__body">
+    <header class="screen__header">
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <% if @season.any? %>
+        <p class="screen__lede"><%= t(".lede", from: l(@season.from, format: :long), to: l(@season.to, format: :long)) %></p>
+        <p class="layer-note layer-note--global"><%= t(".regional") %></p>
+      <% end %>
+    </header>
+
+    <%= render "app/weather/field_picker" %>
+
+    <% if @season.any? %>
+
+    <ul class="kpis" role="list">
+      <li class="kpi"><span class="kpi__label"><%= t(".kpis.rain") %></span><span class="kpi__value"><%= chart_number(totals[:rain], 0) %> <small>mm</small></span></li>
+      <li class="kpi"><span class="kpi__label"><%= t(".kpis.temp") %></span><span class="kpi__value"><%= chart_number(totals[:temp]) %> <small>°C</small></span></li>
+      <li class="kpi"><span class="kpi__label"><%= t(".kpis.frost_days") %></span><span class="kpi__value"><%= totals[:frost_days] %></span></li>
+      <li class="kpi"><span class="kpi__label"><%= t(".kpis.heat_days") %></span><span class="kpi__value"><%= totals[:heat_days] %></span></li>
+      <li class="kpi"><span class="kpi__label"><%= t(".kpis.wetness") %></span><span class="kpi__value"><%= chart_number(totals[:wetness], 2) %></span></li>
+    </ul>
+
+    <% temps = days.flat_map { |d| [ d.tmin, d.tmax ] } %>
+    <% frame = chart_frame(temps, count: days.size, step: 10) %>
+    <% x_labels = months.map { |d, i| [ frame.x(i), l(d.date, format: "%b") ] } %>
+    <%= render layout: "shared/chart", locals: {
+          id: "chart-temperature", title: t(".charts.temp.title"), note: t(".charts.temp.note"), unit: "°C", frame: frame, x_labels: x_labels,
+          reference: [ 0, t(".charts.temp.frost_line") ],
+          summary: t(".charts.temp.summary", low: chart_number(temps.min), high: chart_number(temps.max)),
+          points: days.each_with_index.map { |d, i| { x: frame.x(i).round(1), label: l(d.date, format: :long),
+                                                      value: t(".charts.temp.point", low: chart_number(d.tmin), high: chart_number(d.tmax), mean: chart_number(d.tmean)) } } } do %>
+      <path class="chart__band chart__band--temp" d="<%= line_path(days.each_with_index.map { |d, i| [ frame.x(i), frame.y(d.tmax) ] }) %> <%= line_path(days.each_with_index.map { |d, i| [ frame.x(i), frame.y(d.tmin) ] }.reverse).sub("M", "L") %> Z"/>
+      <path class="chart__line chart__line--temp" d="<%= line_path(days.each_with_index.map { |d, i| [ frame.x(i), frame.y(d.tmean) ] }) %>"/>
+    <% end %>
+
+    <% weeks = @season.weekly_rain %>
+    <% frame = chart_frame(weeks.map(&:last), count: weeks.size, step: 20, floor: 0) %>
+    <% x_labels = weeks.each_with_index.select { |(start, _), _| start.day <= 7 }.map { |(start, _), i| [ frame.bar_x(i) + (frame.bar_width / 2), l(start, format: "%b") ] } %>
+    <%= render layout: "shared/chart", locals: {
+          id: "chart-rain", title: t(".charts.rain.title"), note: t(".charts.rain.note"), unit: "mm", frame: frame, x_labels: x_labels,
+          summary: t(".charts.rain.summary", total: chart_number(totals[:rain], 0), wettest: chart_number(weeks.map(&:last).max)),
+          points: weeks.each_with_index.map { |(start, mm), i| { x: (frame.bar_x(i) + (frame.bar_width / 2)).round(1),
+                                                                  label: t(".charts.rain.week", date: l(start, format: :long)), value: "#{chart_number(mm)} mm" } } } do %>
+      <% weeks.each_with_index do |(_, mm), i| %>
+        <path class="chart__bar chart__bar--rain" d="<%= bar_path(frame.bar_x(i), frame.y(mm), frame.bar_width, frame.baseline) %>"/>
+      <% end %>
+    <% end %>
+
+    <% wet = days.map(&:wetness) %>
+    <% frame = chart_frame(wet, count: days.size, step: 0.1) %>
+    <% x_labels = months.map { |d, i| [ frame.x(i), l(d.date, format: "%b") ] } %>
+    <div id="moisture">
+      <%= render layout: "shared/chart", locals: {
+            id: "chart-moisture", title: t(".charts.moisture.title"), note: t(".charts.moisture.note"), unit: "0–1", frame: frame, x_labels: x_labels, precision: 1,
+            summary: t(".charts.moisture.summary", low: chart_number(wet.min, 2), high: chart_number(wet.max, 2)),
+            points: days.each_with_index.map { |d, i| { x: frame.x(i).round(1), label: l(d.date, format: :long), value: chart_number(d.wetness, 2) } } } do %>
+        <path class="chart__line chart__line--moisture" d="<%= line_path(days.each_with_index.map { |d, i| [ frame.x(i), frame.y(d.wetness) ] }) %>"/>
+      <% end %>
+    </div>
+
+    <details class="data-table">
+      <summary><%= t(".table.title") %></summary>
+      <div class="data-table__scroll">
+        <table>
+          <thead><tr><th scope="col"><%= t(".table.month") %></th><th scope="col"><%= t(".table.rain") %></th><th scope="col"><%= t(".table.rain_normal") %></th><th scope="col"><%= t(".table.tmin") %></th><th scope="col"><%= t(".table.tmax") %></th><th scope="col"><%= t(".table.temp_normal") %></th><th scope="col"><%= t(".table.wetness") %></th></tr></thead>
+          <tbody>
+            <% normals = @season.normals %>
+            <% @season.monthly.each do |row| %>
+              <% normal = normals[row[:month].month] %>
+              <% normal_rain = normal["PRECTOTCORR"] && normal["PRECTOTCORR"] * Time.days_in_month(row[:month].month, row[:month].year) %>
+              <tr><th scope="row"><%= l(row[:month], format: "%B") %></th><td><%= chart_number(row[:rain]) %></td><td><%= normal_rain ? chart_number(normal_rain) : "–" %></td><td><%= chart_number(row[:tmin]) %></td><td><%= chart_number(row[:tmax]) %></td><td><%= normal["T2M"] ? chart_number(normal["T2M"]) : "–" %></td><td><%= chart_number(row[:wetness], 2) %></td></tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </details>
+    <% else %>
+      <%= render "app/weather/no_season" %>
+    <% end %>
+
+    <section class="screen__section gap-card" aria-labelledby="forecast">
+      <h2 class="screen__section-title" id="forecast"><%= t(".forecast.title") %></h2>
+      <%= render "shared/aluni", message: t(".forecast.body") %>
+    </section>
+  </main>
+</div>

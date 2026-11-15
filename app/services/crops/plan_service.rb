@@ -1,22 +1,29 @@
 # frozen_string_literal: true
 
 module Crops
-  # Sets (or clears, with a blank crop) what the person plans to grow next on
-  # a field. Takes the farm data, returns the updated copy.
+  # What the farmer plans to grow next season on a field: a FieldCrop for
+  # next year (role main, source farmer), or none with a blank crop.
   class PlanService < ApplicationService
-    def initialize(data:, field:, crop:)
-      @data = data.deep_dup
-      @field = field.to_s
+    def initialize(user:, field:, crop:)
+      @user = user
+      @field_id = field.to_s
       @crop = crop.to_s
     end
 
     def call
-      return Failure(code: :not_found) unless @data.dig("fields", @field)
-      return Failure(code: :invalid) unless @crop.blank? || Catalog.all.key?(@crop)
+      field = Field.joins(:farm).where(farms: { user_id: @user.id }).find_by(id: @field_id)
+      return Failure(code: :not_found) unless field
 
-      plans = @data["plans"].to_h
-      @data["plans"] = @crop.blank? ? plans.except(@field) : plans.merge(@field => @crop)
-      Success(@data)
+      year = Date.current.year + 1
+      plan = field.field_crops.find_or_initialize_by(season_year: year, role: "main")
+      return Success(plan.tap { plan.destroy if plan.persisted? }) if @crop.blank?
+
+      return Failure(code: :invalid) unless Catalog.find(@crop)
+
+      plan.update!(Catalog.row(@crop, year).slice("crop_name", "scientific_name").merge(source: "farmer"))
+      Success(plan)
+    rescue ActiveRecord::RecordInvalid => e
+      Failure(code: :invalid, messages: e.record.errors.full_messages)
     end
   end
 end

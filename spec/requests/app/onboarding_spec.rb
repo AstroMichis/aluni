@@ -71,22 +71,19 @@ RSpec.describe "Onboarding chat", type: :request do
   end
 
   describe "GET /app" do
-    it "forwards to the onboarding until it is complete, then shows the recap" do
+    it "forwards to the onboarding until it is complete, then shows the menu dial" do
       get app_root_path(locale: "en")
       expect(response).to redirect_to(app_onboarding_path(locale: "en"))
 
       create(:onboarding_session, :completed, user: user)
-      farm = create(:farm, user: user, name: "Finca Ana")
-      create(:field, farm: farm, area: 12.5)
-      create(:farmer_profile, user: user, segment: :small_commercial, goals: %w[rotation water_saving])
+      create(:farm, user: user, name: "Finca Ana")
 
       get app_root_path(locale: "en")
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Finca Ana").and include("12.5 hectares")
-      expect(response.body).to include(I18n.t("onboarding.values.segment.small_commercial")).and include(I18n.t("onboarding.values.goals.water_saving"))
+      expect(response.body).to include('data-controller="radial-menu"').and include(I18n.t("app.home.show.greeting", name: user.display_name))
       expect(response.body).to include(I18n.t("app.home.show.talk_to", app_name: I18n.t("app_name"))).and include(%(href="#{app_onboarding_path(locale: 'en')}"))
-      expect(response.body).to include(I18n.t("app.home.show.passkeys")).and include(I18n.t("app.home.show.sign_out"))
+      expect(response.body).to include(I18n.t("layouts.passkeys")).and include(I18n.t("layouts.sign_out"))
     end
   end
 

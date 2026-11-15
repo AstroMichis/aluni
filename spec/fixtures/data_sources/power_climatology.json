@@ -1,0 +1,10 @@
+{
+  "properties": { "parameter": {
+    "T2M":         { "JAN": -3.95, "APR": 10.69, "MAY": 16.78, "JUL": 25.71, "SEP": 19.41, "OCT": 10.95, "ANN": 10.86 },
+    "T2M_MAX":     { "MAY": 36.46, "JUN": 42.64, "JUL": 43.15, "AUG": 40.03, "ANN": 43.15 },
+    "T2M_MIN":     { "APR": -8.38, "MAY": -2.35, "SEP": 2.38, "OCT": -6.51, "ANN": -26.83 },
+    "FROST_DAYS":  { "MAR": 20.7, "APR": 6.8, "MAY": 0.2, "JUN": 0.0, "SEP": 0.0, "OCT": 4.7, "ANN": 136.2 },
+    "PRECTOTCORR": { "APR": 2.38, "MAY": 3.96, "JUN": 3.61, "JUL": 2.51, "AUG": 3.01, "ANN": 1.98 }
+  } },
+  "header": { "range": "25-year Meteorological and Solar Monthly & Annual Climatologies (January 2001 - December 2025)" }
+}
