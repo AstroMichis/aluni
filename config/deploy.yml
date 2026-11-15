@@ -100,8 +100,9 @@ env:
     APP_DOMAIN: <%= ENV.fetch("APP_DOMAIN", "aluni.us") %>
     # Sidekiq Web (/sidekiq) answers only on this host, and only with the basic-auth secrets below.
     ADMIN_HOST: <%= ENV.fetch("ADMIN_HOST", ENV.fetch("APP_DOMAIN", "aluni.us")) %>
-    # The web is informational; sign-in and /app answer only to the native shells.
-    NATIVE_WEB_ACCESS: "0"
+    # Browsers and the native shells are both clients. "0" is the kill switch that
+    # sends browsers back to the landing page while the shells keep working.
+    NATIVE_WEB_ACCESS: <%= ENV.fetch("NATIVE_WEB_ACCESS", "1") %>
     SIGNUPS_ENABLED: <%= ENV.fetch("SIGNUPS_ENABLED", "1") %>
   secret:
     - RAILS_MASTER_KEY

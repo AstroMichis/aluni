@@ -35,6 +35,7 @@ export default class extends Controller {
     event?.preventDefault()
     if (this.hasFormTarget && !this.formTarget.reportValidity()) return
 
+    this.dispatch("start")
     this.clearError()
     this.busy(true)
 
@@ -142,6 +143,7 @@ export default class extends Controller {
     // Inspector) because WebKit reports a refused ceremony as NotAllowedError
     // too, for example a web view whose app lacks the webcredentials association.
     console.warn("[passkey]", error.name, error.message)
+    this.dispatch("error", { detail: { code: this.errorCode(error) } })
     if (error.name === "NotAllowedError" || error.name === "AbortError") return this.showError("cancelled")
     if (error.name === "InvalidStateError") return this.showError("already_registered")
     if (error.name === "ServerError") {
@@ -150,6 +152,14 @@ export default class extends Controller {
     }
     console.warn("[passkey]", error)
     this.showError("failed")
+  }
+
+  // The stable code behind handleError's branches, for listeners (passkey:error).
+  errorCode(error) {
+    if (error.name === "NotAllowedError" || error.name === "AbortError") return "cancelled"
+    if (error.name === "InvalidStateError") return "already_registered"
+    if (error.name === "ServerError") return error.code
+    return "failed"
   }
 
   showError(code) {

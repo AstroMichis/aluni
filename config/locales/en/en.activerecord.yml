@@ -13,6 +13,21 @@ en:
       platform_switch:
         one: "Platform switch"
         other: "Platform switches"
+      farmer_profile:
+        one: "Farmer profile"
+        other: "Farmer profiles"
+      farm:
+        one: "Farm"
+        other: "Farms"
+      field:
+        one: "Field"
+        other: "Fields"
+      field_crop:
+        one: "Crop"
+        other: "Crops"
+      onboarding_session:
+        one: "Onboarding"
+        other: "Onboardings"
     attributes:
       user:
         display_name: "Name"
@@ -21,3 +36,45 @@ en:
       passkey:
         nickname: "Device name"
         last_used_at: "Last used"
+      farmer_profile:
+        role: "Role"
+        experience: "Experience"
+        team: "Who works the land"
+        team_size: "Team size"
+        units: "Units"
+        land_tenure: "Land"
+        budget_level: "Inputs and budget"
+        risk_tolerance: "Risk"
+        segment: "Profile"
+        goals: "Goals"
+        equipment: "Equipment"
+        livestock: "Livestock"
+        market_channels: "Where you sell"
+        practices: "Practices"
+        notes: "Notes"
+      farm:
+        name: "Farm name"
+        country_code: "Country"
+        admin_area: "Region"
+      field:
+        name: "Field name"
+        latitude: "Latitude"
+        longitude: "Longitude"
+        place_label: "Place"
+        area: "Area"
+        area_unit: "Area unit"
+        irrigation: "Irrigation"
+        water_source: "Water source"
+        cropping_intensity: "Crops per year"
+        soil: "Soil"
+      field_crop:
+        crop_name: "Crop"
+        scientific_name: "Scientific name"
+        season_year: "Season"
+        planting_month: "Planting month"
+        harvest_month: "Harvest month"
+        role: "Role"
+      onboarding_session:
+        topic: "Topic"
+        status: "Status"
+        language: "Language"

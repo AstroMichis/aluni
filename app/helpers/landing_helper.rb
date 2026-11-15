@@ -17,4 +17,12 @@ module LandingHelper
 
   def landing_sample = SAMPLE
   def tour_steps = TOUR_STEPS
+
+  # Where "start with your own field" leads: the app for a signed-in visitor,
+  # otherwise account creation (or sign-in while sign-ups are closed).
+  def landing_start_path
+    return app_root_path if authenticated?
+
+    signups_enabled? ? sign_up_path : sign_in_path
+  end
 end

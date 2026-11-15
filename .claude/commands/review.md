@@ -30,7 +30,7 @@ Read every file in scope, then check EVERY item below. Report issues by severity
 - [ ] Messages through `NotificationRouter`; outside calls through a client with `Platform::Switchboard.guard!`
 
 ## Authentication and native
-- [ ] Authenticated screens inherit `App::BaseController` (NativeOnly + session + Pundit); public pages use `allow_unauthenticated_access` and `layout "public"`
+- [ ] Authenticated screens inherit `App::BaseController` (session + Pundit + the NativeOnly kill switch); public pages use `allow_unauthenticated_access` and `layout "public"`
 - [ ] JSON for native screens inherits `Api::V1::BaseController` (`X-Aluni-Native` on writes)
 - [ ] Queries scoped to `Current.user` (`Current.user.things.find(...)`), never `Thing.find(params[:id])`
 - [ ] No passwords, no secrets in sessions; the passkey ceremony code stays in `PasskeyCeremony` and the three auth controllers
@@ -40,6 +40,7 @@ Read every file in scope, then check EVERY item below. Report issues by severity
 - [ ] Turbo Frames and Streams used for partial updates; custom stream actions only when needed
 - [ ] Native `<dialog>` for modals; Stimulus never owns server state; every listener/observer/timer removed in `disconnect()`
 - [ ] Vendored libraries only (`vendor/javascript`), lazy `await import()` for heavy ones; CSP unchanged (no new hosts)
+- [ ] Chat turns: Gemini inline only inside `Onboarding::ReplyService`; a fetch that expects a Turbo Stream renders it whatever the status; `Platform::ServicePaused` rescued in the service, never left to the controller's redirect; nothing from the model saved before the confirm card
 
 ## Security
 - [ ] No credentials or keys in code; nothing read from `.env*`, `master.key`, `credentials*`
@@ -55,10 +56,10 @@ Read every file in scope, then check EVERY item below. Report issues by severity
 
 ## Performance
 - [ ] N+1 handled with `includes`/`preload`; indexes for queried columns
-- [ ] Heavy work in jobs; Redis TTLs on any session-like store
+- [ ] Heavy work in jobs; session-like state encrypted at rest (`encrypts`) or behind a Redis TTL
 - [ ] `contain: layout style` on repeated DOM; variants instead of full-size images
 
 ## Tests
 - [ ] Specs for new and changed code; success and failure paths; outside APIs stubbed
-- [ ] Request specs render pages and assert content; native-only paths tested with and without `native_headers`
+- [ ] Request specs render pages and assert content; gated paths tested as a browser and with `native_headers`, and once with `with_native_web_access(false)` when the switch matters
 - [ ] Factories used; edge cases covered; suite green (`mise exec -- bundle exec rspec`)

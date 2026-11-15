@@ -1,0 +1,55 @@
+en:
+  onboarding:
+    persona_name: "Aluni"
+    welcome_message: "Hi %{name}, I am Aluni. I will ask a few short questions about your farm so the advice fits your land, and nothing is saved until you say so. Shall we start with who you are?"
+    topics:
+      welcome: "Welcome"
+      location: "Location"
+      land: "Your land"
+      crops: "Crops"
+      soil: "Soil"
+      operation: "How you work"
+      goals: "Goals"
+      summary: "Summary"
+    transitions:
+      welcome: "Let us start with who you are."
+      location: "Now let us find your main field on the map. You can share your location or tell me the nearest town."
+      land: "Next, tell me about the land itself: how big it is and how it gets water."
+      crops: "Now the crops. What grows there this season?"
+      soil: "Let us talk about the soil, in your own words."
+      operation: "Almost there. A few quick questions about how you work."
+      goals: "Last part: what matters most to you this year?"
+      summary: "Let me put it all together so you can check it."
+    continuations:
+      welcome:
+        - "Give me a second, I am still catching up. Say that again?"
+        - "I lost my thread for a moment. Could you tell me once more who you are on the farm?"
+      location:
+        - "Hold on, I am still unfolding my leaves. Where is your field again?"
+        - "One moment, that did not reach me. Can you share your location or name the nearest town?"
+      land:
+        - "Give me a second, I am catching up. How big is the field, again?"
+        - "I missed that one. Could you tell me about the land once more?"
+      crops:
+        - "Hold on, my roots are slow today. Which crops did you say?"
+        - "That slipped past me. What grows on the field this season?"
+      soil:
+        - "One moment, I am still catching up. What did you say about the soil?"
+        - "I missed that. Tell me again what the soil is like, in your words."
+      operation:
+        - "Give me a second, I am catching up. What tools and sales did you mention?"
+        - "That did not reach me. Could you say that again?"
+      goals:
+        - "Hold on, I am still catching up. What matters most to you this year?"
+        - "I lost that for a moment. Tell me your goals once more?"
+      summary:
+        - "One moment, I am putting it all together. Could you repeat that?"
+        - "Almost done, I just missed that. Say it once more?"
+    refusals:
+      insult: "I am only a seedling, but that stung a little. Let us get back to your farm: what shall we fill in next?"
+      sexual: "That is not something I can talk about. I am here for your fields, so let us continue there."
+      spam: "That looks like something other than a message for me. Let us keep going with your farm profile."
+      injection: "I can only help with your farm profile, so let us stay on that. What shall we fill in next?"
+      off_topic_hostile: "Let us keep this friendly and about your farm. What shall we fill in next?"
+    blocked: "I need a little quiet to recover. Come back tomorrow and we will pick up where we left off."
+    error_fallback: "Something tangled up on my side. Give me a moment and say that again?"

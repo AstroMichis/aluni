@@ -1,0 +1,215 @@
+/* Aluni, the seedling mascot (mascot_controller.js): the stage, its CSS ground
+   shadow, the speech bubble and the SVG twin. The stage is a small fixed box
+   bottom-left on the landing; the walk-in, the slide away and the dock are
+   all transforms of this box, so the WebGL canvas never resizes mid-flight.
+   The companion variant sits inside a chat column instead. Mobile first. */
+.mascot {
+  --mascot-shadow: rgba(0, 0, 0, 0.45);
+  position: fixed;
+  left: max(var(--space-3), env(safe-area-inset-left));
+  bottom: max(var(--space-3), env(safe-area-inset-bottom));
+  z-index: var(--z-dropdown);
+  width: 170px;
+  height: 210px;
+  pointer-events: none;
+  transform-origin: 50% 100%;
+  transition: transform 1.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity var(--transition-slow);
+  will-change: transform;
+}
+
+[data-theme="light"] .mascot { --mascot-shadow: rgba(23, 61, 45, 0.28); }
+
+/* States set by the controller. Offstage is below the viewport on phones and
+   left of it on wider screens; onstage is the resting spot. Away and docked
+   are doubled in specificity so they win over onstage whatever the order. */
+.mascot--offstage { transform: translateY(130%); }
+.mascot--onstage { transform: none; }
+
+/* The tour has the reader: step aside and stop rendering. */
+.mascot.mascot--away {
+  transform: translateY(130%);
+  transition-duration: 0.6s;
+}
+
+/* No scene (reduced motion, no WebGL, a crash): placed, never walked in. */
+.mascot--static { transition: none; }
+
+/* FLIP toward the chat panel's slot: translate and scale only. */
+.mascot.mascot--docked {
+  transform: translate(var(--mascot-dock-x, 0px), var(--mascot-dock-y, 0px)) scale(var(--mascot-dock-scale, 1));
+  z-index: calc(var(--z-modal) + 1); /* over the landing chat panel the stage docks into */
+  transform-origin: 50% 50%;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), opacity var(--transition-slow);
+}
+
+.mascot.mascot--hidden { opacity: 0; }
+
+/* Inside a chat column: no fixed box, no entrance, the column sizes it. */
+.mascot--companion {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  z-index: auto;
+  margin-inline: auto;
+  transform: none;
+  transition: none;
+}
+
+.mascot__canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.mascot__canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.mascot__canvas[hidden] { display: none; }
+
+/* The ground shadow: zero draw calls. */
+.mascot__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 48%;
+  height: 7%;
+  border-radius: var(--radius-full);
+  background: radial-gradient(ellipse at center, var(--mascot-shadow) 0%, transparent 70%);
+  transform: translateX(-50%);
+  opacity: 0.9;
+}
+
+/* The SVG twin, standing where the character would. */
+.mascot__fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 7%;
+  opacity: 1;
+  transition: opacity var(--transition-slow);
+}
+
+.mascot__fallback[hidden] { display: none; }
+
+@starting-style {
+  .mascot__fallback { opacity: 0; }
+}
+
+/* The speech bubble: a card anchored above the head. The controller projects
+   the head into --mascot-bubble-x/y; the percentages are the SVG path. */
+.mascot__bubble {
+  position: absolute;
+  left: var(--mascot-bubble-x, 58%);
+  top: var(--mascot-bubble-y, 10%);
+  width: max-content;
+  max-width: min(300px, calc(100vw - var(--space-20)));
+  padding: var(--space-4) var(--space-5);
+  padding-right: var(--space-12);
+  pointer-events: auto;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+  transform: translate(-20%, -100%);
+  opacity: 1;
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+}
+
+.mascot__bubble[hidden] { display: none; }
+
+/* The tail, pointing down at the head. */
+.mascot__bubble::after {
+  content: "";
+  position: absolute;
+  left: 20%;
+  bottom: -9px;
+  width: 16px;
+  height: 16px;
+  background: inherit;
+  border-right: 1px solid var(--color-border-default);
+  border-bottom: 1px solid var(--color-border-default);
+  transform: rotate(45deg);
+}
+
+@starting-style {
+  .mascot__bubble--visible {
+    opacity: 0;
+    transform: translate(-20%, -100%) scale(0.92);
+  }
+}
+
+.mascot__line { margin: 0; }
+.mascot__line + .mascot__line { margin-top: var(--space-1); }
+
+.mascot__actions { margin-top: var(--space-4); }
+.mascot__actions .btn { min-height: 48px; }
+
+/* Close: a 48px target in the corner. */
+.mascot__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-lg);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.mascot__close:hover {
+  color: var(--color-text-primary);
+  background: var(--color-bg-hover);
+}
+
+.mascot__close svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* The SVG twin wherever a small Aluni is wanted (chat avatars, the fallback). */
+.mascot-avatar {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.mascot-avatar--sm { width: 32px; height: 32px; }
+.mascot-avatar--md { width: 40px; height: 40px; }
+.mascot-avatar--lg { width: 56px; height: 56px; }
+.mascot-avatar--xl { width: 120px; height: 120px; }
+
+@media (min-width: 769px) {
+  .mascot {
+    left: max(var(--space-6), env(safe-area-inset-left));
+    bottom: max(var(--space-6), env(safe-area-inset-bottom));
+    width: 260px;
+    height: 320px;
+  }
+
+  .mascot--offstage { transform: translateX(-130%); }
+
+  .mascot--companion {
+    left: auto;
+    bottom: auto;
+  }
+
+  .mascot__bubble { font-size: var(--text-lg); }
+}
+
+@media (forced-colors: active) {
+  .mascot__bubble { border: 1px solid CanvasText; }
+}
+
+@media print {
+  .mascot { display: none !important; }
+}

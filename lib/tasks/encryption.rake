@@ -1,7 +1,7 @@
 namespace :encryption do
   # Models whose `encrypts` columns may still hold plaintext written before the
   # column was encrypted. Add a model name when you encrypt an existing column.
-  ENCRYPTED_MODELS = %w[].freeze
+  ENCRYPTED_MODELS = %w[OnboardingSession].freeze
 
   desc "Encrypt legacy plaintext rows in place (idempotent), then set AR_ENCRYPTION_SUPPORT_UNENCRYPTED_DATA=false"
   task backfill: :environment do

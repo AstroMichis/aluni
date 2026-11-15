@@ -1,0 +1,3 @@
+<%= turbo_stream.update "onboarding-notice" do %>
+  <%= render "app/onboarding/notice", text: @notice, title: @notice_title, tone: "warning" %>
+<% end %>

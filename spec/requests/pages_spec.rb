@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Informational site", type: :request do
+RSpec.describe "Public site", type: :request do
   it "renders the landing page in English by default" do
     get "/"
 
@@ -38,6 +38,23 @@ RSpec.describe "Informational site", type: :request do
     expect(response.body).to include('href="https://apps.apple.com/app/id1"').and include('rel="noopener"')
     expect(response.body).to include('href="https://play.google.com/store/apps/details?id=us.aluni.app"')
     expect(response.body).not_to include(I18n.t("shared.store_buttons.coming_soon"))
+  end
+
+  it "offers account creation and sign-in to browsers" do
+    get "/en"
+
+    expect(response.body).to include(I18n.t("pages.home.sign_up")).and include(%(href="/en/sign_up"))
+    expect(response.body).to include(I18n.t("pages.home.sign_in")).and include(%(href="/en/sign_in"))
+    expect(response.body).to include(I18n.t("pages.home.finish")).and include(I18n.t("pages.home.preview_notice_link"))
+  end
+
+  it "offers the app to a signed-in browser" do
+    sign_in_as(create(:user))
+
+    get "/en"
+
+    expect(response.body).to include(I18n.t("pages.home.open_app", app_name: I18n.t("app_name"))).and include(%(href="/en/app"))
+    expect(response.body).not_to include(%(href="/en/sign_up"))
   end
 
   it "shows sign-in instead of the tour and the store links inside the native shells" do

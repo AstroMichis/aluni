@@ -61,6 +61,8 @@ connect() { this.outsideClick = (e) => { if (!this.element.contains(e.target)) t
 disconnect() { document.removeEventListener("click", this.outsideClick) }
 ```
 
+Existing controllers to reuse before writing a new one: `chat` (Turbo Stream composer), `chat_message`, `geolocate`, `landing_chat`, `mascot` (window events `mascot:speak|dock|hide|show`), `passkey`, `dialog`, `dropdown`, `toast`, `clipboard`, `web_share`, `scroll_reveal`, `scroll_story`, `hero_scene`, `theme`, `web_push`, `bridge/*` (`docs/DESIGN_SYSTEM.md`, `docs/ONBOARDING.md`). In-page anchors on the landing carry `data-turbo="false"`: a Turbo visit to the same page re-renders it and restarts the hero and the mascot.
+
 Debounce:
 ```javascript
 search() { clearTimeout(this.timeout); this.timeout = setTimeout(() => this.performSearch(), 300) }

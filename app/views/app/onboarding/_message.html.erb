@@ -1,0 +1,13 @@
+<%# One chat bubble. Locals: role ("user" | "assistant"), text; optional tone ("refusal" | "degraded"),
+    optional silent (true for history bubbles, so only the newest line animates the mascot). %>
+<% tone = local_assigns[:tone] %>
+<% silent = local_assigns.fetch(:silent, false) %>
+<div class="chat__message chat__message--<%= role %><%= " chat__message--#{tone}" if tone %>"
+     data-controller="chat-message"
+     data-chat-message-role-value="<%= role %>"
+     data-chat-message-silent-value="<%= silent %>">
+  <% if role == "assistant" %>
+    <div class="chat__avatar" aria-hidden="true"><%= render "shared/mascot_avatar", size: "sm" %></div>
+  <% end %>
+  <p class="chat__bubble" data-chat-bubble><%= text %></p>
+</div>

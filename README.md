@@ -20,7 +20,7 @@ mise exec -- bin/dev        # web on 0.0.0.0:3000 plus the Sidekiq worker (Redis
 mise exec -- bin/dev web    # only the web process
 ```
 
-Open http://localhost:3000. Passkeys need a secure context: use `localhost`, not a LAN name (`docs/AUTH.md`). A phone on the same network reaches the Mac's address instead (`docs/NATIVE.md`, "Building"). In development `NATIVE_WEB_ACCESS` defaults to on, so sign-in and `/app` also work in a desktop browser.
+Open http://localhost:3000. Passkeys need a secure context: use `localhost`, not a LAN name (`docs/AUTH.md`). A phone on the same network reaches the Mac's address instead (`docs/NATIVE.md`, "Building"). Sign-in and `/app` work in any current browser; `NATIVE_WEB_ACCESS=0` closes them to browsers (`docs/AUTH.md`).
 
 ## Tests and checks
 

@@ -1,0 +1,26 @@
+<% payload = @payload %>
+<%= turbo_stream.update "onboarding-notice", "" %>
+<%= turbo_stream.append "onboarding-messages" do %>
+  <%= render "app/onboarding/message", role: "user", text: payload[:user_text] %>
+  <%= render "app/onboarding/message", role: "assistant", text: payload[:assistant_text],
+             tone: (payload[:refusal] ? "refusal" : (payload[:degraded] ? "degraded" : nil)) %>
+  <% if payload[:degraded] %>
+    <%= render "app/onboarding/notice", text: t("app.onboarding.show.degraded_note"), tone: "muted" %>
+  <% end %>
+  <% if payload[:transition].present? %>
+    <%= render "app/onboarding/divider", topic: payload[:topic] %>
+    <%= render "app/onboarding/message", role: "assistant", text: payload[:transition] %>
+  <% end %>
+  <% if payload[:completed] %>
+    <%= render "app/onboarding/completion" %>
+  <% end %>
+<% end %>
+<%= turbo_stream.update "onboarding-confirm" do %>
+  <%= render "app/onboarding/confirm_card", proposal: payload[:proposal] if payload[:proposal].present? %>
+<% end %>
+<%= turbo_stream.replace "onboarding-progress" do %>
+  <%= render "app/onboarding/progress", topic: @topic, index: @index, total: @total %>
+<% end %>
+<%= turbo_stream.update "onboarding-location-tools" do %>
+  <%= render "app/onboarding/location_tools", pin: @pin if @topic == "location" %>
+<% end %>

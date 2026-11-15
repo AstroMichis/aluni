@@ -27,7 +27,8 @@ RSpec.describe "Passkey sign-up and sign-in", type: :request do
     credential = client.create(challenge: options["challenge"], user_verified: true)
     post sign_up_path(locale: "en"), params: { credential: credential, nickname: "iPhone" }, headers: native_headers, as: :json
     expect(response).to have_http_status(:created)
-    expect(response.parsed_body["redirect_to"]).to eq(app_root_url(locale: "en"))
+    expect(response.parsed_body["redirect_to"]).to eq(app_onboarding_url(locale: "en"))
+    expect(response.cookies["locale"]).to eq("en")
 
     user = User.last
     expect(user).to have_attributes(display_name: "Ada", email_address: "ada@example.com", locale: "en")
@@ -35,9 +36,9 @@ RSpec.describe "Passkey sign-up and sign-in", type: :request do
     expect(user.passkeys.first).to have_attributes(external_id: credential["id"], nickname: "iPhone", transports: [ "internal" ])
     expect(cookies["session_id"]).to be_present
 
+    # A new account has no profile yet: the home forwards to the onboarding chat.
     get app_root_path(locale: "en"), headers: native_headers
-    expect(response).to have_http_status(:ok)
-    expect(response.body).to include("Ada").and include(I18n.t("app.home.show.lede"))
+    expect(response).to redirect_to(app_onboarding_path(locale: "en"))
 
     get passkeys_path(locale: "en"), headers: native_headers
     expect(response).to have_http_status(:ok)
@@ -70,7 +71,7 @@ RSpec.describe "Passkey sign-up and sign-in", type: :request do
     expect(user.passkeys.first.last_used_at).to be_present
 
     get app_root_path(locale: "en"), headers: native_headers
-    expect(response).to have_http_status(:ok)
+    expect(response).to redirect_to(app_onboarding_path(locale: "en"))
   end
 
   it "signs up in Spanish and keeps the locale on the account" do
@@ -78,7 +79,30 @@ RSpec.describe "Passkey sign-up and sign-in", type: :request do
 
     expect(response).to have_http_status(:created)
     expect(User.last.locale).to eq("es")
-    expect(response.parsed_body["redirect_to"]).to eq(app_root_url(locale: "es"))
+    expect(response.parsed_body["redirect_to"]).to eq(app_onboarding_url(locale: "es"))
+  end
+
+  it "keeps the language chosen in the landing chat, even from an English page" do
+    post sign_up_options_path(locale: "en"), params: { display_name: "Ana", locale: "es" }, headers: native_headers, as: :json
+    expect(response).to have_http_status(:ok)
+
+    credential = client.create(challenge: response.parsed_body["challenge"], user_verified: true)
+    post sign_up_path(locale: "en"), params: { credential: credential }, headers: native_headers, as: :json
+
+    expect(response).to have_http_status(:created)
+    expect(response.parsed_body["redirect_to"]).to eq(app_onboarding_url(locale: "es"))
+    expect(response.cookies["locale"]).to eq("es")
+    expect(User.last.locale).to eq("es")
+  end
+
+  it "ignores a language it does not offer" do
+    post sign_up_options_path(locale: "en"), params: { display_name: "Ana", locale: "fr" }, headers: native_headers, as: :json
+    credential = client.create(challenge: response.parsed_body["challenge"], user_verified: true)
+    post sign_up_path(locale: "en"), params: { credential: credential }, headers: native_headers, as: :json
+
+    expect(response).to have_http_status(:created)
+    expect(User.last.locale).to eq("en")
+    expect(response.parsed_body["redirect_to"]).to eq(app_onboarding_url(locale: "en"))
   end
 
   it "rejects a replayed assertion" do

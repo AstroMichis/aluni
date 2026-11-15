@@ -1,4 +1,4 @@
-# The informational web site (public layout) and the locale switcher.
+# The public landing page (public layout) and the locale switcher.
 class PagesController < ApplicationController
   allow_unauthenticated_access
   layout "public"

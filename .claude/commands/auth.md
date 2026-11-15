@@ -17,7 +17,7 @@ You are changing authentication for Aluni. The request is: $ARGUMENTS
 - **Discoverable, user-verified credentials.** `resident_key: "required"`, `user_verification: "required"`; sign-in sends an empty `allowCredentials`.
 - **Challenges live in the cookie session for one ceremony** (`session[:authentication_challenge]`, `session[:registration]`, `session[:creation_challenge]`) and are deleted when consumed.
 - **Sessions are rows.** `start_new_session_for(user)` creates a `Session` and sets the permanent signed cookie; `terminate_session` destroys it. Never store user data in the cookie.
-- **Every new authenticated controller inherits `App::BaseController`** (native gate + session); every new ceremony endpoint includes `NativeOnly` and `PasskeyCeremony` and goes through `with_ceremony`.
+- **Every new authenticated controller inherits `App::BaseController`** (session + the `NativeOnly` kill switch); every new ceremony endpoint includes `NativeOnly` and `PasskeyCeremony` and goes through `with_ceremony`.
 - **RP id and origins come from `config.x.webauthn`** per environment; never hardcode a host.
 - **Errors are JSON codes**, mapped to copy in `passkeys.errors.*` (both locales). Never leak gem exception messages to a person.
 - **Rack::Attack throttles the ceremonies** (`RACK_ATTACK_AUTH_PATH`); update the regex when you add an auth path.
@@ -36,7 +36,7 @@ The web views run the ceremony themselves: iOS needs `webcredentials:aluni.us` i
 
 ## Development
 
-`localhost:3000` (secure context), `NATIVE_WEB_ACCESS=1` (default in development) to use a desktop browser, `adb reverse tcp:3000 tcp:3000` for the Android emulator. A passkey created against `localhost` never works against `aluni.us`.
+`localhost:3000` (secure context; browsers are first-class clients, `NATIVE_WEB_ACCESS=0` would close them), `adb reverse tcp:3000 tcp:3000` for the Android emulator. A passkey created against `localhost` never works against `aluni.us`.
 
 ## Testing
 

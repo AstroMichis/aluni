@@ -3,6 +3,9 @@ require "rails_helper"
 RSpec.describe User, type: :model do
   it { is_expected.to have_many(:sessions).dependent(:destroy) }
   it { is_expected.to have_many(:passkeys).dependent(:destroy) }
+  it { is_expected.to have_one(:farmer_profile).dependent(:destroy) }
+  it { is_expected.to have_one(:onboarding_session).dependent(:destroy) }
+  it { is_expected.to have_many(:farms).dependent(:destroy) }
   it { is_expected.to validate_presence_of(:display_name) }
   it { is_expected.to validate_length_of(:display_name).is_at_most(User::NAME_MAX) }
 

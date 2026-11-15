@@ -1,4 +1,4 @@
-/* The informational site. Mobile first. The Three.js field scene sits fixed
+/* The public landing page. Mobile first. The Three.js field scene sits fixed
    behind everything (hero_scene_controller); the tour sections scroll over it
    and drive it through scroll_story_controller. */
 .landing {

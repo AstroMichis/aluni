@@ -1,0 +1,8 @@
+es:
+  mascot:
+    greeting: "Hola, soy %{app_name}."
+    question: "¿Empezamos?"
+    lets_go: "Vamos"
+    show_me_around: "Muéstrame cómo funciona"
+    avatar_label: "%{app_name}, una plántula sonriente"
+    dismiss: "Ahora no"
