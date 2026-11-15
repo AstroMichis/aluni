@@ -20,6 +20,9 @@ module Fields
     VEGETATION_MONTHS = 12
     VEGETATION_RETRIES = 3
     VEGETATION_RETRY_WAIT = 15.minutes # times the attempt, plus up to 5 minutes of jitter
+    # What a partial run (`only: [...]`, Fields::RefreshObservationsJob's weekly pass) may refresh:
+    # the sources that change week to week. The rest only change with the pin or the year.
+    QUICK = %w[nasa_power vegetation].freeze
 
     def perform(field_id, only: nil, attempt: 0)
       field = Field.includes(:field_crops, farm: { user: :farmer_profile }).find_by(id: field_id)
@@ -28,6 +31,7 @@ module Fields
       @field = field
       @point = { latitude: field.latitude.to_f, longitude: field.longitude.to_f }
       return retry_vegetation(attempt) if only == "vegetation"
+      return refresh(Array(only) & QUICK) if only
 
       us = record("fcc") { Fcc::Client.new.locate(**@point) }&.ok?
       record("nasa_power") { power }
@@ -76,6 +80,11 @@ module Fields
       end
 
       months.any? { |m| m["ndvi"] } ? { "months" => months, "source" => Fields::Vegetation::SOURCE } : {}
+    end
+
+    def refresh(sources)
+      record("nasa_power") { power } if sources.include?("nasa_power")
+      retry_vegetation(0) if sources.include?("vegetation")
     end
 
     def retry_vegetation(attempt)

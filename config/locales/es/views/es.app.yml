@@ -825,6 +825,7 @@ es:
         water: "%{crop} necesita unos %{need} mm; la lluvia usual cubre unos %{effective} mm."
         slope: Pendiente de %{value} %.
         cover_history: "Este terreno ya tuvo un cultivo de cobertura (%{crops}) en %{years}."
+        double_crop: "Después de %{main} este terreno siembra %{second} en la misma temporada; la línea de tiempo lo mantiene."
         heavy_rain: "Unos %{days} días al año llueven 25 mm o más, sobre todo en %{months} (%{years} años de lluvia por satélite)."
         soil_dry: "En el último año la zona de raíces estuvo en el quinto más seco de lo habitual en %{months} (humedad del suelo por satélite)."
         soil_usual: En el último año la humedad de la zona de raíces se mantuvo dentro de lo habitual (humedad del suelo por satélite).
@@ -844,6 +845,7 @@ es:
         contract: Vendes por contrato o para exportar. Consulta con tu comprador antes de cambiar el cultivo.
       gaps:
         market: 'Precios y compradores: todavía no hay fuente para tu mercado local.'
+        second_crop: Siembras dos cultivos al año, pero el segundo todavía no está registrado; agrégalo al historial del terreno para verlo en la línea de tiempo.
         soil: La textura de tu suelo todavía no está confirmada.
         ecocrop: Los requisitos de temperatura y pH de los cultivos (FAO ECOCROP) todavía no están cargados.
         suitability: FAO GAEZ no tiene valor para algunos de estos cultivos en tu punto.
