@@ -1,6 +1,7 @@
 # Sample farms for the demo (bin/rails demo:farm USER_ID=.. PRESET=..), loaded
 # by Demo::FarmService into an account that already signed up with a passkey.
-# Seasons are relative: 0 is this season, -1 the one before, and so on.
+# Seasons are relative: 0 is this season, -1 the one before, and so on. role
+# defaults to main; a cover crop shares its season with the main crop.
 nebraska:
   locale: en
   farm: { name: Prairie View Farm, country_code: US, admin_area: Nebraska }
@@ -29,6 +30,7 @@ nebraska:
   crops:
     - { season: 0, crop_name: Corn, scientific_name: Zea mays, planting_month: 4, harvest_month: 10 }
     - { season: -1, crop_name: Soybeans, scientific_name: Glycine max, planting_month: 5, harvest_month: 9 }
+    - { season: -1, role: cover, crop_name: Cereal rye, scientific_name: Secale cereale, planting_month: 10, harvest_month: 4 }
     - { season: -2, crop_name: Corn, scientific_name: Zea mays, planting_month: 4, harvest_month: 10 }
     - { season: -3, crop_name: Soybeans, scientific_name: Glycine max, planting_month: 5, harvest_month: 9 }
 

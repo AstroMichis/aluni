@@ -46,7 +46,7 @@ module Demo
       farm = @user.farms.create!(@preset["farm"])
       field = farm.fields.create!(@preset["field"].merge(location_confidence: :confirmed, location_source: :map))
       @preset["crops"].each do |crop|
-        field.field_crops.create!(crop.except("season").merge(season_year: Date.current.year + crop["season"], role: :main, source: :farmer))
+        field.field_crops.create!(crop.except("season").merge(season_year: Date.current.year + crop["season"], role: crop["role"] || :main, source: :farmer))
       end
       field
     end

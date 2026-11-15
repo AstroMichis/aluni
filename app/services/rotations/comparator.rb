@@ -101,6 +101,7 @@ module Rotations
         "soil_health" => soil_health(crops), "nitrogen" => nitrogen(crops), "water" => water(crops, facts, gaps),
         "erosion" => erosion(crops, facts, gaps), "workload" => workload(crops)
       }
+      cover_history_fact(facts)
       gaps << "market"
       gaps << "soil" if @record.soil["texture"].blank?
       gaps << "ecocrop" unless crops.all? { |c| Crops::Agronomy.find(c)&.requirements.present? }
@@ -206,6 +207,15 @@ module Rotations
     end
 
     def soil = (@soil ||= Weather::SoilMoisture.new(@field.observation("smap")))
+
+    # Cover crops the field has already had: the soil-health habit the timeline's windows build on.
+    def cover_history_fact(facts)
+      covers = @field.cover_crops.last(3)
+      return if covers.empty?
+
+      facts << Fact.new(key: "cover_history", values: { crops: covers.map(&:crop_name).uniq.to_sentence, years: covers.map(&:season_year).uniq.to_sentence },
+                        source: nil)
+    end
 
     # Fewer different crops and machinery the farm already has mean less work.
     def workload(crops)

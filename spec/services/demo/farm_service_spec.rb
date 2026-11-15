@@ -27,6 +27,12 @@ RSpec.describe Demo::FarmService do
     expect(user.farms.pluck(:name)).to eq([ "Prairie View Farm" ])
   end
 
+  it "records the cover crop in the Nebraska history" do
+    field = described_class.call(user: user, preset: "nebraska").value
+
+    expect(field.field_crops.where(role: :cover).pluck(:crop_name, :season_year)).to eq([ [ "Cereal rye", Date.current.year - 1 ] ])
+  end
+
   it "refuses an account that has its own farms unless forced" do
     create(:farm, user: user, name: "Real farm")
 

@@ -26,18 +26,37 @@ module Rotations
     RISKS = %w[storm dry frost heat].freeze
     EXPOSING = %w[storm dry frost].freeze # what bare soil suffers from (heat is the crop's risk)
     DAYS_PER_MONTH = 30.4
+    # Cover crops for a bare window of COVER_MONTHS or more, from the catalog:
+    # cereal rye where it freezes, oats in a cool window, cowpea (a legume) in
+    # a warm one. "Cool" is a mean temperature under COOL_C over the window.
+    COVER_MONTHS = 2
+    COOL_C = 12.0
+    COVERS = { "frost" => "secale-cereale", "cool" => "avena-sativa", "warm" => "vigna-unguiculata" }.freeze
 
     Month = Struct.new(:index, :year, :month, :state, :crop, :risks, keyword_init: true) do
       def bare? = state == "bare"
       def growing? = state == "crop"
       def vulnerable? = bare? && risks.intersect?(EXPOSING)
     end
-    Line = Struct.new(:crops, :months, keyword_init: true) do
+    # A run of bare months a cover crop could fill: what to sow, and whether
+    # the window is so dry that the cover needs irrigation to establish.
+    Window = Struct.new(:months, :cover, :kind, :dry, keyword_init: true) do
+      def first = months.first
+      def last = months.last
+      def exposed = months.count(&:vulnerable?)
+      # A cover takes about a month to close over the soil: the first month stays exposed.
+      def protected = months.drop(1).count(&:vulnerable?)
+      def indexes = months.map(&:index)
+    end
+    Line = Struct.new(:crops, :months, :windows, keyword_init: true) do
       def seasons = months.each_slice(MONTHS).to_a
       def bare = months.count(&:bare?)
       def vulnerable = months.select(&:vulnerable?)
       def stormy_bare = months.count { |m| m.bare? && m.risks.include?("storm") }
       def known? = months.any? { |m| m.state != "unknown" }
+      # Exposed months left once every cover window is sown (each window's first month still counts).
+      def exposed_with_cover = vulnerable.size - windows.sum(&:protected)
+      def window_for(month) = windows.find { |w| w.indexes.include?(month.index) }
     end
 
     def initialize(field, first_year: Date.current.year + 1)
@@ -74,10 +93,22 @@ module Rotations
         Month.new(index: i, year: @first_year + (i / MONTHS), month: month,
                   state: known[i] || state == "crop" ? state : "unknown", crop: crop, risks: weather[month])
       end
-      Line.new(crops: crops, months: months)
+      Line.new(crops: crops, months: months, windows: cover_windows(months))
     end
 
     private
+
+    # Runs of COVER_MONTHS or more bare months, each with the cover that fits its weather.
+    def cover_windows(months)
+      months.chunk_while { |a, b| a.bare? && b.bare? }.select { |run| run.first.bare? && run.size >= COVER_MONTHS }.map do |run|
+        temps = run.filter_map { |m| normal("T2M", m.month) }
+        kind = if run.any? { |m| m.risks.include?("frost") } then "frost"
+        elsif temps.any? && (temps.sum / temps.size) < COOL_C then "cool"
+        else "warm"
+        end
+        Window.new(months: run, cover: COVERS.fetch(kind), kind: kind, dry: run.all? { |m| m.risks.include?("dry") })
+      end
+    end
 
     # Line indexes a crop of the given season (0, 1, 2) covers, or nil when unknown.
     def window(crop, season)

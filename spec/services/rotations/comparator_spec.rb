@@ -64,6 +64,13 @@ RSpec.describe Rotations::Comparator do
     expect(current.risks).to include("dry_soil")
   end
 
+  it "cites the cover crops the field already had" do
+    create(:field_crop, field: record, role: :cover, crop_name: "Cereal rye", scientific_name: "Secale cereale", season_year: Date.current.year - 1)
+    current = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first
+
+    expect(current.evidence.find { |f| f.key == "cover_history" }.values).to eq(crops: "Cereal rye", years: (Date.current.year - 1).to_s)
+  end
+
   it "says what is better than now, what is unknown and what to check locally" do
     alternative = comparator.strategies.drop(1).first
     expect(alternative.gaps).to include("market", "soil")

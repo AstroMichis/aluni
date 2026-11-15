@@ -25,6 +25,16 @@ en:
         bare: Bare soil
         vulnerable: Bare and exposed
         unknown: Not known
+        window: Room for a cover crop
+      covers:
+        title: Cover crop windows.
+        effect: "With a cover sown in each, exposed months drop from %{before} to %{after}."
+        window: "%{from} to %{to}: %{crop} (%{why}; %{exposed} exposed months)."
+        dry: The window is dry; the cover needs irrigation to establish, or leave residue instead.
+        kinds:
+          frost: hardy through frost
+          cool: a cool-season cover
+          warm: a warm-season legume that adds nitrogen
       summary: "Bare %{bare} of %{total} months; %{vulnerable} of them exposed (%{stormy} under storms)."
       summary_covered: Soil covered all %{total} months.
       unknown_note: "The growing season of %{crops} is not known yet, so those months stay blank."

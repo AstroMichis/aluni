@@ -829,6 +829,7 @@ en:
         suitability: "%{crop}: %{class} at your pin."
         water: "%{crop} needs about %{need} mm; the usual rain covers about %{effective} mm."
         slope: Slope of %{value} %.
+        cover_history: "This field already had a cover crop (%{crops}) in %{years}."
         heavy_rain: "About %{days} days a year bring 25 mm of rain or more, most of them in %{months} (%{years} years of satellite rain)."
         soil_dry: "Over the last year the root zone was in the driest fifth of its usual range in %{months} (satellite soil moisture)."
         soil_usual: Over the last year the root zone stayed within its usual range of moisture (satellite soil moisture).

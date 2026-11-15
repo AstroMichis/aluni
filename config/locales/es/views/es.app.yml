@@ -829,6 +829,7 @@ es:
         suitability: "%{crop}: %{class} en tu punto."
         water: "%{crop} necesita unos %{need} mm; la lluvia usual cubre unos %{effective} mm."
         slope: Pendiente de %{value} %.
+        cover_history: "Este terreno ya tuvo un cultivo de cobertura (%{crops}) en %{years}."
         heavy_rain: "Unos %{days} días al año llueven 25 mm o más, sobre todo en %{months} (%{years} años de lluvia por satélite)."
         soil_dry: "En el último año la zona de raíces estuvo en el quinto más seco de lo habitual en %{months} (humedad del suelo por satélite)."
         soil_usual: En el último año la humedad de la zona de raíces se mantuvo dentro de lo habitual (humedad del suelo por satélite).
