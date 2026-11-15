@@ -4,6 +4,7 @@ en:
       tagline: "Open source, built in the open."
       meta: "%{app_name} %{year}"
       devices: "%{app_name} Probe"
+      glossary: What the numbers mean
     devices_link:
       short: "Probe"
       label: "%{app_name} Probe: field station"

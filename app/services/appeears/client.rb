@@ -42,7 +42,8 @@ module Appeears
     # The results CSV of one product of a finished task (as text).
     def results_csv(task_id, product:)
       files = Array(authorized { api.get("bundle/#{task_id}") }["files"])
-      suffix = "#{product.tr('.', '-')}-results.csv"
+      # AppEEARS names the file with dashes for the product's dots and underscores (ECO_L4T_ESI.002 -> ECO-L4T-ESI-002).
+      suffix = "#{product.tr('._', '--')}-results.csv"
       file = files.find { |f| f["file_name"].to_s.end_with?(suffix) } or raise Error, "#{self.class.name}: no #{suffix} in the bundle"
 
       response = request { api.get("bundle/#{task_id}/#{file["file_id"]}") }

@@ -1,0 +1,85 @@
+es:
+  glossary:
+    show:
+      title: Glosario · %{app_name}
+      description: Qué significa cada número del plan, qué dataset de la NASA lo mide, a qué escala y qué no puede decir.
+      nav_label: Navegación principal
+      back_home: Inicio
+      headline: Qué significan los números
+      lede: "%{app_name} convierte datos de satélites y modelos en unas pocas frases sobre tu terreno. Aquí está qué es cada uno, de dónde sale y cuáles son sus límites: nada de esto reemplaza mirar tu terreno ni preguntarle a quien lo conoce."
+      index_label: Términos
+      from: "Fuente:"
+      limits: "Límites:"
+      closing: Cada valor de la app dice de dónde viene. Si una fuente no coincide con lo que ves en terreno, confía en el terreno y coméntalo con tu asesor.
+      source_title: Qué mide esta fuente y cuáles son sus límites
+    terms:
+      ndvi:
+        name: NDVI (qué tan verde está el terreno)
+        what: Un número de cerca de 0 a 1 calculado con la luz roja e infrarroja que reflejan las plantas. El suelo desnudo o el rastrojo dan menos de 0,25; un cultivo cerrado y creciendo, más de 0,45. La app guarda un valor despejado por mes en tu punto y marca los meses con suelo descubierto.
+        from: Landsat 8 y 9 (NASA/USGS) y Sentinel-2 (ESA), de 10 a 30 m, cada pocos días; leídos a través de Microsoft Planetary Computer, sin los píxeles nublados.
+        limits: Un píxel en el punto, no todo el terreno. Un mes con solo pasadas nubladas queda sin dato. Las malezas y el rastrojo también se ven verdes o pelados.
+      vegetation_normal:
+        name: El verde habitual del mes
+        what: La mediana del NDVI de cada mes en los años anteriores en tu punto, dibujada como una marca sobre cada mes del último año, para ver si este año estuvo más verde o más seco que lo habitual.
+        from: MODIS del satélite Terra de la NASA (MOD13Q1), cada 16 días a 250 m desde 2001, a través de NASA AppEEARS.
+        limits: 250 m mezclan tu terreno con los vecinos. Un cambio de cultivo cambia la curva; "bajo lo normal" es una invitación a mirar, no un diagnóstico.
+      evapotranspiration:
+        name: Evapotranspiración (ET)
+        what: El agua que el aire saca del suelo y de las plantas, en mm por día. El valor de referencia (ET0) es para un pasto corto y verde; cada cultivo usa una parte que cambia a lo largo de su temporada.
+        from: El método Penman-Monteith de FAO-56 con las normales mensuales de NASA POWER (temperatura, humedad, viento, radiación).
+        limits: Promedios mensuales de una celda de unos 50 km; una semana caliente y ventosa saca más de lo que dice el promedio.
+      water_need:
+        name: Necesidad de agua del cultivo
+        what: Cuánta agua usa un cultivo en su temporada (mm), frente a cuánta de la lluvia habitual puede aprovechar (lluvia efectiva). La diferencia la tiene que cubrir el riego o el agua guardada en el suelo.
+        from: Coeficientes de cultivo FAO-56 (Allen et al., 1998) por la ET de referencia de NASA POWER, desde el mes de siembra de tu terreno o el de FAO-56.
+        limits: No cuenta el agua que ya hay en el suelo al sembrar, así que en zonas húmedas el déficit sale alto. Son normales, no el clima de este año.
+      soil_moisture:
+        name: Humedad del suelo en la zona de raíces
+        what: Cuánta agua guarda el primer metro de suelo, y su percentil frente a lo habitual ahí (0 lo más seco, 100 lo más húmedo). La app lista los meses del último año que estuvieron en el quinto más seco.
+        from: NASA SMAP L4 (el radiómetro del satélite SMAP asimilado en un modelo de suelo), 9 km, cada 3 horas, a través de NASA AppEEARS.
+        limits: Una celda de 9 km no distingue un terreno regado de uno seco al lado. En los meses más secos el producto a veces deja el percentil vacío.
+      water_stress:
+        name: Estrés hídrico (ESI)
+        what: El índice de estrés evaporativo, el agua que las plantas realmente usan sobre la que podrían usar. Cerca de 1 tienen toda la que necesitan; bajo 0,3 les falta agua.
+        from: ECOSTRESS en la Estación Espacial Internacional (NASA), 70 m, en días y horas irregulares, a través de NASA AppEEARS; sin las lecturas nubladas.
+        limits: Pocas lecturas despejadas al mes como mucho, y algunos meses ninguna. Una lectura es un momento de un día.
+      water_storage:
+        name: Agua almacenada en la región
+        what: Toda el agua en y sobre el suelo de tu región (subterránea, del suelo, nieve, lagos, ríos) como un espesor en cm frente a su promedio de 2004-2009. Bajo cero, los pozos, canales y embalses sacan de una reserva más chica.
+        from: Los satélites GRACE y GRACE-FO de la NASA, que pesan el agua por pequeños cambios en la gravedad; mascons de JPL, mensuales desde 2002.
+        limits: Una región de unos 300 km, nunca tu campo solo. Dice la tendencia de la reserva, no cuánta agua tiene un pozo.
+      heavy_rain:
+        name: Días de lluvia fuerte
+        what: Cuántos días al año llueven 25 mm o más (y 50 mm o más), y en qué meses, en los últimos 20 años. Son los meses en que el suelo descubierto se lava.
+        from: NASA GPM IMERG (lluvia satelital combinada con pluviómetros), 0,1° (unos 10 km), diaria, a través de NASA POWER.
+        limits: "En la montaña una celda puede mezclar una ladera húmeda con un valle seco. Cuenta días, no horas: una tormenta de 30 minutos y un día lluvioso se ven igual."
+      slope:
+        name: Pendiente
+        what: Qué tan inclinado está el terreno en tu punto, en porcentaje (5 % son 5 m de subida en 100 m). En pendientes mayores los cultivos en hilera dejan que el suelo se lave.
+        from: USGS 3DEP (lidar, 1 a 10 m) en Estados Unidos; NASA NASADEM (el radar del transbordador espacial, 30 m) en el resto del mundo, leído a 90 m alrededor del punto.
+        limits: Una pendiente del área alrededor del punto, no de una terraza ni de una hilera. El radar mide alturas en metros enteros, así que los terrenos muy planos o muy chicos salen aproximados.
+      suitability:
+        name: Aptitud del cultivo
+        what: Qué tan bien calza un cultivo con el clima, suelo y relieve de tu punto, de 0 a 10.000, y el rendimiento que podría alcanzar, en secano y con el nivel de insumos de tu campo.
+        from: FAO GAEZ v4 (Zonas Agroecológicas Globales), unos 9 km.
+        limits: Un potencial regional, no un pronóstico para tu terreno ni para este año.
+      requirements:
+        name: Requisitos del cultivo
+        what: La temperatura, lluvia, pH, textura, drenaje, profundidad y salinidad en que un cultivo crece mejor, y lo que tolera. El plan los compara con el clima de tu terreno y el suelo que confirmaste.
+        from: FAO ECOCROP, rangos de expertos por especie.
+        limits: Rangos para la especie, no para una variedad; tus variedades locales pueden andar mejor o peor.
+      climate_normals:
+        name: Normales climáticas
+        what: La temperatura, lluvia, humedad, viento, radiación y días con helada habituales de cada mes en tu punto, promediados en décadas.
+        from: NASA POWER (Prediction Of Worldwide Energy Resources), celdas de unos 50 km.
+        limits: Contexto regional; los valles, cerros y la costa pueden diferir del promedio de la celda.
+      percentile:
+        name: Percentil y anomalía
+        what: "Un percentil dice dónde queda un valor entre los habituales: 20 significa que solo un quinto de los valores habituales fueron más bajos. Una anomalía es la diferencia con el promedio habitual."
+        from: La propia historia de cada dataset en tu punto (la climatología de SMAP, MODIS desde 2001, el promedio 2004-2009 de GRACE).
+        limits: Lo habitual es solo tan largo como el registro que lo respalda, y el clima está cambiando debajo.
+      scenario:
+        name: Escenarios climáticos
+        what: '"¿Y si…?" en el plan: las normales calentadas 1 o 2 °C, con o sin 20 % menos lluvia, y todo recalculado desde ahí (necesidad de agua, meses con helada, calor y sequía).'
+        from: Normales de NASA POWER desplazadas por la app, con FAO-56 para la necesidad de agua.
+        limits: Un ejercicio para comparar estrategias ante un cambio plausible, no una proyección climática para tu lugar.

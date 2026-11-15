@@ -44,7 +44,10 @@ Five answers drive the comparison and are the only ones the to-do list and progr
 | `usgs_elevation` | `Usgs::ElevationClient` | US | elevation, slope |
 | `vegetation` | `PlanetaryComputer::Client#monthly_ndvi` | global, 10 to 30 m | one clear-sky NDVI per month over the last year (Landsat, Sentinel-2); bare periods (`Fields::Vegetation`) |
 | `nasadem` | `PlanetaryComputer::Client#terrain` | 56°S to 60°N, 30 m | elevation, slope (90 m neighbours); the slope where 3DEP has none |
-| `smap` | `Appeears::Client` + `Fields::FetchSoilMoistureJob` + `Weather::SoilMoisture` | global, 9 km, asynchronous | root-zone soil moisture and its percentile per month over the last year; dry and wet months; `pending` while AppEEARS works (minutes) |
+| `smap` | `Appeears::Client` + `Fields::FetchAppeearsJob` + `Weather::SoilMoisture` | global, 9 km, asynchronous | root-zone soil moisture and its percentile per month over the last year; dry and wet months; `pending` while AppEEARS works (minutes) |
+| `modis` | `Appeears::Client` + `Fields::FetchAppeearsJob` + `Fields::VegetationNormal` | global, 250 m, asynchronous | the usual NDVI of each calendar month since 2001, and the last 12 months against it |
+| `ecostress` | `Appeears::Client` + `Fields::FetchAppeearsJob` + `Weather::WaterStress` | global, 70 m, asynchronous | the evaporative stress index per month over the last 3 years; months of water stress |
+| `grace` | `Grace::Client` + `Weather::WaterStorage` | global, about 300 km | the region's water store (cm against 2004-2009), its 10-year trend and lowest year |
 | `gpm_imerg` | `NasaPower::Client#imerg_daily` + `Weather::RainExtremes` | global, ~10 km | 20 years of daily rain: 25 and 50 mm days per year and month, wettest day, dry spells; erosion and risks |
 | `cdl` | `Cdl::Client` | US | crop per year for the last five years |
 

@@ -83,6 +83,71 @@ RSpec.describe Rotations::Comparator do
     expect(current.evidence.find { |f| f.key == "cover_history" }.values).to eq(crops: "Cereal rye", years: (Date.current.year - 1).to_s)
   end
 
+  it "cites water stress (ECOSTRESS), the vegetation's normal (MODIS) and the region's water store (GRACE)" do
+    record.update!(irrigation: :gravity)
+    create(:field_observation, field: record, source: "ecostress", payload: {
+      "months" => [ { "month" => "2026-01", "esi" => 0.2, "readings" => 3 }, { "month" => "2026-04", "esi" => 0.6, "readings" => 2 } ] })
+    create(:field_observation, field: record, source: "modis", payload: {
+      "normal" => { "1" => 0.4 }, "years" => 24, "below" => [ "2026-02" ] })
+    create(:field_observation, field: record, source: "grace", payload: { "recent_cm" => -19.7, "trend_cm_per_decade" => -3.1 })
+    current = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first
+    facts = current.evidence.to_h { |f| [ f.key, [ f.values, f.source ] ] }
+
+    expect(facts["water_stress"]).to eq([ { months: [ 1 ] }, "NASA ECOSTRESS" ])
+    expect(facts["vegetation_below"]).to eq([ { months: [ 2 ], years: 24 }, "NASA MODIS (Terra)" ])
+    expect(facts["storage_low"]).to eq([ { cm: 19.7, trend: -3.1 }, "NASA GRACE / GRACE-FO" ])
+    expect(current.risks).to include("water_storage") # irrigated, and the store is depleted
+  end
+
+  it "takes the field's soil off the crop fit where a crop does not tolerate it (ECOCROP)" do
+    allow(Crops::Agronomy).to receive(:find).and_call_original
+    %w[glycine-max zea-mays].each do |key|
+      entry = Crops::Agronomy.find(key).dup
+      entry.requirements = { "dep" => "deep (>>150 cm)", "depr" => "medium (50-150 cm)", "sal" => "low (<4 dS/m)", "salr" => "low (<4 dS/m)" }
+      allow(Crops::Agronomy).to receive(:find).with(key).and_return(entry)
+    end
+    before = comparator.strategies.first.scores["crop_fit"]
+
+    record.update!(soil: record.soil.merge("depth" => "shallow", "salinity" => "low"))
+    current = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first
+
+    expect(current.scores["crop_fit"]).to eq(before - described_class::SOIL_OUTSIDE) # shallow is under the medium floor
+    expect(current.evidence.find { |f| f.key == "soil_depth" }.values).to include(value: "shallow", need: "deep (>>150 cm)")
+  end
+
+  it "weighs where the irrigation water comes from" do
+    record.update!(irrigation: :gravity, water_source: :unknown)
+    expect(described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first.gaps).to include("water_source")
+
+    record.update!(water_source: :river_canal)
+    base = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first.scores["water"]
+    create(:field_observation, field: record, source: "grace", payload: { "recent_cm" => -19.7, "trend_cm_per_decade" => -3.1 })
+    current = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first
+
+    expect(current.scores["water"]).to eq(base - described_class::SUPPLY_RISK)
+    expect(current.evidence.map(&:key)).to include("irrigation_supply")
+  end
+
+  it "rescores under a warmer, drier climate: crops need more water than the rain gives" do
+    today = comparator.strategies.first
+    hot = described_class.new(field, profile: user.farmer_profile, scenario: Weather::Scenario.find("warm2_dry")).strategies.first
+
+    need = ->(s) { s.evidence.find { |f| f.key == "water" }.values }
+    expect(need.call(hot)[:need]).to be > need.call(today)[:need]
+    expect(need.call(hot)[:effective]).to be < need.call(today)[:effective]
+    expect(hot.scores["water"]).to be < today.scores["water"]
+  end
+
+  it "computes a crop's water need from the month the field sows it, when recorded" do
+    fao_default = comparator.strategies.first.evidence.find { |f| f.key == "water" && f.values[:crop] == "glycine-max" }.values
+
+    record.field_crops.find_by(crop_name: "Soybeans").update!(planting_month: 7)
+    july = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first
+                          .evidence.find { |f| f.key == "water" && f.values[:crop] == "glycine-max" }.values
+
+    expect(july[:need]).not_to eq(fao_default[:need]) # sown in July, not FAO-56's May
+  end
+
   it "says what is better than now, what is unknown and what to check locally" do
     alternative = comparator.strategies.drop(1).first
     expect(alternative.gaps).to include("market", "soil")

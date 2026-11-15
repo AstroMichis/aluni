@@ -52,8 +52,8 @@ chile:
     market_channels: [local_market, contract]
   field:
     name: Potrero Sur
-    latitude: -33.73
-    longitude: -70.74
+    latitude: -33.76   # an open field west of Buin (the town centre is at -33.73, -70.74)
+    longitude: -70.78
     place_label: Buin, Región Metropolitana
     area: 12
     area_unit: hectares

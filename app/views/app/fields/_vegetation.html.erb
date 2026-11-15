@@ -2,6 +2,7 @@
     observation from Landsat and Sentinel-2), with bare periods highlighted as cover crop windows.
     Local: field (a Fields::Farm field). Renders nothing until the observation has values. %>
 <% vegetation = Fields::Vegetation.new(field.observation("vegetation")) %>
+<% normal = Fields::VegetationNormal.new(field.observation("modis")) %>
 <% if vegetation.present? %>
   <section class="vegetation card" aria-labelledby="vegetation-title-<%= field.key %>">
     <div class="card__body stack stack--md">
@@ -15,10 +16,15 @@
         <% vegetation.months.each do |month| %>
           <% label = l(month.label_date, format: "%B %Y") %>
           <li class="vegetation__month vegetation__month--<%= month.cover || "unknown" %>">
-            <span class="vegetation__bar" style="--ndvi: <%= month.ndvi ? month.ndvi.clamp(0, 1).round(2) : 0 %>"></span>
+            <% usual = normal.normal_for(month.month) %>
+            <span class="vegetation__plot">
+              <span class="vegetation__bar" style="--ndvi: <%= month.ndvi ? month.ndvi.clamp(0, 1).round(2) : 0 %>"></span>
+              <% if usual %><span class="vegetation__normal" style="--normal: <%= usual.clamp(0, 1).round(2) %>"></span><% end %>
+            </span>
             <span class="vegetation__label" aria-hidden="true"><%= l(month.label_date, format: "%b") %></span>
             <span class="sr-only">
               <%= month.known? ? t("app.vegetation.month", month: label, ndvi: number_with_precision(month.ndvi, precision: 2), cover: t("app.vegetation.covers.#{month.cover}")) : t("app.vegetation.month_unknown", month: label) %>
+              <% if usual %><%= t("app.vegetation.normal_point", ndvi: number_with_precision(usual, precision: 2)) %><% end %>
             </span>
           </li>
         <% end %>
@@ -27,6 +33,7 @@
         <% %w[green sparse bare unknown].each do |cover| %>
           <li class="vegetation__key vegetation__key--<%= cover %>"><%= t("app.vegetation.covers.#{cover}") %></li>
         <% end %>
+        <% if normal.present? %><li class="vegetation__key vegetation__key--normal"><%= t("app.vegetation.normal_key", years: normal.years) %></li><% end %>
       </ul>
 
       <% if (period = vegetation.longest_bare) && period.months >= 2 %>
@@ -34,6 +41,30 @@
                                                 from: l(period.from, format: "%B %Y"), to: l(period.to, format: "%B %Y")) %>
       <% else %>
         <%= render "shared/aluni", message: t("app.vegetation.covered") %>
+      <% end %>
+
+      <% if normal.present? %>
+        <p class="vegetation__lede">
+          <%= normal.below.any? ? t("app.vegetation.normal_below", months: normal.below.map { |m| l(Date.strptime(m, "%Y-%m"), format: "%B") }.to_sentence)
+                                : t("app.vegetation.normal_usual") %>
+        </p>
+      <% end %>
+
+      <% if (scene = vegetation.latest_scene) && (tiles = ndvi_tiles_url(scene)) && field.located? %>
+        <figure class="vegetation__map-block" data-controller="ndvi-map"
+                data-ndvi-map-latitude-value="<%= field.record.latitude.to_f %>" data-ndvi-map-longitude-value="<%= field.record.longitude.to_f %>"
+                data-ndvi-map-tiles-value="<%= tiles %>"
+                data-ndvi-map-esri-attribution-value="<%= t("finder.map.esri_attribution") %>"
+                data-ndvi-map-ndvi-attribution-value="<%= t("app.vegetation.map.attribution", mission: t("app.vegetation.missions.#{scene.mission}")) %>"
+                data-ndvi-map-failed-value="<%= t("app.vegetation.map.failed") %>">
+          <div class="vegetation__map" data-ndvi-map-target="map" role="img"
+               aria-label="<%= t("app.vegetation.map.label", date: l(Date.iso8601(scene.date), format: :long)) %>"></div>
+          <figcaption class="vegetation__map-caption">
+            <span class="vegetation__ramp" aria-hidden="true"><span><%= t("app.vegetation.covers.bare") %></span><span><%= t("app.vegetation.covers.green") %></span></span>
+            <span><%= t("app.vegetation.map.caption", date: l(Date.iso8601(scene.date), format: :long), mission: t("app.vegetation.missions.#{scene.mission}")) %></span>
+            <button type="button" class="btn btn--secondary btn--sm" data-ndvi-map-target="toggle" data-action="ndvi-map#toggle" aria-pressed="true"><%= t("app.vegetation.map.toggle") %></button>
+          </figcaption>
+        </figure>
       <% end %>
 
       <details class="vegetation__about">

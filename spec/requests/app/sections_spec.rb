@@ -20,13 +20,17 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
 
   it "shows the field from space with its bare-soil window on the field and on the plan" do
     start = Date.current.beginning_of_month << 5
-    months = [ 0.1, 0.12, 0.2, 0.6, 0.7, nil ].each_with_index.map { |v, i| { "month" => (start >> i).strftime("%Y-%m"), "ndvi" => v, "mission" => v && "landsat" } }
+    months = [ 0.1, 0.12, 0.2, 0.6, 0.7, nil ].each_with_index.map do |v, i|
+      { "month" => (start >> i).strftime("%Y-%m"), "ndvi" => v, "mission" => v && "landsat", "scene" => v && "LC09_#{i}",
+        "date" => v && (start >> i).iso8601 }
+    end
     create(:field_observation, field: field, source: "vegetation", status: :ok, payload: { "months" => months })
 
     [ app_field_path(field, locale: "en"), app_field_rotation_path(field, locale: "en") ].each do |path|
       get path, headers: native_headers
       expect(response.body).to include(I18n.t("app.vegetation.title")).and include(I18n.t("app.vegetation.covers.bare"))
       expect(response.body).to include("months in a row").and include("vegetation__month--unknown")
+      expect(response.body).to include('data-controller="ndvi-map"').and include("LC09_4") # the latest clear scene on the map
     end
   end
 
@@ -93,6 +97,9 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
 
     get why_app_field_rotation_path(field, strategy: "small_grain", locale: "en"), headers: native_headers
     expect(response.body).to include('id="why-small_grain"') # rule-based text while Gemini is unconfigured in test
+
+    get app_field_rotation_path(field, scenario: "warm2", locale: "en"), headers: native_headers
+    expect(response.body).to include(ERB::Util.h(I18n.t("app.scenario.active", name: "+2 °C"))).and include("scenario=warm2")
 
     patch plan_app_crops_path(locale: "en"), params: { field: field.id, crop: "glycine-max" }, headers: native_headers
     expect(field.field_crops.find_by(season_year: Date.current.year + 1).scientific_name).to eq("Glycine max")

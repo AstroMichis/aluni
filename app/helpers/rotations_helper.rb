@@ -18,7 +18,29 @@ module RotationsHelper
     values = fact.values.transform_values { |v| v.is_a?(String) && Crops::Agronomy.find(v) ? crop_name(v) : v }
     values[:class] = t("app.crops.suitability.#{values[:class]}") if values[:class]
     values[:months] = values[:months].map { |m| t("date.month_names")[m] }.to_sentence if values[:months].is_a?(Array)
+    if (attribute = fact.key.to_s.delete_prefix("soil_")).in?(Rotations::Comparator::SOIL_FACTORS)
+      values[:value] = value_label(attribute, values[:value]).downcase
+      values[:need] = ecocrop_class(attribute, values[:need]).downcase
+    end
+    values[:source] = value_label("water_source", values[:source]).downcase if fact.key == "irrigation_supply"
     t("app.rotations.evidence.#{fact.key}", **values)
+  end
+
+  # An ECOCROP class ("medium (50-150 cm)", "poorly (saturated >50% of year)") in the
+  # farmer's words for the same attribute, keeping ECOCROP's own detail in brackets.
+  def ecocrop_class(attribute, text)
+    word = text.to_s[/\A[a-z]+/].to_s
+    label = value_label(attribute, { "poorly" => "poor", "excessively" => "excessive" }.fetch(word, word))
+    detail = text.to_s[/\((.*)\)/, 1]
+    detail ? "#{label} (#{detail})" : label
+  end
+
+  # An evidence line's source, linked to the glossary entry that explains it when there is one.
+  def source_link(source)
+    term = GlossaryController::SOURCES[source]
+    return tag.span(source, class: "strategy__source") unless term
+
+    link_to source, glossary_path(anchor: term), class: "strategy__source", title: t("glossary.show.source_title")
   end
 
   def score_text(value) = value.nil? ? t("app.rotations.no_data") : t("app.rotations.score", value: value)
@@ -31,7 +53,8 @@ module RotationsHelper
       better_than_current_in: strategy.benefits.map { |c| t("app.rotations.criteria.#{c}.short") },
       evidence: strategy.evidence.map { |f| fact_text(f) },
       risks: strategy.risks.map { |r| t("app.rotations.risks.#{r}") },
-      farmer_goals: Array(Current.user.farmer_profile&.goals).map { |g| value_label("goals", g) }
-    }
+      farmer_goals: Array(Current.user.farmer_profile&.goals).map { |g| value_label("goals", g) },
+      climate_scenario: (t("app.scenario.presets.#{comparator.scenario.key}") unless comparator.scenario.today?)
+    }.compact
   end
 end

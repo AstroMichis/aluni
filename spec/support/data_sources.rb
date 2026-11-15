@@ -54,6 +54,11 @@ module DataSourceStubs
     allow_any_instance_of(PlanetaryComputer::Client).to receive(:terrain).and_return(terrain)
   end
 
+  # GRACE's monthly water storage (cm against 2004-2009) without HTTP: three years drying out.
+  def stub_grace(series = (0...36).map { |i| [ Date.new(2023, 1, 15) >> i, (5.0 - (i * 0.5)).round(2) ] })
+    allow_any_instance_of(Grace::Client).to receive(:series).and_return(series)
+  end
+
   def stub_all_data_sources(us: true)
     stub_fcc(us: us)
     stub_power
@@ -61,6 +66,7 @@ module DataSourceStubs
     stub_gaez
     stub_vegetation
     stub_terrain
+    stub_grace
     stub_us_layer
   end
 end

@@ -1,0 +1,10 @@
+es:
+  app:
+    scenario:
+      title: ¿Y si cambia el clima?
+      presets:
+        today: Clima actual
+        warm1: "+1 °C"
+        warm2: "+2 °C"
+        warm2_dry: "+2 °C y 20 % menos lluvia"
+      active: "Los puntajes, la necesidad de agua y la línea de tiempo de abajo están recalculados para %{name}: normales de NASA POWER desplazadas, con la evapotranspiración de FAO-56. Un ejercicio para comparar estrategias, no un pronóstico."

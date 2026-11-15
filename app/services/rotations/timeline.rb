@@ -59,12 +59,12 @@ module Rotations
       def window_for(month) = windows.find { |w| w.indexes.include?(month.index) }
     end
 
-    def initialize(field, first_year: Date.current.year + 1)
+    def initialize(field, first_year: Date.current.year + 1, scenario: Weather::Scenario.find("today"))
       @field = field
       @record = field.record
       @first_year = first_year
       @rain = Weather::RainExtremes.new(field.observation("gpm_imerg"))
-      power = field.observation("nasa_power")
+      power = scenario.apply(field.observation("nasa_power"))
       @climatology = power&.ok? ? power.payload["climatology"].to_h : {}
       @elevation = power&.ok? ? power.payload["elevation"] : nil
     end

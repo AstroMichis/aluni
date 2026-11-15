@@ -21,7 +21,8 @@
       <%= render "shared/aluni", message: best && best.total.to_i > current.total.to_i ? t(".summary_better", strategy: strategy_title(best), best: best.total, current: current.total) : t(".summary_current") %>
 
       <%= render "app/fields/vegetation", field: @field %>
-      <% timeline = Rotations::Timeline.new(@field) %>
+      <%= render "app/rotations/scenario", scenario: @scenario %>
+      <% timeline = Rotations::Timeline.new(@field, scenario: @scenario) %>
       <%= render "app/rotations/timeline_weather", timeline: timeline %>
 
       <details class="weights">
@@ -59,7 +60,7 @@
             </ol>
             <%= render "app/rotations/timeline", line: timeline.for(strategy.crops) %>
 
-            <%= turbo_frame_tag "why-#{strategy.key}", src: why_app_field_rotation_path(@field.key, strategy: strategy.key), loading: :lazy do %>
+            <%= turbo_frame_tag "why-#{strategy.key}", src: why_app_field_rotation_path(@field.key, strategy: strategy.key, scenario: (@scenario.key unless @scenario.today?)), loading: :lazy do %>
               <p class="strategy__why"><%= strategy_why(strategy) %></p>
             <% end %>
 
@@ -84,7 +85,7 @@
                 <h3><%= t(".evidence") %></h3>
                 <ul role="list">
                   <% strategy.evidence.each do |fact| %>
-                    <li><%= fact_text(fact) %><% if fact.source %> <span class="strategy__source"><%= fact.source %></span><% end %></li>
+                    <li><%= fact_text(fact) %><% if fact.source %> <%= source_link(fact.source) %><% end %></li>
                   <% end %>
                 </ul>
               </div>
@@ -108,7 +109,7 @@
         <% end %>
       </ol>
 
-      <p class="choice-set__hint"><%= t(".disclaimer") %></p>
+      <p class="choice-set__hint"><%= t(".disclaimer") %> <%= link_to t(".glossary"), glossary_path %></p>
     <% end %>
   </main>
 </div>
