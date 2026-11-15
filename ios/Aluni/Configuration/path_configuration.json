@@ -15,6 +15,10 @@
       "properties": { "context": "default", "presentation": "replace", "pull_to_refresh_enabled": false }
     },
     {
+      "patterns": ["(/(en|es))?/sign_in/(code|link)(/.*)?$"],
+      "properties": { "context": "default", "pull_to_refresh_enabled": false }
+    },
+    {
       "patterns": ["(/(en|es))?/sign_out$"],
       "properties": { "presentation": "clear_all" }
     },

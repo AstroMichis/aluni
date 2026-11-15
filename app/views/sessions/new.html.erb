@@ -2,19 +2,13 @@
 
 <main id="main" class="auth container container--sm">
   <p class="auth__brand"><%= t("app_name") %></p>
-  <section class="card"
-           data-controller="passkey"
-           data-passkey-mode-value="get"
-           data-passkey-options-url-value="<%= sign_in_options_path %>"
-           data-passkey-submit-url-value="<%= sign_in_path %>"
-           data-passkey-messages-value="<%= passkey_messages %>">
+  <section class="card">
     <div class="card__body stack stack--md">
       <h1 class="text-heading auth__title"><%= t(".title") %></h1>
       <p class="auth__lede"><%= t(".lede") %></p>
-      <button type="button" class="btn btn--primary btn--lg btn--full" data-passkey-target="button" data-action="passkey#start">
-        <%= t(".button") %>
-      </button>
-      <p class="auth__status" data-passkey-target="error" role="status" aria-live="polite"></p>
+      <%= turbo_frame_tag "auth" do %>
+        <%= render "sign_in_codes/choice", mode: "sign_in", error: nil %>
+      <% end %>
       <% if signups_enabled? %>
         <p class="auth__alt"><%= t(".no_account") %> <%= link_to t(".sign_up"), sign_up_path %></p>
       <% end %>

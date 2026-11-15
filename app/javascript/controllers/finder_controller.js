@@ -2,16 +2,25 @@ import { Controller } from "@hotwired/stimulus"
 
 // The field finder (pages/home/_finder): three steps in one panel, one visible at a time.
 //
-//   locate  "Use my location" (geolocate_controller.js), a town search (a GET form into the
-//           Turbo Frame #place-results, submit only) and the map (field_map_controller.js).
-//           "This is my field" GETs /places/reverse into #place-summary; when the summary
-//           arrives with a pin the finder copies its place label, country and region and
-//           moves on.
+//   locate  the device position first: opening the finder on this step without a pin asks
+//           for it at once ("finder:locate" -> geolocate#request, geolocate_controller.js),
+//           so most people only answer the browser's prompt; "Use my location" over the map
+//           asks again. An automatic answer never replaces a pin placed meanwhile (the person
+//           searched or tapped while the device was thinking). Also a town search (a GET form
+//           into the Turbo Frame #place-results, submit only) and the map
+//           (field_map_controller.js). "This is my field" GETs /places/reverse into
+//           #place-summary; when the summary arrives with a pin the finder copies its place
+//           label, country and region and moves on.
 //   basics  crop (free text over a datalist), rainfed or irrigated, an optional area with a
 //           unit that defaults from the country.
-//   save    signed out: the passkey ceremony (passkey_controller.js on the same element)
-//           posts the visible name and the hidden flat inputs this controller fills; signed
-//           in: a PATCH form to App::FieldsController with the same hidden inputs.
+//   save    signed out: two equal ways in inside the "auth" Turbo Frame (sign_in_codes/_choice,
+//           choice_controller.js). The passkey card holds #finder-save, whose ceremony
+//           (passkey_controller.js on this element; its button sits in the footer, shown while
+//           that card is the chosen one) posts the visible name and the hidden flat inputs this
+//           controller fills; the email card posts the same inputs to SignInCodesController,
+//           whose Turbo Streams swap the frame (the code entry, then the name step for a
+//           newcomer without a name). Signed in: a PATCH form to App::FieldsController with
+//           the same hidden inputs.
 //
 // Opens on window "mascot:lets-go", asks the mascot to dock into #finder-companion and
 // hides its own avatar when the live canvas arrives ("mascot:docked" handoff "canvas").
@@ -19,8 +28,10 @@ import { Controller } from "@hotwired/stimulus"
 // button, a link or the map; inside a field Escape only leaves the field (browsers use
 // it to dismiss the datalist, and the keydown still bubbles). Each step's Aluni line
 // ([data-speak]) is dispatched as "speech:read" (spoken when read aloud is on) and
-// "mascot:speak". The draft lives in sessionStorage ("aluni.finder") so a reload resumes.
-// No fetch here: Turbo Frames and forms only.
+// "mascot:speak"; the code entry speaks for itself (sign_in_code_controller.js). The draft
+// lives in sessionStorage ("aluni.finder") so a reload resumes; it goes once the account has
+// the field (a passkey visit, or a successful verify or complete). No fetch here: Turbo
+// Frames and forms only.
 const STORAGE_KEY = "aluni.finder"
 const STEPS = ["locate", "basics", "save"]
 const PICK_ZOOM = 15
@@ -28,8 +39,12 @@ const NAME_MAX = 100
 const COMPANION = "#finder-companion"
 const SUMMARY_FRAME = "place-summary"
 const RESULTS_FRAME = "place-results"
+const AUTH_FRAME = "auth"
 const CONFIRM_FORM = "finder-confirm"
 const SAVE_FORM = "finder-save"
+// The email path's forms inside the auth frame; the last two sign the person in on success.
+const AUTH_FORMS = ["finder-code", "finder-verify", "finder-complete", "finder-resend"]
+const SIGNING_IN_FORMS = ["finder-verify", "finder-complete"]
 const SOURCES = ["geolocation", "typed", "map"]
 const UNITS = ["hectares", "acres"]
 const IRRIGATIONS = ["rainfed", "irrigated"]
@@ -39,7 +54,7 @@ const CLOSE_FROM_SELECTOR = "button, a, [role='application']"
 export default class extends Controller {
   static targets = [
     "body", "step", "heading", "actions", "status", "summary", "map", "lat", "lon", "confirmButton",
-    "basicsForm", "saveForm", "field", "avatar", "readAloud", "query"
+    "basicsForm", "saveForm", "field", "passkeyButton", "avatar", "readAloud", "query"
   ]
   static values = {
     locale: { type: String, default: "en" },
@@ -60,8 +75,10 @@ export default class extends Controller {
     document.addEventListener("turbo:before-visit", this.onVisit)
     this.ceremony = false
     this.opener = null
+    this.choice = null
     this.state = this.restore()
     this.applyState()
+    this.syncAuthFooter()
     if (this.state.open) this.open({ resume: true })
   }
 
@@ -70,6 +87,8 @@ export default class extends Controller {
     window.removeEventListener("mascot:docked", this.onDocked)
     window.removeEventListener("preferences:changed", this.onPreferences)
     document.removeEventListener("turbo:before-visit", this.onVisit)
+    if (this.locateFrame) cancelAnimationFrame(this.locateFrame)
+    this.locateFrame = null
   }
 
   // ── open / close ───────────────────────────────────────────────────────
@@ -81,6 +100,19 @@ export default class extends Controller {
     this.state.open = true
     this.showStep(this.state.step, { speak: true })
     window.dispatchEvent(new CustomEvent("mascot:dock", { detail: { selector: COMPANION } }))
+    if (this.state.step === STEPS[0] && !this.state.latitude) this.requestLocation()
+  }
+
+  // Step 1 opened without a pin: ask the device now, the person has just said "Find my field".
+  // A frame later, so the panel is on screen when the browser's prompt shows and the geolocate
+  // controller is bound when this runs during a resume from connect().
+  requestLocation() {
+    if (this.locateFrame) cancelAnimationFrame(this.locateFrame)
+    this.locateFrame = requestAnimationFrame(() => {
+      this.locateFrame = null
+      if (this.element.hidden || this.state.step !== STEPS[0] || this.state.latitude) return
+      this.dispatch("locate")
+    })
   }
 
   close() {
@@ -160,9 +192,11 @@ export default class extends Controller {
 
   // ── step 1: locate ─────────────────────────────────────────────────────
 
-  // geolocate:located: the device answered.
+  // geolocate:located: the device answered. An automatic answer (auto) yields to a pin the
+  // person placed while it was pending; a tap on "Use my location" always moves the pin.
   located(event) {
-    const { latitude, longitude } = event.detail || {}
+    const { latitude, longitude, auto } = event.detail || {}
+    if (auto && this.state.latitude) return
     this.setPin(latitude, longitude, { source: "geolocation" })
     this.report(this.locatedValue)
   }
@@ -209,30 +243,47 @@ export default class extends Controller {
     if (this.hasConfirmButtonTarget) this.confirmButtonTarget.disabled = !placed
   }
 
-  // ── Turbo: the two frames and the save form ────────────────────────────
+  // ── Turbo: the frames, the save form and the email path's forms ────────
 
   submitStarted(event) {
     const form = event.target
     if (form.id === CONFIRM_FORM) this.report(this.namingValue)
-    if (form.id === SAVE_FORM) this.waiting(true)
+    if (form.id === SAVE_FORM || AUTH_FORMS.includes(form.id)) this.waiting(true)
   }
 
   submitEnded(event) {
     const form = event.target
-    if (form.id === CONFIRM_FORM && !(event.detail && event.detail.success)) this.report("")
-    if (form.id === SAVE_FORM) {
+    const success = Boolean(event.detail && event.detail.success)
+    if (form.id === CONFIRM_FORM && !success) this.report("")
+    if (form.id === SAVE_FORM || AUTH_FORMS.includes(form.id)) {
       this.waiting(false)
-      if (event.detail && event.detail.success) this.clearStorage()
+      if (success && (form.id === SAVE_FORM || SIGNING_IN_FORMS.includes(form.id))) this.clearStorage()
     }
   }
 
   frameLoaded(event) {
     const frame = event.target
+    if (frame.id === AUTH_FRAME) return
     if (frame.id === SUMMARY_FRAME) this.summaryLoaded(frame)
     else if (frame.id === RESULTS_FRAME) {
       const first = frame.querySelector("[role='option']")
       if (first) first.focus({ preventScroll: true })
     }
+  }
+
+  // The auth frame swaps (Turbo Streams, or the way back from the code entry) bring the
+  // hidden flat inputs and the save form in and out; the draft fills the inputs as they
+  // arrive and the footer follows the form. Stimulus fires these before connect() too.
+  fieldTargetConnected(input) {
+    if (this.state) this.fillInput(input)
+  }
+
+  saveFormTargetConnected() {
+    this.syncAuthFooter()
+  }
+
+  saveFormTargetDisconnected() {
+    this.syncAuthFooter()
   }
 
   // places/_summary arrived: with a pin it carries the place (or a calm line and the
@@ -304,12 +355,26 @@ export default class extends Controller {
 
   // ── step 3: save ───────────────────────────────────────────────────────
 
-  // The hidden flat inputs (sign-up body or the PATCH form) take the draft's values.
+  // The hidden flat inputs (the passkey form, the email form or the PATCH form) take the draft's values.
   fillSaveForm() {
-    this.fieldTargets.forEach((input) => {
-      const value = this.state[input.name]
-      input.value = value === null || value === undefined ? "" : String(value)
-    })
+    this.fieldTargets.forEach((input) => this.fillInput(input))
+  }
+
+  fillInput(input) {
+    const value = this.state[input.name]
+    input.value = value === null || value === undefined ? "" : String(value)
+  }
+
+  // choice:picked from the cards (name: "passkey", "email" or null while both are folded): the
+  // footer's passkey button belongs to the passkey card and shows only while that card is open.
+  choicePicked(event) {
+    this.choice = (event.detail && event.detail.name) || null
+    this.syncAuthFooter()
+  }
+
+  syncAuthFooter() {
+    if (!this.hasPasskeyButtonTarget) return
+    this.passkeyButtonTarget.hidden = !this.hasSaveFormTarget || this.choice !== "passkey"
   }
 
   passkeyStarted() {

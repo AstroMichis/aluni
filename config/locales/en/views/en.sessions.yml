@@ -2,9 +2,12 @@ en:
   sessions:
     new:
       title: "Sign in"
-      lede: "Use the passkey on this device. Your face, fingerprint or device code confirms it is you."
-      button: "Sign in with a passkey"
+      lede: "Sign in without a password."
+      button: "Sign in"
       no_account: "New here?"
       sign_up: "Create an account"
+    create:
+      suggest_passkey: "Next time, sign in with your face or fingerprint?"
+      suggest_passkey_action: "Set it up"
     destroy:
       signed_out: "You are signed out."

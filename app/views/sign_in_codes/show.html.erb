@@ -1,0 +1,14 @@
+<%# The page behind /sign_in/code: the "auth" frame on its own, for a visit without JavaScript or a form
+    posted outside Turbo. @mode picks the title; sign_in_codes/_frame renders the stage (@stage) with the
+    controller's locals. %>
+<% content_for :title, t(".titles.#{@mode}") %>
+
+<main id="main" class="auth container container--sm">
+  <p class="auth__brand"><%= t("app_name") %></p>
+  <section class="card">
+    <div class="card__body stack stack--md">
+      <h1 class="text-heading auth__title"><%= t(".titles.#{@mode}") %></h1>
+      <%= render "sign_in_codes/frame" %>
+    </div>
+  </section>
+</main>

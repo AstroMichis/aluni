@@ -4,13 +4,14 @@ Infrastructure tables first, then the product tables the onboarding chat fills (
 
 | Table | Purpose | Notable columns |
 |---|---|---|
-| `users` | An account (passkeys only) | `webauthn_id` (unique, opaque WebAuthn user handle), `display_name`, `email_address` (nullable, unique when present), `locale`, `preferences` (jsonb, the allowlisted comfort choices of `Preferences`: theme, text_size, motion, contrast, read_aloud, seen_welcome; the `aluni_prefs` cookie carries the same for visitors) |
+| `users` | An account (passkeys only) | `webauthn_id` (unique, opaque WebAuthn user handle), `display_name`, `email_address` (nullable, unique when present), `locale`, `email_verified_at` (set when a code proved the address), `preferences` (jsonb, the allowlisted comfort choices of `Preferences`: theme, text_size, motion, contrast, read_aloud, seen_welcome; the `aluni_prefs` cookie carries the same for visitors) |
 | `passkeys` | One WebAuthn credential of a user | `external_id` (unique credential id), `public_key` (COSE, base64url), `sign_count`, `nickname`, `transports` (string array), `last_used_at` |
-| `sessions` | One signed-in device | `user_id`, `ip_address`, `user_agent`; `updated_at` is "last seen" |
+| `sessions` | One signed-in device | `user_id`, `ip_address`, `user_agent`, `sign_in_method` (passkey or email_code); `updated_at` is "last seen" |
 | `platform_switches` | Operator pause flags | `service` (unique, one of `PlatformSwitch::SERVICES`), `paused`, `paused_by`, `reason` |
 | `device_tokens` | Native push tokens from the shells | `user_id`, `token`, `platform` (enum ios 0, android 1); unique `(token, platform)` |
 | `action_push_native_devices` | The gem's device table, mirrored from `device_tokens` by `Notifications::PushDevices` | `owner` (polymorphic), `platform` (apple/google), `token`; unique `(platform, token)` |
 | `web_push_subscriptions` | Browsers that agreed to Web Push | `user_id`, `endpoint`, `p256dh`, `auth`, `user_agent`, `last_used_at`; unique `(user_id, endpoint)` |
+| `sign_in_codes` | One emailed (later texted) sign-in code (`docs/AUTH.md`) | `channel` (email 0, sms 10), `destination` (normalised address), `code_digest` (HMAC, never the code), `expires_at`, `attempts`, `consumed_at`, `verified_at`, `used_at`, `requester_ip`, `locale`, `pending` (jsonb: display_name, locale, the finder's field); index `(destination, created_at)`; purged after a day |
 | `notification_deliveries` | One `NotificationRouter.deliver` call | `purpose`, `recipient` (polymorphic), `idempotency_key` (unique), `status` (enum queued 0, sent 1, skipped 2, failed 3), `channel`, `sent_at`, `provider_message_id`, `attempts` (jsonb), `failed_reason` |
 | `field_observations` | What one public data source returned for a field's pin (`Fields::FetchObservationsJob`) | `field_id`, `source` (fcc, nasa_power, gaez, ssurgo, usgs_elevation, cdl), `status` (enum ok 0, empty 10, out_of_coverage 20, failed 30), `payload` (jsonb), `error`, `fetched_at`; unique `(field_id, source)` |
 

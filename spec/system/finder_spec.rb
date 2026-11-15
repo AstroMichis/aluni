@@ -53,12 +53,13 @@ RSpec.describe "Field finder", type: :system do
     within("#finder") do
       expect(page).to have_content(I18n.t("finder.steps.locate.title"))
       expect(page).to have_css(".finder__map.leaflet-container", wait: 10)
-      expect(page).to have_button(I18n.t("finder.steps.locate.confirm"), disabled: true)
-
-      click_button I18n.t("finder.steps.locate.use_my_location")
+      # No tap needed: the step asked the device as it opened, and the pin is placed when it answers.
       expect(page).to have_css(".finder__status", text: I18n.t("finder.status.located"), wait: 10)
       expect(page).to have_css(".finder__pin", wait: 5)
       expect(page).to have_button(I18n.t("finder.steps.locate.confirm"), disabled: false)
+      # "Use my location" stays over the map to ask again, free once the device has answered.
+      expect(page).to have_button(I18n.t("finder.steps.locate.use_my_location"), disabled: false)
+      expect(page).to have_css(".finder__locate[aria-busy='false']")
 
       click_button I18n.t("finder.steps.locate.confirm")
       expect(page).to have_content(I18n.t("places.reverse.near", place: "Ames, Iowa"), wait: 10)
@@ -73,6 +74,9 @@ RSpec.describe "Field finder", type: :system do
       click_button I18n.t("finder.steps.basics.continue")
 
       expect(page).to have_content(I18n.t("finder.steps.save.title"))
+      # Both ways in start folded; the passkey card opens on a tap and brings its footer button.
+      expect(page).not_to have_button(I18n.t("finder.steps.save.create_passkey"))
+      click_button I18n.t("sign_in_codes.choice.passkey_title")
       expect(page).to have_field("finder-name")
       expect(page).to have_button(I18n.t("finder.steps.save.create_passkey"))
       expect(hidden_value("latitude")).to eq("42.00000")
@@ -135,6 +139,11 @@ RSpec.describe "Field finder", type: :system do
     open_finder
 
     within("#finder") do
+      # Without permission the automatic attempt fails quietly, points at the other ways in and leaves the button ready.
+      expect(page).to have_css(".finder__status", text: I18n.t("finder.status.denied", locale: :es), wait: 20)
+      expect(page).to have_button(I18n.t("finder.steps.locate.use_my_location", locale: :es), disabled: false)
+      expect(page).to have_button(I18n.t("finder.steps.locate.confirm", locale: :es), disabled: true)
+
       expect(page).to have_content(I18n.t("places.index.hint", locale: :es))
       fill_in "finder-query", with: "Ames, Iowa"
       click_button I18n.t("finder.steps.locate.search", locale: :es)

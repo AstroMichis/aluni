@@ -1,0 +1,16 @@
+<%# The link from the mail, opened somewhere other than the browser that asked (a mail app's own
+    browser, another device): the code to type back where the person started. @code is the six digits
+    grouped as "123 456", @destination the address they went to. %>
+<% content_for :title, t(".title") %>
+
+<main id="main" class="auth container container--sm">
+  <p class="auth__brand"><%= t("app_name") %></p>
+  <section class="card">
+    <div class="card__body code-entry">
+      <h1 class="text-heading auth__title"><%= t(".title") %></h1>
+      <p class="code-entry__line"><%= t(".line") %></p>
+      <p class="code-entry__code"><%= @code %></p>
+      <p class="code-entry__hint"><%= t(".hint", destination: masked_email(@destination)) %></p>
+    </div>
+  </section>
+</main>

@@ -9,7 +9,8 @@
 }
 .input::placeholder { color: var(--color-text-tertiary); }
 .input:focus { outline: none; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-muted); }
-.input:invalid:not(:placeholder-shown) { border-color: var(--color-danger); }
+/* Red only after the person has typed in the field (:user-invalid), never on arrival. */
+.input:user-invalid { border-color: var(--color-danger); }
 
 .input-group { display: flex; flex-direction: column; gap: var(--space-2); }
 .input-group__label { font-size: var(--text-sm); font-weight: 500; color: var(--color-text-secondary); }

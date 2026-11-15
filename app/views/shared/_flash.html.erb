@@ -1,3 +1,13 @@
+<%# The flash as toasts. flash[:suggest_passkey] (set once after a sign-in by emailed code, when the
+    account has no passkey yet) is an invitation with an action, not a message: "Next time, sign in with
+    your face or fingerprint?" and a "Set it up" link to the passkeys page. %>
 <% flash.each do |type, message| %>
-  <%= render "shared/toast", message: message, type: type %>
+  <% if type.to_s == "suggest_passkey" %>
+    <% if message %>
+      <%= render "shared/toast", message: t("sessions.create.suggest_passkey"), type: "info",
+                 action: link_to(t("sessions.create.suggest_passkey_action"), passkeys_path, class: "toast__action") %>
+    <% end %>
+  <% else %>
+    <%= render "shared/toast", message: message, type: type %>
+  <% end %>
 <% end %>

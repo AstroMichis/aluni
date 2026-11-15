@@ -2,7 +2,7 @@ es:
   registrations:
     new:
       title: "Crear una cuenta"
-      lede: "Sin contraseña. Tu dispositivo crea una llave de acceso y la guarda a salvo."
+      lede: "Sin contraseña, nunca. Elige cómo quieres volver la próxima vez."
       display_name: "¿Cómo te llamamos?"
       display_name_hint: "Con un nombre o un apodo basta."
       email_address: "Correo (opcional)"

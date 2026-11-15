@@ -3,30 +3,32 @@
 <div class="stack stack--lg">
   <header class="stack stack--sm">
     <h1 class="text-heading auth__title"><%= t(".title") %></h1>
-    <p class="auth__lede"><%= t(".lede") %></p>
+    <p class="auth__lede"><%= @passkeys.empty? ? t(".lede_empty") : t(".lede") %></p>
   </header>
 
-  <ul class="passkey-list">
-    <% @passkeys.each do |passkey| %>
-      <li class="card passkey-list__item">
-        <div class="stack stack--sm">
-          <strong><%= passkey.nickname.presence || t("passkeys.default_nickname") %></strong>
-          <span class="passkey-list__meta">
-            <%= t(".added_on", date: l(passkey.created_at, format: :short)) %>
-            <% if passkey.last_used_at %>
-              &middot; <%= t(".last_used", date: l(passkey.last_used_at, format: :short)) %>
-            <% else %>
-              &middot; <%= t(".never_used") %>
-            <% end %>
-          </span>
-        </div>
-        <% if @passkeys.size > 1 %>
-          <%= button_to t(".remove"), passkey_path(passkey), method: :delete, class: "btn btn--danger btn--sm",
-                        form: { data: { turbo_confirm: t(".confirm_remove") } } %>
-        <% end %>
-      </li>
-    <% end %>
-  </ul>
+  <% if @passkeys.any? %>
+    <ul class="passkey-list">
+      <% @passkeys.each do |passkey| %>
+        <li class="card passkey-list__item">
+          <div class="stack stack--sm">
+            <strong><%= passkey.nickname.presence || t("passkeys.default_nickname") %></strong>
+            <span class="passkey-list__meta">
+              <%= t(".added_on", date: l(passkey.created_at, format: :short)) %>
+              <% if passkey.last_used_at %>
+                &middot; <%= t(".last_used", date: l(passkey.last_used_at, format: :short)) %>
+              <% else %>
+                &middot; <%= t(".never_used") %>
+              <% end %>
+            </span>
+          </div>
+          <% if @passkeys.size > 1 || Current.user.email_verified_at.present? %>
+            <%= button_to t(".remove"), passkey_path(passkey), method: :delete, class: "btn btn--danger btn--sm",
+                          form: { data: { turbo_confirm: t(".confirm_remove") } } %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
 
   <section class="card"
            data-controller="passkey"
@@ -41,7 +43,7 @@
           <label class="input-group__label" for="nickname"><%= t(".nickname") %></label>
           <input class="input" type="text" id="nickname" name="nickname" maxlength="<%= User::NAME_MAX %>" placeholder="<%= t(".nickname_placeholder") %>">
         </div>
-        <button type="submit" class="btn btn--secondary btn--full" data-passkey-target="button"><%= t(".add_button") %></button>
+        <button type="submit" class="btn <%= @passkeys.empty? ? "btn--primary btn--lg" : "btn--secondary" %> btn--full" data-passkey-target="button"><%= t(".add_button") %></button>
       </form>
       <p class="auth__status" data-passkey-target="error" role="status" aria-live="polite"></p>
     </div>

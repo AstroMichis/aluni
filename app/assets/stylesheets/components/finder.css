@@ -1,7 +1,8 @@
 /* The field finder's steps inside the .panel shell: the status line, the place summary,
-   the locate step (device button, search row, results listbox, the Leaflet map with
-   its CSS pin and the satellite toggle), the basics step (datalist input, chips,
-   area with a unit) and the save step. Mobile first; the map grows at 1025px. */
+   the locate step (search row, results listbox, the Leaflet map with its CSS pin and the
+   controls over it: the satellite toggle and "Use my location", which asks the device again
+   after the automatic attempt), the basics step (datalist input, chips, area with a unit)
+   and the save step. Mobile first; the map grows at 1025px. */
 .finder__status {
   margin: 0 0 var(--space-3);
   padding: var(--space-2) var(--space-3);
@@ -42,8 +43,6 @@
   outline-offset: 6px;
   border-radius: var(--radius-sm);
 }
-
-.finder__locate svg { width: 20px; height: 20px; }
 
 /* Search: the input and its button on one row. */
 .finder__search {
@@ -123,16 +122,39 @@
 
 .finder__map.leaflet-container { font-family: var(--font-sans); }
 
-.finder__satellite {
+/* The controls over the map, stacked at the top right away from Leaflet's zoom (top left)
+   and attribution (bottom right): the satellite toggle and "Use my location". */
+.finder__map-controls {
   position: absolute;
   top: var(--space-2);
   right: var(--space-2);
   z-index: 1000; /* above Leaflet's panes (400) and controls (800 to 1000) */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.finder__satellite,
+.finder__locate {
   min-height: 40px;
   box-shadow: var(--shadow-sm);
 }
 
 .finder__satellite[hidden] { display: none; }
+
+.finder__locate svg { width: 18px; height: 18px; }
+
+.finder__locate[aria-busy="true"] { opacity: 0.7; cursor: progress; }
+
+/* The map could not load (field_map_controller.js hides it and its toggle): the location
+   button falls back into the flow above the hint, which then carries the failure line. */
+.finder__map[hidden] ~ .finder__map-controls {
+  position: static;
+  align-items: flex-start;
+}
+
+.finder__map[hidden] ~ .finder__map-controls .finder__locate { box-shadow: none; }
 
 .finder__map-hint {
   margin: 0;
@@ -289,7 +311,11 @@
   font-family: var(--font-mono);
 }
 
-/* Save */
+/* Save: the "auth" Turbo Frame hosts the two cards (components/auth-choice.css), then the code
+   entry or the name step (components/code-input.css). The footer's passkey button shows only
+   while the passkey card is the chosen one (finder_controller.js). */
+.finder__auth { display: block; }
+.finder__save-button[hidden] { display: none; }
 .finder__save { display: flex; flex-direction: column; gap: var(--space-3); }
 
 .finder__hint {

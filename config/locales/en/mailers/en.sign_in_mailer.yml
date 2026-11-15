@@ -1,0 +1,13 @@
+en:
+  sign_in_mailer:
+    code:
+      subject: "Your %{app_name} code: %{code}"
+      greeting: "Here is your code to continue:"
+      valid_for: "It works for %{minutes} minutes and only once."
+      link_lead: "Or tap to continue in the browser where you asked for it:"
+      link_text: "Continue to %{app_name}"
+      link_note: "If the link opens somewhere else, it will show you the code to type."
+      ignore: "If you did not ask for this, you can ignore this email."
+  layouts:
+    mailer:
+      tagline: "Your smart crop cultivation assistant"

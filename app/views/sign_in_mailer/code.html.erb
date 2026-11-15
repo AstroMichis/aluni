@@ -1,0 +1,7 @@
+<p><%= t(".greeting") %></p>
+<p class="code" style="font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: 32px; letter-spacing: 6px; font-weight: 600; margin: 16px 0;"><%= @code %></p>
+<p><%= t(".valid_for", minutes: @minutes) %></p>
+<p><%= t(".link_lead") %><br>
+  <%= link_to t(".link_text", app_name: t("app_name")), @link, style: "color: #173D2D; font-weight: 600;" %></p>
+<p style="color: #6B7650; font-size: 14px;"><%= t(".link_note") %></p>
+<p style="color: #6B7650; font-size: 14px;"><%= t(".ignore") %></p>

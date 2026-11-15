@@ -9,7 +9,7 @@
   <%# Only on its own page: the Ask Aluni panel (a frame request) takes the chat alone. %>
   <% unless turbo_frame_request? %>
     <aside id="chat-companion" class="onboarding__companion" data-mascot-dock aria-label="<%= t(".companion_label") %>">
-      <div class="onboarding__mascot"><%= render "shared/mascot_companion" %></div>
+      <div class="onboarding__mascot"><%= render "shared/mascot_companion", stage: @mascot_stage %></div>
       <details class="onboarding__preview card" open>
         <summary class="onboarding__preview-summary"><%= t(".preview.title") %></summary>
         <div class="card__body">

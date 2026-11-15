@@ -20,14 +20,32 @@ RSpec.describe "Rack::Attack", type: :request do
     expect(response).to have_http_status(:too_many_requests)
   end
 
-  it "matches the auth paths with and without a locale prefix" do
-    %w[/sign_in /es/sign_in/options /en/sign_up /passkeys/options /en/passkeys].each do |path|
-      expect(path).to match(RACK_ATTACK_AUTH_PATH)
-    end
-    %w[/en /up /api/v1/me /en/sign_in/extra].each do |path|
-      expect(path).not_to match(RACK_ATTACK_AUTH_PATH)
-    end
+it "matches the auth paths with and without a locale prefix" do
+  %w[/sign_in /es/sign_in/options /en/sign_up /passkeys/options /en/passkeys
+     /sign_in/code /en/sign_in/code/verify /es/sign_in/code/resend /en/sign_in/code/complete /en/sign_in/link].each do |path|
+    expect(path).to match(RACK_ATTACK_AUTH_PATH)
   end
+  %w[/en /up /api/v1/me /en/sign_in/extra /en/sign_in/code/extra].each do |path|
+    expect(path).not_to match(RACK_ATTACK_AUTH_PATH)
+  end
+  %w[/sign_in /es/sign_in/options /en/sign_up].each { |path| expect(path).to match(RACK_ATTACK_CEREMONY_PATH) }
+  %w[/en/sign_in/code /en/sign_in/code/verify].each { |path| expect(path).not_to match(RACK_ATTACK_CEREMONY_PATH) }
+  %w[/sign_in/code /es/sign_in/code/resend].each { |path| expect(path).to match(RACK_ATTACK_CODE_REQUEST_PATH) }
+  %w[/en/sign_in/code/verify /sign_in/code/complete].each { |path| expect(path).to match(RACK_ATTACK_CODE_VERIFY_PATH) }
+end
+
+it "throttles code requests per address, however it is written" do
+  5.times do |i|
+    post sign_in_code_path(locale: "en"), params: { email: i.even? ? "Ana@Example.com" : " ana@example.com " }
+    expect(response).not_to have_http_status(:too_many_requests)
+  end
+
+  post sign_in_code_path(locale: "en"), params: { email: "ana@example.com" }
+  expect(response).to have_http_status(:too_many_requests)
+
+  post sign_in_code_path(locale: "en"), params: { email: "someone-else@example.com" }
+  expect(response).not_to have_http_status(:too_many_requests)
+end
 
   it "throttles the assistant turns per IP" do
     # The middleware counts before the app answers, so the sign-in redirect is enough.

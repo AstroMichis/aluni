@@ -9,8 +9,13 @@ gem "redis", "~> 5.0"
 gem "sidekiq", "~> 8.1"
 gem "sidekiq-cron", "~> 2.4"
 
-# Authentication: passkeys only (WebAuthn); sessions through Rails 8 built-in authentication.
+# Authentication: passkeys (WebAuthn), emailed codes and social sign-in (OmniAuth: Google, Apple, Microsoft); sessions through Rails 8 built-in authentication. No passwords.
 gem "webauthn", "~> 3.5", ">= 3.5.1"
+gem "omniauth", "~> 2.4"
+gem "omniauth-rails_csrf_protection", "~> 2.0"
+gem "omniauth-google-oauth2", "~> 1.2"
+gem "omniauth-apple", "~> 1.4"
+gem "omniauth-microsoft_graph", "~> 2.2"
 
 # Frontend: Hotwire over importmap, no bundler, no node.
 gem "turbo-rails", "~> 2.0"

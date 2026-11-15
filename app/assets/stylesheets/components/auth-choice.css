@@ -1,0 +1,160 @@
+/* Two equal ways in (sign_in_codes/_choice, choice_controller.js): the passkey card and the
+   "Email me a code" card, stacked, one open at a time. Each card is a disclosure: a 56px head
+   (icon, title, chevron) and a body with Aluni's line, the form and, on the passkey card, the
+   "What is a passkey?" details. Lives inside the auth pages' .card and the finder's panel. */
+.auth-choice {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.auth-choice__error {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+.auth-choice__card {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-tertiary);
+  overflow: hidden;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.auth-choice__card:hover { border-color: var(--color-border-strong); }
+
+.auth-choice__card--open,
+.auth-choice__card--open:hover {
+  border-color: var(--color-accent);
+  background: var(--color-bg-secondary);
+}
+
+.auth-choice__heading { margin: 0; }
+
+/* The head is the whole top row: 56px, so it is an easy target even when folded. */
+.auth-choice__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: var(--leading-snug);
+  transition: background var(--transition-fast);
+}
+
+.auth-choice__head:hover { background: var(--color-bg-hover); }
+.auth-choice__card--open .auth-choice__head:hover { background: transparent; }
+.auth-choice__head:focus-visible { outline-offset: -3px; }
+
+.auth-choice__icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-muted);
+  color: var(--color-accent-text);
+}
+
+.auth-choice__icon svg { width: 22px; height: 22px; }
+
+.auth-choice__title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.auth-choice__chevron {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  color: var(--color-text-tertiary);
+  transition: transform var(--transition-base);
+}
+
+.auth-choice__head[aria-expanded="true"] .auth-choice__chevron { transform: rotate(180deg); }
+
+.auth-choice__body {
+  display: grid;
+  gap: var(--space-4);
+  padding: 0 var(--space-4) var(--space-4);
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.auth-choice__body[hidden] { display: none; }
+
+@starting-style {
+  .auth-choice__body { opacity: 0; transform: translateY(-6px); }
+}
+
+.auth-choice__line {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: var(--leading-normal);
+}
+
+/* The card's main button may wrap: Spanish and the larger text sizes outgrow a phone. */
+.auth-choice__body .btn--full {
+  white-space: normal;
+  line-height: var(--leading-snug);
+}
+
+/* "What is a passkey?": a 48px summary row and the two-sentence answer under it. */
+.auth-choice__details {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.auth-choice__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 48px;
+  color: var(--color-accent-text);
+  font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+}
+
+.auth-choice__summary::-webkit-details-marker { display: none; }
+
+.auth-choice__summary::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  margin-left: var(--space-1);
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform var(--transition-fast);
+}
+
+.auth-choice__details[open] .auth-choice__summary::before { transform: rotate(45deg); }
+
+.auth-choice__answer {
+  margin: 0;
+  line-height: var(--leading-normal);
+}
+
+@media (min-width: 641px) {
+  .auth-choice__head,
+  .auth-choice__body { padding-inline: var(--space-5); }
+}
+
+@media (forced-colors: active) {
+  .auth-choice__card--open { outline: 2px solid Highlight; }
+  .auth-choice__icon { border: 1px solid CanvasText; }
+}

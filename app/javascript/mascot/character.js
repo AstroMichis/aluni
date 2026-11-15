@@ -1,221 +1,155 @@
-// Aluni, built procedurally from core Three.js (no assets, no addons, no
-// textures): a seedling that has just pushed out of the soil. A slightly
-// egg-shaped seed body carries the face low on its front; a short stem rises
-// from the crown into two cotyledon leaves; two smaller leaf blades are the
-// arms; two root-ball feet carry the gait. The ground shadow is CSS.
+// Aluni, built procedurally from core Three.js (no assets, no addons): a dicot
+// seedling shown herbarium-style. A thin soil disc at SOIL_Y with the roots
+// hanging below it; on the disc, two seed-coat halves, the hypocotyl (a bent
+// tube), two cotyledons at its node, the first true leaves and a small bud with
+// a gold glow at its tip. No face: expression comes from posture and light
+// (animator.js). About 3.5k triangles, 14 draw calls.
 //
-// Budget: about 4.4k triangles and 11 draw calls (seed, two eyes, face, stem,
-// two leaves, two arms, two feet). Every geometry and material is tracked so
-// dispose() frees the GPU in one call.
+//   const { group, anchor, soilAnchor, parts, applyPalette, dispose } = buildCharacter(THREE, palette)
 //
-//   const { group, anchor, parts, applyPalette, dispose } = buildCharacter(THREE, palette)
-//
-// `anchor` is a non-bobbing Object3D above the head: the controller projects
-// it to place the speech bubble. `parts` is what the animator drives.
+// `anchor` is an Object3D above the plant that the controller projects to place
+// the speech bubble; `soilAnchor` is the soil point it projects for the root
+// travel. `parts` is what the animator drives:
+//   soil { mesh, recolor }, roots { group, reveal }, lean (Object3D at the soil
+//   point: sway and lean), plant (Group inside it, yawed PLANT_YAW), seed
+//   { group, setOpen(open, sink) }, stem { mesh, node, tip, deform }, cotyledons
+//   and trueLeaves ([{ pivot, setPose, deform }]), bud, halo, glow { set(level) }.
+import { buildSoil } from "mascot/soil"
+import { buildSeedCoat } from "mascot/seed"
+import { buildHypocotyl } from "mascot/stem"
+import { buildLeaf, makeLeafMaterial, COTYLEDON, TRUE_LEAF } from "mascot/leaves"
+import { buildRoots } from "mascot/roots"
 
-export const BODY_Y = 1.4
-const BODY_SCALE_Y = 1.12
-const ROUGHNESS = 0.75
-
-const LEAF_REST = { x: -0.3, z: 0.95 }
-const ARM_REST = { x: -0.25, z: 2.35 }
+export const SOIL_Y = 0.9
+export const PLANT_YAW = 0.55
+export const ANCHOR = [0.3, 2.75, 0.3]
+const TRUE_LEAF_YAW = -0.5
+const HALO_SIZE = 64
 
 export function buildCharacter(THREE, palette) {
   const geometries = []
+  const textures = []
   const track = (geometry) => { geometries.push(geometry); return geometry }
-  const standard = (color) => new THREE.MeshStandardMaterial({ color, roughness: ROUGHNESS, metalness: 0 })
-
-  const materials = {
-    seed: standard(palette.seed),
-    seedShade: standard(palette.seedShade),
-    leaf: standard(palette.leaf),
-    leafShade: standard(palette.leafShade),
-    eye: new THREE.MeshStandardMaterial({
-      color: palette.eye, emissive: palette.eyeGlow, emissiveIntensity: 0.9, roughness: 0.35, metalness: 0
-    }),
-    face: new THREE.MeshBasicMaterial({ vertexColors: true })
-  }
 
   const group = new THREE.Group()
 
-  // The body group bobs, rolls, nods and breathes; the feet and the anchor
-  // hang off the root so they stay put.
-  const body = new THREE.Group()
-  body.position.y = BODY_Y
-  group.add(body)
+  const soil = buildSoil(THREE, palette, track)
+  soil.mesh.position.y = SOIL_Y
+  group.add(soil.mesh)
 
-  const seed = new THREE.Mesh(track(new THREE.SphereGeometry(1, 32, 22)), materials.seed)
-  seed.scale.set(1, BODY_SCALE_Y, 1)
-  body.add(seed)
+  const roots = buildRoots(THREE, palette, track)
+  roots.group.position.y = SOIL_Y
+  group.add(roots.group)
 
-  // z of the egg's surface at (x, y) in body space; the face hugs it.
-  const surfaceZ = (x, y) => Math.sqrt(Math.max(0, 1 - x * x - (y / BODY_SCALE_Y) ** 2))
+  // The lean pivots at the soil point; the plant inside it is turned a little
+  // so both leaf pairs read in three-quarter view.
+  const lean = new THREE.Object3D()
+  lean.position.y = SOIL_Y
+  group.add(lean)
+  const plant = new THREE.Group()
+  plant.rotation.y = PLANT_YAW
+  lean.add(plant)
 
-  const eyes = new THREE.Group()
-  const eyeGeometry = track(new THREE.SphereGeometry(0.13, 14, 10))
-  const eyeMeshes = [-0.3, 0.3].map((x) => {
-    const eye = new THREE.Mesh(eyeGeometry, materials.eye)
-    eye.position.set(x, -0.08, surfaceZ(x, -0.08) - 0.05)
-    return eye
+  const seed = buildSeedCoat(THREE, palette, track)
+  plant.add(seed.group)
+
+  const stem = buildHypocotyl(THREE, palette, track)
+  plant.add(stem.mesh, stem.node, stem.tip)
+
+  const leafMaterial = makeLeafMaterial(THREE)
+  const cotyledons = [-1, 1].map((side, i) => {
+    const leaf = buildLeaf(THREE, leafMaterial, COTYLEDON, track, { yaw: side * Math.PI / 2, phase: i * 1.9 })
+    leaf.pivot.position.x = 0.03 * side
+    stem.node.add(leaf.pivot)
+    return leaf
   })
-  eyes.add(...eyeMeshes)
-  body.add(eyes)
-
-  const face = buildFace(THREE, materials.face, surfaceZ, palette, track)
-  body.add(face.mesh)
-
-  const stem = new THREE.Mesh(track(new THREE.CapsuleGeometry(0.085, 0.55, 4, 12)), materials.leafShade)
-  stem.position.set(0, 1.3, 0.02)
-  body.add(stem)
-
-  const extrude = { depth: 0.05, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2, curveSegments: 8 }
-  const leafGeometry = track(new THREE.ExtrudeGeometry(leafShape(THREE, 1.0, 0.78), extrude))
-  leafGeometry.translate(0, 0, -0.025)
-  const leaves = [-1, 1].map((side) => {
-    const pivot = new THREE.Group()
-    pivot.position.set(0.06 * side, 1.62, 0.02)
-    pivot.userData.rest = { x: LEAF_REST.x, z: -LEAF_REST.z * side }
-    pivot.userData.phase = side < 0 ? 0 : 1.9
-    pivot.rotation.set(pivot.userData.rest.x, 0, pivot.userData.rest.z)
-    pivot.add(new THREE.Mesh(leafGeometry, materials.leaf))
-    body.add(pivot)
-    return pivot
+  // Decussate: the first true leaves stand at right angles to the cotyledons.
+  const trueLeaves = [0, Math.PI].map((yaw, i) => {
+    const leaf = buildLeaf(THREE, leafMaterial, TRUE_LEAF, track, { yaw: yaw + TRUE_LEAF_YAW, phase: 0.7 + i * 2.6 })
+    leaf.pivot.position.y = 0.02
+    stem.tip.add(leaf.pivot)
+    return leaf
   })
 
-  const armGeometry = track(new THREE.ExtrudeGeometry(leafShape(THREE, 0.75, 0.3), extrude))
-  armGeometry.translate(0, 0, -0.025)
-  const arms = [-1, 1].map((side) => {
-    const pivot = new THREE.Group()
-    pivot.position.set(0.88 * side, 0.3, 0.1)
-    pivot.userData.rest = { x: ARM_REST.x, z: -ARM_REST.z * side }
-    pivot.userData.phase = side < 0 ? 0.7 : 2.6
-    pivot.rotation.set(pivot.userData.rest.x, 0, pivot.userData.rest.z)
-    pivot.add(new THREE.Mesh(armGeometry, materials.leafShade))
-    body.add(pivot)
-    return pivot
-  })
+  const budColor = new THREE.Color()
+  const budMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: palette.tip, emissiveIntensity: 0.4, roughness: 0.5, metalness: 0 })
+  const bud = new THREE.Mesh(track(new THREE.SphereGeometry(0.075, 12, 8)), budMaterial)
+  bud.scale.set(1, 1.3, 1)
+  bud.position.y = 0.04
+  stem.tip.add(bud)
 
-  const footGeometry = track(new THREE.LatheGeometry(footProfile(THREE), 16))
-  const feet = [-1, 1].map((side) => {
-    const pivot = new THREE.Group()
-    pivot.position.set(0.4 * side, 0.5, 0.02)
-    const foot = new THREE.Mesh(footGeometry, materials.seedShade)
-    foot.position.y = -0.5
-    pivot.add(foot)
-    group.add(pivot)
-    return pivot
-  })
+  // A soft sprite of light around the bud: the "attention light".
+  const haloTexture = radialTexture(THREE)
+  let halo = null
+  let haloMaterial = null
+  if (haloTexture) {
+    textures.push(haloTexture)
+    haloMaterial = new THREE.SpriteMaterial({ map: haloTexture, color: palette.tip, transparent: true, opacity: 0.5, depthWrite: false })
+    halo = new THREE.Sprite(haloMaterial)
+    halo.scale.setScalar(0.4)
+    halo.position.y = 0.06
+    stem.tip.add(halo)
+  }
 
   const anchor = new THREE.Object3D()
-  anchor.position.set(0.45, 3.45, 0.4)
+  anchor.position.set(...ANCHOR)
   group.add(anchor)
+  const soilAnchor = new THREE.Object3D()
+  soilAnchor.position.set(0, SOIL_Y, 0)
+  group.add(soilAnchor)
 
-  const parts = {
-    body, bodyY: BODY_Y, eyes, eyeMeshes, mouth: face.mouth,
-    leaves, armLeft: arms[0], armRight: arms[1], feet
+  // level 0 is dark, 1 the full speaking glow.
+  const glow = {
+    set(level) {
+      budMaterial.emissiveIntensity = 0.15 + 1.6 * level
+      if (haloMaterial) {
+        haloMaterial.opacity = 0.9 * level
+        halo.scale.setScalar(0.45 + 0.8 * level)
+      }
+    }
   }
+
+  const parts = { soil, roots, lean, plant, seed, stem, cotyledons, trueLeaves, bud, halo, glow }
 
   const applyPalette = (next) => {
-    materials.seed.color.setHex(next.seed)
-    materials.seedShade.color.setHex(next.seedShade)
-    materials.leaf.color.setHex(next.leaf)
-    materials.leafShade.color.setHex(next.leafShade)
-    materials.eye.color.setHex(next.eye)
-    materials.eye.emissive.setHex(next.eyeGlow)
-    face.recolor(next)
+    soil.recolor(next)
+    seed.recolor(next)
+    stem.recolor(next)
+    cotyledons.forEach((leaf) => leaf.recolor(next))
+    trueLeaves.forEach((leaf) => leaf.recolor(next))
+    roots.material.color.setHex(next.root)
+    budColor.setHex(next.tip).lerp(new THREE.Color(next.leaf), 0.45)
+    budMaterial.color.copy(budColor)
+    budMaterial.emissive.setHex(next.tip)
+    if (haloMaterial) haloMaterial.color.setHex(next.tip)
   }
+  applyPalette(palette)
 
   const dispose = () => {
     geometries.forEach((geometry) => geometry.dispose())
-    Object.values(materials).forEach((material) => material.dispose())
+    const materials = [soil.material, seed.material, stem.material, leafMaterial, roots.material, budMaterial, haloMaterial]
+    materials.forEach((material) => { if (material) material.dispose() })
+    textures.forEach((texture) => texture.dispose())
   }
 
-  return { group, anchor, parts, applyPalette, dispose }
+  return { group, anchor, soilAnchor, parts, applyPalette, dispose }
 }
 
-// A broad, rounded leaf drawn with quadratic curves; base at the origin,
-// length along +Y, so a pivot at its base turns it like a real leaf.
-function leafShape(THREE, length, width) {
-  const half = width / 2
-  const shape = new THREE.Shape()
-  shape.moveTo(0, 0)
-  shape.quadraticCurveTo(half * 1.25, length * 0.12, half, length * 0.62)
-  shape.quadraticCurveTo(half * 0.55, length * 1.02, 0, length)
-  shape.quadraticCurveTo(-half * 0.55, length * 1.02, -half, length * 0.62)
-  shape.quadraticCurveTo(-half * 1.25, length * 0.12, 0, 0)
-  return shape
-}
-
-// A squashed bulb with ridges, revolved into a root-ball foot (height 0.46).
-function footProfile(THREE) {
-  const profile = [
-    [0, 0], [0.2, 0.01], [0.3, 0.05], [0.36, 0.12], [0.38, 0.2],
-    [0.36, 0.29], [0.3, 0.37], [0.2, 0.43], [0.08, 0.46], [0, 0.46]
-  ]
-  return profile.map(([r, y], i) => {
-    const ridge = i > 1 && i < profile.length - 2 ? (i % 2 ? 0.015 : -0.015) : 0
-    return new THREE.Vector2(Math.max(0, r + ridge), y)
-  })
-}
-
-// Cheeks and mouth are one ShapeGeometry (three Shapes) with a vertex colour
-// attribute and one MeshBasicMaterial: one draw call for the whole face. Every
-// vertex is pushed onto the egg's surface. The mouth opens by scaling its own
-// vertices (the animator calls mouth.open(amount)), so it needs no mesh of its own.
-function buildFace(THREE, material, surfaceZ, palette, track) {
-  const MOUTH_TOP = -0.42
-  const cheekLeft = new THREE.Shape()
-  cheekLeft.absellipse(-0.56, -0.32, 0.13, 0.085, 0, Math.PI * 2, false, 0)
-  const cheekRight = new THREE.Shape()
-  cheekRight.absellipse(0.56, -0.32, 0.13, 0.085, 0, Math.PI * 2, false, 0)
-  const smile = new THREE.Shape()
-  smile.moveTo(-0.22, MOUTH_TOP)
-  smile.quadraticCurveTo(0, -0.58, 0.22, MOUTH_TOP)
-  smile.quadraticCurveTo(0, -0.66, -0.22, MOUTH_TOP)
-
-  const geometry = track(new THREE.ShapeGeometry([cheekLeft, cheekRight, smile], 10))
-  const position = geometry.attributes.position
-  const count = position.count
-  const colors = new Float32Array(count * 3)
-  const mouthIndices = []
-  for (let i = 0; i < count; i++) {
-    const x = position.getX(i), y = position.getY(i)
-    if (Math.abs(x) < 0.3) mouthIndices.push(i)
-    position.setZ(i, surfaceZ(x, y) + 0.012)
-  }
-  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3))
-  const base = Float32Array.from(position.array)
-  const mesh = new THREE.Mesh(geometry, material)
-
-  const color = new THREE.Color()
-  const recolor = (next) => {
-    const attribute = geometry.attributes.color
-    const mouthSet = new Set(mouthIndices)
-    for (let i = 0; i < count; i++) {
-      color.setHex(mouthSet.has(i) ? next.mouth : next.cheek)
-      attribute.setXYZ(i, color.r, color.g, color.b)
-    }
-    attribute.needsUpdate = true
-  }
-  recolor(palette)
-
-  let current = 0
-  const mouth = {
-    // amount 0 is the resting smile; 1 opens it to about 2.6x its height.
-    open(amount) {
-      const next = Math.max(0, Math.min(1, amount))
-      if (Math.abs(next - current) < 0.002) return
-      current = next
-      const stretch = 1 + next * 1.6
-      mouthIndices.forEach((i) => {
-        const x = base[i * 3], y = base[i * 3 + 1]
-        const stretched = MOUTH_TOP + (y - MOUTH_TOP) * stretch
-        position.setY(i, stretched)
-        position.setZ(i, surfaceZ(x, stretched) + 0.012)
-      })
-      position.needsUpdate = true
-    }
-  }
-
-  return { mesh, mouth, recolor }
+// A radial white-to-transparent gradient for the halo sprite; null when the
+// 2D canvas is unavailable (the halo is then skipped).
+function radialTexture(THREE) {
+  const canvas = document.createElement("canvas")
+  canvas.width = canvas.height = HALO_SIZE
+  const context = canvas.getContext("2d")
+  if (!context) return null
+  const half = HALO_SIZE / 2
+  const gradient = context.createRadialGradient(half, half, 0, half, half, half)
+  gradient.addColorStop(0, "rgba(255, 255, 255, 1)")
+  gradient.addColorStop(0.35, "rgba(255, 255, 255, 0.45)")
+  gradient.addColorStop(1, "rgba(255, 255, 255, 0)")
+  context.fillStyle = gradient
+  context.fillRect(0, 0, HALO_SIZE, HALO_SIZE)
+  const texture = new THREE.CanvasTexture(canvas)
+  texture.colorSpace = THREE.SRGBColorSpace
+  return texture
 }
