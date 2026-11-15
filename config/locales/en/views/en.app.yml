@@ -250,6 +250,9 @@ en:
         frost_normal:
           label: Frost days
           value: "%{value} days in a typical year"
+        heavy_rain:
+          label: Heavy rain
+          value: "%{value} days a year with 25 mm or more"
       index:
         title: My fields · %{app_name}
         lede: Your fields with their crop, their soil and what is still missing.
@@ -781,7 +784,7 @@ en:
           benefit: It fits the rain you get better.
         erosion:
           short: Erosion
-          how: Row crops on your slope leave soil exposed.
+          how: Row crops on your slope, and under heavy rain, leave soil exposed.
           benefit: It keeps soil in place.
         workload:
           short: Workload
@@ -791,6 +794,8 @@ en:
         suitability: "%{crop}: %{class} at your pin."
         water: "%{crop} needs about %{need} mm; the usual rain covers about %{effective} mm."
         slope: Slope of %{value} %.
+        heavy_rain: "About %{days} days a year bring 25 mm of rain or more, most of them in %{months} (%{years} years of satellite rain)."
+        heavy_rain_rare: "Heavy rain is rare here: about %{days} days a year with 25 mm or more (%{years} years of satellite rain)."
         same_family: "%{crop} would follow its own family."
         monoculture: "%{crop} three seasons or more in a row."
         no_legume: No legume in four seasons.
@@ -799,6 +804,7 @@ en:
         low_suitability: A crop has low suitability at your pin according to FAO GAEZ.
         harvester: Small grains need a combine; your equipment does not list one.
         same_family: Pests that live on one family could carry over.
+        heavy_rain: Days of 50 mm or more come every year here. Row crops leave soil bare between seasons; keep residue or a cover crop over the stormy months.
         establishment: Alfalfa takes a season to establish and needs a market or animals.
         new_crop: It brings a crop your field has not grown before, and you prefer to change carefully. Try it on part of a field first.
         contract: You sell under contract or for export. Check with your buyer before changing the crop.

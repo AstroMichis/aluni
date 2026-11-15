@@ -47,7 +47,7 @@ sources:
   hls:              { name: "HLS (Landsat + Sentinel-2)", layer: global, scale: parcel, resolution: "30 m", doc: vegetation_indices.md, status: connected }
   modis_phenology:  { name: "MODIS MCD12Q2", layer: global, scale: zone, resolution: "500 m", doc: vegetation_indices.md, status: planned }
   smap:             { name: "SMAP L4", layer: global, scale: zone, resolution: "9 km", doc: smap.md, status: planned }
-  gpm_imerg:        { name: "GPM IMERG", layer: global, scale: zone, resolution: "0.1°", doc: gpm_imerg.md, status: planned }
+  gpm_imerg:        { name: "NASA GPM IMERG", layer: global, scale: zone, resolution: "0.1°", doc: gpm_imerg.md, status: connected }
   soilgrids:        { name: "SoilGrids (ISRIC)", layer: global, scale: zone, resolution: "250 m", doc: null, status: gap }
   reverse_geocoder: { name: "Global reverse geocoder", layer: global, scale: region, resolution: "-", doc: null, status: gap }
   fcc_census_block: { name: "FCC Census Block", layer: us, scale: region, resolution: "county", doc: fcc_census_block.md, status: connected }
@@ -65,6 +65,7 @@ observations:
   cdl: cropland_cdl
   vegetation: hls
   nasadem: srtm
+  gpm_imerg: gpm_imerg
 
 data:
   farm:
@@ -311,6 +312,12 @@ data:
       precision: 0
       sources: { global: [nasa_power] }
       feeds: [calendar, risk]
+    heavy_rain:
+      group: climate
+      origin: auto
+      observation: { value: gpm_imerg.heavy_days_per_year }
+      sources: { global: [gpm_imerg] }
+      feeds: [erosion, risk]
 
 # The add-a-field form: one question per screen, in this order. The profile
 # questions belong to the onboarding chat. input: pin | details | crop | history | review

@@ -12,6 +12,28 @@ The Global Precipitation Measurement mission's IMERG product merges radar, micro
 | Record | June 2000 onward |
 | Docs | https://gpm.nasa.gov/data/imerg |
 
+## What the app uses: IMERG through NASA POWER
+
+NASA POWER serves the daily IMERG Final Run at a point as `IMERG_PRECTOT` (mm/day), with no account. It only exists in **UTC days**: in the default local solar time every value is -999 with the message "The IMERG Source Data is not available at the Local Solar Time (LST) standard."
+
+```
+GET https://power.larc.nasa.gov/api/temporal/daily/point?community=AG&latitude=-41.32&longitude=-72.98&format=JSON&parameters=IMERG_PRECTOT&start=20060101&end=20251231&time-standard=UTC
+```
+
+Twenty years (7,305 days, about 145 KB) answer in under 2 s, so `NasaPower::Client#imerg_daily` asks once per field and `Weather::RainExtremes.summarize` keeps only the summary (the `gpm_imerg` observation): heavy days (25 mm or more) and extreme days (50 mm or more) per year and per month, the 99th percentile of rainy days, the wettest day and the longest dry spell of each year. Values stop about two months before today (Final Run latency), so the window is the last 20 full calendar years.
+
+Checked on 2026-11-15:
+
+| Pin | Rain a year | 25 mm days | 50 mm days | Wettest day |
+|---|---|---|---|---|
+| Puerto Varas, Chile (-41.32, -72.98) | 1,874 mm | 22.2 | 4.7 | 97.9 mm, 2015-07-17 |
+| Nebraska (40.95, -97.50) | 792 mm | 7.8 | 0.8 | 129.2 mm, 2021-03-14 |
+| San José, Costa Rica (9.93, -84.08) | 4,538 mm | 40.5 | 2.9 | 130.7 mm, 2025-11-07 |
+
+**Mountains.** The San José cell shows no dry season (175 mm in January 2024, against about 38 mm in POWER's MERRA-2 normal). The 0.1° cell (about 11 km) seems to blend the Central Valley with the wet Caribbean slope. In steep terrain, read IMERG as the wider area's storms, not the farm's own rain; the profile shows it with zone confidence.
+
+The OPeNDAP access below stays documented for the Late and Early runs (recent days) and for whole-grid work.
+
 ## Grid indexing
 
 The daily file holds `precipitation[time=1][lon=3600][lat=1800]` (Captured from the dataset's `.dds`). Note the order: **longitude before latitude**.

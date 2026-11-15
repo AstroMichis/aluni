@@ -3,7 +3,8 @@
 module Rotations
   # Compares the field's current rotation with alternatives over the next
   # three seasons, with the field's own data: FAO GAEZ suitability at the pin,
-  # the crop water need against the usual rain (Crops::WaterNeed), the slope,
+  # the crop water need against the usual rain (Crops::WaterNeed), the slope
+  # and how often it pours (Weather::RainExtremes, GPM IMERG),
   # the crop families of the history (Crops::RotationCheck) and the farmer's
   # goals, which weigh the criteria. Every strategy carries why it is offered,
   # the evidence and its source, its benefits against the current rotation,
@@ -23,6 +24,7 @@ module Rotations
     STEEP = 5.0         # % slope from which a row crop leaves soil at risk
     # Where the slope comes from, sharpest first: US lidar, then NASA's global DEM.
     SLOPE_SOURCES = { "usgs_elevation" => "USGS 3DEP", "nasadem" => "NASA NASADEM" }.freeze
+    STORM_PENALTY = 7   # more per row-crop season where 50 mm days come every year (GPM IMERG)
     DRY_SHARE = 0.5     # a rainfed crop whose season rain is under half its need
     PERENNIALS = %w[medicago-sativa].freeze # a stand of several seasons is one crop, not a repeat
     LOW_SUITABILITY = 4000
@@ -167,6 +169,7 @@ module Rotations
         value = observation&.ok? ? observation.payload["slope"] : nil
         [ value, name ] if value
       end.first
+      rain_fact(facts)
       unless slope
         gaps << "slope"
         return nil
@@ -174,9 +177,22 @@ module Rotations
 
       facts << Fact.new(key: "slope", values: { value: slope }, source: source)
       rows = crops.count { |c| ROW_CROPS.include?(c) }
-      penalty = slope >= STEEP ? 25 : 8
+      penalty = (slope >= STEEP ? 25 : 8) + (rain.stormy_field? ? STORM_PENALTY : 0)
       [ 100 - (rows * penalty), 0 ].max
     end
+
+    # How often it pours at the pin (GPM IMERG), and in which months.
+    def rain_fact(facts)
+      return unless rain.present?
+
+      stormy = rain.stormy_months.map(&:month)
+      values = { days: rain.heavy_days_per_year, years: rain.years }
+      key = stormy.any? ? "heavy_rain" : "heavy_rain_rare"
+      values[:months] = stormy if stormy.any?
+      facts << Fact.new(key: key, values: values, source: Weather::RainExtremes::SOURCE)
+    end
+
+    def rain = (@rain ||= Weather::RainExtremes.new(@field.observation("gpm_imerg")))
 
     # Fewer different crops and machinery the farm already has mean less work.
     def workload(crops)
@@ -202,6 +218,7 @@ module Rotations
       list << "low_suitability" if crops.any? { |c| (r = @potential.for(c)) && r.suitability && r.suitability < LOW_SUITABILITY }
       list << "harvester" if crops.any? { |c| SMALL_GRAINS.include?(Crops::Agronomy.gaez_name(c)) } && !harvester?
       list << "same_family" if scores["pest_break"].to_i < 75
+      list << "heavy_rain" if rain.stormy_field? && crops.any? { |c| ROW_CROPS.include?(c) }
       list << "establishment" if crops.include?("medicago-sativa")
       new_crops = crops.uniq - grown
       list << "new_crop" if new_crops.any? && @profile&.risk_tolerance_cautious?

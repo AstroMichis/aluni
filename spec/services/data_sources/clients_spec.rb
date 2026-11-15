@@ -12,6 +12,15 @@ RSpec.describe "Public data source clients" do
     expect(a_request(:get, /daily\/point/).with(query: hash_including("community" => "AG", "start" => "20260101"))).to have_been_made
   end
 
+  it "reads GPM IMERG daily rain from NASA POWER in UTC days" do
+    stub_imerg("20250101" => 12.5, "20250102" => -999.0)
+
+    rain = NasaPower::Client.new.imerg_daily(**point, from: Date.new(2025, 1, 1), to: Date.new(2025, 1, 2))
+
+    expect(rain).to eq("20250101" => 12.5, "20250102" => nil)
+    expect(a_request(:get, /daily\/point/).with(query: hash_including("parameters" => "IMERG_PRECTOT", "time-standard" => "UTC"))).to have_been_made
+  end
+
   it "finds GAEZ layers per crop and reads a pixel" do
     stub_gaez
     client = Gaez::Client.new

@@ -40,7 +40,7 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 **Rate limit (fixed):** Planetary Computer rate-limits bursts (429). The client now asks 2 months at a time, retries 429/5xx with exponential backoff and jitter (about 2, 4, 8, 16 s, or `Retry-After`), and stops the other months once one fails. A rate-limited field reruns only the NDVI later (15, 30, 45 min plus jitter, 3 times).
 
 **Still missing:**
-- **NASA breadth.** Done: POWER, Landsat, NASADEM (SRTM). Missing from the challenge list: SMAP, ECOSTRESS, GPM, MODIS, GRACE.
+- **NASA breadth.** Done: POWER, Landsat, NASADEM (SRTM), GPM IMERG. Missing from the challenge list: SMAP, ECOSTRESS, MODIS, GRACE.
 - **A real forecast.** The forecast option still shows the past season.
 - **Alerts.** None are sent.
 - **Global soil.** Outside the US it depends on the farmer (the slope now comes from NASADEM).
@@ -60,14 +60,14 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 
 ## P1: NASA depth (each item checks one dataset off the challenge list)
 
-Suggested next order: GPM IMERG, SMAP, then MODIS, GRACE and ECOSTRESS.
+Suggested next order: SMAP, then MODIS, GRACE and ECOSTRESS.
 
 | Item | Dataset | How |
 |---|---|---|
 | ✅ Crop health and **bare-field periods** | Landsat (NASA/USGS) + Sentinel-2 NDVI | Done (#22): `monthly_ndvi`, the `vegetation` observation, `Fields::Vegetation`, "Your field from space". Next: draw it on the 3-season timeline. |
 | Long-term vegetation baseline and anomalies | MODIS NDVI (16-day, 20+ years) | AppEEARS or Planetary Computer |
 | ✅ **Global slope** for erosion | NASADEM (SRTM) | Done: `PlanetaryComputer::Client#terrain`, the `nasadem` observation; 3DEP first in the US, NASADEM everywhere else (56°S to 60°N) in the profile and the comparator. |
-| Extreme rain frequency | GPM IMERG | Earthdata credentials already in credentials |
+| ✅ Extreme rain frequency | GPM IMERG | Done: 20 years of daily IMERG through NASA POWER (`IMERG_PRECTOT`, no account), `Weather::RainExtremes`, the `gpm_imerg` observation; storm-prone months and 50 mm days raise the erosion of row crops in the comparator. Next: the stormy months on the 3-season timeline. |
 | Soil moisture and anomalies | SMAP L3/L4 | AppEEARS async request (Earthdata) |
 | Long-term water trend | GRACE / GRACE-FO | One trend indicator per region |
 | Heat stress and evaporation | ECOSTRESS | AppEEARS |

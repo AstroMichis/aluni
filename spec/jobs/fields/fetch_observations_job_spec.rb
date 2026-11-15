@@ -11,7 +11,7 @@ RSpec.describe Fields::FetchObservationsJob do
     described_class.perform_now(field.id)
 
     expect(field.observations.pluck(:source, :status).to_h).to eq(
-      "fcc" => "ok", "nasa_power" => "ok", "gaez" => "ok", "vegetation" => "ok", "nasadem" => "ok", "ssurgo" => "ok", "usgs_elevation" => "ok", "cdl" => "ok")
+      "fcc" => "ok", "nasa_power" => "ok", "gaez" => "ok", "vegetation" => "ok", "nasadem" => "ok", "gpm_imerg" => "ok", "ssurgo" => "ok", "usgs_elevation" => "ok", "cdl" => "ok")
     expect(field.observation("vegetation").payload["months"].size).to eq(6)
     expect(field.observation("gaez").payload.dig("crops", "Maize", "yield")).to eq(6867.0)
     expect(field.observation("cdl").payload["years"]).to include((Date.current.year - 1).to_s => "Corn")
@@ -27,6 +27,7 @@ RSpec.describe Fields::FetchObservationsJob do
     expect(field.observations.where(source: %w[ssurgo usgs_elevation cdl]).pluck(:status).uniq).to eq([ "out_of_coverage" ])
     expect(field.observation("nasa_power")).to be_ok
     expect(field.observation("nasadem").payload).to eq("elevation" => 74.0, "slope" => 3.2)
+    expect(field.observation("gpm_imerg").payload).to include("extreme_days_per_year" => 1.0, "wettest" => { "date" => "2025-07-05", "mm" => 62.0 })
     expect(a_request(:post, /sdmdataaccess/)).not_to have_been_made
   end
 

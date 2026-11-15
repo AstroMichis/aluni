@@ -37,6 +37,22 @@ RSpec.describe Rotations::Comparator do
     expect(comparator.strategies.first.gaps).not_to include("slope")
   end
 
+  it "weighs how often it pours (GPM IMERG) into the erosion of row crops" do
+    current = comparator.strategies.first
+    expect(current.evidence.map(&:key)).not_to include("heavy_rain", "heavy_rain_rare")
+    calm = current.scores["erosion"]
+
+    months = (1..12).map { |m| { "month" => m, "heavy_days" => m.between?(5, 7) ? 2.5 : 0.2, "extreme_days" => m == 6 ? 1.2 : 0.0 } }
+    create(:field_observation, field: record, source: "gpm_imerg",
+                               payload: { "years" => 20, "heavy_days_per_year" => 8.1, "extreme_days_per_year" => 1.2, "months" => months })
+    stormy = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first
+
+    rain = stormy.evidence.find { |f| f.key == "heavy_rain" }
+    expect([ rain.values, rain.source ]).to eq([ { days: 8.1, years: 20, months: [ 5, 6, 7 ] }, "NASA GPM IMERG" ])
+    expect(stormy.risks).to include("heavy_rain") # soy and corn are row crops
+    expect(stormy.scores["erosion"]).to eq(calm - (3 * described_class::STORM_PENALTY))
+  end
+
   it "says what is better than now, what is unknown and what to check locally" do
     alternative = comparator.strategies.drop(1).first
     expect(alternative.gaps).to include("market", "soil")
