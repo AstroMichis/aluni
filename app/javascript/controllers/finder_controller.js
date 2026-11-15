@@ -15,7 +15,9 @@ import { Controller } from "@hotwired/stimulus"
 //
 // Opens on window "mascot:lets-go", asks the mascot to dock into #finder-companion and
 // hides its own avatar when the live canvas arrives ("mascot:docked" handoff "canvas").
-// Escape and the close button hide it ("mascot:show"). Each step's Aluni line
+// The close button hides it ("mascot:show"), and so does Escape from the panel itself, a
+// button, a link or the map; inside a field Escape only leaves the field (browsers use
+// it to dismiss the datalist, and the keydown still bubbles). Each step's Aluni line
 // ([data-speak]) is dispatched as "speech:read" (spoken when read aloud is on) and
 // "mascot:speak". The draft lives in sessionStorage ("aluni.finder") so a reload resumes.
 // No fetch here: Turbo Frames and forms only.
@@ -31,6 +33,8 @@ const SAVE_FORM = "finder-save"
 const SOURCES = ["geolocation", "typed", "map"]
 const UNITS = ["hectares", "acres"]
 const IRRIGATIONS = ["rainfed", "irrigated"]
+const FIELD_SELECTOR = "input, textarea, select"
+const CLOSE_FROM_SELECTOR = "button, a, [role='application']"
 
 export default class extends Controller {
   static targets = [
@@ -87,6 +91,23 @@ export default class extends Controller {
     window.dispatchEvent(new CustomEvent("mascot:show"))
     if (this.opener && this.opener.isConnected) this.opener.focus()
     this.opener = null
+  }
+
+  // keydown.esc on the section. In a field, Escape is the field's (it dismisses the crop
+  // datalist or clears the search) and only blurs it; the panel closes when the key comes
+  // from the panel itself, a step heading, a button, a link or the map.
+  escape(event) {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    if (target.matches(FIELD_SELECTOR)) {
+      event.stopPropagation()
+      target.blur()
+      return
+    }
+    const closes = target === this.element || this.headingTargets.includes(target) || target.matches(CLOSE_FROM_SELECTOR)
+    if (!closes) return
+    event.preventDefault()
+    this.close()
   }
 
   // The mascot landed in the header: with a live canvas the SVG twin steps aside.

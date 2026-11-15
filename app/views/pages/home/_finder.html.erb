@@ -18,7 +18,7 @@
          data-passkey-submit-url-value="<%= sign_up_path %>"
          data-passkey-messages-value="<%= passkey_messages %>"
          <% end %>
-         data-action="geolocate:located->finder#located keydown.esc->finder#close turbo:frame-load->finder#frameLoaded turbo:submit-start->finder#submitStarted turbo:submit-end->finder#submitEnded passkey:start->finder#passkeyStarted passkey:error->finder#passkeyFailed">
+         data-action="geolocate:located->finder#located keydown.esc->finder#escape turbo:frame-load->finder#frameLoaded turbo:submit-start->finder#submitStarted turbo:submit-end->finder#submitEnded passkey:start->finder#passkeyStarted passkey:error->finder#passkeyFailed">
   <header class="panel__header">
     <div id="finder-companion" class="panel__companion" data-mascot-dock>
       <span class="panel__avatar" data-finder-target="avatar"><%= render "shared/mascot_avatar", size: "md" %></span>

@@ -104,6 +104,38 @@ RSpec.describe "Field finder", type: :system do
     expect_no_server_errors!
   end
 
+  it "keeps Escape for the fields and closes only from the panel, a heading, a button or the map" do
+    visit root_path(locale: "en")
+    # A draft on the basics step, as a reload after "This is my field" would find it.
+    page.execute_script("window.sessionStorage.setItem('aluni.finder', JSON.stringify({ open: true, step: 'basics', latitude: '42', longitude: '-93.75', location_source: 'map' }))")
+    visit root_path(locale: "en")
+    expect(page).to have_css("#finder:not([hidden])", wait: 5)
+    expect(page).to have_content(I18n.t("finder.steps.basics.title"))
+
+    # Escape in the crop input dismisses the datalist and leaves the field; the panel stays.
+    find("#finder-crop").send_keys("maize", :escape)
+    expect(page).to have_css("#finder:not([hidden])")
+    expect(page).to have_content(I18n.t("finder.steps.basics.title"))
+    expect(find("#finder-crop").value).to eq("maize")
+    expect(page.evaluate_script("document.activeElement.id")).not_to eq("finder-crop")
+
+    # Escape in the search field only leaves it too.
+    click_button I18n.t("finder.back")
+    find("#finder-query").send_keys("Ames", :escape)
+    expect(page).to have_css("#finder:not([hidden])")
+
+    # From the step heading, Escape closes the panel.
+    find("#finder-step-locate").send_keys(:escape)
+    expect(page).to have_css("#finder[hidden]", visible: :all)
+
+    # Opening it again resumes where it was; Escape on a button closes it as well.
+    page.execute_script("window.dispatchEvent(new CustomEvent('mascot:lets-go'))")
+    expect(page).to have_css("#finder:not([hidden])", wait: 5)
+    find("#finder .panel__icon-button[data-action='finder#close']").send_keys(:escape)
+    expect(page).to have_css("#finder[hidden]", visible: :all)
+    expect_no_server_errors!
+  end
+
   it "finds the field from a town search, moves on to the basics, and closes with Escape" do
     visit root_path(locale: "es")
     open_finder
