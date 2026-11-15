@@ -12,7 +12,9 @@ module App
       @turns = @onboarding_session.transcript
       @topic = @onboarding_session.topic
       @index, @total = progress_for(@topic)
-      @snapshot = snapshot
+      # The profile preview sits beside the chat on its own page; the Ask Aluni panel
+      # (a frame request) only takes the chat.
+      @snapshot = snapshot unless turbo_frame_request?
     end
 
     def message

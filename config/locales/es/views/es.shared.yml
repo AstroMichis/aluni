@@ -1,5 +1,10 @@
 es:
   shared:
+    ask_aluni:
+      open: "Pregúntale a %{app_name}"
+      full_page: "Ampliar"
+      close: "Cerrar el chat"
+      loading: "%{app_name} se está preparando…"
     public_footer:
       tagline: "Código abierto, construido a la vista de todos."
       meta: "%{app_name} %{year}"

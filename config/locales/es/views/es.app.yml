@@ -88,7 +88,6 @@ es:
         pending:
           one: 1 cosa por revisar
           other: "%{count} cosas por revisar"
-        ask: Pregúntale a %{app_name}
     fields:
       back_to_menu: Volver al menú
       back_to_fields: Volver a mis terrenos

@@ -1,54 +1,21 @@
 <% content_for :title, t(".title") %>
 
 <div class="onboarding">
-  <section class="chat onboarding__chat"
-           aria-labelledby="onboarding-title"
-           data-controller="chat"
-           data-chat-messages-value="<%= { failed: t(".errors.failed") }.to_json %>"
-           data-chat-notice-class="chat__notice chat__notice--warning">
-    <header class="chat__header">
-      <div class="chat__heading">
-        <h1 id="onboarding-title" class="text-heading chat__title"><%= t(".title") %></h1>
-        <p class="chat__lede"><%= t(".lede") %></p>
-      </div>
-      <%= render "app/onboarding/progress", topic: @topic, index: @index, total: @total %>
-    </header>
+  <%# Links and forms inside leave the frame (target _top); answers come as Turbo Streams. %>
+  <%= turbo_frame_tag "ask-aluni", target: "_top", class: "onboarding__chat-frame" do %>
+    <%= render "app/onboarding/chat" %>
+  <% end %>
 
-    <div id="onboarding-messages" class="chat__log" data-chat-target="log" role="log" aria-live="polite" aria-relevant="additions">
-      <% turns = transcript_turns(@turns) %>
-      <% if turns.empty? %>
-        <%= render "app/onboarding/message", role: "assistant", text: t("onboarding.welcome_message", name: Current.user.display_name) %>
-      <% else %>
-        <% turns.each_with_index do |turn, i| %>
-          <%= render "app/onboarding/message", role: turn[:role], text: turn[:text], silent: i < turns.size - 1 %>
-        <% end %>
-      <% end %>
-      <% if @onboarding_session.completed? %>
-        <div class="chat__notice chat__notice--success" role="status">
-          <span><%= t(".completed_notice") %></span>
-          <%= link_to t(".back_home"), app_root_path, class: "chat__notice-link" %>
+  <%# Only on its own page: the Ask Aluni panel (a frame request) takes the chat alone. %>
+  <% unless turbo_frame_request? %>
+    <aside id="chat-companion" class="onboarding__companion" data-mascot-dock aria-label="<%= t(".companion_label") %>">
+      <div class="onboarding__mascot"><%= render "shared/mascot_companion" %></div>
+      <details class="onboarding__preview card" open>
+        <summary class="onboarding__preview-summary"><%= t(".preview.title") %></summary>
+        <div class="card__body">
+          <%= render "app/onboarding/profile_preview", snapshot: @snapshot %>
         </div>
-      <% end %>
-    </div>
-
-    <div class="chat__typing" data-chat-target="typing" hidden>
-      <%= render "app/onboarding/typing" %>
-    </div>
-
-    <div id="onboarding-notice" class="chat__notices" data-chat-target="notice"></div>
-
-    <div id="onboarding-toasts" class="chat__toasts" aria-live="polite"></div>
-
-    <%= render "app/onboarding/composer" %>
-  </section>
-
-  <aside id="chat-companion" class="onboarding__companion" data-mascot-dock aria-label="<%= t(".companion_label") %>">
-    <div class="onboarding__mascot"><%= render "shared/mascot_companion" %></div>
-    <details class="onboarding__preview card" open>
-      <summary class="onboarding__preview-summary"><%= t(".preview.title") %></summary>
-      <div class="card__body">
-        <%= render "app/onboarding/profile_preview", snapshot: @snapshot %>
-      </div>
-    </details>
-  </aside>
+      </details>
+    </aside>
+  <% end %>
 </div>

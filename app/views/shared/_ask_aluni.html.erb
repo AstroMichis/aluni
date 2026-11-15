@@ -1,0 +1,26 @@
+<%# Ask Aluni from any app screen (layouts/app_screen): the mascot waves from
+    the corner and opens the chat in place, a sheet from the bottom on phones
+    and a panel in the corner on wide screens (native <dialog>, dialog_controller).
+    The chat is the Ask Aluni page's own "ask-aluni" frame, fetched the first
+    time the panel opens (a lazy frame waits until it is visible), so the
+    transcript, the answers and Undo are the same as on that page. %>
+<div class="ask" data-controller="dialog">
+  <button type="button" class="ask__launcher" data-action="dialog#open" aria-haspopup="dialog">
+    <%= render "shared/mascot_avatar", size: "md" %>
+    <span class="ask__label"><%= t("shared.ask_aluni.open", app_name: t("app_name")) %></span>
+  </button>
+
+  <dialog class="ask__panel" data-dialog-target="dialog" aria-labelledby="ask-title">
+    <header class="ask__bar">
+      <%= render "shared/mascot_avatar", size: "sm" %>
+      <h2 class="ask__title" id="ask-title"><%= t("shared.ask_aluni.open", app_name: t("app_name")) %></h2>
+      <%= link_to t("shared.ask_aluni.full_page"), app_onboarding_path, class: "btn btn--ghost btn--sm ask__full" %>
+      <button type="button" class="ask__close" data-action="dialog#close" aria-label="<%= t("shared.ask_aluni.close") %>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+    <%= turbo_frame_tag "ask-aluni", src: app_onboarding_path, loading: :lazy, target: "_top", class: "ask__frame" do %>
+      <p class="ask__loading" role="status"><%= t("shared.ask_aluni.loading", app_name: t("app_name")) %></p>
+    <% end %>
+  </dialog>
+</div>
