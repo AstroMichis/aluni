@@ -35,6 +35,14 @@ module RotationsHelper
     detail ? "#{label} (#{detail})" : label
   end
 
+  # An evidence line's source, linked to the glossary entry that explains it when there is one.
+  def source_link(source)
+    term = GlossaryController::SOURCES[source]
+    return tag.span(source, class: "strategy__source") unless term
+
+    link_to source, glossary_path(anchor: term), class: "strategy__source", title: t("glossary.show.source_title")
+  end
+
   def score_text(value) = value.nil? ? t("app.rotations.no_data") : t("app.rotations.score", value: value)
 
   # What the narration may use: names in the farmer's language, nothing else.

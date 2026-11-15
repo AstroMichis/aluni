@@ -1,0 +1,47 @@
+<% app_name = t("app_name") %>
+<% content_for :title, t(".title", app_name: app_name) %>
+<% content_for :description, t(".description") %>
+
+<div class="landing glossary">
+  <nav class="landing__nav" aria-label="<%= t(".nav_label") %>">
+    <div class="container landing__nav-inner">
+      <%= link_to root_path, class: "landing__brand", aria: { label: t(".back_home") } do %>
+        <span class="landing__wordmark"><%= app_name %></span>
+      <% end %>
+      <div class="cluster cluster--sm">
+        <%= render "shared/language_toggle" %>
+        <%= render "shared/access_buttons" %>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main" class="container glossary__body stack stack--lg">
+    <header class="stack stack--sm">
+      <h1 class="text-display"><%= t(".headline") %></h1>
+      <p class="glossary__lede"><%= t(".lede", app_name: app_name) %></p>
+    </header>
+
+    <nav class="glossary__index cluster cluster--sm" aria-label="<%= t(".index_label") %>">
+      <% GlossaryController::TERMS.each do |term| %>
+        <a href="#<%= term %>"><%= t("glossary.terms.#{term}.name") %></a>
+      <% end %>
+    </nav>
+
+    <dl class="glossary__list">
+      <% GlossaryController::TERMS.each do |term| %>
+        <div class="glossary__term card" id="<%= term %>">
+          <div class="card__body stack stack--sm">
+            <dt class="text-heading"><%= t("glossary.terms.#{term}.name") %></dt>
+            <dd class="stack stack--sm">
+              <p><%= t("glossary.terms.#{term}.what") %></p>
+              <p class="glossary__meta"><strong><%= t(".from") %></strong> <%= t("glossary.terms.#{term}.from") %></p>
+              <p class="glossary__meta glossary__limits"><strong><%= t(".limits") %></strong> <%= t("glossary.terms.#{term}.limits") %></p>
+            </dd>
+          </div>
+        </div>
+      <% end %>
+    </dl>
+
+    <p class="glossary__lede"><%= t(".closing") %></p>
+  </main>
+</div>

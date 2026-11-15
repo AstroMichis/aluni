@@ -779,6 +779,7 @@ es:
         gaps: Lo que no sabemos
         use_as_plan: Usar como plan para %{year}
         disclaimer: Los puntajes combinan datos públicos de tu punto con reglas prácticas. Apoyan tu criterio y a tus expertos locales; nunca los reemplazan.
+        glossary: Qué significa cada número y sus límites.
       score: "%{value}/100"
       no_data: sin datos
       strategies:

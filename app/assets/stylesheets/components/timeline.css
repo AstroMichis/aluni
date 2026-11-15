@@ -68,3 +68,6 @@
   font-size: var(--text-sm);
   color: var(--color-text-primary);
 }
+
+/* Evidence sources on Your plan link to the glossary. */
+a.strategy__source { text-decoration: underline dotted; }

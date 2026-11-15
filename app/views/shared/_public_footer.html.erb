@@ -1,7 +1,7 @@
 <footer class="public-footer">
   <div class="container public-footer__inner">
     <p class="public-footer__tagline"><%= t(".tagline") %></p>
-    <p class="public-footer__links"><%= link_to t(".devices", app_name: t("app_name")), devices_path %></p>
+    <p class="public-footer__links"><%= link_to t(".devices", app_name: t("app_name")), devices_path %> · <%= link_to t(".glossary"), glossary_path %></p>
     <p class="public-footer__meta"><%= t(".meta", app_name: t("app_name"), year: Time.current.year) %></p>
   </div>
 </footer>

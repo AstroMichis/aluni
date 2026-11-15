@@ -779,6 +779,7 @@ en:
         gaps: What we do not know
         use_as_plan: Use as plan for %{year}
         disclaimer: Scores combine public data at your pin with rules of thumb. They support your judgment and your local experts; they never replace them.
+        glossary: What each number means and its limits.
       score: "%{value}/100"
       no_data: no data
       strategies:

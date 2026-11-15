@@ -46,6 +46,7 @@ scope "(:locale)", locale: /en|es/ do
 
   # The field station catalogue (public, informational).
   get "devices", to: "devices#show", as: :devices
+  get "glossary", to: "glossary#show", as: :glossary
 
   # The welcome screen and the accessibility controls (cookie, plus the account when signed in).
   post "preferences", to: "preferences#update", as: :preferences

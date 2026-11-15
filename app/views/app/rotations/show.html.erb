@@ -85,7 +85,7 @@
                 <h3><%= t(".evidence") %></h3>
                 <ul role="list">
                   <% strategy.evidence.each do |fact| %>
-                    <li><%= fact_text(fact) %><% if fact.source %> <span class="strategy__source"><%= fact.source %></span><% end %></li>
+                    <li><%= fact_text(fact) %><% if fact.source %> <%= source_link(fact.source) %><% end %></li>
                   <% end %>
                 </ul>
               </div>
@@ -109,7 +109,7 @@
         <% end %>
       </ol>
 
-      <p class="choice-set__hint"><%= t(".disclaimer") %></p>
+      <p class="choice-set__hint"><%= t(".disclaimer") %> <%= link_to t(".glossary"), glossary_path %></p>
     <% end %>
   </main>
 </div>
