@@ -15,6 +15,7 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
       expect(response.body).to include(%(href="#{path}"))
     end
     expect(response.body).not_to include(I18n.t("app.home.show.soon"))
+    expect(response.body).to include(I18n.t("app.home.show.plan.title")).and include(%(href="/en/app/fields/#{field.id}/rotation"))
   end
 
   it "lists the fields and opens one with the farmer's answers and the sources' values" do

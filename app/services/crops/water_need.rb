@@ -10,6 +10,11 @@ module Crops
   class WaterNeed
     Need = Struct.new(:crop_mm, :rain_mm, :effective_mm, :deficit_mm, :days, :planting_month, keyword_init: true)
 
+    # FAO-56 Table 11 planting months are northern rows. South of this latitude the
+    # seasons are reversed, so the default month moves by six; nearer the equator
+    # planting follows the rains, not the calendar, and the row is kept.
+    SOUTHERN_SEASONS_FROM = -15.0
+
     def self.for(crop, observation:, latitude:, planting_month: nil)
       fao = Agronomy.find(crop)&.fao56
       payload = observation&.ok? ? observation.payload.to_h : {}
@@ -17,7 +22,14 @@ module Crops
       return nil unless fao && climatology.any?
 
       et0 = Weather::Et0.monthly(climatology, latitude: latitude, elevation: payload["elevation"].to_i)
-      et0 && new(fao, et0, climatology["PRECTOTCORR"].to_h, planting_month || fao["planting_month"]).need
+      et0 && new(fao, et0, climatology["PRECTOTCORR"].to_h, planting_month || default_month(fao["planting_month"], latitude)).need
+    end
+
+    # The FAO row's month, six months later south of SOUTHERN_SEASONS_FROM.
+    def self.default_month(month, latitude)
+      return month unless latitude && latitude.to_f < SOUTHERN_SEASONS_FROM
+
+      ((month.to_i + 5) % 12) + 1
     end
 
     def initialize(fao, et0, rain, planting_month)

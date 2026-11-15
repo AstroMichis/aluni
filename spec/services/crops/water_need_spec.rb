@@ -18,8 +18,27 @@ RSpec.describe Crops::WaterNeed do
     expect(need.deficit_mm).to be_positive
   end
 
+  it "moves the default planting month six months south of the tropics" do
+    expect(described_class.default_month(4, 40.95)).to eq(4)   # maize row: April
+    expect(described_class.default_month(4, -33.8)).to eq(10)  # central Chile: October
+    expect(described_class.default_month(9, -33.8)).to eq(3)
+    expect(described_class.default_month(4, -5.0)).to eq(4)    # near the equator the row stays
+    expect(described_class.for("zea-mays", observation: observation, latitude: -33.8).planting_month).to eq(10)
+  end
+
+  it "keeps the farmer's own planting month anywhere" do
+    expect(described_class.for("zea-mays", observation: observation, latitude: -33.8, planting_month: 11).planting_month).to eq(11)
+  end
+
+  it "covers the catalog crops whose FAO-56 rows were captured" do
+    %w[sorghum-bicolor triticum-aestivum phaseolus-vulgaris solanum-tuberosum gossypium-hirsutum].each do |crop|
+      need = described_class.for(crop, observation: observation, latitude: 40.95)
+      expect(need&.crop_mm).to be_positive, crop
+    end
+  end
+
   it "has no need for crops whose FAO-56 values were not captured, or without the normals" do
-    expect(described_class.for("triticum-aestivum", observation: observation, latitude: 40.95)).to be_nil
+    expect(described_class.for("medicago-sativa", observation: observation, latitude: 40.95)).to be_nil
     expect(described_class.for("zea-mays", observation: nil, latitude: 40.95)).to be_nil
   end
 end

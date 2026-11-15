@@ -5,6 +5,9 @@ en:
         greeting: Hello, %{name}.
         lede: 'Turn the wheel to choose where to go: your fields, crops, weather, team or reports.'
         talk_to: Talk to %{app_name}
+        plan:
+          title: Your rotation plan
+          body: "Your %{crop} rotation against the alternatives, with the evidence for each."
         eyebrow: Main menu
         dial_label: Menu sections
         hint: Turn the wheel with your finger, the mouse or the arrow keys. Tap the center to open.
@@ -797,6 +800,8 @@ en:
         harvester: Small grains need a combine; your equipment does not list one.
         same_family: Pests that live on one family could carry over.
         establishment: Alfalfa takes a season to establish and needs a market or animals.
+        new_crop: It brings a crop your field has not grown before, and you prefer to change carefully. Try it on part of a field first.
+        contract: You sell under contract or for export. Check with your buyer before changing the crop.
       gaps:
         market: 'Prices and buyers: there is no source for your local market yet.'
         soil: Your soil texture is not confirmed yet.
