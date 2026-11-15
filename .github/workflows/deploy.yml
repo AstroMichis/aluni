@@ -78,7 +78,7 @@ jobs:
 
       # Only Kamal is needed here: the image (and the Rust extension) is built
       # on the VM, so the app's own gems are never installed on the runner.
-      - uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
+      - uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
       - name: Install Kamal (version from Gemfile.lock)
         run: gem install kamal --no-document -v "$(sed -n 's/^    kamal (\(.*\))$/\1/p' Gemfile.lock)"
 
