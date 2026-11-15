@@ -31,7 +31,8 @@ OpenStreetMap's Nominatim, through the server only (the browser never calls it):
 
 ## Planetary Computer (`app/services/planetary_computer/client.rb`)
 
-- Sentinel-2 L2A from Microsoft Planetary Computer, with no account or key (`docs/data_sources/sentinel2_stac.md`).
+- Landsat Collection 2 L2 (NASA/USGS, `landsat-c2-l2`) and Sentinel-2 L2A (ESA) from Microsoft Planetary Computer, with no account or key (`docs/data_sources/sentinel2_stac.md`, `docs/data_sources/landsat.md`).
+- `monthly_ndvi(lat:, lon:, months: 12)` is what the app stores: one clear-sky NDVI per calendar month from both missions together (one STAC search per month, the least cloudy scene whose pixel passes its quality band: Sentinel-2 `SCL` 4/5/6, Landsat `QA_PIXEL` clear bit with no cloud or shadow bits), surface reflectance via `unscale=true`. Months run 4 at a time on their own threads (the point API is slow per request), about 30 s per field. `Fields::FetchObservationsJob` keeps it as the `vegetation` observation; `Fields::Vegetation` reads it as bare (< 0.25), sparse or green months and finds bare periods; `app/fields/_vegetation` shows it on the field and on the rotation plan.
 - `scenes(lat:, lon:, from:, to:, max_cloud: 30)` runs a STAC search over the point, least cloudy first. `point_value(lat:, lon:, item:, expression:)` calls the data API's (TiTiler) `item/point`, which computes band math server side, so no imagery is downloaded.
 - `ndvi(lat:, lon:, from:, to:)` returns `[{ date:, ndvi:, scene:, cloud_cover: }, ...]` newest first. It keeps only scenes whose pixel is clear in the scene classification (`SCL` 4, 5 or 6), costs two point calls per scene (at most 8 scenes), and is cached for 6 h.
 - Free, so it ships unpaused, but it has a switch: `Platform::Switchboard.guard!(:planetary_computer)`. Timeout 20 s, retries on 429/502/503/504.

@@ -2,7 +2,7 @@
 # Fields::FetchObservationsJob). The payload keeps the source's own values;
 # Fields::Profile names the paths the screens read.
 class FieldObservation < ApplicationRecord
-  SOURCES = %w[fcc nasa_power gaez ssurgo usgs_elevation cdl].freeze
+  SOURCES = %w[fcc nasa_power gaez ssurgo usgs_elevation cdl vegetation].freeze
 
   belongs_to :field
 

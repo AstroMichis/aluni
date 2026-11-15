@@ -2,7 +2,8 @@
 
 module Fields
   # Asks the public data sources about a field's pin and keeps one
-  # FieldObservation per source. Global first (NASA POWER, FAO GAEZ); the US
+  # FieldObservation per source. Global first (NASA POWER, FAO GAEZ, the
+  # monthly Landsat/Sentinel-2 NDVI from Planetary Computer); the US
   # layer (SSURGO, USGS 3DEP, Cropland Data Layer) only when FCC places the pin
   # in a US state. A source that fails is recorded as failed and the others
   # still run; a paused `data` switch holds the whole job (ApplicationJob).
@@ -15,6 +16,7 @@ module Fields
     GAEZ_CANDIDATES = [ "Maize", "Soybean", "Wheat", "Oat", "Barley", "Sorghum", "Phaseolus bean", "Alfalfa" ].freeze
     CDL_YEARS = 5
     US_SOURCES = %w[ssurgo usgs_elevation cdl].freeze
+    VEGETATION_MONTHS = 12
 
     def perform(field_id)
       field = Field.includes(:field_crops, farm: { user: :farmer_profile }).find_by(id: field_id)
@@ -25,6 +27,7 @@ module Fields
       us = record("fcc") { Fcc::Client.new.locate(**@point) }&.ok?
       record("nasa_power") { power }
       record("gaez") { gaez }
+      record("vegetation") { vegetation }
       US_SOURCES.each do |source|
         us ? record(source) { send(source) } : mark(source, :out_of_coverage)
       end
@@ -54,7 +57,16 @@ module Fields
       crops.values.all?(&:empty?) ? {} : { "input_level" => input, "water_supply" => "Rainfed", "crops" => crops }
     end
 
-    def ssurgo = Ssurgo::Client.new.soil(**@point)
+    # One clear-sky NDVI per month over the last year at the pin (Fields::Vegetation reads it).
+    def vegetation
+      client = PlanetaryComputer::Client.new
+      months = client.monthly_ndvi(lat: @point[:latitude], lon: @point[:longitude], months: VEGETATION_MONTHS)
+      raise DataSources::Client::Error, "Planetary Computer: #{client.last_error&.dig(:message)}" if months.nil?
+
+      months.any? { |m| m["ndvi"] } ? { "months" => months, "source" => Fields::Vegetation::SOURCE } : {}
+    end
+
+def ssurgo = Ssurgo::Client.new.soil(**@point)
     def usgs_elevation = Usgs::ElevationClient.new.terrain(**@point)
 
     def cdl

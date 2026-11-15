@@ -11,7 +11,8 @@ RSpec.describe Fields::FetchObservationsJob do
     described_class.perform_now(field.id)
 
     expect(field.observations.pluck(:source, :status).to_h).to eq(
-      "fcc" => "ok", "nasa_power" => "ok", "gaez" => "ok", "ssurgo" => "ok", "usgs_elevation" => "ok", "cdl" => "ok")
+      "fcc" => "ok", "nasa_power" => "ok", "gaez" => "ok", "vegetation" => "ok", "ssurgo" => "ok", "usgs_elevation" => "ok", "cdl" => "ok")
+    expect(field.observation("vegetation").payload["months"].size).to eq(6)
     expect(field.observation("gaez").payload.dig("crops", "Maize", "yield")).to eq(6867.0)
     expect(field.observation("cdl").payload["years"]).to include((Date.current.year - 1).to_s => "Corn")
     expect(farm.reload).to have_attributes(country_code: "US", admin_area: "Nebraska")
@@ -37,6 +38,17 @@ RSpec.describe Fields::FetchObservationsJob do
 
     expect(field.observation("gaez")).to be_failed
     expect(field.observation("gaez").error).to include("Gaez::Client")
+    expect(field.observation("nasa_power")).to be_ok
+  end
+
+  it "records the vegetation source as failed when Planetary Computer cannot be searched" do
+    stub_all_data_sources(us: false)
+    allow_any_instance_of(PlanetaryComputer::Client).to receive(:monthly_ndvi).and_return(nil)
+    field = create(:field, farm: farm, latitude: 9.93, longitude: -84.08)
+
+    described_class.perform_now(field.id)
+
+    expect(field.observation("vegetation")).to be_failed
     expect(field.observation("nasa_power")).to be_ok
   end
 
