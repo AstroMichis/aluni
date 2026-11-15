@@ -11,7 +11,7 @@ en:
       get_the_app: "Get the app"
       open_app: "Continue with %{app_name}"
       devices_teaser:
-        kicker: "Coming soon"
+        kicker: "New hardware"
         title: "%{app_name} Probe: your field, actually measured"
         body: "A solar station that measures soil, air and rain, keeps everything without signal and compares it with NASA satellites."
         cta: "Meet the Probe"
