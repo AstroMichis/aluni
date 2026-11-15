@@ -597,8 +597,28 @@ es:
           rain_normal: Lluvia típica (mm)
           temp_normal: Media típica (°C)
         forecast:
-          title: Pronóstico
-          body: 'El pronóstico todavía no está conectado: ninguna de nuestras fuentes documentadas lo ofrece. Mientras tanto te muestro lo que ha pasado esta temporada.'
+          title: Próximos siete días
+          loading: Pidiendo el pronóstico de tu punto…
+      forecast:
+        day: Día
+        temp: Mín. / máx.
+        rain: Lluvia (prob.)
+        gust: Ráfagas
+        soil: "Suelo a 5 cm · humedad (1 = capacidad de campo, 0 = marchitez)"
+        calm: Sin heladas, calor, lluvia fuerte ni viento fuerte en los próximos siete días.
+        alerts:
+          frost: "posible helada (aire %{tmin} °C, suelo %{soil} °C). Cubre los almácigos y espera a que suba la temperatura para regar."
+          heat: "hasta %{tmax} °C. Riega temprano y evita aplicar en las horas de calor."
+          heavy_rain: "%{rain} mm de lluvia. No entres con maquinaria al suelo mojado y revisa los drenajes."
+          wind: "ráfagas de %{gust} km/h. No es día para aplicar."
+        drying: "En estos días el aire se lleva unos %{mm} mm más de lo que trae la lluvia: el suelo se seca."
+        wetting: "En estos días la lluvia trae unos %{mm} mm más de lo que se lleva el aire."
+        source: Pronóstico de Meteomatics en tu punto; los días siguen el sol de tu longitud.
+        errors:
+          needs_pin: Agrega el punto de este terreno para ver su pronóstico.
+          not_configured: El servicio de pronóstico no está configurado.
+          paused: El pronóstico está en pausa por ahora.
+          unavailable: El pronóstico no respondió. Intenta de nuevo en un rato.
       alerts:
         title: Alertas de clima · %{app_name}
         headline: Alertas de clima

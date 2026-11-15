@@ -34,14 +34,12 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 - **"Your field from space".** Monthly NDVI over the last year from **Landsat (NASA/USGS)** and Sentinel-2 through Planetary Computer, with bare-soil windows and the cover-crop opportunity, on the field and on the plan.
 - **Data sources.** NASA POWER climate and season, GAEZ suitability, the landing field finder (Nominatim), and SSURGO, 3DEP and CDL in the US.
 - **Gemini on Vertex AI.** No key, trial credits, a 2000-request daily cap that pauses itself.
-- **Clients ready but not on a screen yet.** Meteomatics forecast (credentials loaded), Planetary Computer.
 - **Field station catalogue** (`/devices`) with a 3D product viewer (`docs/DEVICES.md`).
 
 **Rate limit (fixed):** Planetary Computer rate-limits bursts (429). The client now asks 2 months at a time, retries 429/5xx with exponential backoff and jitter (about 2, 4, 8, 16 s, or `Retry-After`), and stops the other months once one fails. A rate-limited field reruns only the NDVI later (15, 30, 45 min plus jitter, 3 times).
 
 **Still missing:**
 - **NASA breadth.** Done: POWER, Landsat, NASADEM (SRTM), GPM IMERG. Missing from the challenge list: SMAP, ECOSTRESS, MODIS, GRACE.
-- **A real forecast.** The forecast option still shows the past season.
 - **Alerts.** None are sent.
 - **Global soil.** Outside the US it depends on the farmer (the slope now comes from NASADEM).
 
@@ -74,7 +72,7 @@ Suggested next order: SMAP, then MODIS, GRACE and ECOSTRESS.
 
 ## P2: a reason to come back
 
-- **Forecast:** `Meteomatics::Client#forecast` on the weather screen (72 h, field pin, cached per hour).
+- ✅ **Forecast:** seven days of Meteomatics on the weather screen (`Weather::Forecast`, lazy `forecast` frame): local solar days, frost (air or soil at 5 cm), heat, heavy rain and wind alerts with what to do, and the week's rain-minus-evapotranspiration balance.
 - **Daily alerts job:** frost, heavy rain, dry spell and heat per field from the forecast, shown in the app (push when the shells ship). Purposes go in `config/notification_purposes.yml`.
 - **Weekly refresh** of each field's observations (sidekiq-cron); today only a pin change refreshes them.
 

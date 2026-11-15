@@ -127,6 +127,20 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
     expect(user.farmer_profile.reload.notification_preferences["weather"]).to eq(%w[frost])
   end
 
+  it "loads the next seven days lazily, with the day's alerts" do
+    get app_weather_path(locale: "en"), headers: native_headers
+    expect(response.body).to include('id="forecast"').and include("src=\"#{forecast_app_weather_path(field: field.id, locale: "en")}")
+
+    start = Time.current.utc.beginning_of_day
+    series = { "t_2m:C" => Array.new(48) { |i| [ start + i.hours, i < 24 ? 12.0 : -2.0 ] },
+               "precip_1h:mm" => Array.new(48) { |i| [ start + i.hours, 0.0 ] } }
+    client = instance_double(Meteomatics::Client, forecast: series, last_error: nil)
+    allow(Meteomatics::Client).to receive_messages(configured?: true, new: client)
+
+    get forecast_app_weather_path(locale: "en"), headers: native_headers
+    expect(response.body).to include('<turbo-frame id="forecast">').and include("frost possible")
+  end
+
   it "explains why there is no weather yet for a field without a pin" do
     bare = create(:field, :unlocated, farm: field.farm)
     get app_weather_path(field: bare.id, locale: "en"), headers: native_headers

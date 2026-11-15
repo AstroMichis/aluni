@@ -85,9 +85,11 @@
       <%= render "app/weather/no_season" %>
     <% end %>
 
-    <section class="screen__section gap-card" aria-labelledby="forecast">
+    <section class="screen__section" aria-labelledby="forecast">
       <h2 class="screen__section-title" id="forecast"><%= t(".forecast.title") %></h2>
-      <%= render "shared/aluni", message: t(".forecast.body") %>
+      <%= turbo_frame_tag "forecast", src: forecast_app_weather_path(field: @field&.key), loading: :lazy do %>
+        <p class="choice-set__hint"><%= t(".forecast.loading") %></p>
+      <% end %>
     </section>
   </main>
 </div>
