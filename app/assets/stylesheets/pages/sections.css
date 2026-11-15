@@ -165,6 +165,7 @@
 
 /* Reports */
 .report__actions { margin-top: var(--space-4); }
+.report__download-label { font-size: var(--text-sm); color: var(--color-text-secondary); }
 
 .harvest { display: grid; gap: var(--space-3); }
 .harvest__row {

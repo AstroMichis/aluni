@@ -689,8 +689,7 @@ es:
         lede:
           one: Un terreno, %{area}.
           other: "%{count} terrenos, %{area}."
-        print: Imprimir o guardar como PDF
-        export: Descargar los datos
+        download: Descargar
         crops_title: Área por cultivo
         weather_title: Clima
         fields_title: Terreno por terreno
@@ -722,18 +721,39 @@ es:
         lede: 'Todo lo que tiene la finca, con la fuente y la confianza de cada valor. Tus datos son tuyos: llévalos a tu asesor, a tu comprador o a otra herramienta.'
         download: Descargar
         open_report: Abrir el reporte
+        csv:
+          generated: Generado el
+          season: Temporada
+          hectares: Hectáreas
+          field_crops: Cultivos por terreno y temporada
+          data: Todos los datos, valor por valor
+          columns:
+            field: Terreno
+            season: Temporada
+            role: Papel
+            crop: Cultivo
+            share: Parte del terreno
+            hectares: Hectáreas
+            planting: Mes de siembra
+            harvest: Mes de cosecha
+            source: Origen
         formats:
           csv:
             title: Hoja de cálculo
-            text: 'Una fila por valor: terreno, dato, estado, valor, fuente y confianza.'
+            text: "El reporte para una hoja de cálculo: área por cultivo, clima, terreno por terreno, los cultivos de cada terreno por temporada, el equipo y cada valor con su fuente."
           json:
             title: Datos completos
-            text: Los mismos valores más tus planes, equipo y tareas, para otra herramienta.
-          print:
-            badge: PDF
-            title: Reporte para imprimir
-            text: El reporte de temporada, listo para imprimir o guardar como PDF.
+            text: "El mismo reporte para otra herramienta, con números y claves estables: las temporadas, partes del terreno, fuentes y valores de cada terreno."
+          pdf:
+            title: Reporte de temporada
+            text: El reporte como documento para imprimir, enviar o guardar, con el área por cultivo, el clima y cada terreno.
       aluni: Las exportaciones salen de lo que ves aquí, en esta sesión del navegador.
+      downloads:
+        pdf: Descargar el reporte en PDF
+        csv: Descargar los datos en CSV
+        json: Descargar los datos en JSON
+      pdf:
+        footer: "%{app_name} · %{date} · página %{page} de %{total}"
     screens:
       saved: Guardado.
       invalid: Ese valor no encaja. Revísalo, por favor.

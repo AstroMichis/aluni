@@ -1,11 +1,12 @@
 module App
   # Reports (menu section 5): the season summary, the attainable yield by
-  # field (FAO GAEZ), and an export of everything the farm holds.
+  # field (FAO GAEZ), and the downloads: the report as a PDF (Reports::Pdf),
+  # and everything the farm holds as CSV or JSON (Reports::Export).
   class ReportsController < BaseController
     include FarmScreen
 
     def show
-      @season = Weather::Season.for(@farm.main_field&.observation("nasa_power"))
+      @season = season
     end
 
     def harvest
@@ -15,11 +16,19 @@ module App
     end
 
     def download
-      report = Reports::Export.new(@farm)
       respond_to do |format|
-        format.json { send_data report.to_json, filename: report.filename("json"), type: :json }
-        format.csv { send_data report.to_csv, filename: report.filename("csv"), type: "text/csv" }
+        format.pdf do
+          pdf = Reports::Pdf.new(farm: @farm, season: season, profile: Current.user.farmer_profile, view: helpers)
+          send_data pdf.render, filename: pdf.filename, type: :pdf
+        end
+        format.json { send_data export.to_json, filename: export.filename("json"), type: :json }
+        format.csv { send_data export.to_csv, filename: export.filename("csv"), type: "text/csv" }
       end
     end
+
+    private
+
+    def season = Weather::Season.for(@farm.main_field&.observation("nasa_power"))
+    def export = Reports::Export.new(farm: @farm, season: season, profile: Current.user.farmer_profile, view: helpers)
   end
 end
