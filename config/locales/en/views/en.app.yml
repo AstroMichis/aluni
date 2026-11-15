@@ -808,4 +808,4 @@ en:
         ecocrop: The crops' temperature and pH requirements (FAO ECOCROP) are not loaded yet.
         suitability: FAO GAEZ has no value for some of these crops at your pin.
         water: The water need is only known for corn and soybeans so far (FAO-56).
-        slope: The slope is not known outside the United States yet.
+        slope: "The slope at your pin is not known yet: the elevation data (NASADEM, 56°S to 60°N) has not answered."

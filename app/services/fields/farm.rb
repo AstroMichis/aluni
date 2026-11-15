@@ -80,11 +80,16 @@ module Fields
       def observed(datum)
         return if datum.observation.empty?
 
-        values = datum.observation.transform_values { |(obs, path)| observation_payload(obs)&.dig(*path) }
-        return if values.values.any?(&:nil?)
+        # Per value, the first alternative that has it (3DEP before NASADEM).
+        found = datum.observation.transform_values do |alternatives|
+          alternatives.lazy.map { |(obs, path)| [ obs, observation_payload(obs)&.dig(*path) ] }.find { |(_, v)| !v.nil? }
+        end
+        return if found.values.any?(&:nil?)
+
+        values = found.transform_values(&:last)
 
         values = values.transform_values { |v| v.is_a?(Numeric) && datum.scale ? v * datum.scale : v }
-        source = profile.observation_sources[datum.observed_sources.first]
+        source = profile.observation_sources[found.values.first.first]
         if datum.confirm?(layer)
           proposal = Proposals.call(datum.propose, values)
           return proposal.nil? ? nil : { state: :to_confirm, values: values, source: source, proposal: proposal }

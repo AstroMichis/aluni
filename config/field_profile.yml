@@ -28,7 +28,8 @@
 #                (the to-do list and progress count only these; the rest
 #                sits under "More details" and stays optional)
 #   multiple / number
-#   observation  name => "<observation source>.<path>"
+#   observation  name => "<observation source>.<path>", or several joined by
+#                " | ": the first that has a value wins (3DEP, then NASADEM)
 #   propose      how an observation becomes the column's value on confirm
 #                (texture_class, drainage_class, number, cdl_history)
 #   scale        multiply the observed number (mm/day to mm/year)
@@ -42,7 +43,7 @@ sources:
   ecocrop:          { name: "FAO ECOCROP", layer: global, scale: species, resolution: "-", doc: ecocrop.md, status: reference }
   gibs:             { name: "NASA Worldview / GIBS", layer: global, scale: zone, resolution: "250 m", doc: gibs_worldview.md, status: connected }
   fao56:            { name: "FAO-56", layer: global, scale: species, resolution: "-", doc: fao56_crop_coefficients.md, status: planned }
-  srtm:             { name: "SRTM / NASADEM", layer: global, scale: parcel, resolution: "30 m", doc: terrain.md, status: planned }
+  srtm:             { name: "NASADEM (SRTM)", layer: global, scale: parcel, resolution: "30 m", doc: terrain.md, status: connected }
   hls:              { name: "HLS (Landsat + Sentinel-2)", layer: global, scale: parcel, resolution: "30 m", doc: vegetation_indices.md, status: connected }
   modis_phenology:  { name: "MODIS MCD12Q2", layer: global, scale: zone, resolution: "500 m", doc: vegetation_indices.md, status: planned }
   smap:             { name: "SMAP L4", layer: global, scale: zone, resolution: "9 km", doc: smap.md, status: planned }
@@ -63,6 +64,7 @@ observations:
   usgs_elevation: usgs_3dep
   cdl: cropland_cdl
   vegetation: hls
+  nasadem: srtm
 
 data:
   farm:
@@ -278,14 +280,14 @@ data:
     elevation:
       group: terrain
       origin: auto
-      observation: { value: usgs_elevation.elevation }
+      observation: { value: "usgs_elevation.elevation | nasadem.elevation" }
       sources: { global: [srtm], us: [usgs_3dep] }
       precision: 0
       feeds: [suitability]
     slope:
       group: terrain
       origin: auto
-      observation: { value: usgs_elevation.slope }
+      observation: { value: "usgs_elevation.slope | nasadem.slope" }
       sources: { global: [srtm], us: [usgs_3dep] }
       feeds: [erosion]
     temp_normal:

@@ -21,6 +21,8 @@ module Rotations
     FALLBACK_OTHERS = %w[Maize Sorghum Sunflower].freeze # before GAEZ answers
     ROW_CROPS = %w[zea-mays sorghum-bicolor glycine-max phaseolus-vulgaris solanum-tuberosum helianthus-annuus gossypium-hirsutum].freeze
     STEEP = 5.0         # % slope from which a row crop leaves soil at risk
+    # Where the slope comes from, sharpest first: US lidar, then NASA's global DEM.
+    SLOPE_SOURCES = { "usgs_elevation" => "USGS 3DEP", "nasadem" => "NASA NASADEM" }.freeze
     DRY_SHARE = 0.5     # a rainfed crop whose season rain is under half its need
     PERENNIALS = %w[medicago-sativa].freeze # a stand of several seasons is one crop, not a repeat
     LOW_SUITABILITY = 4000
@@ -160,14 +162,17 @@ module Rotations
     end
 
     def erosion(crops, facts, gaps)
-      observation = @field.observation("usgs_elevation")
-      slope = observation&.ok? ? observation.payload["slope"] : nil
+      slope, source = SLOPE_SOURCES.lazy.filter_map do |obs, name|
+        observation = @field.observation(obs)
+        value = observation&.ok? ? observation.payload["slope"] : nil
+        [ value, name ] if value
+      end.first
       unless slope
         gaps << "slope"
         return nil
       end
 
-      facts << Fact.new(key: "slope", values: { value: slope }, source: "USGS 3DEP")
+      facts << Fact.new(key: "slope", values: { value: slope }, source: source)
       rows = crops.count { |c| ROW_CROPS.include?(c) }
       penalty = slope >= STEEP ? 25 : 8
       [ 100 - (rows * penalty), 0 ].max

@@ -37,13 +37,13 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 - **Clients ready but not on a screen yet.** Meteomatics forecast (credentials loaded), Planetary Computer.
 - **Field station catalogue** (`/devices`) with a 3D product viewer (`docs/DEVICES.md`).
 
-**Known issue:** Planetary Computer rate-limits bursts (429). Backfilling 4 fields at once (Sidekiq 3 jobs × 4 threads) failed 3 of them; one at a time works. Fix next: fewer threads per field (2) and a longer, backed-off retry on 429 in `PlanetaryComputer::Client`.
+**Rate limit (fixed):** Planetary Computer rate-limits bursts (429). The client now asks 2 months at a time, retries 429/5xx with exponential backoff and jitter (about 2, 4, 8, 16 s, or `Retry-After`), and stops the other months once one fails. A rate-limited field reruns only the NDVI later (15, 30, 45 min plus jitter, 3 times).
 
 **Still missing:**
-- **NASA breadth.** Done: POWER, Landsat. Missing from the challenge list: SMAP, ECOSTRESS, GPM, MODIS, GRACE, SRTM.
+- **NASA breadth.** Done: POWER, Landsat, NASADEM (SRTM). Missing from the challenge list: SMAP, ECOSTRESS, GPM, MODIS, GRACE.
 - **A real forecast.** The forecast option still shows the past season.
 - **Alerts.** None are sent.
-- **Global soil and slope.** Outside the US they depend on the farmer.
+- **Global soil.** Outside the US it depends on the farmer (the slope now comes from NASADEM).
 - **The 3-season timeline** per strategy (bare and vulnerable bands).
 
 ## P0: the demo tells the whole story
@@ -60,13 +60,13 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 
 ## P1: NASA depth (each item checks one dataset off the challenge list)
 
-Suggested next order: SRTM/NASADEM global slope (quick, same Planetary Computer point API), GPM IMERG, SMAP, then MODIS, GRACE and ECOSTRESS.
+Suggested next order: GPM IMERG, SMAP, then MODIS, GRACE and ECOSTRESS.
 
 | Item | Dataset | How |
 |---|---|---|
 | ✅ Crop health and **bare-field periods** | Landsat (NASA/USGS) + Sentinel-2 NDVI | Done (#22): `monthly_ndvi`, the `vegetation` observation, `Fields::Vegetation`, "Your field from space". Next: draw it on the 3-season timeline. |
 | Long-term vegetation baseline and anomalies | MODIS NDVI (16-day, 20+ years) | AppEEARS or Planetary Computer |
-| **Global slope** for erosion | SRTM / NASADEM | Planetary Computer point value; replaces US-only 3DEP outside the US |
+| ✅ **Global slope** for erosion | NASADEM (SRTM) | Done: `PlanetaryComputer::Client#terrain`, the `nasadem` observation; 3DEP first in the US, NASADEM everywhere else (56°S to 60°N) in the profile and the comparator. |
 | Extreme rain frequency | GPM IMERG | Earthdata credentials already in credentials |
 | Soil moisture and anomalies | SMAP L3/L4 | AppEEARS async request (Earthdata) |
 | Long-term water trend | GRACE / GRACE-FO | One trend indicator per region |

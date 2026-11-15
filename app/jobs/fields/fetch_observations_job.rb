@@ -3,12 +3,13 @@
 module Fields
   # Asks the public data sources about a field's pin and keeps one
   # FieldObservation per source. Global first (NASA POWER, FAO GAEZ, the
-  # monthly Landsat/Sentinel-2 NDVI from Planetary Computer); the US
+  # monthly Landsat/Sentinel-2 NDVI and NASADEM slope from Planetary Computer); the US
   # layer (SSURGO, USGS 3DEP, Cropland Data Layer) only when FCC places the pin
   # in a US state. A source that fails is recorded as failed and the others
   # still run; a paused `data` switch holds the whole job (ApplicationJob).
   # Enqueued when a pin is set or moved (Field#after_commit) and from
-  # "Refresh data".
+  # "Refresh data". When Planetary Computer rate-limits the NDVI, only that
+  # source runs again later (`only: "vegetation"`), up to VEGETATION_RETRIES times.
   class FetchObservationsJob < ApplicationJob
     queue_as :default
 
@@ -17,21 +18,27 @@ module Fields
     CDL_YEARS = 5
     US_SOURCES = %w[ssurgo usgs_elevation cdl].freeze
     VEGETATION_MONTHS = 12
+    VEGETATION_RETRIES = 3
+    VEGETATION_RETRY_WAIT = 15.minutes # times the attempt, plus up to 5 minutes of jitter
 
-    def perform(field_id)
+    def perform(field_id, only: nil, attempt: 0)
       field = Field.includes(:field_crops, farm: { user: :farmer_profile }).find_by(id: field_id)
       return unless field&.located?
 
       @field = field
       @point = { latitude: field.latitude.to_f, longitude: field.longitude.to_f }
+      return retry_vegetation(attempt) if only == "vegetation"
+
       us = record("fcc") { Fcc::Client.new.locate(**@point) }&.ok?
       record("nasa_power") { power }
       record("gaez") { gaez }
       record("vegetation") { vegetation }
+      record("nasadem") { nasadem }
       US_SOURCES.each do |source|
         us ? record(source) { send(source) } : mark(source, :out_of_coverage)
       end
       place_farm if us
+      retry_vegetation_later(attempt) if @vegetation_rate_limited
     end
 
     private
@@ -61,12 +68,37 @@ module Fields
     def vegetation
       client = PlanetaryComputer::Client.new
       months = client.monthly_ndvi(lat: @point[:latitude], lon: @point[:longitude], months: VEGETATION_MONTHS)
-      raise DataSources::Client::Error, "Planetary Computer: #{client.last_error&.dig(:message)}" if months.nil?
+      if months.nil?
+        @vegetation_rate_limited = client.rate_limited?
+        raise DataSources::Client::Error, "Planetary Computer: #{client.last_error&.dig(:message)}"
+      end
 
       months.any? { |m| m["ndvi"] } ? { "months" => months, "source" => Fields::Vegetation::SOURCE } : {}
     end
 
-def ssurgo = Ssurgo::Client.new.soil(**@point)
+    def retry_vegetation(attempt)
+      record("vegetation") { vegetation }
+      retry_vegetation_later(attempt) if @vegetation_rate_limited
+    end
+
+    # Planetary Computer's burst limit clears in minutes; ask again, spread out.
+    def retry_vegetation_later(attempt)
+      return if attempt >= VEGETATION_RETRIES
+
+      wait = (VEGETATION_RETRY_WAIT * (attempt + 1)) + rand(0..300).seconds
+      self.class.set(wait: wait).perform_later(@field.id, only: "vegetation", attempt: attempt + 1)
+    end
+
+    # Global elevation and slope (NASADEM); 3DEP stays first in the US, this fills the rest.
+    def nasadem
+      client = PlanetaryComputer::Client.new
+      terrain = client.terrain(lat: @point[:latitude], lon: @point[:longitude])
+      raise DataSources::Client::Error, "NASADEM: #{client.last_error&.dig(:message)}" if terrain.nil?
+
+      terrain
+    end
+
+    def ssurgo = Ssurgo::Client.new.soil(**@point)
     def usgs_elevation = Usgs::ElevationClient.new.terrain(**@point)
 
     def cdl

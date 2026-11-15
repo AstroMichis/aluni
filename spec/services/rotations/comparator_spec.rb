@@ -28,6 +28,15 @@ RSpec.describe Rotations::Comparator do
     expect(comparator.strategies.map(&:key)).not_to include("legume") # the rotation already has soybeans
   end
 
+  it "takes the slope from NASADEM where the US lidar has none" do
+    record.observations.find_by(source: "usgs_elevation").update!(status: :out_of_coverage, payload: {})
+    create(:field_observation, field: record, source: "nasadem", payload: { "elevation" => 74.0, "slope" => 7.5 })
+    slope = comparator.strategies.first.evidence.find { |f| f.key == "slope" }
+
+    expect([ slope.source, slope.values ]).to eq([ "NASA NASADEM", { value: 7.5 } ])
+    expect(comparator.strategies.first.gaps).not_to include("slope")
+  end
+
   it "says what is better than now, what is unknown and what to check locally" do
     alternative = comparator.strategies.drop(1).first
     expect(alternative.gaps).to include("market", "soil")
