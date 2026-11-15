@@ -19,7 +19,8 @@ Rails.application.configure do
   config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
 
   # Uploads live on Cloudflare R2 and are proxied through the app so the bucket stays private.
-  config.active_storage.service = :cloudflare_r2
+  # ACTIVE_STORAGE_SERVICE=local keeps them on the aluni_storage volume instead (no R2 account).
+  config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "cloudflare_r2").to_sym
   config.active_storage.resolve_model_to_route = :rails_storage_proxy
 
   # One canonical domain (APP_DOMAIN, set in config/deploy.yml) plus www.
