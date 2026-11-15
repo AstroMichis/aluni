@@ -1,0 +1,155 @@
+/* The field station catalogue (/devices). Reuses the landing's nav, section and eyebrow
+   classes; everything here is .devices*, .device-art* and .device-chart*. Mobile first. */
+
+.devices__hero {
+  display: grid;
+  gap: var(--space-8);
+  align-items: center;
+  padding-block: var(--space-16) var(--space-10);
+}
+.devices__soon { align-self: flex-start; }
+.devices__name { margin: 0; }
+.devices__headline {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: var(--text-xl);
+  color: var(--color-text-primary);
+}
+.devices__lede,
+.devices__section-lede { margin: 0; color: var(--color-text-secondary); max-width: 60ch; }
+.devices__availability { margin: 0; font-size: var(--text-sm); color: var(--color-text-tertiary); }
+.devices__hero-art { display: flex; justify-content: center; }
+
+.devices__highlights { list-style: none; padding: 0; margin: 0; }
+.devices__highlight {
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.devices__models { margin-top: var(--space-6); }
+.devices__model--pro { border-color: var(--color-accent); box-shadow: var(--shadow-glow); }
+.devices__model-head { align-items: center; }
+.devices__model-name { margin: 0; }
+.devices__model-summary { margin: 0; color: var(--color-text-secondary); }
+.devices__features { margin: 0; padding-left: var(--space-5); display: grid; gap: var(--space-2); color: var(--color-text-primary); }
+
+.devices__sensors,
+.devices__security { list-style: none; padding: 0; margin: var(--space-6) 0 0; }
+.devices__sensor p,
+.devices__security-item p { margin: 0; color: var(--color-text-secondary); }
+.devices__sensor-title { margin: 0; font-size: var(--text-lg); color: var(--color-text-primary); }
+.devices__sensor-compare { display: flex; flex-direction: column; gap: var(--space-1); font-size: var(--text-sm); }
+.devices__sensor-compare-label {
+  color: var(--color-accent-text);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+}
+.devices__security-item {
+  padding: var(--space-5);
+  border-left: 3px solid var(--color-accent);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+.devices__steps {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-6) 0 0;
+  display: grid;
+  gap: var(--space-3);
+  counter-reset: device-step;
+}
+.devices__step {
+  counter-increment: device-step;
+  display: grid;
+  grid-template-columns: var(--space-10) 1fr;
+  column-gap: var(--space-3);
+  align-items: start;
+}
+.devices__step::before {
+  content: counter(device-step);
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: var(--space-10);
+  height: var(--space-10);
+  border-radius: var(--radius-full);
+  background: var(--color-accent-muted);
+  color: var(--color-accent-text);
+  font-family: var(--font-mono);
+}
+.devices__step-title { font-weight: 600; color: var(--color-text-primary); }
+.devices__step-body { color: var(--color-text-secondary); }
+
+.devices__compare { align-items: center; }
+.device-compare__figure {
+  margin: 0;
+  padding: var(--space-5);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+}
+.device-compare__legend { margin-top: var(--space-3); font-size: var(--text-sm); color: var(--color-text-secondary); }
+.device-compare__key { display: inline-flex; align-items: center; gap: var(--space-2); }
+.device-compare__key::before { content: ""; width: var(--space-5); height: 3px; border-radius: var(--radius-full); }
+.device-compare__key--sensor::before { background: var(--color-accent); }
+.device-compare__key--satellite::before { background: var(--color-info); }
+.device-compare__note { color: var(--color-text-tertiary); }
+
+.device-chart { display: block; width: 100%; height: auto; }
+.device-chart__grid { fill: none; stroke: var(--color-border-subtle); stroke-width: 1; }
+.device-chart__sensor { fill: none; stroke: var(--color-accent); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.device-chart__satellite { fill: none; stroke: var(--color-info); stroke-width: 2; stroke-dasharray: 6 6; }
+.device-chart__dots circle { fill: var(--color-info); }
+
+.devices__table-wrap { margin-top: var(--space-6); overflow-x: auto; }
+.devices__table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+.devices__table th,
+.devices__table td {
+  padding: var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border-subtle);
+  vertical-align: top;
+}
+.devices__table thead th { color: var(--color-accent-text); font-weight: 600; }
+.devices__table tbody th { color: var(--color-text-primary); font-weight: 500; }
+.devices__table td { color: var(--color-text-secondary); }
+
+.devices__closing { padding-bottom: var(--space-16); }
+
+/* The station illustration. */
+.device-art { width: 100%; max-width: 360px; height: auto; }
+.device-art__soil { fill: var(--color-bg-tertiary); }
+.device-art__soil-deep { fill: var(--color-bg-hover); }
+.device-art__crop { fill: none; stroke: var(--color-secondary); stroke-width: 4; stroke-linecap: round; }
+.device-art__pole,
+.device-art__arm { fill: var(--color-border-strong); stroke: var(--color-border-strong); stroke-width: 6; stroke-linecap: round; }
+.device-art__panel rect { fill: var(--color-chrome); stroke: var(--color-text-tertiary); stroke-width: 2; }
+.device-art__panel-cells { fill: none; stroke: var(--color-info); stroke-width: 1.5; opacity: 0.6; }
+.device-art__box { fill: var(--color-text-primary); stroke: var(--color-border-strong); stroke-width: 2; }
+.device-art__led { fill: var(--color-success); }
+.device-art__qr { fill: var(--color-bg-primary); }
+.device-art__antenna { fill: none; stroke: var(--color-text-tertiary); stroke-width: 3; stroke-linecap: round; }
+.device-art__antenna-tip { fill: var(--color-accent); }
+.device-art__shield rect { fill: var(--color-text-secondary); }
+.device-art__gauge { fill: var(--color-text-secondary); }
+.device-art__cable { fill: none; stroke: var(--color-text-tertiary); stroke-width: 3; stroke-dasharray: 2 4; }
+.device-art__probe { fill: var(--color-text-secondary); }
+.device-art__depth { fill: var(--color-accent); }
+.device-art__signal { fill: none; stroke: var(--color-accent-text); stroke-width: 3; stroke-linecap: round; }
+
+@media (min-width: 769px) {
+  .devices__hero { grid-template-columns: 1.2fr 1fr; padding-block: var(--space-20) var(--space-12); }
+  .devices__highlights { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (forced-colors: active) {
+  .device-chart__sensor,
+  .device-chart__satellite { stroke: CanvasText; }
+  .device-compare__key::before { background: CanvasText; }
+}

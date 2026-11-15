@@ -18,6 +18,9 @@
   color: var(--color-text-tertiary);
 }
 
+.public-footer__links { font-size: var(--text-xs); }
+.public-footer__links a { color: var(--color-accent-text); }
+
 @media (min-width: 641px) {
   .public-footer__inner {
     flex-direction: row;
