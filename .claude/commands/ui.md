@@ -20,7 +20,7 @@ You are creating a UI component or view for Aluni. The request is: $ARGUMENTS
 
 ## Existing components (reuse, do not recreate)
 
-`.btn` (`--primary --secondary --ghost --accent --danger --sm --lg --full`), `.card` (`__header __body __footer --interactive --nested`), `.badge` (`--info --success --warning --danger --accent --secondary`), `.input`, `.input-group` (`__label __hint __error`), `.select`, `dialog.dialog` (`__header __body __footer`), `.toast`, `.dropdown`, `.avatar` (`--sm --md --lg --xl`), `.skeleton`, `.language-toggle`, `.tab-bar`, `.public-footer`, `.nav`. Layout: `.stack` (`--sm --md --lg --xl`), `.cluster` (`--sm --md --lg --between --end --center`), `.grid` (`--2 --3 --4`), `.container` (`--sm --md --lg`).
+`.btn` (`--primary --secondary --ghost --accent --danger --sm --lg --full`), `.card` (`__header __body __footer --interactive --nested`), `.badge` (`--info --success --warning --danger --accent --secondary`), `.input`, `.input-group` (`__label __hint __error`), `.select`, `dialog.dialog` (`__header __body __footer`), `.toast`, `.dropdown`, `.avatar` (`--sm --md --lg --xl`), `.skeleton`, `.language-toggle`, `.tab-bar`, `.public-footer`, `.nav`, `.store-button`, `.phone-frame`, `.tour-step`, `.chat` (`__log __message--user --assistant __bubble __typing __composer`), `.chat-panel`, `.confirm-card`, `.progress`, `.mascot` and `.mascot-avatar` (`--sm --md --lg --xl`; see `docs/DESIGN_SYSTEM.md`). Layout: `.stack` (`--sm --md --lg --xl`), `.cluster` (`--sm --md --lg --between --end --center`), `.grid` (`--2 --3 --4`), `.container` (`--sm --md --lg`).
 
 ## Native `<dialog>` for every modal
 

@@ -40,6 +40,7 @@ Read every file in scope, then check EVERY item below. Report issues by severity
 - [ ] Turbo Frames and Streams used for partial updates; custom stream actions only when needed
 - [ ] Native `<dialog>` for modals; Stimulus never owns server state; every listener/observer/timer removed in `disconnect()`
 - [ ] Vendored libraries only (`vendor/javascript`), lazy `await import()` for heavy ones; CSP unchanged (no new hosts)
+- [ ] Chat turns: Gemini inline only inside `Onboarding::ReplyService`; a fetch that expects a Turbo Stream renders it whatever the status; `Platform::ServicePaused` rescued in the service, never left to the controller's redirect; nothing from the model saved before the confirm card
 
 ## Security
 - [ ] No credentials or keys in code; nothing read from `.env*`, `master.key`, `credentials*`
@@ -55,7 +56,7 @@ Read every file in scope, then check EVERY item below. Report issues by severity
 
 ## Performance
 - [ ] N+1 handled with `includes`/`preload`; indexes for queried columns
-- [ ] Heavy work in jobs; Redis TTLs on any session-like store
+- [ ] Heavy work in jobs; session-like state encrypted at rest (`encrypts`) or behind a Redis TTL
 - [ ] `contain: layout style` on repeated DOM; variants instead of full-size images
 
 ## Tests

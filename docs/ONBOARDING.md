@@ -261,3 +261,25 @@ sub-services stubbed (`reply_service_spec`); and plain database specs
 `topics_spec`, `redactor_spec`, `system_prompt_spec` with the golden master).
 
 Run: `mise exec -- bundle exec rspec spec/services/onboarding spec/services/gemini spec/i18n`.
+
+## The screens
+
+**Landing** (`app/views/pages/home.html.erb`, browsers only). `pages/home/_mascot` mounts Aluni (`mascot_controller.js`, `docs/DESIGN_SYSTEM.md`): the stage walks in from the bottom-left corner, waves, and shows the greeting bubble with "Let's go" (only while sign-ups are open) and "Show me around" (a plain hash jump to the tour, `data-turbo="false"` like every in-page anchor on the landing, because Turbo would otherwise re-render the page and restart the walk-in). "Let's go" dispatches `mascot:lets-go`; `pages/home/_chat_panel` (`landing_chat_controller.js` together with `passkey_controller.js` in create mode) opens as a bottom sheet on phones or a 420 px side panel from 1025 px, dispatches `mascot:dock { selector: "#landing-chat-companion" }`, and runs three scripted steps with no Gemini and no account: the name (never posted, it fills the hidden `display_name`), the language (two buttons; the remaining lines switch locale client-side from `ApplicationHelper#landing_chat_script`), and the passkey (hidden `display_name` + `locale` inputs posted to `/sign_up/options`; `RegistrationsController#create` sets the locale cookie and answers `redirect_to: /app/onboarding`). Progress survives a reload through `sessionStorage` (`aluni.landing-chat`). A signed-in visitor sees a "welcome back" line and a link to the app instead.
+
+**`/app/onboarding`** (`App::OnboardingController`, `app/views/app/onboarding/`). One page, every turn a Turbo Stream. Layout `.onboarding`: the chat (`.chat`: `__log` with the bubbles, `__composer`, the progress dots, the confirm card slot, the location tools while the topic is `location`) and, from 1025 px, a sticky companion column (`<aside id="chat-companion" data-mascot-dock>`) with `shared/mascot_companion` (the mascot in docked mode, idle, talking on every new assistant bubble) above the profile preview (`<details open>`; below 1025 px the preview folds under the chat). Stream targets, enforced by `spec/views/onboarding_turbo_stream_targets_spec.rb`: `#onboarding-messages` (append), `#onboarding-confirm` (update), `#onboarding-progress` (replace), `#onboarding-location-tools` (update), `#onboarding-notice` (update), `#profile-preview` (replace). Actions: `message` (POST text, optional latitude/longitude from the share-location button), `confirm` (accepted keys, "Save selected"), `discard` ("Not now"), `skip`, `complete` (303 to `/app`), `reset` (DELETE). The first bubble before any Gemini call is `onboarding.welcome_message`. `App::HomeController` forwards to the chat while `User#onboarding_complete?` is false and shows a recap plus "Talk to Aluni" afterwards.
+
+**Stimulus** (`app/javascript/controllers/`): `chat` (intercepts the composer and the quick-answer forms, posts with `Accept: text/vnd.turbo-stream.html`, renders the stream whatever the status so a 429 notice shows, Enter sends, Shift+Enter breaks a line, `AbortController` on disconnect), `chat-message` (scrolls a new bubble into view and dispatches `mascot:speak { chars }` for assistant bubbles; history bubbles are `silent`), `geolocate` (`getCurrentPosition` fills the hidden pin and a fixed composer text, then `geolocate:located` submits), `landing-chat` (above), `mascot` (`docs/DESIGN_SYSTEM.md`). Window events: `mascot:ready|arrived|docked|fallback|lets-go` from the mascot; `mascot:speak|dock|hide|show` to it.
+
+**Throttle**: `RACK_ATTACK_ASSISTANT_PATH` in `config/initializers/rack_attack.rb` limits `/app/onboarding/*` writes to 20 per minute and 150 per hour per IP.
+
+## Demo runbook
+
+1. `gemini.api_key` in the credentials and `mise exec -- bin/rails 'platform:resume[gemini]'`; while Gemini is paused or the key is missing Aluni answers only with the continuation lines (`degraded: true`).
+2. `mise exec -- bin/dev`, open `http://localhost:3000` (a secure context: passkeys and the share-location button need one; a phone needs an https tunnel with `APP_DOMAIN`, `docs/AUTH.md`).
+3. Wait for Aluni to walk in, press "Let's go", give a name, pick a language, create the passkey. The chat opens at the welcome topic.
+4. Walk the eight topics in English and in Spanish; tick a few proposals, skip one topic, refresh once mid-way (the transcript resumes from the row), send an insult to see the refusal, pause Gemini (`platform:pause[gemini]`) to see the calm continuation line, finish to reach the recap on `/app`.
+5. `DELETE /app/onboarding` ("Start over" on the page) resets the chat and keeps the profile data.
+
+## Phase 2 candidates
+
+A map for field boundaries (`fields.boundary`); the first data fetches (NASA POWER climatology, SSURGO and CDL for US pins, GAEZ suitability) behind switchboard-guarded clients; crop cards built from ECOCROP, FAO-56 and GAEZ ("the optimal environment for potatoes"); the real `/app` home; a welcome notification through `NotificationRouter`.
