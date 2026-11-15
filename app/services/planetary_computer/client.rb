@@ -25,12 +25,17 @@ module PlanetaryComputer
     }.freeze
     MAX_SCENES = 8
     PER_MONTH = 4 # least cloudy scenes tried per month before giving up on it
-    THREADS = 4   # months asked in parallel (the point API is slow per request)
+    THREADS = 2   # months asked in parallel: more trips the API's burst limit (429)
+    # Retries for 429 and 5xx: exponential backoff with jitter (about 2, 4, 8, 16 s),
+    # or the server's Retry-After when it sends one.
+    RETRY = { max: 4, interval: 2, backoff_factor: 2, interval_randomness: 0.5, max_interval: 30,
+              retry_statuses: [ 429, 502, 503, 504 ], methods: %i[get post] }.freeze
 
     attr_reader :last_error
 
-    def initialize(cache: Rails.cache)
+    def initialize(cache: Rails.cache, retry_options: RETRY)
       @cache = cache
+      @retry_options = retry_options
       @last_error = nil
     end
 
@@ -111,8 +116,9 @@ module PlanetaryComputer
         Thread.new do
           # The executor checks a database connection out and back for the switchboard guard.
           Rails.application.executor.wrap do
-            client = self.class.new(cache: @cache) # one client per thread: its own connections and last_error
-            while (i = (queue.pop(true) rescue nil))
+            client = self.class.new(cache: @cache, retry_options: @retry_options) # one client per thread: its own connections and last_error
+            # A failed month stops the others: retrying a rate limit at full speed makes it worse.
+            while !failed && (i = (queue.pop(true) rescue nil))
               rows[i] = client.send(:month_row, lat, lon, first >> i, today, max_cloud)
               failed ||= client.last_error if rows[i].nil?
             end
@@ -124,6 +130,8 @@ module PlanetaryComputer
 
       rows
     end
+
+    def rate_limited? = last_error&.dig(:type) == :rate_limited
 
     private
 
@@ -141,7 +149,6 @@ module PlanetaryComputer
       row.merge("ndvi" => value.round(3), "date" => scene[:datetime].to_date.iso8601,
                 "mission" => MISSIONS.dig(scene[:collection], :mission), "scene" => scene[:id])
     end
-
 
     # NDVI at the point when the pixel is clear in the scene's quality band, else nil.
     def clear_ndvi(lat, lon, scene)
@@ -176,7 +183,7 @@ module PlanetaryComputer
     def build(url)
       Faraday.new(url: url, headers: { "Content-Type" => "application/json" }) do |f|
         f.response :json, content_type: /\bjson$/
-        f.request :retry, max: 2, interval: 0.5, retry_statuses: [ 429, 502, 503, 504 ], methods: %i[get post]
+        f.request :retry, **@retry_options
         f.adapter Faraday.default_adapter
         f.options.timeout = 20
         f.options.open_timeout = 5

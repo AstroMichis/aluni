@@ -52,6 +52,45 @@ RSpec.describe Fields::FetchObservationsJob do
     expect(field.observation("nasa_power")).to be_ok
   end
 
+  context "when Planetary Computer rate-limits the NDVI" do
+    def rate_limit!
+      allow_any_instance_of(PlanetaryComputer::Client).to receive(:monthly_ndvi).and_return(nil)
+      allow_any_instance_of(PlanetaryComputer::Client).to receive(:rate_limited?).and_return(true)
+    end
+
+    it "asks again later for the vegetation only" do
+      stub_all_data_sources(us: false)
+      rate_limit!
+      field = create(:field, farm: farm, latitude: 9.93, longitude: -84.08)
+
+      expect { described_class.perform_now(field.id) }
+        .to have_enqueued_job(described_class).with(field.id, only: "vegetation", attempt: 1)
+      expect(field.observation("vegetation")).to be_failed
+    end
+
+    it "runs only the vegetation on the retry and gives up after the last attempt" do
+      stub_all_data_sources(us: false)
+      field = create(:field, farm: farm, latitude: 9.93, longitude: -84.08)
+      described_class.perform_now(field.id)
+      rate_limit!
+
+      expect { described_class.perform_now(field.id, only: "vegetation", attempt: 1) }
+        .to have_enqueued_job(described_class).with(field.id, only: "vegetation", attempt: 2)
+      expect(field.observation("vegetation")).to be_failed
+      expect(field.observation("nasa_power")).to be_ok
+      expect { described_class.perform_now(field.id, only: "vegetation", attempt: described_class::VEGETATION_RETRIES) }
+        .not_to have_enqueued_job(described_class)
+    end
+
+    it "does not retry other failures" do
+      stub_all_data_sources(us: false)
+      allow_any_instance_of(PlanetaryComputer::Client).to receive(:monthly_ndvi).and_return(nil)
+      field = create(:field, farm: farm, latitude: 9.93, longitude: -84.08)
+
+      expect { described_class.perform_now(field.id) }.not_to have_enqueued_job(described_class)
+    end
+  end
+
   it "is enqueued when a pin is set or moved, not for other edits" do
     field = create(:field, :unlocated, farm: farm)
     expect { field.update!(latitude: 40.95, longitude: -97.5) }.to have_enqueued_job(described_class).with(field.id)

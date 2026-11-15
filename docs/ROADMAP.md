@@ -37,7 +37,7 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 - **Clients ready but not on a screen yet.** Meteomatics forecast (credentials loaded), Planetary Computer.
 - **Field station catalogue** (`/devices`) with a 3D product viewer (`docs/DEVICES.md`).
 
-**Known issue:** Planetary Computer rate-limits bursts (429). Backfilling 4 fields at once (Sidekiq 3 jobs × 4 threads) failed 3 of them; one at a time works. Fix next: fewer threads per field (2) and a longer, backed-off retry on 429 in `PlanetaryComputer::Client`.
+**Rate limit (fixed):** Planetary Computer rate-limits bursts (429). The client now asks 2 months at a time, retries 429/5xx with exponential backoff and jitter (about 2, 4, 8, 16 s, or `Retry-After`), and stops the other months once one fails. A rate-limited field reruns only the NDVI later (15, 30, 45 min plus jitter, 3 times).
 
 **Still missing:**
 - **NASA breadth.** Done: POWER, Landsat. Missing from the challenge list: SMAP, ECOSTRESS, GPM, MODIS, GRACE, SRTM.

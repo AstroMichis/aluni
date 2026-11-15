@@ -105,5 +105,25 @@ RSpec.describe PlanetaryComputer::Client do
       expect(client.monthly_ndvi(lat: 40.95, lon: -97.5, months: 2, today: today)).to be_nil
       expect(client.last_error).to include(type: :api_error, status: 400)
     end
+
+    it "retries a rate limit with backoff, then reports it and stops asking" do
+      fast = described_class.new(cache: ActiveSupport::Cache::MemoryStore.new,
+                                 retry_options: described_class::RETRY.merge(interval: 0, interval_randomness: 0))
+      search = stub_request(:post, search_url).to_return(status: 429, body: "Request rate limited or blocked")
+
+      expect(fast.monthly_ndvi(lat: 40.95, lon: -97.5, months: 6, today: today, threads: 1)).to be_nil
+      expect(fast).to be_rate_limited
+      # One month, its first try plus RETRY[:max] retries; the other five are never asked.
+      expect(search).to have_been_requested.times(described_class::RETRY[:max] + 1)
+    end
+
+    it "recovers when the rate limit clears within the retries" do
+      fast = described_class.new(cache: ActiveSupport::Cache::MemoryStore.new,
+                                 retry_options: described_class::RETRY.merge(interval: 0, interval_randomness: 0))
+      empty = { type: "FeatureCollection", features: [] }.to_json
+      stub_request(:post, search_url).to_return({ status: 429, body: "slow down" }, { status: 200, body: empty, headers: json })
+
+      expect(fast.monthly_ndvi(lat: 40.95, lon: -97.5, months: 1, today: today, threads: 1)).to eq([ { "month" => "2025-08", "ndvi" => nil } ])
+    end
   end
 end
