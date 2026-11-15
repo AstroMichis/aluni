@@ -21,7 +21,7 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 **Your plan** is the screen the demo is built around (`/app/fields/:id/rotation`, `Rotations::Comparator`):
 
 1. **Your field from space.** 20-year climate, soil, slope, NDVI and bare periods, each value labelled with the dataset that measured it.
-2. **A three-season timeline per strategy**, month by month: crop in the ground, bare soil, and the frost, heat and dry-spell bands.
+2. ✅ **A three-season timeline per strategy**, month by month: crop in the ground, bare soil, and the storm, dry, frost and heat bands (`Rotations::Timeline`, `app/rotations/_timeline*`). Bare months under storms, drought or frost are marked as exposed.
 3. **Three or more strategies side by side**, with scores per criterion and why, evidence, benefits, gaps and risks. This part exists today.
 4. **"Talk this over with your adviser"**: the risks that need local judgment.
 
@@ -44,7 +44,6 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 - **A real forecast.** The forecast option still shows the past season.
 - **Alerts.** None are sent.
 - **Global soil.** Outside the US it depends on the farmer (the slope now comes from NASADEM).
-- **The 3-season timeline** per strategy (bare and vulnerable bands).
 
 ## P0: the demo tells the whole story
 
@@ -64,10 +63,10 @@ Suggested next order: SMAP, then MODIS, GRACE and ECOSTRESS.
 
 | Item | Dataset | How |
 |---|---|---|
-| ✅ Crop health and **bare-field periods** | Landsat (NASA/USGS) + Sentinel-2 NDVI | Done (#22): `monthly_ndvi`, the `vegetation` observation, `Fields::Vegetation`, "Your field from space". Next: draw it on the 3-season timeline. |
+| ✅ Crop health and **bare-field periods** | Landsat (NASA/USGS) + Sentinel-2 NDVI | Done (#22): `monthly_ndvi`, the `vegetation` observation, `Fields::Vegetation`, "Your field from space". Next: compare the observed bare months with the timeline's current rotation. |
 | Long-term vegetation baseline and anomalies | MODIS NDVI (16-day, 20+ years) | AppEEARS or Planetary Computer |
 | ✅ **Global slope** for erosion | NASADEM (SRTM) | Done: `PlanetaryComputer::Client#terrain`, the `nasadem` observation; 3DEP first in the US, NASADEM everywhere else (56°S to 60°N) in the profile and the comparator. |
-| ✅ Extreme rain frequency | GPM IMERG | Done: 20 years of daily IMERG through NASA POWER (`IMERG_PRECTOT`, no account), `Weather::RainExtremes`, the `gpm_imerg` observation; storm-prone months and 50 mm days raise the erosion of row crops in the comparator. Next: the stormy months on the 3-season timeline. |
+| ✅ Extreme rain frequency | GPM IMERG | Done: 20 years of daily IMERG through NASA POWER (`IMERG_PRECTOT`, no account), `Weather::RainExtremes`, the `gpm_imerg` observation; storm-prone months and 50 mm days raise the erosion of row crops in the comparator. The stormy months are on the 3-season timeline. |
 | Soil moisture and anomalies | SMAP L3/L4 | AppEEARS async request (Earthdata) |
 | Long-term water trend | GRACE / GRACE-FO | One trend indicator per region |
 | Heat stress and evaporation | ECOSTRESS | AppEEARS |

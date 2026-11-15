@@ -76,6 +76,7 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
     expect(response).to have_http_status(:ok)
     expect(response.body).to include(I18n.t("app.rotations.strategies.current.title")).and include(I18n.t("app.rotations.strategies.small_grain.title"))
     expect(response.body).to include(I18n.t("app.rotations.gaps.market")).and include("turbo-frame")
+    expect(response.body).to include(I18n.t("app.timeline.title")).and include("timeline__cell--crop")
 
     get why_app_field_rotation_path(field, strategy: "small_grain", locale: "en"), headers: native_headers
     expect(response.body).to include('id="why-small_grain"') # rule-based text while Gemini is unconfigured in test

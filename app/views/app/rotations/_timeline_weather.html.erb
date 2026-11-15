@@ -1,0 +1,32 @@
+<%# The usual weather strip above the strategies' timelines (Rotations::Timeline#weather):
+    one row per risk, a mark in each month it applies. Local: timeline. %>
+<section class="timeline card" aria-labelledby="timeline-title">
+  <div class="card__body stack stack--md">
+    <div>
+      <h2 id="timeline-title" class="text-heading timeline__title"><%= t("app.timeline.title") %></h2>
+      <p class="timeline__lede"><%= t("app.timeline.lede") %></p>
+    </div>
+    <div class="timeline__grid" role="table" aria-label="<%= t("app.timeline.weather_label") %>">
+      <div class="timeline__row timeline__row--head" role="row">
+        <span class="timeline__name" role="columnheader"></span>
+        <% (1..12).each do |m| %><span class="timeline__month" role="columnheader"><%= t("date.abbr_month_names")[m].to_s.first(1) %><span class="sr-only"><%= t("date.month_names")[m] %></span></span><% end %>
+      </div>
+      <% Rotations::Timeline::RISKS.each do |risk| %>
+        <div class="timeline__row" role="row">
+          <span class="timeline__name" role="rowheader"><%= t("app.timeline.risks.#{risk}") %></span>
+          <% (1..12).each do |m| %>
+            <% on = timeline.weather[m].include?(risk) %>
+            <span class="timeline__cell timeline__cell--risk<%= " timeline__cell--#{risk}" if on %>" role="cell"><span class="sr-only"><%= on ? t("app.timeline.risks.#{risk}") : "–" %></span></span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    <details class="timeline__about">
+      <summary><%= t("app.timeline.about_title") %></summary>
+      <ul role="list">
+        <% Rotations::Timeline::RISKS.each do |risk| %><li><strong><%= t("app.timeline.risks.#{risk}") %>:</strong> <%= t("app.timeline.risk_notes.#{risk}") %></li><% end %>
+      </ul>
+      <p><%= t("app.timeline.about") %></p>
+    </details>
+  </div>
+</section>
