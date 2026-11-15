@@ -1,0 +1,22 @@
+<%# The field finder's place search answer (#place-results): a listbox of places, each a button the finder reads its coordinates from (finder#pickPlace). Locals: query, results (an Array, or nil when the geocoder failed or is paused). %>
+<%= turbo_frame_tag "place-results", class: "finder__results" do %>
+  <% if query.blank? %>
+    <p class="finder__results-hint"><%= t("places.index.hint") %></p>
+  <% elsif results.nil? %>
+    <p class="finder__results-hint" role="status"><%= t("places.unavailable") %></p>
+  <% elsif results.empty? %>
+    <p class="finder__results-hint" role="status"><%= t("places.index.empty", query: query) %></p>
+  <% else %>
+    <div class="finder__options" role="listbox" aria-label="<%= t("places.index.results_label") %>">
+      <% results.each do |place| %>
+        <button type="button" role="option" aria-selected="false" class="finder__option"
+                data-action="finder#pickPlace"
+                data-latitude="<%= place[:latitude] %>" data-longitude="<%= place[:longitude] %>"
+                data-label="<%= place[:display] %>" data-country-code="<%= place[:country_code] %>" data-admin-area="<%= place[:admin_area] %>">
+          <span class="finder__option-name"><%= place[:display] %></span>
+          <span class="finder__option-detail"><%= place[:label] %></span>
+        </button>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

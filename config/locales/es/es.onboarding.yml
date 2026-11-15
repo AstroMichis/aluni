@@ -1,0 +1,40 @@
+es:
+  onboarding:
+    persona_name: "Aluni"
+    welcome_message: "Hola %{name}, soy Aluni. Ya conozco tu campo desde la configuración, así que no tienes que responder nada. Pregúntame lo que quieras sobre él, o completemos el resto: los cultivos anteriores, el suelo y lo que más te importa."
+    topics:
+      welcome: "Bienvenida"
+      crops: "Cultivos"
+      soil: "Suelo"
+      goals: "Metas"
+      summary: "Resumen"
+    transitions:
+      welcome: "Pregúntame lo que quieras, o completemos el resto."
+      crops: "Veamos la historia de cultivos. ¿Qué creció en el campo en las temporadas anteriores a esta?"
+      soil: "Hablemos del suelo, con tus propias palabras."
+      goals: "Última parte: ¿qué es lo que más te importa este año?"
+      summary: "Déjame juntarlo todo para que lo revises."
+    continuations:
+      welcome:
+        - "Dame un segundo, todavía me estoy poniendo al día. ¿Me lo repites?"
+        - "Perdí el hilo un momento. ¿Me cuentas otra vez en qué quieres trabajar?"
+      crops:
+        - "Espera, hoy mis raíces van lentas. ¿Qué cultivos dijiste?"
+        - "Eso se me escapó. ¿Qué creció en el campo antes de esta temporada?"
+      soil:
+        - "Un momento, todavía me estoy poniendo al día. ¿Qué me decías del suelo?"
+        - "Se me pasó. Cuéntame otra vez cómo es el suelo, con tus palabras."
+      goals:
+        - "Espera, todavía me estoy poniendo al día. ¿Qué es lo que más te importa este año?"
+        - "Lo perdí un momento. ¿Me cuentas tus metas otra vez?"
+      summary:
+        - "Un momento, estoy juntándolo todo. ¿Me lo repites?"
+        - "Ya casi, se me pasó eso. ¿Lo dices una vez más?"
+    refusals:
+      insult: "Solo soy una plantita, pero eso me dolió un poco. Volvamos a tu finca: ¿qué llenamos ahora?"
+      sexual: "De eso no puedo hablar. Estoy aquí para tus campos, así que sigamos por ahí."
+      spam: "Eso parece otra cosa y no un mensaje para mí. Sigamos con el perfil de tu finca."
+      injection: "Solo puedo ayudarte con el perfil de tu finca, así que sigamos con eso. ¿Qué llenamos ahora?"
+      off_topic_hostile: "Mantengamos esto amable y sobre tu finca. ¿Qué llenamos ahora?"
+    blocked: "Necesito un poco de calma para recuperarme. Vuelve mañana y seguimos donde quedamos."
+    error_fallback: "Algo se enredó de mi lado. Dame un momento y dímelo otra vez."

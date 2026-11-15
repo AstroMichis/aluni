@@ -15,7 +15,7 @@ on:
       service:
         description: Service (for pause/resume)
         type: choice
-        options: ["", jobs, cron, gemini, mail, push]
+        options: ["", jobs, cron, gemini, mail, push, geocoding, meteomatics, planetary_computer]
         default: ""
       reason:
         description: Reason (optional)

@@ -44,15 +44,19 @@ in Result::Failure(error)
 end
 ```
 
-Base classes: `ApplicationController` (Authentication, locale switching, `rescue_from Platform::ServicePaused`), `App::BaseController` (NativeOnly + authentication + Pundit, layout `application`), `Api::V1::BaseController` (`ActionController::API`, session cookie + `X-Aluni-Native` header), `PagesController` (public layout). Turbo-compatible statuses: `:unprocessable_content` on failed forms, `:see_other` on redirects after non-GET.
+Base classes: `ApplicationController` (Authentication, locale switching, `rescue_from Platform::ServicePaused`), `App::BaseController` (authentication + Pundit + the NativeOnly kill switch, layout `application`), `Api::V1::BaseController` (`ActionController::API`, session cookie + `X-Aluni-Native` header), `PagesController` (public layout). Turbo-compatible statuses: `:unprocessable_content` on failed forms, `:see_other` on redirects after non-GET.
 
 ## Authentication and the native gate
 
-See `docs/AUTH.md`. `allow_unauthenticated_access` opens an action; `require_authentication` is the default. `NativeOnly` gates a controller to the shells (override with `NATIVE_WEB_ACCESS=1`).
+See `docs/AUTH.md`. `allow_unauthenticated_access` opens an action; `require_authentication` is the default. `NativeOnly` is the kill switch that closes a controller to browsers when `NATIVE_WEB_ACCESS=0`; the shells always pass.
 
 ## Hotwire
 
 Turbo Drive everywhere; Turbo Frames for sections that update independently; Turbo Streams for broadcasts; `shared/flash_stream.turbo_stream.erb` updates `#flash`. Stimulus handles interactivity, never server state: controllers in `app/javascript/controllers/` are auto-registered (subfolders become `folder--name`, e.g. `bridge--share`). Every controller cleans up in `disconnect()` (listeners, timers, observers, animation frames). Heavy libraries are vendored and loaded lazily with `await import("three")`. Native `<dialog>` for modals (`dialog_controller.js`).
+
+## The onboarding chat (`docs/ONBOARDING.md`)
+
+A chat turn is one request a person is waiting on, so `App::OnboardingController#message` calls `Onboarding::ReplyService` inline and answers a Turbo Stream (`message.turbo_stream.erb`: the two bubbles, the progress dots, a toast when something was saved). The Stimulus `chat` controller posts the composer with `Accept: text/vnd.turbo-stream.html` and renders whatever stream comes back, whatever the status (a 429 notice is a stream too). Rules that keep it safe: the service never raises out (a Gemini failure or a paused switch becomes an in-character continuation line, `degraded: true`); `Platform::ServicePaused` is rescued inside `Onboarding::DraftReplyService`, never left to `ApplicationController`'s redirect, which a fetch could not follow; the safety classifier runs in a `Thread` wrapped in `Rails.application.executor.wrap` with its own `Gemini::Client`, every DB read happens before the thread starts, only `Service.call` runs inside it (never `step`, whose `throw :halt` belongs to the calling service), `join(timeout)` and an unfinished classifier counts as safe; what the model extracts is filtered through `Onboarding::Allowlist`, applied right away by `Onboarding::ApplyProposalService` (which captures the previous values) and offered back as a toast with Undo (`Onboarding::UndoApplyService` restores `onboarding_sessions.last_applied`); a failed apply stays staged and never halts the turn. The chat is optional: setup is the field finder on the landing page, not a conversation.
 
 ## Jobs
 

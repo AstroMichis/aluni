@@ -1,0 +1,18 @@
+<%# The message form (intercepted by chat_controller.js) and the topic tools under it. %>
+<%= form_with url: message_app_onboarding_path, method: :post, class: "chat__composer", data: { chat_target: "form", action: "submit->chat#submit" } do %>
+  <label class="sr-only" for="onboarding-text"><%= t("app.onboarding.show.composer_label") %></label>
+  <textarea id="onboarding-text" class="input chat__input" name="text" rows="1" maxlength="2000" required
+            placeholder="<%= t("app.onboarding.show.composer_placeholder") %>" autocomplete="off" enterkeyhint="send"
+            data-chat-target="input"></textarea>
+  <button type="submit" class="btn btn--primary chat__send" data-chat-target="send" aria-label="<%= t("app.onboarding.show.send") %>">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </button>
+<% end %>
+<div class="chat__toolbar cluster cluster--sm">
+  <% if @onboarding_session&.active? %>
+    <%= button_to t("app.onboarding.show.skip"), skip_app_onboarding_path, method: :post, class: "btn btn--ghost btn--sm", form_class: "chat__tool" %>
+    <%= button_to t("app.onboarding.show.complete"), complete_app_onboarding_path, method: :post, class: "btn btn--ghost btn--sm", form_class: "chat__tool" %>
+  <% end %>
+  <%= button_to t("app.onboarding.show.reset"), reset_app_onboarding_path, method: :delete, class: "btn btn--ghost btn--sm", form_class: "chat__tool",
+               form: { data: { turbo_confirm: t("app.onboarding.show.reset_confirm") } } %>
+</div>

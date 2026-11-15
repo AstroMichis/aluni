@@ -69,6 +69,37 @@ RSpec.describe Gemini::Client do
     expect(client.chat(messages: [ { role: "user", parts: [ { text: "hi" } ] } ])).to eq("reply")
     expect(stub).to have_been_requested
   end
+
+  it "asks chat for structured JSON when a schema is given" do
+    schema = { type: "object", properties: { reply: { type: "string" } }, required: [ "reply" ] }
+    stub = stub_request(:post, endpoint).with do |req|
+      config = JSON.parse(req.body).fetch("generationConfig")
+      config["responseMimeType"] == "application/json" && config["responseSchema"] == JSON.parse(schema.to_json) && config["maxOutputTokens"] == 256
+    end.to_return(status: 200, body: gemini_response("{\"reply\":\"importaci\n00f3n\"}"), headers: { "Content-Type" => "application/json" })
+
+    text = client.chat(messages: [ { role: "user", parts: [ { text: "hi" } ] } ], response_schema: schema, max_tokens: 256)
+
+    expect(JSON.parse(text)).to eq("reply" => "importación")
+    expect(stub).to have_been_requested
+  end
+
+  it "leaves plain chat answers untouched and uses the configured token limit" do
+    stub = stub_request(:post, endpoint).with do |req|
+      config = JSON.parse(req.body).fetch("generationConfig")
+      !config.key?("responseMimeType") && config["maxOutputTokens"] == Rails.configuration.x.gemini.chat_max_output_tokens
+    end.to_return(status: 200, body: gemini_response("importaci\n00f3n"), headers: { "Content-Type" => "application/json" })
+
+    expect(client.chat(messages: [ { role: "user", parts: [ { text: "hi" } ] } ])).to eq("importaci\n00f3n")
+    expect(stub).to have_been_requested
+  end
+
+  it "takes a per-call read timeout" do
+    quick = described_class.new(model: :flash, timeout: 7)
+
+    expect(quick.send(:connection).options.timeout).to eq(7)
+    expect(client.send(:connection).options.timeout).to eq(30)
+  end
+
   context "with the Vertex AI backend" do
     let(:vertex_endpoint) do
       "https://aiplatform.googleapis.com/v1/projects/test-project/locations/global/publishers/google/models/gemini-3.8-flash:generateContent"
@@ -104,6 +135,20 @@ RSpec.describe Gemini::Client do
       expect(client.generate("again")).to eq("hola")
       expect(call).to have_been_requested.twice
       expect(token).to have_been_requested.once
+    end
+
+    it "uses GOOGLE_OAUTH_ACCESS_TOKEN outside production instead of the metadata server" do
+      metadata = stub_request(:get, metadata_url)
+      call = stub_request(:post, vertex_endpoint).with(headers: { "Authorization" => "Bearer ya29.local" })
+                                                 .to_return(status: 200, body: gemini_response("hola"), headers: { "Content-Type" => "application/json" })
+
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("GOOGLE_OAUTH_ACCESS_TOKEN").and_return("ya29.local")
+
+      expect(client.generate("hi")).to eq("hola")
+
+      expect(call).to have_been_requested
+      expect(metadata).not_to have_been_requested
     end
 
     it "uses the regional host for a regional location" do

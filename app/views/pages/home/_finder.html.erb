@@ -1,0 +1,187 @@
+<%# The field finder: locate (device position, a town search, a map with a draggable pin), basics (crop, water, area) and save (the passkey sign-up, or "Save my field" when signed in). A .panel (bottom sheet on phones, side panel from 1025px) hidden until the mascot's "Find my field" (window mascot:lets-go). finder_controller.js runs the steps, field_map_controller.js the map, geolocate_controller.js the device position, passkey_controller.js the ceremony (its form posts every input as one flat map, so the hidden inputs are flat and RegistrationsController reads them from the body). #finder-companion is where the mascot docks. %>
+<% field_id = authenticated? ? Current.user.farms.first&.fields&.first&.id : nil %>
+<% passkey = !authenticated? && signups_enabled? %>
+<section id="finder" class="panel finder" hidden
+         aria-labelledby="finder-title"
+         data-controller="finder geolocate<%= " passkey" if passkey %>"
+         data-finder-locale-value="<%= I18n.locale %>"
+         data-finder-imperial-value="<%= Fields::SaveSetupService::IMPERIAL_COUNTRIES.to_json %>"
+         data-finder-located-value="<%= t("finder.status.located") %>"
+         data-finder-naming-value="<%= t("finder.status.naming") %>"
+         data-finder-waiting-class="finder--waiting"
+         data-geolocate-locating-value="<%= t("finder.status.locating") %>"
+         data-geolocate-denied-value="<%= t("finder.status.denied") %>"
+         data-geolocate-unsupported-value="<%= t("finder.status.unsupported") %>"
+         <% if passkey %>
+         data-passkey-mode-value="create"
+         data-passkey-options-url-value="<%= sign_up_options_path %>"
+         data-passkey-submit-url-value="<%= sign_up_path %>"
+         data-passkey-messages-value="<%= passkey_messages %>"
+         <% end %>
+         data-action="geolocate:located->finder#located keydown.esc->finder#escape turbo:frame-load->finder#frameLoaded turbo:submit-start->finder#submitStarted turbo:submit-end->finder#submitEnded passkey:start->finder#passkeyStarted passkey:error->finder#passkeyFailed">
+  <header class="panel__header">
+    <div id="finder-companion" class="panel__companion" data-mascot-dock>
+      <span class="panel__avatar" data-finder-target="avatar"><%= render "shared/mascot_avatar", size: "md" %></span>
+    </div>
+    <h2 id="finder-title" class="panel__title"><%= t("finder.title") %></h2>
+    <button type="button" class="btn btn--ghost panel__icon-button" data-action="preferences#toggleReadAloud" data-finder-target="readAloud"
+            aria-pressed="<%= preferences.read_aloud? %>" aria-label="<%= t("preferences.toggle_read_aloud") %>">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 10v4h3l4 4V6L7 10H4zM15 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"/></svg>
+    </button>
+    <button type="button" class="btn btn--ghost panel__icon-button" data-action="finder#close" aria-label="<%= t("finder.close") %>">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </header>
+
+  <div class="panel__body" data-finder-target="body">
+    <p class="finder__status" role="status" aria-live="polite" data-finder-target="status" data-geolocate-target="status"></p>
+
+    <%= turbo_frame_tag "place-summary", class: "finder__summary", hidden: true, data: { finder_target: "summary" } %>
+
+    <section class="finder__step" data-finder-target="step" data-step="locate" aria-labelledby="finder-step-locate">
+      <p class="text-label finder__kicker"><%= t("finder.kicker", index: 1, total: 3) %></p>
+      <h3 id="finder-step-locate" class="finder__heading" tabindex="-1" data-finder-target="heading"><%= t("finder.steps.locate.title") %></h3>
+      <p class="panel__line" data-speak><%= t("finder.steps.locate.line") %></p>
+
+      <button type="button" class="btn btn--secondary btn--lg btn--full finder__locate" data-action="geolocate#locate">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 2v3M12 19v3M2 12h3M19 12h3M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z"/></svg>
+        <%= t("finder.steps.locate.use_my_location") %>
+      </button>
+
+      <%= form_with url: places_path, method: :get, class: "finder__search", data: { turbo_frame: "place-results" } do |f| %>
+        <label class="sr-only" for="finder-query"><%= t("finder.steps.locate.search_label") %></label>
+        <%= f.search_field :q, id: "finder-query", class: "input finder__input", placeholder: t("finder.steps.locate.search_placeholder"),
+                           autocomplete: "off", maxlength: Geocoding::Client::QUERY_MAX, data: { finder_target: "query" } %>
+        <button type="submit" class="btn btn--primary finder__search-button"><%= t("finder.steps.locate.search") %></button>
+      <% end %>
+
+      <%= render "places/results", query: "", results: [] %>
+
+      <div class="finder__map-wrap"
+           data-controller="field-map"
+           data-finder-target="map"
+           data-field-map-latitude-value="<%= landing_sample[:lat] %>"
+           data-field-map-longitude-value="<%= landing_sample[:lon] %>"
+           data-field-map-zoom-value="4"
+           data-field-map-pin-class="finder__pin"
+           data-field-map-osm-attribution-value="<%= t("finder.map.osm_attribution") %>"
+           data-field-map-esri-attribution-value="<%= t("finder.map.esri_attribution") %>"
+           data-field-map-pin-label-value="<%= t("finder.map.pin") %>"
+           data-field-map-failed-value="<%= t("finder.status.map_failed") %>"
+           data-action="finder:pin->field-map#pin finder:map-show->field-map#activate field-map:moved->finder#moved">
+        <div class="finder__map" role="application" tabindex="0" aria-label="<%= t("finder.map.label") %>" data-field-map-target="map"></div>
+        <button type="button" class="btn btn--secondary btn--sm finder__satellite" aria-pressed="false" data-field-map-target="satellite" data-action="field-map#toggleSatellite"><%= t("finder.map.satellite") %></button>
+        <p class="finder__map-hint" data-field-map-target="hint"><%= t("finder.map.hint") %></p>
+      </div>
+
+      <%= form_with url: reverse_places_path, method: :get, id: "finder-confirm", class: "finder__confirm", data: { turbo_frame: "place-summary" } do |f| %>
+        <%= f.hidden_field :lat, data: { finder_target: "lat" } %>
+        <%= f.hidden_field :lon, data: { finder_target: "lon" } %>
+      <% end %>
+    </section>
+
+    <section class="finder__step" data-finder-target="step" data-step="basics" aria-labelledby="finder-step-basics" hidden>
+      <p class="text-label finder__kicker"><%= t("finder.kicker", index: 2, total: 3) %></p>
+      <h3 id="finder-step-basics" class="finder__heading" tabindex="-1" data-finder-target="heading"><%= t("finder.steps.basics.title") %></h3>
+      <p class="panel__line" data-speak><%= t("finder.steps.basics.line") %></p>
+
+      <form id="finder-basics" class="stack stack--md" data-finder-target="basicsForm" data-action="submit->finder#continueBasics">
+        <div class="input-group">
+          <label class="input-group__label" for="finder-crop"><%= t("finder.steps.basics.crop") %></label>
+          <input id="finder-crop" class="input" type="text" name="crop_name" list="finder-crops" maxlength="<%= FieldCrop::NAME_MAX %>"
+                 autocomplete="off" autocapitalize="words" placeholder="<%= t("finder.steps.basics.crop_placeholder") %>">
+          <datalist id="finder-crops" aria-label="<%= t("crops.datalist_label") %>">
+            <% Crops::Catalog.all(locale: I18n.locale).each do |crop| %>
+              <option value="<%= crop[:crop_name] %>"><%= crop[:scientific_name] %></option>
+            <% end %>
+          </datalist>
+          <p class="input-group__hint"><%= t("finder.steps.basics.crop_hint") %></p>
+        </div>
+
+        <fieldset class="finder__group">
+          <legend class="finder__legend"><%= t("finder.steps.basics.irrigation") %></legend>
+          <div class="finder__chips">
+            <% %w[rainfed irrigated].each do |value| %>
+              <label class="finder__chip">
+                <input type="radio" name="irrigation" value="<%= value %>">
+                <span><%= t("onboarding.values.irrigation.#{value}") %></span>
+              </label>
+            <% end %>
+          </div>
+        </fieldset>
+
+        <fieldset class="finder__group">
+          <legend class="finder__legend"><%= t("finder.steps.basics.area") %> <span class="finder__optional"><%= t("finder.steps.basics.optional") %></span></legend>
+          <div class="finder__area">
+            <label class="sr-only" for="finder-area"><%= t("finder.steps.basics.area_label") %></label>
+            <input id="finder-area" class="input finder__area-input" type="number" name="area" min="0.01" step="0.01" inputmode="decimal" placeholder="0">
+            <div class="finder__chips" role="radiogroup" aria-label="<%= t("finder.steps.basics.unit_label") %>">
+              <% Field.area_units.keys.each do |unit| %>
+                <label class="finder__chip finder__chip--compact">
+                  <input type="radio" name="area_unit" value="<%= unit %>" <%= "checked" if unit == "hectares" %> data-action="change->finder#chooseUnit">
+                  <span><%= t("onboarding.values.area_unit.#{unit}") %></span>
+                </label>
+              <% end %>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+
+    <section class="finder__step" data-finder-target="step" data-step="save" aria-labelledby="finder-step-save" hidden>
+      <p class="text-label finder__kicker"><%= t("finder.kicker", index: 3, total: 3) %></p>
+      <h3 id="finder-step-save" class="finder__heading" tabindex="-1" data-finder-target="heading"><%= t("finder.steps.save.title") %></h3>
+      <% if authenticated? %>
+        <p class="panel__line" data-speak><%= t("finder.steps.save.line_signed_in") %></p>
+        <% if field_id %>
+          <%= form_with url: app_field_path(field_id), method: :patch, id: "finder-save", class: "finder__save", data: { finder_target: "saveForm" } do |f| %>
+            <% Fields::SaveSetupService::KEYS.each do |key| %>
+              <%= f.hidden_field key, value: "", data: { finder_target: "field" } %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <p class="finder__hint"><%= t("finder.steps.save.no_field") %></p>
+          <%= link_to t("finder.steps.save.open_app", app_name: t("app_name")), app_root_path, class: "btn btn--primary btn--lg btn--full" %>
+        <% end %>
+      <% elsif passkey %>
+        <p class="panel__line" data-speak><%= t("finder.steps.save.line_signed_out") %></p>
+        <form id="finder-save" class="stack stack--md finder__save" data-finder-target="saveForm" data-passkey-target="form" data-action="submit->passkey#start" novalidate>
+          <div class="input-group">
+            <label class="input-group__label" for="finder-name"><%= t("finder.steps.save.name") %></label>
+            <input class="input" id="finder-name" type="text" name="display_name" required maxlength="<%= User::NAME_MAX %>" autocomplete="name" autocapitalize="words">
+            <p class="input-group__hint"><%= t("finder.steps.save.name_hint") %></p>
+          </div>
+          <% Fields::SaveSetupService::KEYS.each do |key| %>
+            <input type="hidden" name="<%= key %>" value="" data-finder-target="field">
+          <% end %>
+          <input type="hidden" name="locale" value="<%= I18n.locale %>">
+          <p class="finder__hint"><%= t("finder.steps.save.passkey_hint") %></p>
+          <p class="auth__status finder__error" data-passkey-target="error" role="status" aria-live="polite"></p>
+        </form>
+        <p class="finder__alt"><%= link_to t("finder.steps.save.have_account"), sign_in_path %></p>
+      <% else %>
+        <p class="panel__line" data-speak><%= t("finder.steps.save.signups_closed") %></p>
+        <%= link_to t("finder.steps.save.sign_in"), sign_in_path, class: "btn btn--primary btn--lg btn--full" %>
+      <% end %>
+    </section>
+  </div>
+
+  <footer class="panel__footer">
+    <div class="panel__actions" data-finder-target="actions" data-step="locate">
+      <button type="submit" form="finder-confirm" class="btn btn--primary btn--lg btn--full" disabled data-finder-target="confirmButton"><%= t("finder.steps.locate.confirm") %></button>
+    </div>
+    <div class="panel__actions" data-finder-target="actions" data-step="basics" hidden>
+      <button type="button" class="btn btn--ghost btn--lg" data-action="finder#back"><%= t("finder.back") %></button>
+      <button type="button" class="btn btn--ghost btn--lg" data-action="finder#skipBasics"><%= t("finder.steps.basics.skip") %></button>
+      <button type="submit" form="finder-basics" class="btn btn--primary btn--lg panel__actions-main"><%= t("finder.steps.basics.continue") %></button>
+    </div>
+    <div class="panel__actions" data-finder-target="actions" data-step="save" hidden>
+      <button type="button" class="btn btn--ghost btn--lg" data-action="finder#back"><%= t("finder.back") %></button>
+      <% if authenticated? && field_id %>
+        <button type="submit" form="finder-save" class="btn btn--primary btn--lg panel__actions-main"><%= t("finder.steps.save.save_field") %></button>
+      <% elsif passkey %>
+        <button type="submit" form="finder-save" class="btn btn--primary btn--lg panel__actions-main" data-passkey-target="button"><%= t("finder.steps.save.create_passkey") %></button>
+      <% end %>
+    </div>
+  </footer>
+</section>

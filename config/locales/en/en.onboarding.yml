@@ -1,0 +1,40 @@
+en:
+  onboarding:
+    persona_name: "Aluni"
+    welcome_message: "Hi %{name}, I am Aluni. I already know your field from setup, so there is nothing you have to answer. Ask me anything about it, or let us fill in the rest: the crops that came before, the soil and what matters most to you."
+    topics:
+      welcome: "Welcome"
+      crops: "Crops"
+      soil: "Soil"
+      goals: "Goals"
+      summary: "Summary"
+    transitions:
+      welcome: "Ask me anything, or let us fill in the rest."
+      crops: "Let us look at the crop history. What grew on the field in the seasons before this one?"
+      soil: "Let us talk about the soil, in your own words."
+      goals: "Last part: what matters most to you this year?"
+      summary: "Let me put it all together so you can check it."
+    continuations:
+      welcome:
+        - "Give me a second, I am still catching up. Say that again?"
+        - "I lost my thread for a moment. Could you tell me once more what you would like to work on?"
+      crops:
+        - "Hold on, my roots are slow today. Which crops did you say?"
+        - "That slipped past me. What grew on the field before this season?"
+      soil:
+        - "One moment, I am still catching up. What did you say about the soil?"
+        - "I missed that. Tell me again what the soil is like, in your words."
+      goals:
+        - "Hold on, I am still catching up. What matters most to you this year?"
+        - "I lost that for a moment. Tell me your goals once more?"
+      summary:
+        - "One moment, I am putting it all together. Could you repeat that?"
+        - "Almost done, I just missed that. Say it once more?"
+    refusals:
+      insult: "I am only a seedling, but that stung a little. Let us get back to your farm: what shall we fill in next?"
+      sexual: "That is not something I can talk about. I am here for your fields, so let us continue there."
+      spam: "That looks like something other than a message for me. Let us keep going with your farm profile."
+      injection: "I can only help with your farm profile, so let us stay on that. What shall we fill in next?"
+      off_topic_hostile: "Let us keep this friendly and about your farm. What shall we fill in next?"
+    blocked: "I need a little quiet to recover. Come back tomorrow and we will pick up where we left off."
+    error_fallback: "Something tangled up on my side. Give me a moment and say that again?"

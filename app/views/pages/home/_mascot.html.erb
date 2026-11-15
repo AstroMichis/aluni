@@ -1,0 +1,33 @@
+<%# Aluni's stage on the landing page, in preloader mode: a small fixed box bottom-left (the resting corner) holding the WebGL canvas, its CSS ground shadow, the SVG twin and the speech bubble. It starts centred and enlarged through a transform (mascot--centered) with the twin showing at once as the loading indicator; mascot_controller.js swaps in the character when the renderer is ready, sprouts it, and on the go signal (window welcome:done on a first visit, otherwise the derived preloader:ready) moves the stage to the corner, waves and shows the bubble. The bubble's controls are real HTML so they work without the scene. %>
+<div class="mascot mascot--centered"
+     data-controller="mascot"
+     data-mascot-mode-value="preloader"
+     data-mascot-dock-selector-value="#finder-companion"
+     data-mascot-offstage-class="mascot--offstage"
+     data-mascot-onstage-class="mascot--onstage"
+     data-mascot-centered-class="mascot--centered"
+     data-mascot-leaving-class="mascot--leaving"
+     data-mascot-arrived-class="mascot--arrived"
+     data-mascot-docked-class="mascot--docked"
+     data-mascot-away-class="mascot--away"
+     data-mascot-hidden-class="mascot--hidden"
+     data-mascot-static-class="mascot--static"
+     data-mascot-fallback-class="mascot--fallback"
+     data-mascot-bubble-visible-class="mascot__bubble--visible">
+  <div class="mascot__shadow" aria-hidden="true"></div>
+  <div class="mascot__canvas" data-mascot-target="canvas" aria-hidden="true"></div>
+  <div class="mascot__fallback" data-mascot-target="fallback">
+    <%= render "shared/mascot_avatar", size: "xl" %>
+  </div>
+  <div class="mascot__bubble" data-mascot-target="bubble" role="dialog" aria-labelledby="mascot-greeting" hidden>
+    <button type="button" class="mascot__close" data-action="mascot#dismiss" aria-label="<%= t("mascot.dismiss") %>">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <% if preferences.seen_welcome? %>
+      <p id="mascot-greeting" class="mascot__line"><%= t("mascot.greeting", app_name: t("app_name")) %></p>
+      <%= render "pages/home/start_bubble" %>
+    <% else %>
+      <%= render "pages/home/intro" %>
+    <% end %>
+  </div>
+</div>

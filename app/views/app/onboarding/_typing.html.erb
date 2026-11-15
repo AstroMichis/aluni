@@ -1,0 +1,8 @@
+<%# Three dots while the answer is on its way; the chat controller shows and hides the wrapper. %>
+<div class="chat__message chat__message--assistant">
+  <div class="chat__avatar" aria-hidden="true"><%= render "shared/mascot_avatar", size: "sm" %></div>
+  <p class="chat__bubble chat__bubble--typing" role="status">
+    <span class="sr-only"><%= t("app.onboarding.show.typing") %></span>
+    <span class="chat__dot" aria-hidden="true"></span><span class="chat__dot" aria-hidden="true"></span><span class="chat__dot" aria-hidden="true"></span>
+  </p>
+</div>

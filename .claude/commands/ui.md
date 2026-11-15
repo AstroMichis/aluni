@@ -20,7 +20,7 @@ You are creating a UI component or view for Aluni. The request is: $ARGUMENTS
 
 ## Existing components (reuse, do not recreate)
 
-`.btn` (`--primary --secondary --ghost --accent --danger --sm --lg --full`), `.card` (`__header __body __footer --interactive --nested`), `.badge` (`--info --success --warning --danger --accent --secondary`), `.input`, `.input-group` (`__label __hint __error`), `.select`, `dialog.dialog` (`__header __body __footer`), `.toast`, `.dropdown`, `.avatar` (`--sm --md --lg --xl`), `.skeleton`, `.language-toggle`, `.tab-bar`, `.public-footer`, `.nav`. Layout: `.stack` (`--sm --md --lg --xl`), `.cluster` (`--sm --md --lg --between --end --center`), `.grid` (`--2 --3 --4`), `.container` (`--sm --md --lg`).
+`.btn` (`--primary --secondary --ghost --accent --danger --sm --lg --full`), `.card` (`__header __body __footer --interactive --nested`), `.badge` (`--info --success --warning --danger --accent --secondary`), `.input`, `.input-group` (`__label __hint __error`), `.select`, `dialog.dialog` (`__header __body __footer`), `.toast`, `.dropdown`, `.avatar` (`--sm --md --lg --xl`), `.skeleton`, `.language-toggle`, `.tab-bar`, `.public-footer`, `.nav`, `.store-button`, `.phone-frame`, `.tour-step`, `.chat` (`__log __message--user --assistant __bubble __typing __composer __toasts`), `.panel` (side panel / bottom sheet), `.finder`, `.intro`, `.progress`, `.toast__action`, `.mascot` and `.mascot-avatar` (`--sm --md --lg --xl`; see `docs/DESIGN_SYSTEM.md`). Layout: `.stack` (`--sm --md --lg --xl`), `.cluster` (`--sm --md --lg --between --end --center`), `.grid` (`--2 --3 --4`), `.container` (`--sm --md --lg`).
 
 ## Native `<dialog>` for every modal
 
@@ -55,7 +55,7 @@ You are creating a UI component or view for Aluni. The request is: $ARGUMENTS
 - No brand name in views (`t("app_name")`), no em dashes
 - Semantic HTML (`<main id="main">`, `<nav aria-label>`, `<button type="button">`), `aria-label` on icon-only buttons, `.sr-only` for screen-reader text
 - `turbo_frame_tag` for sections that update independently; `data-controller` for behaviour
-- Inside the native shells `native.css` hides the web chrome; check the page both ways (`NATIVE_WEB_ACCESS=1` in development, or a native user agent)
+- Inside the native shells `native.css` hides the web chrome; check the page both ways (a browser, and a native user agent)
 
 ## Aesthetic direction
 

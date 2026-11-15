@@ -28,6 +28,7 @@ RSpec.describe "Passkey sign-up and sign-in", type: :request do
     post sign_up_path(locale: "en"), params: { credential: credential, nickname: "iPhone" }, headers: native_headers, as: :json
     expect(response).to have_http_status(:created)
     expect(response.parsed_body["redirect_to"]).to eq(app_root_url(locale: "en"))
+    expect(response.cookies["locale"]).to eq("en")
 
     user = User.last
     expect(user).to have_attributes(display_name: "Ada", email_address: "ada@example.com", locale: "en")
@@ -35,9 +36,10 @@ RSpec.describe "Passkey sign-up and sign-in", type: :request do
     expect(user.passkeys.first).to have_attributes(external_id: credential["id"], nickname: "iPhone", transports: [ "internal" ])
     expect(cookies["session_id"]).to be_present
 
+    # The home shows its recap at once, empty or not: nothing forces a chat.
     get app_root_path(locale: "en"), headers: native_headers
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("Ada").and include(I18n.t("app.home.show.lede"))
+    expect(response.body).to include(I18n.t("app.home.show.recap_title")).and include(I18n.t("app.home.show.greeting", name: "Ada"))
 
     get passkeys_path(locale: "en"), headers: native_headers
     expect(response).to have_http_status(:ok)
@@ -71,6 +73,53 @@ RSpec.describe "Passkey sign-up and sign-in", type: :request do
 
     get app_root_path(locale: "en"), headers: native_headers
     expect(response).to have_http_status(:ok)
+    expect(response.body).to include(I18n.t("app.home.show.recap_title"))
+  end
+
+  it "carries the field from the finder into the new account" do
+    post sign_up_options_path(locale: "en"), headers: native_headers, as: :json, params: {
+      display_name: "Ada", locale: "es",
+      latitude: "42.00000", longitude: "-93.75000", place_label: "Ames, Iowa", country_code: "US", admin_area: "Iowa",
+      location_source: "geolocation", crop_name: "maíz", irrigation: "irrigated", area: "12.5", area_unit: "acres"
+    }
+    expect(response).to have_http_status(:ok)
+
+    credential = client.create(challenge: response.parsed_body["challenge"], user_verified: true)
+    post sign_up_path(locale: "en"), params: { credential: credential }, headers: native_headers, as: :json
+
+    expect(response).to have_http_status(:created)
+    expect(response.parsed_body["redirect_to"]).to eq(app_root_url(locale: "es"))
+    user = User.last
+    expect(user).to have_attributes(display_name: "Ada", locale: "es")
+    expect(user).to be_onboarding_complete
+    farm = user.farms.sole
+    expect(farm).to have_attributes(country_code: "US", admin_area: "Iowa")
+    field = farm.fields.sole
+    expect(field).to have_attributes(latitude: 42.0, longitude: -93.75, place_label: "Ames, Iowa", location_source: "geolocation",
+                                     location_confidence: "confirmed", irrigation: "irrigated", area: 12.5, area_unit: "acres")
+    expect(field.field_crops.sole).to have_attributes(crop_name: "Maíz", scientific_name: "Zea mays", season_year: Date.current.year, role: "main", source: "farmer")
+    expect(user.farmer_profile.units).to eq("imperial")
+
+    get app_root_path(locale: "es"), headers: native_headers
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("42.0000").and include("-93.7500").and include("12,5 acres")
+  end
+
+  it "creates the account even when the field cannot be saved, and ignores a pinless field" do
+    allow(Fields::SaveSetupService).to receive(:call).and_return(Failure(code: :invalid, messages: [ "nope" ]))
+    post sign_up_options_path(locale: "en"), params: { display_name: "Ada", latitude: "42", longitude: "-93.75" }, headers: native_headers, as: :json
+    credential = client.create(challenge: response.parsed_body["challenge"], user_verified: true)
+    post sign_up_path(locale: "en"), params: { credential: credential }, headers: native_headers, as: :json
+    expect(response).to have_http_status(:created)
+    expect(User.count).to eq(1)
+    expect(Fields::SaveSetupService).to have_received(:call).once
+
+    post sign_up_options_path(locale: "en"), params: { display_name: "Bea", crop_name: "maíz" }, headers: native_headers, as: :json
+    credential = fake_authenticator.create(challenge: response.parsed_body["challenge"], user_verified: true)
+    post sign_up_path(locale: "en"), params: { credential: credential }, headers: native_headers, as: :json
+    expect(response).to have_http_status(:created)
+    expect(Fields::SaveSetupService).to have_received(:call).once
+    expect(User.last.farms).to be_empty
   end
 
   it "signs up in Spanish and keeps the locale on the account" do
@@ -79,6 +128,29 @@ RSpec.describe "Passkey sign-up and sign-in", type: :request do
     expect(response).to have_http_status(:created)
     expect(User.last.locale).to eq("es")
     expect(response.parsed_body["redirect_to"]).to eq(app_root_url(locale: "es"))
+  end
+
+  it "keeps the language chosen in the finder, even from an English page" do
+    post sign_up_options_path(locale: "en"), params: { display_name: "Ana", locale: "es" }, headers: native_headers, as: :json
+    expect(response).to have_http_status(:ok)
+
+    credential = client.create(challenge: response.parsed_body["challenge"], user_verified: true)
+    post sign_up_path(locale: "en"), params: { credential: credential }, headers: native_headers, as: :json
+
+    expect(response).to have_http_status(:created)
+    expect(response.parsed_body["redirect_to"]).to eq(app_root_url(locale: "es"))
+    expect(response.cookies["locale"]).to eq("es")
+    expect(User.last.locale).to eq("es")
+  end
+
+  it "ignores a language it does not offer" do
+    post sign_up_options_path(locale: "en"), params: { display_name: "Ana", locale: "fr" }, headers: native_headers, as: :json
+    credential = client.create(challenge: response.parsed_body["challenge"], user_verified: true)
+    post sign_up_path(locale: "en"), params: { credential: credential }, headers: native_headers, as: :json
+
+    expect(response).to have_http_status(:created)
+    expect(User.last.locale).to eq("en")
+    expect(response.parsed_body["redirect_to"]).to eq(app_root_url(locale: "en"))
   end
 
   it "rejects a replayed assertion" do

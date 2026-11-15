@@ -324,6 +324,51 @@ S2A_14TPL_20250702_1_L2A  2025-07-02T17:32:43.590000Z   1.974831
 
 Earth Search asset keys: `coastal`, `blue`, `green`, `red`, `rededge1`, `rededge2`, `rededge3`, `nir`, `nir08`, `nir09`, `swir16`, `swir22`, `aot`, `wvp`, `scl`, `cloud`, `snow`, `visual`, `thumbnail`, `granule_metadata`, `product_metadata`, `tileinfo_metadata`, and `-jp2` variants of each band.
 
+### Microsoft Planetary Computer: STAC search and point values
+
+No account or key. Search with the STAC API, then read values at a point from the data API (TiTiler), which computes band expressions server side. Imagery is never downloaded. Asset hrefs on `sentinel2l2a01.blob.core.windows.net` would need an anonymous SAS token (`/api/sas/v1/token/sentinel-2-l2a`), but the point endpoint does not.
+
+```
+POST https://planetarycomputer.microsoft.com/api/stac/v1/search
+Content-Type: application/json
+
+{"collections": ["sentinel-2-l2a"],
+ "intersects": {"type": "Point", "coordinates": [-97.50, 40.95]},
+ "datetime": "2025-07-01T00:00:00Z/2025-08-31T23:59:59Z",
+ "query": {"eo:cloud_cover": {"lt": 30}},
+ "sortby": [{"field": "properties.eo:cloud_cover", "direction": "asc"}],
+ "limit": 8}
+```
+
+```
+GET https://planetarycomputer.microsoft.com/api/data/v1/item/point/{lon},{lat}
+    ?collection=sentinel-2-l2a&item={item id}&expression={band math}&asset_as_band=false
+```
+
+Expressions name bands as `<asset>_b1`: NDVI is `(B08_b1-B04_b1)/(B08_b1+B04_b1)`, and the scene classification at the pixel is `SCL_b1`. Values are raw digital numbers unless `unscale=true`; NDVI is a ratio, so the L2A offset mostly cancels.
+
+### Sample responses (Captured 2026-11-15)
+
+STAC search over the reference point with a GET bbox (`bbox=-97.5005,40.9495,-97.4995,40.9505`, no cloud filter, `limit=5`). Only id, datetime and `eo:cloud_cover` are shown:
+
+| id | datetime | eo:cloud_cover |
+|---|---|---|
+| S2A_MSIL2A_20250831T172721_R012_T14TPL_20250831T223114 | 2025-08-31T17:27:21.024000Z | 99.92 |
+| S2C_MSIL2A_20250829T171911_R012_T14TPL_20250829T223813 | 2025-08-29T17:19:11.025000Z | 73.95 |
+| S2B_MSIL2A_20250824T171859_R012_T14TPL_20250824T211839 | 2025-08-24T17:18:59.024000Z | 81.19 |
+| S2C_MSIL2A_20250819T171911_R012_T14TPL_20250819T222514 | 2025-08-19T17:19:11.025000Z | 26.67 |
+| S2B_MSIL2A_20250814T171859_R012_T14TPL_20250814T205709 | 2025-08-14T17:18:59.024000Z | 13.75 |
+
+Item assets: `AOT, B01, B02, B03, B04, B05, B06, B07, B08, B09, B11, B12, B8A, SCL, WVP, visual`, metadata files, `tilejson`, `rendered_preview`.
+
+NDVI at the point on the 2025-08-14 scene (complete response):
+
+```json
+{"coordinates":[-97.5,40.95],"values":[0.6402918872513951],"band_names":["(B08_b1-B04_b1)/(B08_b1+B04_b1)"]}
+```
+
+Implemented in the app as `PlanetaryComputer::Client` (`docs/INTEGRATIONS.md`). Its NDVI series reads `SCL_b1` first and keeps only clear pixels (4 vegetation, 5 not vegetated, 6 water).
+
 ## Fields
 
 | Field | Type | Unit | Description |
@@ -369,4 +414,5 @@ Band centre wavelengths (um, from captured items): B01 0.443, B02 0.490, B03 0.5
 - Earth Search: https://element84.com/earth-search/ ; STAC root: https://earth-search.aws.element84.com/v1
 - AWS Registry, Sentinel-2 COGs: https://registry.opendata.aws/sentinel-2-l2a-cogs/
 - Sentinel-2 L2A product description (ESA SentiWiki): https://sentiwiki.copernicus.eu/web/s2-processing
+- Planetary Computer Sentinel-2 L2A: https://planetarycomputer.microsoft.com/dataset/sentinel-2-l2a ; data API (TiTiler) reference: https://planetarycomputer.microsoft.com/api/data/v1/docs
 - Copernicus data licence (free, full and open): https://sentinels.copernicus.eu/documents/247904/690755/Sentinel_Data_Legal_Notice

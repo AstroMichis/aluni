@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { reducedMotion } from "preferences/motion"
 
 // Drives the landing tour. Owns the one scroll listener for the page: it works
 // out which step sits at the viewport centre and how far through it the reader
@@ -17,7 +18,7 @@ export default class extends Controller {
   static values = { eventName: { type: String, default: "landing:progress" } }
 
   connect() {
-    this.reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    this.reduced = reducedMotion()
     this.raf = null
     this.onScroll = this.onScroll.bind(this)
     this.onResize = this.onResize.bind(this)

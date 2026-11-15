@@ -1,0 +1,51 @@
+/* Topic progress for the onboarding: one dot per topic, the current one larger,
+   and a "3 of 8" line with the topic name. */
+.progress {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+  flex: 0 0 auto;
+}
+
+.progress__dots {
+  display: flex;
+  gap: var(--space-1);
+  list-style: none;
+  margin: 0;
+  padding: var(--space-1);
+}
+
+.progress__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-border-strong);
+  transform: scale(1);
+  transition: transform var(--transition-base), background-color var(--transition-base);
+}
+.progress__dot--done { background: var(--color-accent); }
+.progress__dot--current {
+  background: var(--color-accent);
+  transform: scale(1.3);
+  box-shadow: 0 0 0 3px var(--color-accent-muted);
+}
+
+.progress__step {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  text-align: end;
+}
+.progress__count { font-family: var(--font-mono); }
+.progress__topic { color: var(--color-text-secondary); }
+
+@media (forced-colors: active) {
+  .progress__dot { border: 1px solid CanvasText; }
+  .progress__dot--done,
+  .progress__dot--current { background: CanvasText; }
+}

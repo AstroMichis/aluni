@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_14_205805) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_15_062636) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,6 +36,78 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_205805) do
     t.index ["user_id"], name: "index_device_tokens_on_user_id"
   end
 
+  create_table "farmer_profiles", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "role", default: 0, null: false
+    t.integer "experience", default: 0, null: false
+    t.integer "team", default: 0, null: false
+    t.integer "team_size"
+    t.integer "units", default: 0, null: false
+    t.integer "land_tenure", default: 0, null: false
+    t.integer "budget_level", default: 0, null: false
+    t.integer "risk_tolerance", default: 0, null: false
+    t.integer "segment", default: 0, null: false
+    t.jsonb "goals", default: [], null: false
+    t.jsonb "equipment", default: [], null: false
+    t.jsonb "livestock", default: [], null: false
+    t.jsonb "market_channels", default: [], null: false
+    t.jsonb "practices", default: [], null: false
+    t.jsonb "notification_preferences", default: {}, null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_farmer_profiles_on_user_id", unique: true
+  end
+
+  create_table "farms", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", default: "", null: false
+    t.string "country_code", limit: 2
+    t.string "admin_area"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_farms_on_user_id"
+  end
+
+  create_table "field_crops", force: :cascade do |t|
+    t.bigint "field_id", null: false
+    t.string "crop_name", null: false
+    t.string "scientific_name"
+    t.string "crop_key"
+    t.integer "season_year", null: false
+    t.integer "planting_month"
+    t.integer "harvest_month"
+    t.integer "role", default: 0, null: false
+    t.integer "source", default: 0, null: false
+    t.string "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["field_id", "season_year", "role"], name: "index_field_crops_on_field_id_and_season_year_and_role", unique: true
+    t.index ["field_id"], name: "index_field_crops_on_field_id"
+  end
+
+  create_table "fields", force: :cascade do |t|
+    t.bigint "farm_id", null: false
+    t.string "name", default: "", null: false
+    t.integer "position", default: 0, null: false
+    t.decimal "latitude", precision: 9, scale: 6
+    t.decimal "longitude", precision: 9, scale: 6
+    t.integer "location_confidence", default: 0, null: false
+    t.integer "location_source", default: 0, null: false
+    t.string "place_label"
+    t.jsonb "boundary", default: {}, null: false
+    t.decimal "area", precision: 10, scale: 2
+    t.integer "area_unit", default: 0, null: false
+    t.integer "irrigation", default: 0, null: false
+    t.integer "water_source", default: 0, null: false
+    t.integer "cropping_intensity", default: 0, null: false
+    t.jsonb "soil", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["farm_id", "position"], name: "index_fields_on_farm_id_and_position"
+    t.index ["farm_id"], name: "index_fields_on_farm_id"
+  end
+
   create_table "notification_deliveries", force: :cascade do |t|
     t.string "purpose", null: false
     t.string "recipient_type", null: false
@@ -52,6 +124,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_205805) do
     t.index ["idempotency_key"], name: "index_notification_deliveries_on_idempotency_key", unique: true
     t.index ["purpose", "created_at"], name: "index_notification_deliveries_on_purpose_and_created_at"
     t.index ["recipient_type", "recipient_id"], name: "index_notification_deliveries_on_recipient"
+  end
+
+  create_table "onboarding_sessions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "topic", default: "welcome", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "completed_at"
+    t.text "transcript"
+    t.jsonb "proposal", default: {}, null: false
+    t.text "pending_message"
+    t.integer "fallbacks_count", default: 0, null: false
+    t.integer "turns_count", default: 0, null: false
+    t.integer "strikes", default: 0, null: false
+    t.datetime "blocked_until"
+    t.string "language"
+    t.datetime "last_message_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "last_applied", default: {}, null: false
+    t.index ["user_id"], name: "index_onboarding_sessions_on_user_id", unique: true
   end
 
   create_table "passkeys", force: :cascade do |t|
@@ -94,6 +186,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_205805) do
     t.string "locale", default: "en", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "preferences", default: {}, null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true, where: "(email_address IS NOT NULL)"
     t.index ["webauthn_id"], name: "index_users_on_webauthn_id", unique: true
   end
@@ -112,6 +205,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_205805) do
   end
 
   add_foreign_key "device_tokens", "users"
+  add_foreign_key "farmer_profiles", "users"
+  add_foreign_key "farms", "users"
+  add_foreign_key "field_crops", "fields"
+  add_foreign_key "fields", "farms"
+  add_foreign_key "onboarding_sessions", "users"
   add_foreign_key "passkeys", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "web_push_subscriptions", "users"

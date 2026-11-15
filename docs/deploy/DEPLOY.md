@@ -135,6 +135,14 @@ After that, `kamal deploy` (and the workflow) work normally.
 
 DNS and the tunnel do not change, because the tunnel token moves with the deploy.
 
+## Before a demo
+
+1. A configured Gemini backend (`Platform::Features.gemini?`). Production uses `GEMINI_BACKEND=vertex` with `GOOGLE_CLOUD_PROJECT`. In development, either `gemini.api_key` in the credentials, or `GEMINI_BACKEND=vertex` plus `GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)`. Then `platform:resume[gemini]`, or the Platform switch with `resume` + `gemini`. Without it, Aluni only says her continuation lines.
+2. `NATIVE_WEB_ACCESS` defaults to on, so sign-in, the onboarding chat and `/app` work in any current browser. Set it to `0` only to close the web and keep the shells.
+3. Passkeys and the share-location button need a secure context: the production domain, or `localhost` in development.
+4. Open the landing page and wait for Aluni to walk in. Run the sign-up and a full onboarding in English and in Spanish, and refresh once midway to see the transcript resume.
+5. Take a disk snapshot (see Operating).
+
 ## Gemini on Vertex AI
 
 `GEMINI_BACKEND=vertex` makes `Gemini::Client` call Vertex AI with a token from the GCE metadata server (`Gemini::VertexToken`), so production holds no Gemini key and usage bills to the GCP project. Before turning it on with the Platform switch:

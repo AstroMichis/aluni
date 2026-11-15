@@ -11,7 +11,7 @@ You are writing RSpec tests for Aluni. The target is: $ARGUMENTS
 
 ## Factories
 
-`:user` (traits `:with_email`, `:spanish`), `:passkey`, `:session`, `:platform_switch`. Add one per new model (`spec/factories/<plural>.rb`, generated with the model).
+`:user` (traits `:with_email`, `:spanish`), `:passkey`, `:session`, `:platform_switch`, `:farmer_profile` (trait `:blank`), `:farm`, `:field` (trait `:unlocated`), `:field_crop`, `:onboarding_session` (trait `:completed`). Add one per new model (`spec/factories/<plural>.rb`, generated with the model).
 
 ## Helpers
 
@@ -20,7 +20,8 @@ You are writing RSpec tests for Aluni. The target is: $ARGUMENTS
 - `Result::Mixin` is included in service, job and request specs: `Success(...)`, `Failure(...)`
 - `ActiveJob::TestHelper` everywhere (`have_enqueued_job`, `have_enqueued_mail`, `perform_enqueued_jobs`)
 - `travel_to` / `freeze_time` (reset after every example)
-- WebMock blocks the network; a Gemini request outside a `:gemini_api` spec fails the suite
+- WebMock blocks the network; a Gemini request outside a `:gemini_api` spec fails the suite (stubbed ones count too: tag HTTP-level Gemini specs `:gemini_api`)
+- Onboarding request specs stub the engine: `allow(Onboarding::ReplyService).to receive(:call).and_return(Success(payload))`; `spec/requests/app/onboarding_spec.rb` has the payload shapes
 
 ## Patterns
 

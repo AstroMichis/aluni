@@ -1,8 +1,30 @@
 <% content_for :title, t(".title") %>
 
-<section class="stack stack--md">
-  <h1 class="text-display app-home__title"><%= t(".greeting", name: Current.user.display_name) %></h1>
-  <p class="app-home__lede"><%= t(".lede") %></p>
+<section class="stack stack--lg">
+  <header class="stack stack--sm">
+    <h1 class="text-display app-home__title"><%= t(".greeting", name: Current.user.display_name) %></h1>
+    <p class="app-home__lede"><%= t(".lede") %></p>
+  </header>
+
+  <section class="card" aria-labelledby="recap-title">
+    <div class="card__header">
+      <h2 id="recap-title" class="text-heading"><%= t(".recap_title") %></h2>
+    </div>
+    <div class="card__body">
+      <dl class="profile-preview__list">
+        <% snapshot_recap_rows(@snapshot).each do |row| %>
+          <div class="profile-preview__row">
+            <dt class="profile-preview__term"><%= row[:label] %></dt>
+            <dd class="profile-preview__value"><%= row[:value] %></dd>
+          </div>
+        <% end %>
+      </dl>
+    </div>
+    <div class="card__footer cluster cluster--sm">
+      <%= link_to t(".talk_to", app_name: t("app_name")), app_onboarding_path, class: "btn btn--primary" %>
+    </div>
+  </section>
+
   <div class="cluster cluster--sm">
     <%= link_to t(".passkeys"), passkeys_path, class: "btn btn--secondary" %>
     <%= button_to t(".sign_out"), sign_out_path, method: :delete, class: "btn btn--ghost" %>

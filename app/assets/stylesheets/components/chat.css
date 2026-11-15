@@ -1,0 +1,227 @@
+/* Chat log, bubbles, typing dots, notices, the inline "Saved ... Undo" toast and
+   the composer (the Ask Aluni chat). Tokens only; motion on transform and
+   opacity; 48 px targets. */
+
+/* --- the chat block ---------------------------------------------------- */
+.chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.chat__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.chat__heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.chat__title { font-size: var(--text-lg); }
+.chat__lede { font-size: var(--text-sm); color: var(--color-text-secondary); }
+
+.chat__log {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto 320px;
+}
+
+/* --- bubbles ----------------------------------------------------------- */
+.chat__message {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+  contain: layout style;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+@starting-style {
+  .chat__message { opacity: 0; transform: translateY(8px); }
+}
+
+.chat__message--user { justify-content: flex-end; }
+
+.chat__avatar {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.chat__bubble {
+  max-width: min(85%, 56ch);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.chat__message--assistant .chat__bubble { border-end-start-radius: var(--radius-sm); }
+.chat__message--user .chat__bubble {
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  border-end-end-radius: var(--radius-sm);
+}
+.chat__message--refusal .chat__bubble { border: 1px solid var(--color-warning); }
+.chat__message--degraded .chat__bubble { border: 1px dashed var(--color-border-strong); }
+
+/* --- typing dots ------------------------------------------------------- */
+.chat__typing { padding: 0 var(--space-4) var(--space-3); }
+.chat__typing[hidden] { display: none; }
+
+.chat__bubble--typing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 44px;
+}
+
+.chat__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-text-tertiary);
+  animation: chat-dot 1.2s ease-in-out infinite;
+}
+.chat__dot + .chat__dot { animation-delay: 0.15s; }
+.chat__dot + .chat__dot + .chat__dot { animation-delay: 0.3s; }
+
+@keyframes chat-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* --- notices, cards, dividers ------------------------------------------ */
+.chat__notices:empty { display: none; }
+
+.chat__notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: 0 var(--space-4) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-info);
+  background: var(--color-info-bg);
+  font-size: var(--text-sm);
+}
+.chat__log .chat__notice { margin: 0; }
+.chat__notice--success { border-left-color: var(--color-success); background: var(--color-success-bg); }
+.chat__notice--warning { border-left-color: var(--color-warning); background: var(--color-warning-bg); }
+.chat__notice--muted { border-left-color: var(--color-border-strong); background: transparent; color: var(--color-text-secondary); }
+.chat__notice-title { font-weight: 600; }
+.chat__notice-link { color: var(--color-accent-text); text-decoration: underline; min-height: 48px; display: inline-flex; align-items: center; }
+
+.chat__card { align-self: stretch; }
+.chat__card-title { font-size: var(--text-lg); }
+
+.chat__divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-2);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+}
+.chat__divider::before,
+.chat__divider::after { content: ""; flex: 1; height: 1px; background: var(--color-border-subtle); }
+
+/* --- the "Saved ... Undo" toast ----------------------------------------- */
+/* The toast sits in flow above the composer instead of fixed at the viewport
+   edge, so it never covers the log; it fades up rather than sliding in. */
+.chat__toasts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0 var(--space-4) var(--space-3);
+}
+.chat__toasts:empty { display: none; }
+
+.chat__toasts .toast {
+  position: static;
+  inset: auto;
+  max-width: none;
+  box-shadow: var(--shadow-md);
+  font-size: var(--text-sm);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+.chat__toasts .toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- composer ---------------------------------------------------------- */
+.chat__composer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  background: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.chat__composer .chat__input {
+  flex: 1 1 auto;
+  min-height: 48px;
+  max-height: 160px;
+  resize: none;
+  field-sizing: content;
+  line-height: var(--leading-snug);
+}
+
+.chat__send {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: var(--radius-full);
+}
+.chat__send svg { width: 22px; height: 22px; }
+
+.chat__toolbar {
+  padding: 0 var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  background: var(--color-bg-secondary);
+}
+.chat__tool { display: inline-flex; }
+.chat__tool .btn { min-height: 48px; }
+
+@media (forced-colors: active) {
+  .chat__bubble { border: 1px solid CanvasText; }
+}

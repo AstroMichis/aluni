@@ -1,0 +1,15 @@
+<%# Topic dots. Locals: topic (current key), index (0-based), total. %>
+<nav id="onboarding-progress" class="progress" aria-label="<%= t("app.onboarding.show.progress.label") %>">
+  <ol class="progress__dots">
+    <% onboarding_topics.each_with_index do |key, i| %>
+      <%= tag.li class: class_names("progress__dot", "progress__dot--done": i < index, "progress__dot--current": i == index),
+                 "aria-current": (i == index ? "step" : nil), title: topic_title(key) do %>
+        <span class="sr-only"><%= topic_title(key) %></span>
+      <% end %>
+    <% end %>
+  </ol>
+  <p class="progress__step">
+    <span class="progress__count"><%= t("app.onboarding.show.progress.step", index: index + 1, total: total) %></span>
+    <span class="progress__topic"><%= topic_title(topic) %></span>
+  </p>
+</nav>

@@ -1,0 +1,22 @@
+en:
+  intro:
+    hello: "Hi, I'm %{app_name}."
+    language_line: "I'll keep things in English."
+    language_switch: "¿Prefieres español?"
+    language_label: "Language"
+    languages:
+      en: "English"
+      es: "Español"
+    comfort: "Make it comfortable"
+    text_size: "Larger text"
+    read_aloud: "Read aloud"
+    motion: "Less motion"
+    contrast: "High contrast"
+    sample: "I'll read things out for you as we go."
+    done: "Looks good"
+  preferences:
+    read_aloud_on: "Read aloud is on"
+    read_aloud_off: "Read aloud is off"
+    toggle_read_aloud: "Read aloud"
+    text_size: "Text size"
+    text_size_short: "Aa"

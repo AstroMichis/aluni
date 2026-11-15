@@ -10,9 +10,7 @@
       <% end %>
       <div class="cluster cluster--sm">
         <%= render "shared/language_toggle" %>
-        <button type="button" class="btn btn--ghost btn--sm" data-action="theme#toggle" aria-label="<%= t("theme.toggle") %>">
-          <%= t("theme.toggle_short") %>
-        </button>
+        <%= render "shared/access_buttons" %>
       </div>
     </div>
   </nav>
@@ -32,20 +30,27 @@
           <% if hotwire_native_app? %>
             <%= link_to t(".sign_in"), sign_in_path, class: "btn btn--primary btn--lg" %>
             <%= link_to t(".sign_up"), sign_up_path, class: "btn btn--secondary btn--lg" if signups_enabled? %>
+          <% elsif authenticated? %>
+            <%= link_to t(".open_app", app_name: t("app_name")), app_root_path, class: "btn btn--primary btn--lg" %>
+            <a class="btn btn--ghost btn--lg" data-turbo="false" href="#tour-step-1"><%= t(".take_the_tour") %></a>
           <% else %>
-            <a class="btn btn--primary btn--lg" href="#get-the-app"><%= t(".get_the_app") %></a>
-            <a class="btn btn--secondary btn--lg" href="#tour-step-1"><%= t(".take_the_tour") %></a>
+            <button type="button" class="btn btn--primary btn--lg" data-controller="emit" data-emit-event-value="mascot:lets-go" data-action="emit#fire"><%= t(".find_my_field") %></button>
+            <%= link_to t(".sign_in"), sign_in_path, class: "btn btn--secondary btn--lg" %>
+            <a class="btn btn--ghost btn--lg" data-turbo="false" href="#tour-step-1"><%= t(".take_the_tour") %></a>
           <% end %>
         </div>
       </div>
       <% unless hotwire_native_app? %>
-        <a class="landing__scroll-cue" href="#tour-step-1" aria-label="<%= t(".scroll_cue") %>">
+        <a class="landing__scroll-cue" data-turbo="false" href="#tour-step-1" aria-label="<%= t(".scroll_cue") %>">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
         </a>
       <% end %>
     </section>
 
     <% unless hotwire_native_app? %>
+      <%= render "pages/home/mascot" %>
+      <%= render "pages/home/finder" %>
+
       <div id="tour" class="tour"
            data-controller="scroll-story"
            data-scroll-story-active-class="tour-step--active"
@@ -54,14 +59,14 @@
            data-scroll-story-in-tour-class="tour--in-tour">
         <p class="landing__notice container container--md">
           <span><%= t(".preview_notice") %></span>
-          <a class="landing__notice-link" href="#get-the-app"><%= t(".preview_notice_link") %></a>
+          <%= render "pages/home/start_link", text: t(".preview_notice_link"), css: "landing__notice-link" %>
         </p>
 
         <nav class="tour-nav" aria-label="<%= t(".tour_label") %>" data-scroll-story-target="nav">
           <ol class="tour-nav__list">
             <% tour_steps.each_with_index do |step, index| %>
               <li>
-                <a class="tour-nav__dot" href="#tour-step-<%= index + 1 %>" data-scroll-story-target="dot">
+                <a class="tour-nav__dot" data-turbo="false" href="#tour-step-<%= index + 1 %>" data-scroll-story-target="dot">
                   <span class="sr-only"><%= t(".tour_step_label", number: index + 1, title: t("pages.home.steps.#{step}.title")) %></span>
                 </a>
               </li>

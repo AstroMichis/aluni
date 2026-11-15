@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Informational site", type: :request do
+RSpec.describe "Public site", type: :request do
   it "renders the landing page in English by default" do
     get "/"
 
@@ -38,6 +38,44 @@ RSpec.describe "Informational site", type: :request do
     expect(response.body).to include('href="https://apps.apple.com/app/id1"').and include('rel="noopener"')
     expect(response.body).to include('href="https://play.google.com/store/apps/details?id=us.aluni.app"')
     expect(response.body).not_to include(I18n.t("shared.store_buttons.coming_soon"))
+  end
+
+  it "offers the field finder and sign-in to browsers" do
+    get "/en"
+
+    expect(response.body).to include(I18n.t("pages.home.find_my_field")).and include(%(data-emit-event-value="mascot:lets-go"))
+    expect(response.body).to include(I18n.t("pages.home.sign_in")).and include(%(href="/en/sign_in"))
+    expect(response.body).to include(I18n.t("pages.home.finish")).and include(I18n.t("pages.home.preview_notice_link"))
+    expect(response.body).not_to include(%(href="/en/sign_up"))
+  end
+
+  it "lets Aluni's first bubble settle language and comfort on a first visit" do
+    get "/en"
+    expect(response.body).to include('data-controller="intro"').and include(I18n.t("intro.language_switch")).and include(I18n.t("intro.comfort"))
+    expect(response.body).to include(%(name="preferred_locale" type="submit" value="es"))
+
+    get "/es"
+    expect(response.body).to include(I18n.t("intro.language_switch", locale: :es))
+  end
+
+  it "skips the intro once it was answered and never shows it to the native shells" do
+    cookies[Preferences::COOKIE.to_s] = { seen_welcome: true, text_size: "large" }.to_json
+    get "/en"
+    expect(response.body).not_to include('data-controller="intro"')
+    expect(response.body).to include('data-text-size="large"').and include(I18n.t("mascot.find_my_field"))
+
+    cookies.delete(Preferences::COOKIE.to_s)
+    get "/en", headers: native_headers
+    expect(response.body).not_to include('data-controller="intro"')
+  end
+
+  it "offers the app to a signed-in browser" do
+    sign_in_as(create(:user))
+
+    get "/en"
+
+    expect(response.body).to include(I18n.t("pages.home.open_app", app_name: I18n.t("app_name"))).and include(%(href="/en/app"))
+    expect(response.body).not_to include(%(href="/en/sign_up"))
   end
 
   it "shows sign-in instead of the tour and the store links inside the native shells" do

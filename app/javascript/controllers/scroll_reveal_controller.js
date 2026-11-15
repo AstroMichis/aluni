@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { reducedMotion } from "preferences/motion"
 
 // Adds the visible class once the element scrolls into view; with reduced
 // motion it is visible from the start.
@@ -8,7 +9,7 @@ export default class extends Controller {
   connect() {
     const visible = this.hasVisibleClass ? this.visibleClass : "landing__reveal--visible"
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (reducedMotion()) {
       this.element.classList.add(visible)
       return
     }

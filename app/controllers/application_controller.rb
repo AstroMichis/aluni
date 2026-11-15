@@ -13,6 +13,11 @@ class ApplicationController < ActionController::Base
 
   helper_method :signups_enabled?
 
+  # The welcome screen's choices (theme, text size, motion, contrast, read aloud):
+  # the aluni_prefs cookie for everyone, merged with users.preferences when signed in.
+  before_action :load_preferences
+  helper_method :preferences
+
   # The operator paused an outside service (Platform::Switchboard) and this
   # request needed it. Nothing was sent; the visitor gets a calm notice.
   rescue_from Platform::ServicePaused, with: :render_service_paused
@@ -20,6 +25,14 @@ class ApplicationController < ActionController::Base
   private
 
   def signups_enabled? = Platform::Features.signups_enabled?
+
+  def preferences = @preferences ||= Preferences.new
+
+  def load_preferences
+    prefs = Preferences.from_cookie(cookies[Preferences::COOKIE])
+    prefs = prefs.merge(Current.user.preferences) if authenticated? && Current.user.preferences.present?
+    @preferences = prefs
+  end
 
   # before_action on RegistrationsController: account creation can ship closed
   # while sign-in stays open (SIGNUPS_ENABLED=0).

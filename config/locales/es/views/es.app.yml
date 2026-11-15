@@ -7,3 +7,11 @@ es:
         lede: "Aquí empieza Aluni. Las primeras pantallas llegarán aquí."
         passkeys: "Administrar llaves de acceso"
         sign_out: "Cerrar sesión"
+        recap_title: "Tu finca de un vistazo"
+        talk_to: "Hablar con %{app_name}"
+        recap:
+          farm: "Finca"
+          pin: "Punto del campo"
+          area: "Superficie"
+          segment: "Perfil"
+          goals: "Objetivos"

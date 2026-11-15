@@ -27,10 +27,14 @@ rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), weba
 /webhooks/...                         (empty; each provider adds a feature-gated route)
 /sidekiq                              only with SIDEKIQ_WEB_* set, on ADMIN_HOST, basic auth
 /locale/:new_locale                   locale switch
-(/:locale)/                           root: informational site
+(/:locale)/                           root: landing page (Aluni's first bubble, the field finder)
+(/:locale)/preferences                POST: comfort choices (cookie + account), language change redirects
+(/:locale)/places, places/reverse     Turbo Frames for the finder: Nominatim search and reverse geocoding through the server
 (/:locale)/sign_in, sign_in/options, sign_out, sign_up, sign_up/options
 (/:locale)/passkeys, passkeys/options
 (/:locale)/app                        authenticated area (+ device_tokens, web_push_subscriptions)
+(/:locale)/app/onboarding             Ask Aluni: show, message, undo, skip, complete (POST), reset (DELETE)
+(/:locale)/app/fields/:id             PATCH: the main field's pin and basics from the finder, signed in
 ```
 
 `default_url_options` always adds the locale, so every generated link carries `/en/` or `/es/`.
@@ -44,13 +48,14 @@ rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), weba
 | `RAILS_MAX_THREADS`, `SIDEKIQ_CONCURRENCY`, `RAILS_LOG_LEVEL`, `MALLOC_ARENA_MAX`, `RAILS_SERVE_STATIC_FILES`, `PORT`, `PIDFILE` | puma, sidekiq, logging |
 | `APP_DOMAIN`, `APP_PORT`, `ADMIN_HOST`, `DEV_HOSTS` | app_domain.rb, hosts, mailer URLs, WebAuthn RP id |
 | `TRUSTED_PROXIES` | production.rb (Cloudflare ranges) |
-| `NATIVE_WEB_ACCESS`, `SIGNUPS_ENABLED` | native.rb, Platform::Features |
+| `NATIVE_WEB_ACCESS` (default on; `0` closes sign-in and `/app` to browsers, shells keep working), `SIGNUPS_ENABLED` | native.rb, Platform::Features |
 | `SIDEKIQ_WEB_USERNAME`, `SIDEKIQ_WEB_PASSWORD` | sidekiq_web.rb |
-| `PLATFORM_PAUSE_ALL`, `PLATFORM_ACTOR` | switchboard brake, toggle actor |
+| `PLATFORM_PAUSE_ALL`, `PLATFORM_ACTOR` | switchboard brake, toggle actor; services: jobs, cron, gemini, mail, push, geocoding (Nominatim, free, not paused at bootstrap) |
 | `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`, `..._DETERMINISTIC_KEY`, `..._KEY_DERIVATION_SALT`, `AR_ENCRYPTION_SUPPORT_UNENCRYPTED_DATA` | encryption (alternative to credentials) |
 | `GEMINI_FLASH_MODEL`, `GEMINI_PRO_MODEL`, `GEMINI_TRANSCRIBE_MODEL`, `GEMINI_CHAT_MAX_OUTPUT_TOKENS` | gemini.rb |
-| `GEMINI_BACKEND` (`api_key` or `vertex`), `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION` | gemini.rb, `Gemini::Client` (Vertex AI via the VM service account, no key) |
-| `ACTIVE_STORAGE_SERVICE` (`cloudflare_r2` or `local`) | production.rb, deploy.yml |
+| `GEMINI_BACKEND` (`api_key` default, `vertex` in production), `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION` (`global`), `GOOGLE_OAUTH_ACCESS_TOKEN` (development only: a `gcloud auth print-access-token` token so a laptop can use Vertex) | gemini.rb, `Gemini::Client.backend`, `Gemini::VertexToken` |
+| `ACTIVE_STORAGE_SERVICE` (`cloudflare_r2` or `local`), `KAMAL_BACKUP` (`0` leaves the R2 backup accessory out) | production.rb, deploy.yml |
+| `METEOMATICS_USERNAME`, `METEOMATICS_PASSWORD`, `METEOMATICS_CACHE_TTL_SECONDS` | meteomatics.rb, `Meteomatics::Client` (off while unset) |
 | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET` | storage.yml fallbacks, backup accessory |
 | `APNS_DEVELOPMENT` | push.yml |
 | `MAILER_FROM` | ApplicationMailer fallback |
@@ -63,7 +68,7 @@ rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), weba
 
 ## Credentials keys (`bin/rails credentials:edit`)
 
-`secret_key_base`, `active_record_encryption.{primary_key,deterministic_key,key_derivation_salt}`, `gemini.api_key`, `redis.url`, `production.database_url`, `r2.{account_id,access_key_id,secret_access_key}`, `mailer.from`, `smtp.{address,port,user_name,password,domain}`, `web_push.{public_key,private_key,subject}`, `action_push_native.apns.{key_id,encryption_key,team_id,topic}`, `action_push_native.fcm.{encryption_key,project_id}`, `native_app.{apple_team_id,android_cert_sha256}`.
+`secret_key_base`, `active_record_encryption.{primary_key,deterministic_key,key_derivation_salt}` (or the three `ACTIVE_RECORD_ENCRYPTION_*` Kamal secrets), `gemini.api_key` (only with `GEMINI_BACKEND=api_key`; the Vertex backend needs no key), `meteomatics.{username,password}` (or the `METEOMATICS_*` Kamal secrets), `redis.url`, `production.database_url`, `r2.{account_id,access_key_id,secret_access_key}`, `mailer.from`, `smtp.{address,port,user_name,password,domain}`, `web_push.{public_key,private_key,subject}`, `action_push_native.apns.{key_id,encryption_key,team_id,topic}`, `action_push_native.fcm.{encryption_key,project_id}`, `native_app.{apple_team_id,android_cert_sha256}`.
 
 Every flag an initializer derives from ENV or credentials is exposed on `Rails.configuration.x.*` and read through `Platform::Features`, never from ENV in app code.
 
