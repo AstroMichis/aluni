@@ -89,6 +89,15 @@ RSpec.describe Rotations::Timeline do
     expect(wheat.select { |y, _| y == year + 2 }.map(&:last)).to eq([ 10, 11, 12 ]) # after the third season's soybeans
   end
 
+  it "moves the weather strip under a warmer climate: fewer frost months, more dry ones" do
+    hot = described_class.new(field, first_year: year, scenario: Weather::Scenario.find("warm2_dry"))
+    count = ->(t, risk) { t.weather.values.count { |risks| risks.include?(risk) } }
+
+    expect(count.call(hot, "frost")).to be <= count.call(timeline, "frost")
+    expect(count.call(hot, "dry")).to be >= count.call(timeline, "dry")
+    expect(count.call(hot, "dry") + count.call(timeline, "frost")).to be > count.call(timeline, "dry") + count.call(hot, "frost")
+  end
+
   it "covers a perennial stand all year and leaves an unknown season blank" do
     line = timeline.for(%w[medicago-sativa medicago-sativa secale-cereale])
 

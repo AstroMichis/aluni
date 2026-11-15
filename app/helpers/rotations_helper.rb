@@ -45,7 +45,8 @@ module RotationsHelper
       better_than_current_in: strategy.benefits.map { |c| t("app.rotations.criteria.#{c}.short") },
       evidence: strategy.evidence.map { |f| fact_text(f) },
       risks: strategy.risks.map { |r| t("app.rotations.risks.#{r}") },
-      farmer_goals: Array(Current.user.farmer_profile&.goals).map { |g| value_label("goals", g) }
-    }
+      farmer_goals: Array(Current.user.farmer_profile&.goals).map { |g| value_label("goals", g) },
+      climate_scenario: (t("app.scenario.presets.#{comparator.scenario.key}") unless comparator.scenario.today?)
+    }.compact
   end
 end

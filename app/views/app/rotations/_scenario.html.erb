@@ -1,0 +1,15 @@
+<%# "What if": the climate the plan is scored under (Weather::Scenario). Each chip reloads the
+    comparison with NASA POWER's normals shifted; the active one is announced. Locals: scenario. %>
+<section class="scenario" aria-labelledby="scenario-title">
+  <h2 id="scenario-title" class="screen__section-title"><%= t("app.scenario.title") %></h2>
+  <nav class="scenario__chips cluster cluster--sm" aria-label="<%= t("app.scenario.title") %>">
+    <% Weather::Scenario::PRESETS.each_key do |key| %>
+      <%= link_to t("app.scenario.presets.#{key}"), url_for(scenario: (key unless key == "today")),
+                  class: "choice__chip scenario__chip#{" scenario__chip--current" if scenario.key == key}",
+                  aria: { current: (scenario.key == key ? "true" : nil) } %>
+    <% end %>
+  </nav>
+  <% unless scenario.today? %>
+    <p class="scenario__note" role="status"><%= t("app.scenario.active", name: t("app.scenario.presets.#{scenario.key}")) %></p>
+  <% end %>
+</section>

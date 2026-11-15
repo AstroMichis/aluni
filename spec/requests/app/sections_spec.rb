@@ -94,6 +94,9 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
     get why_app_field_rotation_path(field, strategy: "small_grain", locale: "en"), headers: native_headers
     expect(response.body).to include('id="why-small_grain"') # rule-based text while Gemini is unconfigured in test
 
+    get app_field_rotation_path(field, scenario: "warm2", locale: "en"), headers: native_headers
+    expect(response.body).to include(ERB::Util.h(I18n.t("app.scenario.active", name: "+2 °C"))).and include("scenario=warm2")
+
     patch plan_app_crops_path(locale: "en"), params: { field: field.id, crop: "glycine-max" }, headers: native_headers
     expect(field.field_crops.find_by(season_year: Date.current.year + 1).scientific_name).to eq("Glycine max")
   end

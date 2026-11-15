@@ -128,6 +128,26 @@ RSpec.describe Rotations::Comparator do
     expect(current.evidence.map(&:key)).to include("irrigation_supply")
   end
 
+  it "rescores under a warmer, drier climate: crops need more water than the rain gives" do
+    today = comparator.strategies.first
+    hot = described_class.new(field, profile: user.farmer_profile, scenario: Weather::Scenario.find("warm2_dry")).strategies.first
+
+    need = ->(s) { s.evidence.find { |f| f.key == "water" }.values }
+    expect(need.call(hot)[:need]).to be > need.call(today)[:need]
+    expect(need.call(hot)[:effective]).to be < need.call(today)[:effective]
+    expect(hot.scores["water"]).to be < today.scores["water"]
+  end
+
+  it "computes a crop's water need from the month the field sows it, when recorded" do
+    fao_default = comparator.strategies.first.evidence.find { |f| f.key == "water" && f.values[:crop] == "glycine-max" }.values
+
+    record.field_crops.find_by(crop_name: "Soybeans").update!(planting_month: 7)
+    july = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first
+                          .evidence.find { |f| f.key == "water" && f.values[:crop] == "glycine-max" }.values
+
+    expect(july[:need]).not_to eq(fao_default[:need]) # sown in July, not FAO-56's May
+  end
+
   it "says what is better than now, what is unknown and what to check locally" do
     alternative = comparator.strategies.drop(1).first
     expect(alternative.gaps).to include("market", "soil")

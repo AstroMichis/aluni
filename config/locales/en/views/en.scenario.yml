@@ -1,0 +1,10 @@
+en:
+  app:
+    scenario:
+      title: What if the climate changes?
+      presets:
+        today: Today's climate
+        warm1: "+1 °C"
+        warm2: "+2 °C"
+        warm2_dry: "+2 °C and 20 % less rain"
+      active: "Scores, water needs and the timeline below are recomputed for %{name}: NASA POWER's normals shifted, with FAO-56 evapotranspiration. A sketch to compare strategies, not a forecast."

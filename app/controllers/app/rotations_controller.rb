@@ -8,7 +8,8 @@ module App
 
     before_action do
       @field = @farm.field(params[:field_id]) or raise ActiveRecord::RecordNotFound
-      @comparator = Rotations::Comparator.new(@field, profile: Current.user.farmer_profile)
+      @scenario = Weather::Scenario.find(params[:scenario])
+      @comparator = Rotations::Comparator.new(@field, profile: Current.user.farmer_profile, scenario: @scenario)
     end
 
     def show

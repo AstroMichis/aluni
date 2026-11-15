@@ -44,12 +44,16 @@ module Rotations
     end
     Fact = Struct.new(:key, :values, :source, keyword_init: true)
 
-    def initialize(field, profile:)
+    attr_reader :scenario
+
+    # scenario: a Weather::Scenario ("what if" +2 °C, less rain) that shifts the climate the scores read.
+    def initialize(field, profile:, scenario: Weather::Scenario.find("today"))
       @field = field
       @record = field.record
       @profile = profile
       @potential = Crops::Potential.new(field.observation("gaez"))
-      @power = field.observation("nasa_power")
+      @scenario = scenario
+      @power = scenario.apply(field.observation("nasa_power"))
       @goals = Array(profile&.goals)
       @goals |= [ "soil_health" ] if (Array(profile&.practices) & SOIL_PRACTICES).any?
     end
@@ -349,11 +353,17 @@ module Rotations
       list
     end
 
+    # The crop's FAO-56 water need, sown when the field last sowed it (its recorded
+    # planting month), else in FAO-56's month for the hemisphere.
     def water_need(crop)
       @water_needs ||= {}
       @water_needs.fetch(crop) do
-        @water_needs[crop] = Crops::WaterNeed.for(crop, observation: @power, latitude: @record.latitude)
+        @water_needs[crop] = Crops::WaterNeed.for(crop, observation: @power, latitude: @record.latitude, planting_month: sown_in(crop))
       end
+    end
+
+    def sown_in(crop)
+      @record.field_crops.select { |c| c.planting_month && key_of(c) == crop }.max_by(&:season_year)&.planting_month
     end
 
     # The best-suited crop at the pin among these GAEZ crops (outside the
