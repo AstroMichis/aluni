@@ -2,16 +2,805 @@ en:
   app:
     home:
       show:
-        title: "Home"
-        greeting: "Hello, %{name}."
-        lede: "This is where Aluni starts. The first screens will arrive here."
-        passkeys: "Manage passkeys"
-        sign_out: "Sign out"
-        recap_title: "Your farm at a glance"
-        talk_to: "Talk to %{app_name}"
-        recap:
-          farm: "Farm"
-          pin: "Field pin"
-          area: "Area"
-          segment: "Profile"
-          goals: "Goals"
+        greeting: Hello, %{name}.
+        lede: 'Turn the wheel to choose where to go: your fields, crops, weather, team or reports.'
+        talk_to: Talk to %{app_name}
+        eyebrow: Main menu
+        dial_label: Menu sections
+        hint: Turn the wheel with your finger, the mouse or the arrow keys. Tap the center to open.
+        kicker: "%{number} / %{total}"
+        open: Open
+        open_section: Open %{title}
+        add_field: Add a new field
+        back: Back to the menu
+        soon: Coming soon
+        sections:
+          fields:
+            short: Fields
+            title: My fields
+            description: Your plots, their soil and their history.
+            lede: Every field you farm, with its location, soil profile and the crops it has carried.
+            options:
+              add:
+                title: Add a field
+                body: Drop a pin and answer a few questions. The rest comes from the location.
+              list:
+                title: My fields
+                body: Every field with its crop, its soil and what is still missing.
+              sources:
+                title: Where your data comes from
+                body: Each value with its source and how much you can trust it.
+          crops:
+            short: Crops
+            title: My crops
+            description: What is growing, the rotation and tips to yield more.
+            lede: What is in the ground now, what comes next and advice to improve each harvest.
+            options:
+              current:
+                title: Growing now
+                body: Each crop with its stage and the days since planting.
+              rotation:
+                title: Rotation planner
+                body: Compare rotations side by side before you decide.
+              calendar:
+                title: Crop calendar
+                body: Planting, care and harvest windows for your area.
+          weather:
+            short: Weather
+            title: Weather
+            description: Forecast, rain and soil moisture for your fields.
+            lede: The forecast where you farm, with rain, frost and how wet the root zone is.
+            options:
+              forecast:
+                title: Forecast
+                body: Seven days of temperature, rain and wind.
+              moisture:
+                title: Rain and soil moisture
+                body: What fell this week and how much water the soil holds.
+              alerts:
+                title: Weather alerts
+                body: Frost, heat and storms, before they reach your fields.
+          staff:
+            short: Team
+            title: My team
+            description: The people who work with you and their tasks.
+            lede: Who works on each field, what they are doing and what they can see.
+            options:
+              team:
+                title: Team members
+                body: Invite the people who work with you.
+          reports:
+            short: Reports
+            title: Reports
+            description: Seasons, yields and costs in one place.
+            lede: A clear summary of each season to plan the next one and share it.
+            options:
+              season:
+                title: Season summary
+                body: Crops, weather and results for the season.
+              yield:
+                title: Yield and costs
+                body: Compare production and spending between fields.
+              export:
+                title: Export
+                body: Download a report to share with your advisor or buyer.
+        menu_title: Menu · %{app_name}
+        account: Account
+    fields:
+      back_to_menu: Back to the menu
+      back_to_fields: Back to my fields
+      layers:
+        us: 'Your farm is in the US: besides the global data we use finer national sources, like the soil survey and the crop map.'
+        global: 'Your farm is outside the US: we work with global data, which is less precise. What you tell us corrects it.'
+      layers_short:
+        global: Global
+        us: US
+      units:
+        hectares: "%{value} ha"
+        hectares_short: ha
+        acres: "%{value} acres"
+      states:
+        answered: Answered
+        unanswered: Add it whenever you like
+        auto: Filled in
+        to_confirm: Waiting for you
+        confirmed: Confirmed
+        pending: Fills in by itself
+        failed: The source did not answer
+        needs_pin: Needs the field's pin
+        gap: No source here yet
+      state_labels:
+        answered: Your answer
+        unanswered: Not answered
+        auto: Automatic
+        to_confirm: To confirm
+        confirmed: Confirmed by you
+        pending: On its way
+        failed: Source error
+        needs_pin: No pin
+        gap: No source
+      confidence:
+        high: Field · high confidence
+        medium: Area · medium confidence
+        low: Regional context
+      origins:
+        ask: We ask you
+        confirm: You confirm
+        auto: Automatic
+      groups:
+        place: Place
+        profile: You
+        resources: Resources
+        market: Market
+        goals: Goals
+        plot: The field
+        crop: Crop
+        soil: Soil
+        terrain: Terrain
+        climate: Long-term climate
+        history: Crop history
+        data_sources: Data sources
+      feeds:
+        all: everything else
+        confidence: how much each value can be trusted
+        interface: how the app talks to you
+        calendar: the planting calendar
+        water: how much water a crop needs
+        risk: weather risks
+        suitability: which crops fit
+        baseline: your current rotation, the starting point
+        scoring: the score of each option
+        feasibility: what is possible for you
+        classification: your profile
+        rotation_rules: the rotation rules
+        erosion: erosion risk
+      classification:
+        segment: Profile
+        team: Team
+        budget_level: Budget
+        goals: Top goal
+      data:
+        region:
+          label: Region
+        role:
+          label: Your role
+        experience:
+          label: Experience
+        team:
+          label: Who works the farm
+        team_size:
+          label: Team size
+        land_tenure:
+          label: Land
+        units:
+          label: Units
+        budget_level:
+          label: Budget
+        equipment:
+          label: Equipment
+        livestock:
+          label: Animals
+        practices:
+          label: Practices
+        market_channels:
+          label: Where you sell
+        goals:
+          label: Goals
+        risk_tolerance:
+          label: Appetite for risk
+        name:
+          label: Name
+        location:
+          label: Pin
+        area:
+          label: Area
+          unit_label: Area unit
+        irrigation:
+          label: Watering
+        water_source:
+          label: Water source
+        cropping_intensity:
+          label: Crops per year
+        current_crop:
+          label: This season's crop
+        planting_month:
+          label: Planting month
+        harvest_month:
+          label: Harvest month
+        crop_history:
+          label: Crop history
+        soil_texture:
+          label: Soil texture
+          value: "%{sand} % sand · %{clay} % clay"
+        soil_drainage:
+          label: Drainage
+        soil_ph:
+          label: pH
+        soil_depth:
+          label: Soil depth
+        soil_fertility:
+          label: Fertility
+        soil_salinity:
+          label: Salinity
+        soil_problems:
+          label: Problems you see
+        soil_series:
+          label: Soil survey unit
+        organic_matter:
+          label: Organic matter
+          value: "%{value} %"
+        water_capacity:
+          label: Water the soil holds
+          value: "%{value} cm per cm of soil"
+        elevation:
+          label: Elevation
+          value: "%{value} m"
+        slope:
+          label: Slope
+          value: "%{value} %"
+        temp_normal:
+          label: Mean temperature
+          value: "%{value} °C over a typical year"
+        rain_normal:
+          label: Rain
+          value: "%{value} mm in a typical year"
+        frost_normal:
+          label: Frost days
+          value: "%{value} days in a typical year"
+      index:
+        title: My fields · %{app_name}
+        lede: Your fields with their crop, their soil and what is still missing.
+        crumb: My fields
+        headline: My fields
+        summary:
+          one: "%{count} field · %{area} in total"
+          other: "%{count} fields · %{area} in total"
+        no_crop: No crop yet
+        add: Add a field
+        add_hint: Drop a pin and answer a few questions
+        no_fields: No fields yet.
+        greeting:
+          one: Hello. One thing is waiting for you across your farm.
+          other: Hello. %{count} things are waiting for you across your farm.
+        greeting_done: 'Your fields are complete: we can compare rotations.'
+        farm_todo:
+          one: One farm detail to review
+          other: "%{count} farm details to review"
+        no_pin: No pin yet
+      show:
+        title: "%{name} · %{app_name}"
+        empty_message: This field is ready. Tell me what you grow here and you will see it come up.
+        add_crop: Add your crop
+        repeat: Repeated
+        tips:
+          fallow: A resting field rebuilds soil. A cover crop now keeps it covered and adds organic matter for the next season.
+          stalk: Alternating this crop with a legume breaks the pest cycle in the soil. A cover crop after harvest protects the ground through winter.
+          grain: Small grains cover the soil early and break the pest cycle of corn and soybeans. Their straw adds organic matter.
+          leafy: 'This crop fixes nitrogen: whatever you plant next uses it. Avoid repeating it two years in a row so diseases do not build up.'
+          bush: These crops disturb the soil a lot. Rotating them with a grain or a cover crop helps it recover its structure.
+        plant: Plant it
+        image_alt: Satellite view around %{name}
+        image_caption: NASA GIBS, about 40 km around the pin
+        cdl: The US crop map shows %{years}. Save these seasons as yours?
+        edit: Edit field
+        suggestions:
+          title:
+            one: One suggestion from the data sources
+            other: "%{count} suggestions from the data sources"
+          body: Take them all at once or check them one by one in the form.
+          confirm_all: Confirm all
+          review: Review one by one
+        compare: Compare rotations
+      new:
+        title: Add a field · %{app_name}
+        crumb: Add a field
+        progress: Progress
+        count: Step %{number} of %{total}
+        why: We use it for %{uses}.
+        back: Back
+        next: Continue
+        finish: See my fields
+        optional: You can skip this.
+        save: Save field
+        review_empty: Not answered
+        review_edit: Edit
+        pin_note: The pin is all the data sources need. Nothing else about the place is asked.
+        history_note: In the United States the crop map will propose these seasons on the field page.
+        steps:
+          location:
+            question: Where is this field?
+            aluni: Share your location or type the coordinates. With the pin I read its weather, soil and crop potential.
+          details:
+            question: Tell me about the field
+            aluni: A name you recognise, its size and how it gets water.
+          crop:
+            question: What is growing there now?
+            aluni: What you grow today is the starting point I compare rotations against.
+          history:
+            question: What did you grow before?
+            aluni: With the last seasons I can see whether a crop family repeats.
+          done:
+            question: Check and save
+            aluni: This is the field you described. Save it and I will look up its data.
+        review_note: You can change any answer later from the field page.
+      sources:
+        title: Where your data comes from · %{app_name}
+        eyebrow: Sources and confidence
+        headline: Where your data comes from
+        lede: We only ask what your location cannot tell us. Everything else comes from public sources, each with its scale and how much it can be trusted.
+        legend_title: How to read this page
+        origins:
+          ask: 'Only you know it: no source covers it.'
+          confirm: We work it out from your location and you tell us if it matches.
+          auto: We take it from public sources. You can always see it and correct it.
+        confidence:
+          high: 'Measured at 30 m or finer: it describes your field.'
+          medium: 'Measured at 250 m to 9 km: it describes your area.'
+          low: 'Measured at 25 km or more: the weather of your region, not of your field.'
+        levels:
+          farm: Your farm
+          field: Each field
+        no_source: No source yet
+        feeds: Used for %{uses}.
+        gaps_title: What no source covers yet
+        gaps_lede: We will ask you for these until we find a source we can trust.
+        statuses:
+          reference: dataset in the app
+          planned: next phase
+          gap: not documented yet
+      untitled: Field %{number}
+      tabs:
+        label: My fields sections
+        fields: Fields
+        farm: My farm
+        sources: Sources
+      sections_label: Sections of this page
+      season_period: 'Season measured: %{from} to %{to}'
+      progress: "%{done} of %{total} ready"
+      actions:
+        proposal: 'It would be saved as: %{value}'
+      placeholders:
+        default: Write it here
+        name: 'For example: Field by the road'
+        field_notes: Puddles after rain, weeds, a corner that never yields...
+        soil_test: Lab, date and main results
+        crop: 'For example: corn'
+      todo:
+        title: What is left
+        done: Everything I need is here. I can compare rotations for you.
+        message:
+          one: One thing is missing before I can compare rotations here.
+          other: "%{count} things are missing before I can compare rotations here."
+        verbs:
+          to_confirm: Confirm
+          unanswered: Answer
+      create:
+        added: Field added. Looking up its data now.
+        too_many: That is the most fields a farm can hold for now.
+        invalid: The field needs at least a valid pin.
+      reset:
+        reset: Back to the sample farm.
+      no_area: Area not given
+      pick_month: Choose a month
+      pin:
+        latitude: Latitude
+        longitude: Longitude
+        use_my_location: Use my location
+        locating: Finding your location...
+        denied: Location was not allowed. Type the coordinates instead.
+        unsupported: This device cannot share its location. Type the coordinates.
+      crop_sources:
+        farmer: you
+        cdl: crop map
+        assistant: chat
+      data_sources:
+        title: Data for this pin
+        fetched: "%{time} ago"
+        refresh: Refresh data
+        needs_pin: Add this field's pin and I will look up its weather, soil and crop potential.
+        states:
+          ok: Ready
+          empty: No data here
+          out_of_coverage: Not available in this country
+          failed: Could not be reached
+          waiting: On its way
+      refresh:
+        queued: Asking the data sources again. This takes a minute.
+      edit:
+        title: Edit %{name} · %{app_name}
+        headline: Edit %{name}
+        lede: Every answer of this field in one place. Tick a suggestion to take what a data source says.
+        use_suggestion: 'Use what %{source} says: %{value}'
+        cancel: Cancel
+        save: Save changes
+        essential: The essentials
+        essential_hint: These few answers are all the rotation comparison needs.
+        more: More details (optional)
+      update:
+        saved: Field saved.
+      confirm:
+        confirmed:
+          zero: There was nothing to confirm.
+          one: One suggestion saved as yours.
+          other: "%{count} suggestions saved as yours."
+    crops:
+      tabs:
+        now: Now
+        rotation: Rotation
+        calendar: Calendar
+      families:
+        poaceae: Grasses (Poaceae)
+        fabaceae: Legumes (Fabaceae)
+        solanaceae: Nightshades (Solanaceae)
+        asteraceae: Sunflower family (Asteraceae)
+        brassicaceae: Cabbage family (Brassicaceae)
+        euphorbiaceae: Spurge family (Euphorbiaceae)
+        convolvulaceae: Bindweed family (Convolvulaceae)
+        rubiaceae: Coffee family (Rubiaceae)
+        amaryllidaceae: Onion family (Amaryllidaceae)
+        amaranthaceae: Amaranth family (Amaranthaceae)
+        malvaceae: Mallow family (Malvaceae)
+      show:
+        title: My crops · %{app_name}
+        crumb: My crops
+        headline: My crops
+        summary: 'Growing now: %{crops}, on %{area}.'
+        none: Nothing is planted yet.
+        season: "%{from} to %{to}"
+        plant: Choose a crop
+      rotation:
+        title: Rotation · %{app_name}
+        headline: Rotation
+        lede: Each field's seasons, what you plan next and a few basic checks. They point at what to look at; the comparison of strategies will come with the rotation engine.
+        labels:
+          plan: Planned
+        no_history: No seasons recorded for this field yet.
+        plan_label: Plan for %{year}
+        plan_none: Not decided
+        plan_save: Save plan
+        findings:
+          ok: No basic rotation rule is broken here.
+          same_family:
+            label: Same family
+            text: "%{crop} follows a crop of its own family (%{years}). Pests and diseases that live on that family carry over."
+          monoculture:
+            label: Same crop
+            text: "%{crop} three seasons or more in a row (%{years})."
+          no_legume:
+            label: No legume
+            text: No legume in %{years}. A legume adds nitrogen for the next crop.
+        compare:
+          title: Compare strategies
+          best: 'Best option now: %{strategy} (%{best} against %{current} for your current rotation).'
+          not_ready: Add this season's crop to compare rotations.
+          open: Open the comparison
+        cdl_waiting:
+          one: One season from the crop map waits for you
+          other: "%{count} seasons from the crop map wait for you"
+        potential_title: What grows well here
+        potential_note: FAO GAEZ suitability at your pin (rainfed, %{level}).
+        legume: legume
+        same_family: same family as now
+      calendar:
+        title: Crop calendar · %{app_name}
+        headline: Crop calendar
+        lede: Each field's planting and harvest against the frost-free stretch of this season.
+        frost_free: Frost-free
+        missing: Add planting and harvest months
+        note: 'Frost-free stretch from NASA POWER (regional context): last spring frost %{last}; first fall frost %{first}.'
+        no_weather: The frost-free stretch appears once the weather for the main field's pin is in.
+      names:
+        zea-mays: Corn
+        sorghum-bicolor: Sorghum
+        triticum-aestivum: Wheat
+        avena-sativa: Oats
+        hordeum-vulgare: Barley
+        secale-cereale: Rye
+        oryza-sativa: Rice
+        saccharum-officinarum: Sugarcane
+        pennisetum-glaucum: Pearl millet
+        glycine-max: Soybeans
+        phaseolus-vulgaris: Beans
+        medicago-sativa: Alfalfa
+        cicer-arietinum: Chickpea
+        arachis-hypogaea: Peanut
+        pisum-sativum: Peas
+        vigna-unguiculata: Cowpea
+        solanum-tuberosum: Potato
+        solanum-lycopersicum: Tomato
+        helianthus-annuus: Sunflower
+        brassica-napus: Canola
+        brassica-oleracea: Cabbage
+        manihot-esculenta: Cassava
+        ipomoea-batatas: Sweet potato
+        coffea-arabica: Coffee
+        allium-cepa: Onion
+        beta-vulgaris: Sugar beet
+        gossypium-hirsutum: Cotton
+      suitability:
+        very_high: Very high suitability
+        high: High suitability
+        good: Good suitability
+        medium: Medium suitability
+        moderate: Moderate suitability
+        marginal: Marginal
+        very_marginal: Very marginal
+        not_suitable: Not suitable
+      attainable: "%{value} t/ha attainable"
+      gaez_note: FAO GAEZ, rainfed, 1981-2010 climate, about 9 km around the pin.
+      no_gaez: FAO GAEZ does not cover this crop.
+      gaez_pending: The crop potential is on its way.
+      input_levels:
+        high: high input
+        low: low input
+      fit:
+        pending: This crop's requirements (FAO ECOCROP) are not loaded yet.
+        factors:
+          temperature: Temperature
+          rain: Rain
+          ph: pH
+          texture: Texture
+          drainage: Drainage
+        statuses:
+          optimal: optimal
+          possible: possible
+          outside: outside its range
+          unknown: not known yet
+      water:
+        need: Needs about %{need} mm over its season; the usual rain covers about %{effective} mm (%{deficit} mm short).
+        note: NASA POWER normals with FAO-56 coefficients. It does not count the water the soil keeps from before, so in humid areas the shortfall reads high.
+    weather:
+      tabs:
+        season: This season
+        alerts: Alerts
+      show:
+        title: Weather · %{app_name}
+        crumb: Weather
+        headline: Weather this season
+        lede: From %{from} to %{to}, day by day.
+        regional: 'Regional context: NASA POWER values for a cell of about 50 km around your farm, not your field''s own.'
+        kpis:
+          rain: Rain
+          temp: Mean temperature
+          frost_days: Frost days
+          heat_days: Days above 32 °C
+          wetness: Root zone moisture
+        charts:
+          temp:
+            title: Daily temperature
+            note: Band from low to high, line for the daily mean
+            frost_line: 0 °C
+            summary: Daily temperature from %{low} to %{high} °C over the season.
+            point: "%{low} to %{high} °C · mean %{mean} °C"
+          rain:
+            title: Rain per week
+            note: Millimetres summed over 7 days
+            week: Week from %{date}
+            summary: "%{total} mm over the season; the wettest week had %{wettest} mm."
+          moisture:
+            title: Root zone moisture
+            note: 0 dry, 1 saturated
+            summary: Root zone moisture between %{low} and %{high} over the season.
+        table:
+          title: See the data by month
+          month: Month
+          rain: Rain (mm)
+          tmin: Mean low (°C)
+          tmax: Mean high (°C)
+          wetness: Root zone (0 to 1)
+          rain_normal: Typical rain (mm)
+          temp_normal: Typical mean (°C)
+        forecast:
+          title: Forecast
+          body: 'The forecast is not connected yet: none of our documented sources gives one. Until then I show what has happened this season.'
+      alerts:
+        title: Weather alerts · %{app_name}
+        headline: Weather alerts
+        lede: Choose what you want to hear about. Below, what this season would have sent you.
+        prefs_title: Tell me about
+        prefs_hint: Alerts will reach your phone once they run. For now they shape this page.
+        save: Save
+        kinds:
+          frost:
+            label: Frost
+            event: Low of %{value} °C
+          heat:
+            label: Extreme heat
+            event: High of %{value} °C
+          heavy_rain:
+            label: Heavy rain
+            event: "%{value} mm in one day"
+          dry_spell:
+            label: Dry spell
+            event: "%{days} days with almost no rain"
+        frost_free:
+          title: Frost-free stretch
+          last_spring: 'Last spring frost:'
+          first_fall: 'First fall frost:'
+          none: none this spring
+          not_yet: none up to %{date}
+        timeline_title: This season
+        timeline_aluni:
+          zero: With your choices this season would have been quiet.
+          one: With your choices I would have sent you one alert this season.
+          other: With your choices I would have sent you %{count} alerts this season.
+      picker_label: Field
+      no_season:
+        needs_pin: This field has no pin yet. Add it and I will read the weather there.
+        pending: I am asking NASA POWER about this pin. Come back in a minute.
+        failed: NASA POWER did not answer this time. Try refreshing from the field page.
+        open_field: Open the field
+    reports:
+      tabs:
+        season: Season
+        harvest: Harvest
+        export: Export
+      show:
+        title: Season report · %{app_name}
+        crumb: Reports
+        eyebrow: "%{from} to %{to}"
+        headline: Season report
+        lede:
+          one: One field, %{area}.
+          other: "%{count} fields, %{area}."
+        print: Print or save as PDF
+        export: Download the data
+        crops_title: Area by crop
+        weather_title: Weather
+        fields_title: Field by field
+        team_title: Team
+        table:
+          field: Field
+          crop: Crop
+          area: Area
+          plan: Next season
+          flags: Rotation checks
+          ready: Data
+          no_plan: Not decided
+          no_flags: None
+        team_size:
+          one: one person
+          other: "%{count} people"
+      harvest:
+        title: Harvest · %{app_name}
+        headline: Attainable harvest
+        lede: What FAO GAEZ estimates the best land around each pin can yield with this season's crop.
+        total: "%{value} t on this field"
+        note: Dry weight, rainfed, 1981-2010 climate. A reference, not a forecast.
+        own:
+          title: Your own yields
+          body: Recording your harvests needs its own place in your profile. It is the next step for this report.
+      export:
+        title: Export · %{app_name}
+        headline: Export your data
+        lede: 'Everything the farm holds, with the source and confidence of each value. Your data is yours: take it to your advisor, your buyer or another tool.'
+        download: Download
+        open_report: Open the report
+        formats:
+          csv:
+            title: Spreadsheet
+            text: 'One row per value: field, datum, state, value, source and confidence.'
+          json:
+            title: Full data
+            text: The same values plus your plans, team and tasks, for another tool.
+          print:
+            badge: PDF
+            title: Printable report
+            text: The season report, ready to print or save as PDF.
+      aluni: Exports are generated from what you see here, in this browser session.
+    screens:
+      saved: Saved.
+      invalid: That value does not fit. Please check it.
+      too_many: You have reached the limit.
+    team:
+      show:
+        title: My team · %{app_name}
+        crumb: My team
+        headline: My team
+        lede: Who works the farm and with what, as you told me.
+        aluni: Change anything here and I will take it into account when I suggest rotations.
+        talk: Tell %{app_name} more
+        edit: Edit
+    farms:
+      show:
+        title: My farm · %{app_name}
+        headline: My farm
+        lede: 'What applies to all your fields: weather, water, resources, market and priorities.'
+        profile_label: Your profile
+        talk: Tell %{app_name} more
+        edit: Edit profile and farm
+      edit:
+        title: Edit my farm · %{app_name}
+        crumb: My farm
+        headline: Your profile and farm
+        lede: Change anything and save once. What you leave blank stays as it is.
+      update:
+        saved: Profile saved.
+    rotations:
+      show:
+        title: Rotations for %{name} · %{app_name}
+        eyebrow: Seasons %{from} to %{to}
+        headline: Compare rotations
+        lede: Your current rotation against alternatives, scored with this field's data and weighed by your goals.
+        not_ready: Tell me what grows here this season and I will compare rotations.
+        add_crop: Add this season's crop
+        summary_better: "%{strategy} scores %{best} against %{current} for what you do now. Check the evidence and the risks before deciding."
+        summary_current: Your current rotation holds up well against the alternatives with what I know.
+        weights_title: How the score is made
+        your_goal: your goal
+        current: What you do now
+        best: Best scored
+        alternative: Alternative
+        benefits: Better than now
+        evidence: Evidence
+        risks: Check locally
+        gaps: What we do not know
+        use_as_plan: Use as plan for %{year}
+        disclaimer: Scores combine public data at your pin with rules of thumb. They support your judgment and your local experts; they never replace them.
+      score: "%{value}/100"
+      no_data: no data
+      strategies:
+        current:
+          title: Keep the current rotation
+          why: Continues what the field has done, as the starting point to compare against.
+        legume:
+          title: Bring in a legume
+          why: "%{crop} adds nitrogen and breaks the pest cycle; its strongest point here is %{lead}."
+        small_grain:
+          title: Add a small grain
+          why: "%{crop} covers the soil early and breaks the cycle of the row crops; strongest here: %{lead}."
+        other_family:
+          title: Change crop family
+          why: "%{crop} is the best-suited crop of another family at your pin; strongest here: %{lead}."
+        perennial:
+          title: Rest with perennial forage
+          why: 'Two years of %{crop} rebuild soil and feed animals; strongest here: %{lead}.'
+      criteria:
+        crop_fit:
+          short: Crop fit
+          how: FAO GAEZ suitability of each season's crop at your pin.
+          benefit: The crops suit your land and climate better.
+        pest_break:
+          short: Pest break
+          how: No crop family two seasons running, no crop three in a row.
+          benefit: It breaks the cycle of pests and diseases.
+        soil_health:
+          short: Soil health
+          how: Legumes, more families and crops that cover the soil.
+          benefit: It builds soil and organic matter.
+        nitrogen:
+          short: Nitrogen
+          how: Seasons with a legume, which fixes its own nitrogen.
+          benefit: It needs less nitrogen fertilizer.
+        water:
+          short: Water
+          how: How much of the crops' water need the usual rain covers (FAO-56, NASA POWER).
+          benefit: It fits the rain you get better.
+        erosion:
+          short: Erosion
+          how: Row crops on your slope leave soil exposed.
+          benefit: It keeps soil in place.
+        workload:
+          short: Workload
+          how: Fewer different crops and machinery you already have.
+          benefit: It is simpler to run.
+      evidence:
+        suitability: "%{crop}: %{class} at your pin."
+        water: "%{crop} needs about %{need} mm; the usual rain covers about %{effective} mm."
+        slope: Slope of %{value} %.
+        same_family: "%{crop} would follow its own family."
+        monoculture: "%{crop} three seasons or more in a row."
+        no_legume: No legume in four seasons.
+      risks:
+        dry: Rainfed, and the usual season rain is under half of what a crop needs. Check soil moisture and local experience.
+        low_suitability: A crop has low suitability at your pin according to FAO GAEZ.
+        harvester: Small grains need a combine; your equipment does not list one.
+        same_family: Pests that live on one family could carry over.
+        establishment: Alfalfa takes a season to establish and needs a market or animals.
+      gaps:
+        market: 'Prices and buyers: there is no source for your local market yet.'
+        soil: Your soil texture is not confirmed yet.
+        ecocrop: The crops' temperature and pH requirements (FAO ECOCROP) are not loaded yet.
+        suitability: FAO GAEZ has no value for some of these crops at your pin.
+        water: The water need is only known for corn and soybeans so far (FAO-56).
+        slope: The slope is not known outside the United States yet.

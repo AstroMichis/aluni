@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Landing page", type: :system do
   before do
-    driven_by(:cuprite)
+    driven_by_cuprite
     skip_welcome!
   end
 

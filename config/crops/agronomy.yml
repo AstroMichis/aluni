@@ -1,0 +1,44 @@
+# The crops the screens recognise, keyed like FieldCrop#crop_key (the slug
+# of the scientific name). Per crop:
+#   scientific  the ECOCROP / botanical name (config/ecocrop.yml uses it)
+#   aliases     common names in English and Spanish (slugs), to match a
+#               FieldCrop saved without a scientific name
+#   family      botanical family, for the rotation rules (standard botany;
+#               ECOCROP's FAMNAME agrees once config/ecocrop.yml exists)
+#   shape       the plant the illustrated field draws (stalk, grain, leafy, bush)
+#   gaez        the crop name in FAO GAEZ v4 res05 (docs/data_sources/gaez.md), or null
+#   fao56       crop coefficients for its water need, only where
+#               docs/data_sources/fao56_crop_coefficients.md captured them:
+#               kc [initial, mid, end] (Table 12; a blank initial takes the
+#               group row), stages [initial, development, mid, late] days and
+#               the planting month (Table 11, the row named in `row`)
+# Loaded by Crops::Agronomy.
+zea-mays:             { scientific: Zea mays, aliases: [corn, maize, maiz, elote], family: poaceae, shape: stalk, gaez: Maize,
+                        fao56: { kc: [0.3, 1.20, 0.35], stages: [30, 40, 50, 30], planting_month: 4, row: "Maize (grain), April, Spain and California; Kc ini from the cereals group, Kc end for grain dried in the field" } }
+sorghum-bicolor:      { scientific: Sorghum bicolor, aliases: [sorghum, sorgo], family: poaceae, shape: stalk, gaez: Sorghum }
+triticum-aestivum:    { scientific: Triticum aestivum, aliases: [wheat, trigo], family: poaceae, shape: grain, gaez: Wheat }
+avena-sativa:         { scientific: Avena sativa, aliases: [oats, oat, avena], family: poaceae, shape: grain, gaez: Oat }
+hordeum-vulgare:      { scientific: Hordeum vulgare, aliases: [barley, cebada], family: poaceae, shape: grain, gaez: Barley }
+secale-cereale:       { scientific: Secale cereale, aliases: [rye, centeno], family: poaceae, shape: grain, gaez: Rye }
+oryza-sativa:         { scientific: Oryza sativa, aliases: [rice, arroz], family: poaceae, shape: grain, gaez: Wetland rice }
+saccharum-officinarum: { scientific: Saccharum officinarum, aliases: [sugarcane, cana-de-azucar, cana], family: poaceae, shape: stalk, gaez: Sugarcane }
+pennisetum-glaucum:   { scientific: Pennisetum glaucum, aliases: [pearl-millet, millet, mijo], family: poaceae, shape: grain, gaez: Pearl millet }
+glycine-max:          { scientific: Glycine max, aliases: [soybeans, soybean, soy, soya, soja], family: fabaceae, shape: leafy, gaez: Soybean,
+                        fao56: { kc: [0.4, 1.15, 0.50], stages: [20, 30, 60, 25], planting_month: 5, row: "Soybeans, May, Central USA; Kc ini from the legumes group" } }
+phaseolus-vulgaris:   { scientific: Phaseolus vulgaris, aliases: [beans, bean, frijol, frijoles, poroto], family: fabaceae, shape: leafy, gaez: Phaseolus bean }
+medicago-sativa:      { scientific: Medicago sativa, aliases: [alfalfa], family: fabaceae, shape: leafy, gaez: Alfalfa }
+cicer-arietinum:      { scientific: Cicer arietinum, aliases: [chickpea, garbanzo], family: fabaceae, shape: leafy, gaez: Chickpea }
+arachis-hypogaea:     { scientific: Arachis hypogaea, aliases: [peanut, groundnut, mani, cacahuate], family: fabaceae, shape: leafy, gaez: Groundnut }
+pisum-sativum:        { scientific: Pisum sativum, aliases: [pea, peas, arveja, chicharo], family: fabaceae, shape: leafy, gaez: Dry pea }
+vigna-unguiculata:    { scientific: Vigna unguiculata, aliases: [cowpea, caupi], family: fabaceae, shape: leafy, gaez: Cowpea }
+solanum-tuberosum:    { scientific: Solanum tuberosum, aliases: [potato, potatoes, papa, patata], family: solanaceae, shape: bush, gaez: White potato }
+solanum-lycopersicum: { scientific: Solanum lycopersicum, aliases: [tomato, tomate], family: solanaceae, shape: bush, gaez: Tomato }
+helianthus-annuus:    { scientific: Helianthus annuus, aliases: [sunflower, girasol], family: asteraceae, shape: stalk, gaez: Sunflower }
+brassica-napus:       { scientific: Brassica napus, aliases: [canola, rapeseed, colza], family: brassicaceae, shape: bush, gaez: Rapeseed }
+brassica-oleracea:    { scientific: Brassica oleracea, aliases: [cabbage, repollo, col], family: brassicaceae, shape: bush, gaez: Cabbage }
+manihot-esculenta:    { scientific: Manihot esculenta, aliases: [cassava, yuca, mandioca], family: euphorbiaceae, shape: bush, gaez: Cassava }
+ipomoea-batatas:      { scientific: Ipomoea batatas, aliases: [sweet-potato, camote, batata], family: convolvulaceae, shape: bush, gaez: Sweet potato }
+coffea-arabica:       { scientific: Coffea arabica, aliases: [coffee, cafe], family: rubiaceae, shape: bush, gaez: Coffee }
+allium-cepa:          { scientific: Allium cepa, aliases: [onion, cebolla], family: amaryllidaceae, shape: bush, gaez: Onion }
+beta-vulgaris:        { scientific: Beta vulgaris, aliases: [sugar-beet, sugarbeet, remolacha], family: amaranthaceae, shape: bush, gaez: Sugarbeet }
+gossypium-hirsutum:   { scientific: Gossypium hirsutum, aliases: [cotton, algodon], family: malvaceae, shape: bush, gaez: Cotton }

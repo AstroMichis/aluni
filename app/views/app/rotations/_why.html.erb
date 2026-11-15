@@ -1,0 +1,4 @@
+<%# A strategy's "why": written by Aluni when Gemini answers, the rule-based text otherwise. Locals: strategy, text. %>
+<turbo-frame id="why-<%= strategy.key %>">
+  <p class="strategy__why"><%= text.presence || strategy_why(strategy) %></p>
+</turbo-frame>

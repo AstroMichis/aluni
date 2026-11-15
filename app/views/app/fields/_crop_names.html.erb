@@ -1,0 +1,9 @@
+<%# Crop name suggestions from the catalog (config/crops/agronomy.yml), once per page. %>
+<% unless @crop_names_rendered %>
+  <% @crop_names_rendered = true %>
+  <datalist id="crop-names">
+    <% Crops::Agronomy.entries.each_value do |entry| %>
+      <option value="<%= t("app.crops.names.#{entry.key}") %>" data-shape="<%= entry.shape %>"></option>
+    <% end %>
+  </datalist>
+<% end %>

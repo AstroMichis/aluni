@@ -11,6 +11,10 @@ These files describe the resources only. They make no product or design decision
 - **Representative** samples were not fetched (login or key required, or the endpoint failed). They follow the provider's official documentation, and the file's Notes say why.
 - **Credential names** are listed below. Values are never written in these docs.
 
+## Connected in the app
+
+NASA POWER, FAO GAEZ, SSURGO, USGS 3DEP (EPQS), the Cropland Data Layer and the FCC Census Block API are fetched for every field pin (`docs/FIELDS.md`); NASA GIBS is shown as a picture URL; FAO ECOCROP is a dataset extracted into `config/ecocrop.yml`.
+
 ## Index
 
 ### Weather and climate

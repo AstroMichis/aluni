@@ -36,6 +36,12 @@
   /* Chrome: slate accessories (device bezels, rails, status bars) */
   --color-chrome: #26364A;
 
+  /* Chart series (dataviz reference palette, validated against
+     bg-secondary with validate_palette.js; one measure per chart) */
+  --chart-rain: #3987e5;
+  --chart-temp: #d95926;
+  --chart-moisture: #199e70;
+
   /* Status */
   --color-success: #8CBF7E;
   --color-success-bg: #8CBF7E1A;
@@ -129,6 +135,9 @@
   --color-secondary-hover: #5C664A;
   --color-secondary-muted: #6B765026;
   --color-chrome: #26364A;
+  --chart-rain: #2a78d6;
+  --chart-temp: #c4501f;
+  --chart-moisture: #0f8a5f;
   --color-success: #35703F;
   --color-success-bg: #35703F1A;
   --color-warning: #7D5F18;

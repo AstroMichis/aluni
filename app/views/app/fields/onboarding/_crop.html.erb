@@ -1,0 +1,9 @@
+<%# Step: this season's crop, drawn on a preview plot, and its months. %>
+<div class="field-wizard__plot"><%= render "app/fields/plot", crop: nil, size: "lg", preview: true %></div>
+<% step.data.each do |datum| %>
+  <fieldset class="choice-set">
+    <legend class="choice-set__legend"><%= datum_label(datum) %></legend>
+    <% param = datum.key == "current_crop" ? "crop" : datum.key %>
+    <%= render "app/fields/input", datum: datum, name: "field[#{param}]", current: nil, preview: true %>
+  </fieldset>
+<% end %>

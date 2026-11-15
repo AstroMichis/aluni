@@ -1,0 +1,51 @@
+require "rails_helper"
+
+RSpec.describe Rotations::Comparator do
+  let(:user) { create(:user) }
+  let!(:record) { create_farm_for(user) }
+  let(:field) { Fields::Farm.for(user).field(record.id) }
+  let(:comparator) { described_class.new(field, profile: user.farmer_profile) }
+
+  it "compares the current rotation with at least two alternatives over the next three seasons" do
+    keys = comparator.strategies.map(&:key)
+
+    expect(keys.first).to eq("current")
+    expect(keys.size).to be >= 3
+    expect(comparator.strategies.first.crops).to eq(%w[glycine-max zea-mays glycine-max]) # soy, corn alternating
+    expect(comparator.strategies).to all(have_attributes(crops: satisfy { |c| c.size == 3 }))
+  end
+
+  it "scores with the field's data and weighs the farmer's goals" do
+    expect(comparator.weights).to include("pest_break" => 3, "soil_health" => 3, "water" => 1) # goals: rotation, soil_health
+    grain = comparator.strategies.find { |s| s.key == "small_grain" }
+
+    expect(grain.crops).to eq(%w[triticum-aestivum glycine-max zea-mays]) # corn-soy-wheat
+    expect(grain.scores["crop_fit"]).to eq(82) # Soybean 7600 and Maize 8700 at the pin; wheat not in GAEZ here
+    expect(grain.gaps).to include("suitability")
+    expect(grain.scores["nitrogen"]).to eq(33)
+    expect(grain.scores["water"]).to be_between(1, 100)
+    expect(grain.evidence.map(&:key)).to include("suitability", "water", "slope")
+    expect(comparator.strategies.map(&:key)).not_to include("legume") # the rotation already has soybeans
+  end
+
+  it "says what is better than now, what is unknown and what to check locally" do
+    alternative = comparator.strategies.drop(1).first
+    expect(alternative.gaps).to include("market", "soil")
+    expect(alternative.risks).to be_an(Array)
+    expect(comparator.strategies.drop(1).flat_map(&:benefits)).not_to be_empty
+  end
+
+  it "still offers three strategies when the current crop is already a legume" do
+    record.field_crops.find_by(season_year: Date.current.year).update!(crop_name: "Soybeans", scientific_name: "Glycine max")
+    comparator = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile)
+    expect(comparator.strategies.size).to be >= 3
+    expect(comparator.strategies.map(&:key)).not_to include("legume")
+  end
+
+  it "waits for this season's crop" do
+    record.field_crops.destroy_all
+    comparator = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile)
+    expect(comparator).not_to be_ready
+    expect(comparator.strategies).to be_empty
+  end
+end

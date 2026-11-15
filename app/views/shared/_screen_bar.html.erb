@@ -1,0 +1,25 @@
+<%# The top bar of every menu section screen: back, title, language and theme,
+    and the section's tabs (ScreenHelper::SECTION_TABS).
+    Locals: back_path, back_label, title, section (optional: shows its tabs).
+    Every form in these screens redirects back to its page; Turbo morphs it
+    and keeps the scroll. %>
+<% content_for :head, turbo_refreshes_with(method: :morph, scroll: :preserve) %>
+<header class="screen__bar">
+  <%= link_to back_path, class: "screen__back", aria: { label: back_label } do %>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg>
+  <% end %>
+  <span class="screen__crumb"><%= title %></span>
+  <div class="cluster cluster--sm screen__tools">
+    <%= render "shared/language_toggle" %>
+    <button type="button" class="btn btn--ghost btn--sm" data-action="preferences#toggleTheme" aria-label="<%= t("theme.toggle") %>">
+      <%= t("theme.toggle_short") %>
+    </button>
+  </div>
+</header>
+<% if local_assigns[:section] %>
+  <nav class="screen__tabs" aria-label="<%= title %>">
+    <% section_tabs(section).each do |label, path| %>
+      <%= link_to label, path, class: "screen__tab", aria: { current: ("page" if current_page?(path)) } %>
+    <% end %>
+  </nav>
+<% end %>

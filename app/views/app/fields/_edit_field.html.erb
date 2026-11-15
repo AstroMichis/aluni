@@ -1,0 +1,15 @@
+<%# One datum in the edit form: its input, filled with what is known, and a source suggestion to take. Locals: datum, subject. %>
+<% reading = subject.reading(datum) %>
+<% cdl = datum.column == "crops.history" && subject.respond_to?(:cdl_proposal) ? subject.cdl_proposal : {} %>
+<% suggestion = reading.state == :to_confirm ? proposal_text(reading) : (cdl.any? ? cdl.sort.map { |y, c| "#{y}: #{c}" }.join(" · ") : nil) %>
+<% suffix = value_label("area_unit", subject.record.area_unit) if datum.key == "area" %>
+<div class="edit-field<%= " edit-field--suggested" if suggestion %>" id="field-<%= datum.key %>">
+  <span class="edit-field__label"><%= datum_label(datum) %></span>
+  <%= render "app/fields/input", datum: datum, name: "values[#{datum.key}]", current: reading.known? && reading.state != :to_confirm ? reading.value : nil, suffix: suffix %>
+  <% if suggestion %>
+    <label class="edit-field__suggestion">
+      <input type="checkbox" name="confirm[]" value="<%= datum.key %>">
+      <span><%= t("app.fields.edit.use_suggestion", source: (reading.source || datum.sources_for(subject.layer).find(&:connected?))&.name, value: suggestion) %></span>
+    </label>
+  <% end %>
+</div>

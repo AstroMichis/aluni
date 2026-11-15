@@ -1,0 +1,109 @@
+<% name = plot_name(@field) %>
+<% content_for :title, t(".title", name: name, app_name: t("app_name")) %>
+<% weights = @comparator.weights %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: app_field_path(@field.key), back_label: t("app.fields.back_to_fields"), title: name %>
+
+  <main id="main" class="screen__body">
+    <header class="screen__header">
+      <p class="text-label screen__eyebrow"><%= t(".eyebrow", from: season_years.first, to: season_years.last) %></p>
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <p class="screen__lede"><%= t(".lede") %></p>
+    </header>
+
+    <% if !@comparator.ready? %>
+      <%= render "shared/aluni", message: t(".not_ready") %>
+      <%= link_to t(".add_crop"), edit_app_field_path(@field.key, anchor: "field-current_crop"), class: "btn btn--primary" %>
+    <% else %>
+      <% best = @comparator.best %>
+      <% current = @comparator.strategies.first %>
+      <%= render "shared/aluni", message: best && best.total.to_i > current.total.to_i ? t(".summary_better", strategy: strategy_title(best), best: best.total, current: current.total) : t(".summary_current") %>
+
+      <details class="weights">
+        <summary><%= t(".weights_title") %></summary>
+        <ul class="weights__list" role="list">
+          <% weights.each do |criterion, weight| %>
+            <li class="weights__item<%= " weights__item--goal" if weight > 1 %>">
+              <strong><%= t("app.rotations.criteria.#{criterion}.short") %></strong>
+              <span><%= t("app.rotations.criteria.#{criterion}.how") %></span>
+              <% if weight > 1 %><span class="tag"><%= t(".your_goal") %></span><% end %>
+            </li>
+          <% end %>
+        </ul>
+      </details>
+
+      <ol class="strategies" role="list">
+        <% @comparator.strategies.each do |strategy| %>
+          <li class="strategy<%= " strategy--current" if strategy.current? %><%= " strategy--best" if strategy == best %>" id="strategy-<%= strategy.key %>">
+            <div class="strategy__head">
+              <div>
+                <p class="strategy__kicker"><%= strategy.current? ? t(".current") : (strategy == best ? t(".best") : t(".alternative")) %></p>
+                <h2 class="strategy__title"><%= strategy_title(strategy) %></h2>
+              </div>
+              <p class="strategy__total"><span><%= strategy.total || "–" %></span><small>/100</small></p>
+            </div>
+
+            <ol class="seasons" role="list">
+              <% strategy.crops.each_with_index do |crop, i| %>
+                <li class="season">
+                  <span class="season__label text-mono"><%= season_years[i] %></span>
+                  <span class="season__crop"><%= crop_name(crop) %></span>
+                  <% if (family = Crops::Agronomy.family(crop)) %><span class="season__family"><%= t("app.crops.families.#{family}") %></span><% end %>
+                </li>
+              <% end %>
+            </ol>
+
+            <%= turbo_frame_tag "why-#{strategy.key}", src: why_app_field_rotation_path(@field.key, strategy: strategy.key), loading: :lazy do %>
+              <p class="strategy__why"><%= strategy_why(strategy) %></p>
+            <% end %>
+
+            <ul class="meter-list strategy__scores" role="list">
+              <% strategy.scores.each do |criterion, value| %>
+                <li class="meter-list__row">
+                  <span class="meter-list__name"><%= t("app.rotations.criteria.#{criterion}.short") %><% if weights[criterion] > 1 %> <span class="tag"><%= t(".your_goal") %></span><% end %></span>
+                  <span class="meter-list__bar"><span class="meter-list__fill" style="--share: <%= (value.to_i / 100.0).round(2) %>"></span></span>
+                  <span class="meter-list__value"><%= score_text(value) %></span>
+                </li>
+              <% end %>
+            </ul>
+
+            <% if strategy.benefits.any? %>
+              <div class="strategy__block strategy__block--benefits">
+                <h3><%= t(".benefits") %></h3>
+                <ul role="list"><% strategy.benefits.each do |c| %><li><%= t("app.rotations.criteria.#{c}.benefit") %></li><% end %></ul>
+              </div>
+            <% end %>
+            <% if strategy.evidence.any? %>
+              <div class="strategy__block">
+                <h3><%= t(".evidence") %></h3>
+                <ul role="list">
+                  <% strategy.evidence.each do |fact| %>
+                    <li><%= fact_text(fact) %><% if fact.source %> <span class="strategy__source"><%= fact.source %></span><% end %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+            <% if strategy.risks.any? %>
+              <div class="strategy__block strategy__block--risks">
+                <h3><%= t(".risks") %></h3>
+                <ul role="list"><% strategy.risks.each do |r| %><li><%= t("app.rotations.risks.#{r}") %></li><% end %></ul>
+              </div>
+            <% end %>
+            <div class="strategy__block strategy__block--gaps">
+              <h3><%= t(".gaps") %></h3>
+              <ul role="list"><% strategy.gaps.each do |g| %><li><%= t("app.rotations.gaps.#{g}") %></li><% end %></ul>
+            </div>
+
+            <% unless strategy.current? %>
+              <%= button_to t(".use_as_plan", year: season_years.first), plan_app_crops_path, method: :patch,
+                            params: { field: @field.key, crop: strategy.crops.first }, class: "btn btn--secondary btn--sm" %>
+            <% end %>
+          </li>
+        <% end %>
+      </ol>
+
+      <p class="choice-set__hint"><%= t(".disclaimer") %></p>
+    <% end %>
+  </main>
+</div>

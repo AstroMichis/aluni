@@ -1,0 +1,7 @@
+<%# Sticky chips that jump to each group of a page and follow the scroll. Locals: groups (keys). %>
+<nav class="section-nav" aria-label="<%= t("app.fields.sections_label") %>">
+  <% groups.each do |group| %>
+    <% anchor = group == "data-sources" ? group : "group-#{group}" %>
+    <a class="section-nav__link" href="#<%= anchor %>" data-section-nav-target="link"><%= t("app.fields.groups.#{group.tr("-", "_")}") %></a>
+  <% end %>
+</nav>

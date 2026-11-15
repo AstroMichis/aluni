@@ -1,0 +1,36 @@
+<%# One crop's GAEZ potential at the pin and its ECOCROP fit. Locals: field, crop (FieldCrop or name), season. %>
+<% row = Crops::Potential.new(field.observation("gaez")).for(crop) %>
+<% fit = Crops::Fit.new(crop, season: season, soil: field.record.soil) %>
+<div class="potential">
+  <% if row&.suitability_class %>
+    <p class="potential__line">
+      <span class="tag tag--<%= row.suitability_class %>"><%= t("app.crops.suitability.#{row.suitability_class}") %></span>
+      <% if row.yield_t %><span class="potential__yield"><%= t("app.crops.attainable", value: chart_number(row.yield_t)) %></span><% end %>
+    </p>
+    <p class="choice-set__hint"><%= t("app.crops.gaez_note") %></p>
+  <% elsif Crops::Agronomy.gaez_name(crop).nil? %>
+    <p class="choice-set__hint"><%= t("app.crops.no_gaez") %></p>
+  <% else %>
+    <p class="choice-set__hint"><%= t("app.crops.gaez_pending") %></p>
+  <% end %>
+
+  <% need = Crops::WaterNeed.for(crop, observation: field.observation("nasa_power"), latitude: field.record.latitude,
+                                planting_month: crop.respond_to?(:planting_month) ? crop.planting_month : nil) %>
+  <% if need %>
+    <p class="potential__water"><%= t("app.crops.water.need", need: need.crop_mm, effective: need.effective_mm, deficit: need.deficit_mm) %></p>
+    <p class="choice-set__hint"><%= t("app.crops.water.note") %></p>
+  <% end %>
+
+  <% if fit.available? %>
+    <ul class="fit" role="list">
+      <% fit.checks.each do |check| %>
+        <li class="fit__check fit__check--<%= check.status %>">
+          <span class="fit__factor"><%= t("app.crops.fit.factors.#{check.factor}") %></span>
+          <span class="fit__status"><%= t("app.crops.fit.statuses.#{check.status}") %></span>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="choice-set__hint"><%= t("app.crops.fit.pending") %></p>
+  <% end %>
+</div>

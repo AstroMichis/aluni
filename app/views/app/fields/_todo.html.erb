@@ -1,0 +1,25 @@
+<%# What the farm or a field still needs from the person, as Aluni says it,
+    each a link to its field in the edit form. Locals: subject, edit_path. %>
+<% todo = subject.todo %>
+<section class="todo" aria-labelledby="todo-<%= subject.key %>">
+  <div class="todo__head">
+    <h2 class="todo__title" id="todo-<%= subject.key %>"><%= t("app.fields.todo.title") %></h2>
+    <span class="todo__progress"><%= progress_label(subject) %></span>
+  </div>
+  <span class="meter" style="--share: <%= progress_share(subject) %>" aria-hidden="true"><span class="meter__fill"></span></span>
+  <% if todo.empty? %>
+    <%= render "shared/aluni", message: t("app.fields.todo.done") %>
+  <% else %>
+    <%= render "shared/aluni", message: t("app.fields.todo.message", count: todo.size) %>
+    <ul class="todo__list" role="list">
+      <% todo.each do |reading| %>
+        <li>
+          <a class="todo__item" href="<%= edit_path %>#field-<%= reading.datum.key %>">
+            <span class="todo__state todo__state--<%= reading.state %>"><%= t("app.fields.todo.verbs.#{reading.state}") %></span>
+            <span><%= datum_label(reading.datum) %></span>
+          </a>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</section>

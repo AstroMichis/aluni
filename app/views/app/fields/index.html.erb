@@ -1,0 +1,49 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% todo = @farm.fields.sum { |field| field.todo.size } + @farm.todo.size %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: app_root_path, back_label: t("app.fields.back_to_menu"), title: t(".crumb"), section: :fields %>
+  <%= render "app/fields/plot_defs" %>
+
+  <main id="main" class="screen__body">
+    <header class="screen__header">
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <p class="screen__lede">
+        <%= @farm.fields.any? ? t(".summary", count: @farm.fields.size, area: hectares(@farm.total_area)) : t(".no_fields") %>
+      </p>
+    </header>
+
+    <%= render "shared/aluni", message: todo.zero? ? t(".greeting_done") : t(".greeting", count: todo) %>
+
+    <ul class="field-grid" role="list">
+      <% @farm.fields.each do |field| %>
+        <li>
+          <%= link_to app_field_path(field.key), class: "field-card" do %>
+            <%= render "app/fields/plot", crop: field.current_crop, size: "sm", id: "plot-card-#{field.key}" %>
+            <span class="field-card__name"><%= plot_name(field) %></span>
+            <span class="field-card__meta"><%= field_area(field) %> · <%= field.empty? ? t(".no_crop") : crop_name(field.current_crop) %></span>
+            <% unless field.located? %><span class="field-card__flag"><%= t(".no_pin") %></span><% end %>
+            <span class="meter" style="--share: <%= progress_share(field) %>" aria-hidden="true"><span class="meter__fill"></span></span>
+            <span class="field-card__progress"><%= progress_label(field) %></span>
+          <% end %>
+        </li>
+      <% end %>
+      <li>
+        <%= link_to new_app_field_path, class: "field-card field-card--add" do %>
+          <span class="field-card__plus" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
+          </span>
+          <span class="field-card__name"><%= t(".add") %></span>
+          <span class="field-card__meta"><%= t(".add_hint") %></span>
+        <% end %>
+      </li>
+    </ul>
+
+    <% if @farm.todo.any? %>
+      <%= link_to app_farm_path, class: "screen__more" do %>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><%= render "shared/glyph", name: "tasks" %></svg>
+        <%= t(".farm_todo", count: @farm.todo.size) %>
+      <% end %>
+    <% end %>
+  </main>
+</div>

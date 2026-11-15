@@ -1,0 +1,87 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% totals = @season.totals %>
+<% by_crop = @farm.fields.reject(&:empty?).group_by(&:crop).transform_values { |list| list.sum(&:area_hectares) }.sort_by { |_, area| -area } %>
+<% max_area = [ by_crop.map(&:last).max.to_f, 0.001 ].max %>
+<% profile = Current.user.farmer_profile %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: app_root_path, back_label: t("app.fields.back_to_menu"), title: t(".crumb"), section: :reports %>
+
+  <main id="main" class="screen__body report">
+    <header class="screen__header">
+      <% if @season.any? %>
+        <p class="text-label screen__eyebrow"><%= t(".eyebrow", from: l(@season.from, format: :long), to: l(@season.to, format: :long)) %></p>
+      <% end %>
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <p class="screen__lede"><%= t(".lede", count: @farm.fields.size, area: hectares(@farm.total_area)) %></p>
+      <div class="cluster cluster--sm report__actions" data-controller="print">
+        <button type="button" class="btn btn--secondary btn--sm" data-action="print#print"><%= t(".print") %></button>
+        <%= link_to t(".export"), export_app_reports_path, class: "btn btn--ghost btn--sm" %>
+      </div>
+    </header>
+
+    <section class="screen__section" aria-labelledby="report-crops">
+      <h2 class="screen__section-title" id="report-crops"><%= t(".crops_title") %></h2>
+      <% if by_crop.any? %>
+        <ul class="meter-list" role="list">
+          <% by_crop.each do |crop, area| %>
+            <li class="meter-list__row">
+              <span class="meter-list__name"><%= crop %></span>
+              <span class="meter-list__bar"><span class="meter-list__fill" style="--share: <%= (area / max_area).round(3) %>"></span></span>
+              <span class="meter-list__value"><%= hectares(area) %></span>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="screen__lede"><%= t("app.crops.show.none") %></p>
+      <% end %>
+    </section>
+
+    <% if @season.any? %>
+      <section class="screen__section" aria-labelledby="report-weather">
+        <h2 class="screen__section-title" id="report-weather"><%= t(".weather_title") %></h2>
+        <ul class="kpis" role="list">
+          <li class="kpi"><span class="kpi__label"><%= t("app.weather.show.kpis.rain") %></span><span class="kpi__value"><%= chart_number(totals[:rain], 0) %> <small>mm</small></span></li>
+          <li class="kpi"><span class="kpi__label"><%= t("app.weather.show.kpis.temp") %></span><span class="kpi__value"><%= chart_number(totals[:temp]) %> <small>°C</small></span></li>
+          <li class="kpi"><span class="kpi__label"><%= t("app.weather.show.kpis.frost_days") %></span><span class="kpi__value"><%= totals[:frost_days] %></span></li>
+          <li class="kpi"><span class="kpi__label"><%= t("app.weather.show.kpis.heat_days") %></span><span class="kpi__value"><%= totals[:heat_days] %></span></li>
+        </ul>
+        <p class="choice-set__hint"><%= t("app.weather.show.regional") %></p>
+      </section>
+    <% end %>
+
+    <section class="screen__section" aria-labelledby="report-fields">
+      <h2 class="screen__section-title" id="report-fields"><%= t(".fields_title") %></h2>
+      <div class="data-table__scroll">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th scope="col"><%= t(".table.field") %></th><th scope="col"><%= t(".table.crop") %></th><th scope="col"><%= t(".table.area") %></th>
+              <th scope="col"><%= t(".table.plan") %></th><th scope="col"><%= t(".table.flags") %></th><th scope="col"><%= t(".table.ready") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @farm.fields.each do |field| %>
+              <% findings = Crops::RotationCheck.new(field.seasons).findings %>
+              <tr>
+                <th scope="row"><%= link_to plot_name(field), app_field_path(field.key) %></th>
+                <td><%= field.empty? ? t("app.fields.index.no_crop") : crop_name(field.current_crop) %></td>
+                <td><%= field_area(field) %></td>
+                <td><%= field.plan ? crop_name(field.plan) : t(".table.no_plan") %></td>
+                <td><%= findings.any? ? findings.map { |f| t("app.crops.rotation.findings.#{f.kind}.label") }.uniq.to_sentence : t(".table.no_flags") %></td>
+                <td><%= progress_label(field) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="screen__section" aria-labelledby="report-team">
+      <h2 class="screen__section-title" id="report-team"><%= t(".team_title") %></h2>
+      <p class="screen__lede">
+        <%= profile && !profile.team_unknown? ? value_label("team", profile.team) : t("app.fields.states.unanswered") %><%= " · #{t(".team_size", count: profile.team_size)}" if profile&.team_size %>
+      </p>
+    </section>
+  </main>
+</div>

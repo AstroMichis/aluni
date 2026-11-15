@@ -1,0 +1,50 @@
+<%# Frame of a server-drawn chart: caption, one y axis with a recessive grid,
+    month labels, the marks (the block), a crosshair and a tooltip
+    (chart_controller.js). The SVG stretches to the card (fixed height,
+    strokes that do not scale); axis text is HTML placed in percentages, so
+    it reads the same on a phone and a desktop.
+    Locals: id, title, note, summary (the accessible description), frame
+    (ChartHelper::Frame), points ([{ x, label, value }]), x_labels
+    ([[x, text]]), unit (the y axis unit), precision, reference (optional
+    [value, label]: a dashed line, e.g. 0 °C). %>
+<figure class="chart" id="<%= id %>" data-controller="chart"
+        data-chart-points-value="<%= points.to_json %>" data-chart-width-value="<%= ChartHelper::WIDTH %>">
+  <figcaption class="chart__caption">
+    <span class="chart__title"><%= title %></span>
+    <span class="chart__note"><%= note %></span>
+  </figcaption>
+  <div class="chart__plot">
+    <svg class="chart__svg" viewBox="0 0 <%= ChartHelper::WIDTH %> <%= ChartHelper::HEIGHT %>" preserveAspectRatio="none"
+         role="img" aria-label="<%= summary %>" tabindex="0" data-chart-target="svg"
+         data-action="pointermove->chart#move pointerdown->chart#move pointerleave->chart#hide keydown->chart#key blur->chart#hide">
+      <g class="chart__grid" aria-hidden="true">
+        <% frame.ticks.each do |tick| %>
+          <line x1="<%= ChartHelper::LEFT %>" x2="<%= ChartHelper::WIDTH - ChartHelper::RIGHT %>" y1="<%= frame.y(tick).round(1) %>" y2="<%= frame.y(tick).round(1) %>"/>
+        <% end %>
+      </g>
+      <% if (reference = local_assigns[:reference]) %>
+        <line class="chart__reference" x1="<%= ChartHelper::LEFT %>" x2="<%= ChartHelper::WIDTH - ChartHelper::RIGHT %>" y1="<%= frame.y(reference.first).round(1) %>" y2="<%= frame.y(reference.first).round(1) %>"/>
+      <% end %>
+      <%= yield %>
+      <g class="chart__crosshair" data-chart-target="crosshair" aria-hidden="true">
+        <line x1="0" x2="0" y1="<%= ChartHelper::TOP %>" y2="<%= frame.baseline %>"/>
+      </g>
+    </svg>
+    <div class="chart__labels" aria-hidden="true">
+      <span class="chart__unit"><%= unit %></span>
+      <% frame.ticks.each do |tick| %>
+        <span class="chart__tick" style="top: <%= chart_top(frame.y(tick)) %>%"><%= chart_number(tick, local_assigns.fetch(:precision, 0)) %></span>
+      <% end %>
+      <% if reference %>
+        <span class="chart__reference-label" style="top: <%= chart_top(frame.y(reference.first)) %>%"><%= reference.last %></span>
+      <% end %>
+      <% x_labels.each do |x, text| %>
+        <span class="chart__month" style="left: <%= chart_left(x) %>%"><%= text %></span>
+      <% end %>
+    </div>
+    <div class="chart__tooltip" data-chart-target="tooltip" hidden>
+      <span data-part="label"></span>
+      <strong data-part="value"></strong>
+    </div>
+  </div>
+</figure>

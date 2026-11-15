@@ -52,6 +52,7 @@ Read the relevant doc before working on that area:
 | `docs/RAILS_PATTERNS.md` | Service objects, controllers, Hotwire, Stimulus, jobs, the switchboard |
 | `docs/I18N.md` | Locale files, switching, formats, the copy specs |
 | `docs/INTEGRATIONS.md` | Gemini, push, web push, mail, R2, outbound client and inbound webhook shapes |
+| `docs/FIELDS.md` | The menu sections in `/app` on the onboarding models: the data registry `config/field_profile.yml`, the data-source clients and `Fields::FetchObservationsJob`, reading and writing |
 | `docs/DATA_SOURCES.md` | Index of external data resources (weather, soil moisture and water, imagery and land cover, soil and terrain, crop characteristics, ag statistics and markets): one file per resource in `docs/data_sources/` with requests, parameters, sample responses, fields and documentation links |
 | `docs/RUST.md` | The extension gem: rules, dev loop, CI and Docker steps |
 | `docs/INFRASTRUCTURE.md` | Gemfile, routes, ENV and credentials inventory, testing, CI |
