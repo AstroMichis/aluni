@@ -32,7 +32,7 @@ module Gemini
           req.options.timeout = 5
           req.options.open_timeout = 2
         end
-        raise Error, "metadata server returned #{response.status}" unless response.success?
+        raise Error, "could not get a Vertex AI token: metadata server returned #{response.status}" unless response.success?
 
         data = JSON.parse(response.body)
         @token = data.fetch("access_token")
