@@ -39,7 +39,7 @@ rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), weba
 
 | Name | Used by |
 |---|---|
-| `DATABASE_URL`, `REDIS_URL` | database.yml, redis.rb, cable.yml, rack_attack.rb, production cache |
+| `DATABASE_URL`, `REDIS_URL` | database.yml, redis.rb, cable.yml, rack_attack.rb, production cache. Without `REDIS_URL`, development uses local database 7 and test database 8 (`config.x.local_redis_url` in application.rb) so Sidekiq never shares a database with another app on the machine |
 | `RAILS_MASTER_KEY`, `SECRET_KEY_BASE_DUMMY` (build only) | credentials, asset precompile |
 | `RAILS_MAX_THREADS`, `SIDEKIQ_CONCURRENCY`, `RAILS_LOG_LEVEL`, `MALLOC_ARENA_MAX`, `RAILS_SERVE_STATIC_FILES`, `PORT`, `PIDFILE` | puma, sidekiq, logging |
 | `APP_DOMAIN`, `APP_PORT`, `ADMIN_HOST`, `DEV_HOSTS` | app_domain.rb, hosts, mailer URLs, WebAuthn RP id |

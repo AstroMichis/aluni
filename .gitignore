@@ -48,6 +48,7 @@
 /ios/*.xcodeproj/
 /ios/**/xcuserdata/
 /ios/**/DerivedData/
+/ios/Aluni/Config/Local.xcconfig
 *.ipa
 *.dSYM.zip
 

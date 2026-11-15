@@ -13,14 +13,14 @@ mise install                          # Ruby from mise.toml
 mise exec -- bin/setup --skip-server  # bundle, compile the Rust extension, create the databases
 ```
 
-Run the web process and the worker (two terminals, or `foreman start -f Procfile.dev`):
+Run the web process and the worker together (`Procfile.dev`; `bin/dev` needs no foreman):
 
 ```sh
-mise exec -- bin/rails server -b 0.0.0.0 -p 3000
-mise exec -- bundle exec sidekiq -C config/sidekiq.yml
+mise exec -- bin/dev        # web on 0.0.0.0:3000 plus the Sidekiq worker (Redis must be running)
+mise exec -- bin/dev web    # only the web process
 ```
 
-Open http://localhost:3000. Passkeys need a secure context: use `localhost`, not a LAN name (`docs/AUTH.md`). In development `NATIVE_WEB_ACCESS` defaults to on, so sign-in and `/app` also work in a desktop browser.
+Open http://localhost:3000. Passkeys need a secure context: use `localhost`, not a LAN name (`docs/AUTH.md`). A phone on the same network reaches the Mac's address instead (`docs/NATIVE.md`, "Building"). In development `NATIVE_WEB_ACCESS` defaults to on, so sign-in and `/app` also work in a desktop browser.
 
 ## Tests and checks
 

@@ -36,7 +36,10 @@ targets:
         MARKETING_VERSION: "1.0.0"
         CURRENT_PROJECT_VERSION: 1
         SWIFT_VERSION: "5.9"
-        DEVELOPMENT_TEAM: ""
+        # No DEVELOPMENT_TEAM here: Debug reads it from the git-ignored
+        # Config/Local.xcconfig (included by Development.xcconfig), so a free
+        # Personal Team can sign device builds without touching this file.
+        # The paid team goes here when it exists.
         CODE_SIGN_STYLE: Automatic
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         # Info.plist is preprocessed so the local-network keys exist in Debug only.

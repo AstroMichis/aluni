@@ -17,27 +17,25 @@ final class NavigatorDelegateHandler: NavigatorDelegate {
         return .accept
     }
 
-    func visitableDidFailRequest(_ visitable: Visitable, error: Error, retryHandler: RetryBlock?) {
-        let nsError = error as NSError
-        if isUnauthorizedError(nsError) {
+    /// hotwire-native-ios 1.3 hands over a typed `HotwireNativeError`; for an
+    /// HTTP failure `statusCode` carries the status, otherwise it is nil.
+    func visitableDidFailRequest(_ visitable: Visitable, error: HotwireNativeError, retryHandler: RetryBlock?) {
+        if error.statusCode == 401 {
             DispatchQueue.main.async { [weak self] in self?.onSignInRequired?() }
             return
         }
 
         // A native error screen ("No connection" + "Try again"), never a blank web view.
-        if let host = visitable as? UIViewController {
-            let errorVC = ErrorViewController(error: error) { [weak host] in
-                host?.children.filter { $0 is ErrorViewController }.forEach { $0.view.removeFromSuperview(); $0.removeFromParent() }
-                retryHandler?()
-            }
-            host.addChild(errorVC)
-            errorVC.view.frame = host.view.bounds
-            errorVC.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            host.view.addSubview(errorVC.view)
-            errorVC.didMove(toParent: host)
-        } else if let errorPresenter = visitable as? ErrorPresenter {
-            errorPresenter.presentError(error, retryHandler: retryHandler)
+        let host = visitable.visitableViewController
+        let errorVC = ErrorViewController(error: error) { [weak host] in
+            host?.children.filter { $0 is ErrorViewController }.forEach { $0.view.removeFromSuperview(); $0.removeFromParent() }
+            retryHandler?()
         }
+        host.addChild(errorVC)
+        errorVC.view.frame = host.view.bounds
+        errorVC.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        host.view.addSubview(errorVC.view)
+        errorVC.didMove(toParent: host)
     }
 
     // MARK: - Private
@@ -45,11 +43,5 @@ final class NavigatorDelegateHandler: NavigatorDelegate {
     private func clearWebData() {
         let dataTypes: Set<String> = [WKWebsiteDataTypeCookies, WKWebsiteDataTypeSessionStorage]
         WKWebsiteDataStore.default().removeData(ofTypes: dataTypes, modifiedSince: .distantPast) {}
-    }
-
-    private func isUnauthorizedError(_ error: NSError) -> Bool {
-        if error.code == 401 { return true }
-        if let statusCode = error.userInfo["statusCode"] as? Int, statusCode == 401 { return true }
-        return false
     }
 }

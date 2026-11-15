@@ -1,2 +1,85 @@
 #!/usr/bin/env ruby
-exec "./bin/rails", "server", *ARGV
+# frozen_string_literal: true
+
+# Runs the processes in Procfile.dev together, foreman-style, with nothing to
+# install: the web server on 0.0.0.0:3000 (so a phone on the same network
+# reaches it, see docs/NATIVE.md) and the Sidekiq worker (needs Redis).
+#
+#   mise exec -- bin/dev                 # everything in Procfile.dev
+#   mise exec -- bin/dev web             # only the named processes
+#   mise exec -- bin/dev -f Procfile.x   # another Procfile
+#
+# Ctrl-C stops every process. When one exits on its own, the others are
+# stopped and bin/dev exits with its status, so a failing worker is loud.
+
+require "optparse"
+
+procfile = "Procfile.dev"
+OptionParser.new do |opts|
+  opts.banner = "Usage: bin/dev [-f PROCFILE] [PROCESS ...]"
+  opts.on("-f", "--procfile FILE", "Procfile to run (default: Procfile.dev)") { |file| procfile = file }
+end.parse!
+
+Dir.chdir(File.expand_path("..", __dir__))
+abort "bin/dev: #{procfile} not found" unless File.file?(procfile)
+
+processes = File.readlines(procfile, chomp: true).filter_map do |line|
+  next if line.strip.empty? || line.lstrip.start_with?("#")
+
+  name, command = line.split(":", 2)
+  [ name.strip, command.strip ] if command && !command.strip.empty?
+end
+processes.select! { |name, _| ARGV.include?(name) } unless ARGV.empty?
+abort "bin/dev: nothing to run in #{procfile}#{" for #{ARGV.join(', ')}" unless ARGV.empty?}" if processes.empty?
+
+$stdout.sync = true
+width = processes.map { |name, _| name.length }.max
+children = {}
+
+def signal_group(pid, signal)
+  Process.kill(signal, -pid)
+rescue Errno::ESRCH
+  nil
+end
+
+processes.each do |name, command|
+  reader, writer = IO.pipe
+  pid = Process.spawn(command, out: writer, err: writer, pgroup: true)
+  writer.close
+  children[pid] = name
+  puts "#{name.ljust(width)} | pid #{pid}: #{command}"
+  Thread.new(reader, name) do |io, label|
+    io.each_line { |line| print "#{label.ljust(width)} | #{line}" }
+  end
+end
+
+stopping = false
+stop_all = lambda do
+  stopping = true
+  children.each_key { |pid| signal_group(pid, "TERM") }
+end
+%w[INT TERM].each { |signal| trap(signal) { stop_all.call } }
+
+first_exit = nil
+kill_at = nil
+until children.empty?
+  pid, status = Process.wait2(-1, Process::WNOHANG)
+  if pid.nil?
+    if stopping
+      kill_at ||= Time.now + 10
+      children.each_key { |child| signal_group(child, "KILL") } if Time.now > kill_at
+    end
+    sleep 0.2
+    next
+  end
+
+  name = children.delete(pid) or next
+  puts "#{name.ljust(width)} | exited with status #{status.exitstatus.inspect}"
+  next if stopping
+
+  first_exit = status
+  puts "bin/dev: #{name} stopped, stopping the rest"
+  stop_all.call
+end
+
+exit(first_exit ? (first_exit.exitstatus || 1) : 0)

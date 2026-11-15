@@ -33,15 +33,17 @@ A passkey is bound to its RP id, so development and production credentials are s
 
 | Env | `rp_id` | `allowed_origins` |
 |---|---|---|
-| development | `localhost` | `http://localhost:3000` |
+| development | `APP_DOMAIN`, default `localhost` | `http://localhost:3000`, or `https://<APP_DOMAIN>` when it is set |
 | test | `www.example.com` | `http://www.example.com` |
 | production | `APP_DOMAIN` (aluni.us) | `https://aluni.us`, `https://www.aluni.us` |
 
 WebAuthn requires a secure context. `localhost` is the only plain-http origin browsers accept, which is why development runs on `localhost:3000` (not `lvh.me`, not the Android emulator's `10.0.2.2`). The iOS simulator shares the Mac's localhost. For the Android emulator run `adb reverse tcp:3000 tcp:3000` so the device's `localhost:3000` reaches the Mac.
 
+A phone that reaches the Mac by its LAN address (`http://172.20.10.3:3000`) is not a secure context: the page shows `passkeys.errors.insecure` and the ceremony never starts. To try passkeys from a phone, run `bin/dev` behind an https tunnel (cloudflared, ngrok) and start it with `APP_DOMAIN=<tunnel host>`; the RP id, the allowed origin and the host allow-list follow, and the phone's own browser can sign in (`NATIVE_WEB_ACCESS` is on in development). Passkeys created for a tunnel host belong to that host name.
+
 ## Passkeys inside the native shells
 
-- **iOS (WKWebView)** runs the ceremony itself once the app's associated domains include `webcredentials:aluni.us` (Release entitlements) and the server's `apple-app-site-association` lists the app under `webcredentials` (`AppLinksController`). No Swift code.
+- **iOS (WKWebView)** runs the ceremony itself once the app's associated domains include `webcredentials:aluni.us` (Release entitlements) and the server's `apple-app-site-association` lists the app under `webcredentials` (`AppLinksController`). No Swift code. Until then the shell cannot sign in: Debug builds carry no entitlements and a free Personal Team cannot provision Associated Domains, so WKWebView refuses the ceremony even over https. With the paid team, a Debug entitlements file can carry `webcredentials:<development host>?mode=developer` (Associated Domains Development switched on in the device's Developer settings) against a tunnel started with `APP_DOMAIN`.
 - **Android (WebView)** needs `WebSettingsCompat.setWebAuthenticationSupport(..., WEB_AUTHENTICATION_SUPPORT_FOR_APP)` (`android/.../AluniWebView.kt`) and `assetlinks.json` with the `delegate_permission/common.get_login_creds` relation. Google grants it on Android 14+ WebViews; older devices get the page's "unsupported" message until a native Credential Manager bridge component exists (same server endpoints, see `docs/NATIVE.md`).
 
 ## The native gate

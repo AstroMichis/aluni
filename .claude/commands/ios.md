@@ -1,6 +1,6 @@
 # iOS Native Shell (Hotwire Native)
 
-Build and maintain the iOS shell for Aluni with Hotwire Native (hotwire-native-ios 1.2). The shell lives at `/ios` in the Rails monorepo (XcodeGen spec `ios/project.yml`, sources under `ios/Aluni`). The request is: $ARGUMENTS
+Build and maintain the iOS shell for Aluni with Hotwire Native (hotwire-native-ios 1.3; `project.yml` asks for 1.2.0 and up). The shell lives at `/ios` in the Rails monorepo (XcodeGen spec `ios/project.yml`, sources under `ios/Aluni`). The request is: $ARGUMENTS
 
 ## Usage
 
@@ -20,7 +20,7 @@ Build and maintain the iOS shell for Aluni with Hotwire Native (hotwire-native-i
 - **Hotwire Native, not turbo-ios.** `import HotwireNative`, package `https://github.com/hotwired/hotwire-native-ios`, SPM only.
 - **Passkeys only.** No biometric keychain token, no JWT exchange, no password form. WKWebView runs the WebAuthn ceremony on the Rails sign-in page; the shell only needs the `webcredentials:aluni.us` associated domain (Release entitlements) and the server's AASA `webcredentials` entry.
 - **The server owns business values.** The shell draws chrome and routes; it never computes anything the server owns.
-- **`mise exec --` is Rails-side only.** Xcode builds use `xcodegen generate` and `xcodebuild` directly. Full Xcode is not installed on the operator's machine today; generated code is reviewed, not compiled, here.
+- **`mise exec --` is Rails-side only.** Xcode builds use `xcodegen generate` and `xcodebuild` directly (Xcode 26 is installed; a shell `xcodebuild` needs `xcode-select` pointed at Xcode.app). Verify that a Swift change compiles before calling it done: an Xcode build, or `xcrun -sdk iphoneos swiftc -typecheck` against the `HotwireNative.swiftmodule` in DerivedData.
 - **Monorepo.** The project stays at `/ios`; `Aluni.xcodeproj` is generated from `project.yml` and git-ignored.
 
 ## Folder structure
@@ -59,7 +59,7 @@ Use ONLY these (they compile in the reference shell and in `ios/Aluni`).
 | `debugLoggingEnabled` | Bool | `#if DEBUG` |
 | `pathConfiguration` | PathConfiguration | read settings after load |
 
-Does not exist: `makeCustomErrorView` (use `NavigatorDelegate.visitableDidFailRequest` + `ErrorPresenter`), `configuration.preferences.isLinkPreviewEnabled`, shared `WKProcessPool`.
+`makeCustomErrorView` exists since 1.3 (`(HotwireNativeError, ErrorPresenter.Handler?) -> any ErrorPresentableView`, a SwiftUI view); the shell keeps its UIKit `ErrorViewController` through `visitableDidFailRequest`. Does not exist: `configuration.preferences.isLinkPreviewEnabled`, shared `WKProcessPool`.
 
 ### Hotwire global methods
 ```swift
@@ -83,7 +83,7 @@ navigator.pop(); navigator.clearAll()
 ```swift
 typealias RetryBlock = () -> Void
 func handle(proposal: VisitProposal, from navigator: Navigator) -> ProposalResult   // .accept | .acceptCustom(UIViewController) | .reject
-func visitableDidFailRequest(_ visitable: Visitable, error: Error, retryHandler: RetryBlock?)
+func visitableDidFailRequest(_ visitable: Visitable, error: HotwireNativeError, retryHandler: RetryBlock?)   // 1.3: typed error; error.statusCode (Int?) is the HTTP status, visitable.visitableViewController hosts the error screen
 func didReceiveAuthenticationChallenge(_ challenge: URLAuthenticationChallenge, completionHandler: ...)
 func formSubmissionDidStart(to url: URL); func formSubmissionDidFinish(at url: URL); func requestDidFinish(at url: URL)
 ```
@@ -118,7 +118,7 @@ Properties: `context` (default | modal), `presentation` (default, push, pop, rep
 - The sign-in page runs `navigator.credentials.get()` inside WKWebView. That works only when the app's associated domains include `webcredentials:aluni.us` **and** `https://aluni.us/.well-known/apple-app-site-association` lists the app under `webcredentials` (`AppLinksController`, needs credentials `native_app.apple_team_id`). Both need the paid Apple team; the entitlements are Release-only so Debug builds sign with a free team.
 - Sign-out: `NavigatorDelegateHandler` clears cookies and session storage when a `/sign_out` visit is proposed; the server's `clear_all` rule resets the stack.
 - 401 from a visit (`visitableDidFailRequest`): `onSignInRequired` routes the current tab to `/<locale>/sign_in`.
-- Development: `BASE_URL = http://localhost:3000` (secure context for WebAuthn; the simulator shares the Mac's localhost). A physical iPhone needs the Mac's LAN IP in `DEV_HOSTS` and will not run passkeys over plain http; use a tunnel with https for device testing of sign-in.
+- Development: `BASE_URL = http://localhost:3000` (secure context for WebAuthn; the simulator shares the Mac's localhost). A physical iPhone takes the Mac's address and the signing team from the git-ignored `Config/Local.xcconfig` (development hosts allow private addresses and `.local` names; `mise exec -- bin/dev` listens on 0.0.0.0). Passkeys inside WKWebView need the Release-only `webcredentials` entitlement, so sign-in is not testable in a Debug shell.
 
 ## Bridge components (three-part contract, same `name` in JS, Swift and Kotlin)
 

@@ -17,6 +17,14 @@ export default class extends Controller {
   }
 
   connect() {
+    // WebAuthn exists only in secure contexts (https, or localhost while
+    // developing); a plain-http page over a LAN address has no
+    // PublicKeyCredential at all, so name that case before the generic one.
+    if (!window.isSecureContext) {
+      this.disable()
+      this.showError("insecure")
+      return
+    }
     if (!window.PublicKeyCredential || !navigator.credentials) {
       this.disable()
       this.showError("unsupported")
@@ -130,6 +138,10 @@ export default class extends Controller {
   // --- feedback -----------------------------------------------------------
 
   handleError(error) {
+    // The page copy stays friendly; the real reason goes to the console (Web
+    // Inspector) because WebKit reports a refused ceremony as NotAllowedError
+    // too, for example a web view whose app lacks the webcredentials association.
+    console.warn("[passkey]", error.name, error.message)
     if (error.name === "NotAllowedError" || error.name === "AbortError") return this.showError("cancelled")
     if (error.name === "InvalidStateError") return this.showError("already_registered")
     if (error.name === "ServerError") {

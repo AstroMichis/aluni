@@ -43,13 +43,34 @@ Rails.application.configure do
   # localhost is the only plain-http origin browsers treat as secure.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
+  # APP_DOMAIN (config/initializers/app_domain.rb) stays localhost unless
+  # bin/dev runs behind an https tunnel; see the passkeys block below.
+  dev_domain = ENV.fetch("APP_DOMAIN", "localhost")
+
   # lvh.me resolves to 127.0.0.1 (subdomain tests), 10.0.2.2 is the Android
-  # emulator's host alias, DEV_HOSTS adds LAN IPs for physical devices.
-  config.hosts = [ "localhost", "lvh.me", /.*\.lvh\.me/, "10.0.2.2", *ENV.fetch("DEV_HOSTS", "").split(",").map(&:strip) ]
+  # emulator's host alias. Private addresses and Bonjour names let a phone on
+  # the same network reach bin/dev (ios/Aluni/Config/Local.xcconfig points the
+  # Debug build at the Mac); DEV_HOSTS adds anything else. No anchors in the
+  # regexps: Rails adds them itself, allowing an optional :port, and checks the
+  # raw Host header ("172.20.10.3:3000"), so anchored patterns never match.
+  config.hosts = [
+    "localhost", dev_domain, "lvh.me", /.*\.lvh\.me/, "10.0.2.2",
+    /(10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3})/,
+    /[\w-]+\.local/,
+    *ENV.fetch("DEV_HOSTS", "").split(",").map(&:strip)
+  ].uniq
 
   # Passkeys: relying party id and allowed origins (config/initializers/webauthn.rb).
-  config.x.webauthn.rp_id = "localhost"
-  config.x.webauthn.allowed_origins = [ "http://localhost:3000" ]
+  # WebAuthn needs a secure context and a domain name for the RP id, so by
+  # default development runs on localhost, the one plain-http origin browsers
+  # accept; a phone reaching the Mac by its LAN address gets the page's
+  # "insecure" message. To try passkeys from a phone, run bin/dev behind an
+  # https tunnel (cloudflared, ngrok) started with APP_DOMAIN=<tunnel host>:
+  # the phone's browser can then sign in. The iOS shell additionally needs the
+  # webcredentials association, which only a paid Apple team provides
+  # (docs/AUTH.md, "Passkeys inside the native shells").
+  config.x.webauthn.rp_id = dev_domain
+  config.x.webauthn.allowed_origins = dev_domain == "localhost" ? [ "http://localhost:3000" ] : [ "https://#{dev_domain}" ]
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

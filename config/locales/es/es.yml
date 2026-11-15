@@ -37,6 +37,7 @@ es:
     default_nickname: "Este dispositivo"
     errors:
       unsupported: "Este dispositivo no puede usar llaves de acceso. Prueba con la última versión de tu navegador o sistema."
+      insecure: "Las llaves de acceso solo funcionan en una conexión segura (https, o localhost mientras desarrollas). Abre la página ahí e inténtalo de nuevo."
       cancelled: "No pasa nada. Toca el botón cuando estés listo."
       failed: "Eso no funcionó. Inténtalo de nuevo."
       already_registered: "Este dispositivo ya tiene una llave de acceso para Aluni."
