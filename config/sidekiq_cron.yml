@@ -13,3 +13,17 @@ weather_daily_alerts:
   class: "Weather::DailyAlertsJob"
   queue: default
   description: "Frost, heat, heavy rain and dry-spell alerts from the forecast, for the kinds each farmer chose"
+
+observations_weekly_refresh:
+  cron: "0 4 * * 1"   # Mondays 04:00 UTC
+  class: "Fields::RefreshObservationsJob"
+  args: ["weekly"]
+  queue: maintenance
+  description: "The season so far (NASA POWER) and the last year's NDVI for every located field"
+
+observations_monthly_refresh:
+  cron: "0 5 1 * *"   # the 1st of each month, 05:00 UTC
+  class: "Fields::RefreshObservationsJob"
+  args: ["monthly"]
+  queue: maintenance
+  description: "Every public source, including the AppEEARS products, for fields with month-old data"

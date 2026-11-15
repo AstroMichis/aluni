@@ -74,7 +74,7 @@ Suggested next order: MODIS and ECOSTRESS (same AppEEARS task path as SMAP), the
 
 - ✅ **Forecast:** seven days of Meteomatics on the weather screen (`Weather::Forecast`, lazy `forecast` frame): local solar days, frost (air or soil at 5 cm), heat, heavy rain and wind alerts with what to do, and the week's rain-minus-evapotranspiration balance.
 - ✅ **Daily alerts job:** `Weather::DailyAlertsJob` (cron 10:00 UTC) checks today and tomorrow at each located field and sends the kinds each farmer chose (frost, heat, heavy rain; a dry spell when the next six days bring almost no rain) through `NotificationRouter` (purpose `weather_alert`, one per field, day and kind). The alerts screen lists the last two weeks from the deliveries, sent or shown here only.
-- **Weekly refresh** of each field's observations (sidekiq-cron); today only a pin change refreshes them.
+- ✅ **Refresh** (`Fields::RefreshObservationsJob`, sidekiq-cron): weekly, the season so far (POWER) and the NDVI for fields fetched over 6 days ago, 3 minutes apart; monthly, every source including AppEEARS for fields with month-old data, 10 minutes apart. Runs once the `cron` switch is resumed.
 
 ## P3: the wow
 
