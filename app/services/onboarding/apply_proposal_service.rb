@@ -76,7 +76,10 @@ module Onboarding
 
       before["crops"] = []
       Array(rows).each do |row|
-        crop = field.field_crops.find_or_initialize_by(season_year: row["season_year"], role: row["role"])
+        # A season split between crops only takes the crop it already has (Field#season_slot).
+        crop = field.season_slot(row["season_year"], row["role"], FieldCrop.key_for(row["crop_name"], row["scientific_name"]))
+        next unless crop
+
         before["crops"] << crop_before(crop, row)
         crop.assign_attributes(row.slice("crop_name", "scientific_name", "planting_month", "harvest_month").merge(source: "assistant"))
         crop.save!
@@ -89,7 +92,7 @@ module Onboarding
       if crop.new_record?
         entry.merge("new_record" => true)
       else
-        entry.merge("attributes" => crop.attributes.slice(*CROP_ATTRIBUTES))
+        entry.merge("id" => crop.id, "attributes" => crop.attributes.slice(*CROP_ATTRIBUTES))
       end
     end
   end

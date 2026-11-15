@@ -80,6 +80,8 @@ scope "(:locale)", locale: /en|es/ do
           post :refresh
           post :confirm
         end
+        # How a season splits the field between crops (?year=, this season by default).
+        resource :layout, only: %i[edit update], controller: "field_layouts"
         # The rotation comparison and each strategy's "why" (loaded lazily).
         resource :rotation, only: :show, controller: "rotations" do
           get "why/:strategy", action: :why, as: :why

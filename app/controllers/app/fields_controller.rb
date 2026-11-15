@@ -23,7 +23,7 @@ module App
 
       case Fields::SaveService.call(user: Current.user, subject: @field.key, values: form_values(:field), confirm: form_confirmations)
       in Result::Success
-        redirect_to app_field_path(@field.key), notice: t(".saved"), status: :see_other
+        redirect_to app_field_path(@field.key, tab: "data"), notice: t(".saved"), status: :see_other
       in Result::Failure
         redirect_to edit_app_field_path(@field.key), alert: t("app.screens.invalid"), status: :see_other
       end
@@ -57,7 +57,7 @@ module App
     # Asks the data sources again about this field's pin.
     def refresh
       Fields::FetchObservationsJob.perform_later(@field.record.id) if @field.located?
-      redirect_to app_field_path(@field.key, anchor: "data-sources"), notice: t(".queued"), status: :see_other
+      redirect_to app_field_path(@field.key, tab: "data", anchor: "data-sources"), notice: t(".queued"), status: :see_other
     end
 
     private

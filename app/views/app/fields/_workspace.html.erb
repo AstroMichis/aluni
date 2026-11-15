@@ -1,0 +1,28 @@
+<%# A field's workspace: one page whose tabs (summary, planting, rotation,
+    data; FieldsHelper#workspace_tabs) swap the content in place. Each tab is
+    an existing page that renders inside this layout, so a direct link or a
+    reload shows the whole page, and a tab switch only fetches the frame
+    (turbo-rails serves frame requests with its minimal layout). Links inside
+    leave the frame by default (target _top); tabs and forms opt in with
+    data-turbo-frame="workspace" and advance the URL, so Back works.
+    The layout's flash is outside the frame, so frame responses carry their own.
+    The tab's view fills content_for(:workspace) first, so its lazy translation
+    lookups stay its own. Locals: field (Fields::Farm::Field), tab. %>
+<% name = plot_name(field) %>
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: app_fields_path, back_label: t("app.fields.back_to_fields"), title: name %>
+
+  <%= turbo_frame_tag "workspace", target: "_top", class: "workspace" do %>
+    <nav class="screen__tabs workspace__tabs" aria-label="<%= t("app.fields.workspace.label", name: name) %>">
+      <% workspace_tabs(field).each do |key, path| %>
+        <%= link_to t("app.fields.workspace.tabs.#{key}"), path, class: "screen__tab", aria: { current: ("page" if key == tab) },
+                    data: { turbo_frame: "workspace", turbo_action: "advance" } %>
+      <% end %>
+    </nav>
+    <% if turbo_frame_request? %><div class="workspace__flash"><%= render "shared/flash" %></div><% end %>
+
+    <main id="main" class="screen__body">
+      <%= content_for(:workspace) %>
+    </main>
+  <% end %>
+</div>

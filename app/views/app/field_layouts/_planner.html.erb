@@ -1,0 +1,78 @@
+<%# The planner: how one season splits the field between crops, editable in
+    place (crop_layout_controller.js). On the field's own page for this season
+    (app/fields/show) and on app/field_layouts/edit for the others.
+    Locals: field (Fields::Farm::Field), year. %>
+<% rows = layout_form_rows(field, year) %>
+<% crops = field.season_crops(year) %>
+<% unit = layout_unit(field) %>
+<% total = layout_total(field) %>
+<% previous = layout_previous(field, year) %>
+<% name = plot_name(field) %>
+<nav class="planner-seasons" aria-label="<%= t("app.field_layouts.edit.seasons") %>">
+  <% Fields::SeasonLayoutService.years.each do |season| %>
+    <%= link_to edit_app_field_layout_path(field.key, year: season), class: "planner-seasons__link", aria: { current: ("page" if season == year) }, data: in_workspace do %>
+      <span class="text-mono"><%= season %></span>
+      <small><%= t("app.field_layouts.edit.season_kinds.#{%w[past current next][(season <=> Date.current.year) + 1]}") %></small>
+    <% end %>
+  <% end %>
+</nav>
+
+<%= render "app/fields/crop_names" %>
+<%= form_with url: app_field_layout_path(field.key, year: year), method: :patch, class: "planner",
+              data: { **in_workspace, controller: "crop-layout",
+                      crop_layout_total_value: total, crop_layout_unit_value: unit, crop_layout_max_value: Fields::SeasonLayoutService::MAX_CROPS,
+                      crop_layout_previous_value: previous.to_json,
+                      crop_layout_messages_value: {
+                        left: t("app.field_layouts.edit.total.left", area: "%{area}", percent: "%{percent}"), full: t("app.field_layouts.edit.total.full"),
+                        over: t("app.field_layouts.edit.total.over", area: "%{area}"), cell: t("app.field_layouts.map.cell", row: "%{row}", col: "%{col}", crop: "%{crop}"),
+                        empty: t("app.field_layouts.map.empty"), unnamed: t("app.field_layouts.edit.unnamed", number: "%{number}")
+                      }.to_json } do %>
+  <div class="planner__layout">
+    <section class="planner__map" aria-labelledby="planner-map-title">
+      <h2 class="screen__section-title" id="planner-map-title"><%= t("app.field_layouts.edit.map_title") %></h2>
+      <%# Paint with: one chip per crop (drawn by crop_layout_controller.js) and the eraser. %>
+      <div class="planner__brushes" role="group" aria-label="<%= t("app.field_layouts.edit.brushes") %>" data-crop-layout-target="brushes" hidden>
+        <button type="button" class="planner__chip planner__eraser" data-brush="-1" aria-pressed="false" data-action="crop-layout#pick">
+          <span class="crop-swatch" aria-hidden="true"></span>
+          <%= t("app.field_layouts.edit.eraser") %>
+        </button>
+      </div>
+      <%= render "app/field_layouts/map", crops: crops, size: "lg", editable: true, label: t("app.field_layouts.edit.map_label", name: name, year: year) %>
+      <p class="choice-set__hint" id="crop-map-hint"><%= t("app.field_layouts.edit.map_hint") %></p>
+    </section>
+
+    <section class="planner__crops" aria-labelledby="planner-crops-title">
+      <h2 class="screen__section-title" id="planner-crops-title"><%= t("app.field_layouts.edit.crops_title") %></h2>
+      <ol class="planner__list" role="list" data-crop-layout-target="list">
+        <% rows.each_with_index do |row, i| %>
+          <%= render "app/field_layouts/row", row: row, slot: i, unit: unit, total: total %>
+        <% end %>
+      </ol>
+      <template data-crop-layout-target="template">
+        <%= render "app/field_layouts/row", row: {}, slot: 0, unit: unit, total: total %>
+      </template>
+
+      <button type="button" class="btn btn--secondary btn--sm planner__add" data-crop-layout-target="add" data-action="crop-layout#add">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
+        <%= t("app.field_layouts.edit.add") %>
+      </button>
+
+      <p class="planner__total" role="status" data-crop-layout-target="total"><%= t("app.field_layouts.edit.total.server", area: portion_area(field, field.unassigned_share(year))) if crops.any? %></p>
+
+      <div class="planner__shortcuts" data-crop-layout-target="shortcuts" hidden>
+        <span class="planner__shortcuts-label"><%= t("app.field_layouts.edit.shortcuts.title") %></span>
+        <button type="button" class="planner__chip" data-action="crop-layout#equal"><%= t("app.field_layouts.edit.shortcuts.equal") %></button>
+        <% if previous.any? %>
+          <button type="button" class="planner__chip" data-action="crop-layout#copy"><%= t("app.field_layouts.edit.shortcuts.copy", year: year - 1) %></button>
+        <% end %>
+        <% if previous.size > 1 %>
+          <button type="button" class="planner__chip" data-action="crop-layout#swap"><%= t("app.field_layouts.edit.shortcuts.swap", year: year - 1) %></button>
+        <% end %>
+      </div>
+    </section>
+  </div>
+
+  <div class="planner__actions">
+    <button type="submit" class="btn btn--primary" data-crop-layout-target="submit"><%= t("app.field_layouts.edit.save") %></button>
+  </div>
+<% end %>

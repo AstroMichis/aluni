@@ -1,18 +1,24 @@
 <%# The illustrated field from the sketch: an empty plot with a pin, then the
-    person's crop growing in rows. Needs fields/_plot_defs once on the page.
-    Locals: crop (nil for an empty field), size ("sm" or "lg"), id (optional:
-    the crop is part of it, so a new crop is a new element and grows in again
-    after a morph), preview (true in the onboarding: plants wait for a crop). %>
-<% shape = crop.present? ? crop_shape(crop) : nil %>
+    person's crops growing in rows, a band per crop of a split season (left to
+    right, by share; an unplanted part stays bare). Needs fields/_plot_defs
+    once on the page. Locals: crop or crops (nil or [] for an empty field),
+    size ("sm" or "lg"), id (optional: the crops are part of it, so a new
+    planting is a new element and grows in again after a morph), preview
+    (true in the onboarding: plants wait for a crop). %>
+<% crops = local_assigns[:crops] || [ local_assigns[:crop] ].compact %>
+<% shapes = crops.map { |c| crop_shape(c) } %>
+<% shape = shapes.compact.first %>
 <% preview = local_assigns[:preview] %>
 <svg class="plot plot--<%= size %><%= " plot--empty" unless shape %><%= " plot--#{shape}" if shape %>"
-     <% if local_assigns[:id] %>id="<%= id %>-<%= shape || "empty" %>"<% end %>
+     <% if local_assigns[:id] %>id="<%= id %>-<%= shapes.compact.presence&.join("-") || "empty" %>"<% end %>
      viewBox="0 0 200 140" aria-hidden="true" focusable="false"<% if preview %> data-field-wizard-target="plot"<% end %>>
   <path class="plot__ground" d="M8 34 Q100 4 192 34 L156 126 Q100 136 44 126 Z"/>
   <path class="plot__soil" d="M8 34 Q100 4 192 34 L156 126 Q100 136 44 126 Z" fill="url(#plot-soil)"/>
   <% if shape || preview %>
-    <% plot_plants.each do |plant| %>
-      <use class="plot__plant" href="#plot-<%= shape || "leafy" %>" x="<%= plant[:x] - 8 %>" y="<%= plant[:y] - 24 %>" width="16" height="24" style="--i: <%= plant[:delay] %>"/>
+    <% plot_plants(crops).each do |plant| %>
+      <% plant_shape = plant[:crop] ? shapes[plant[:crop]] : nil %>
+      <% next if crops.any? && plant[:crop].nil? %>
+      <use class="plot__plant" href="#plot-<%= plant_shape || shape || "leafy" %>" x="<%= plant[:x] - 8 %>" y="<%= plant[:y] - 24 %>" width="16" height="24" style="--i: <%= plant[:delay] %>"/>
     <% end %>
   <% end %>
   <% unless shape %><circle class="plot__pulse" cx="100" cy="78" r="10"/><% end %>

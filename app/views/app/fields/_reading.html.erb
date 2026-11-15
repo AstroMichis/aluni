@@ -1,5 +1,6 @@
-<%# One datum of the farm or a field, read only: its value or what is
-    missing, where it comes from, and what a source suggests. Locals: reading. %>
+<%# One datum of the farm or a field: its value or what is missing, where it
+    comes from, what a source suggests, and (with edit_path) a link to the
+    edit form opened on it. Locals: reading, edit_path (optional). %>
 <li class="reading reading--<%= reading.state %>" id="<%= reading.dom_id %>">
   <span class="reading__label"><%= datum_label(reading.datum) %></span>
   <span class="reading__value"><%= reading_text(reading) %></span>
@@ -9,5 +10,9 @@
   </span>
   <% if reading.state == :to_confirm %>
     <span class="reading__hint"><%= t("app.fields.actions.proposal", value: proposal_text(reading)) %></span>
+  <% end %>
+  <% if local_assigns[:edit_path] && reading.datum.column %>
+    <%= link_to t("app.fields.actions.edit"), edit_focus_path(edit_path, reading.datum.key), class: "reading__edit",
+                aria: { label: t("app.fields.actions.edit_datum", datum: datum_label(reading.datum)) } %>
   <% end %>
 </li>

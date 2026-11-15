@@ -1,0 +1,29 @@
+en:
+  app:
+    fields:
+      workspace:
+        label: "%{name}: sections"
+        tabs:
+          summary: "Field"
+          rotation: "Rotation"
+          data: "Data"
+      show:
+        data_title: "Field data"
+      actions:
+        edit: "Edit"
+        edit_datum: "Edit %{datum}"
+    home:
+      show:
+        shortcuts:
+          title: "Next up"
+          add: "Add your first field"
+          suggestions:
+            one: "Review 1 suggestion for %{name}"
+            other: "Review %{count} suggestions for %{name}"
+          todo:
+            one: "Fill 1 missing answer for %{name}"
+            other: "Fill %{count} missing answers for %{name}"
+          plan: "Plan %{year} on %{name}"
+          profile:
+            one: "Fill 1 missing answer about your farm"
+            other: "Fill %{count} missing answers about your farm"

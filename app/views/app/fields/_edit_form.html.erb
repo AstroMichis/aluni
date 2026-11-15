@@ -1,12 +1,15 @@
 <%# One form for every answer of the farm or a field: the essential ones
     first, the rest under "More details" (open when a source has suggestions
     there). Each source suggestion sits beside its field with a box to take it.
-    Locals: subject, groups (group => data), url, cancel_path, extra (hidden params). %>
+    ?focus=<datum> (a card's or a to-do's link) unfolds that datum's group.
+    Locals: subject, groups (group => data), url, cancel_path, extra (hidden
+    params), frame (optional: submit inside that Turbo Frame). %>
 <% editable = groups.values.flatten.select(&:column) %>
 <% essential = editable.select(&:essential) %>
 <% more = groups.transform_values { |data| data.select { |d| d.column && !d.essential } }.reject { |_, data| data.empty? } %>
 <% suggested = more.values.flatten.any? { |d| subject.reading(d).state == :to_confirm } %>
-<%= form_with url: url, method: :patch, class: "edit-form" do %>
+<% focused = more.values.flatten.any? { |d| d.key == params[:focus] } %>
+<%= form_with url: url, method: :patch, class: "edit-form", data: (local_assigns[:frame] ? in_workspace.merge(turbo_frame: frame) : {}) do %>
   <% local_assigns.fetch(:extra, {}).each do |name, value| %><input type="hidden" name="<%= name %>" value="<%= value %>"><% end %>
   <% if essential.any? %>
     <fieldset class="edit-form__group edit-form__group--essential" id="group-essential">
@@ -16,7 +19,7 @@
     </fieldset>
   <% end %>
   <% if more.any? %>
-    <details class="edit-form__more"<%= " open" if suggested || essential.empty? %>>
+    <details class="edit-form__more"<%= " open" if suggested || focused || essential.empty? %>>
       <summary class="edit-form__more-summary"><%= t("app.fields.edit.more") %></summary>
       <% more.each do |group, data| %>
         <fieldset class="edit-form__group" id="group-<%= group %>">
@@ -30,7 +33,7 @@
     </details>
   <% end %>
   <div class="edit-form__actions">
-    <%= link_to t("app.fields.edit.cancel"), cancel_path, class: "btn btn--ghost" %>
+    <%= link_to t("app.fields.edit.cancel"), cancel_path, class: "btn btn--ghost", data: (local_assigns[:frame] ? in_workspace : {}) %>
     <button type="submit" class="btn btn--primary"><%= t("app.fields.edit.save") %></button>
   </div>
 <% end %>

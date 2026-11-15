@@ -1,15 +1,13 @@
 <% name = plot_name(@field) %>
 <% content_for :title, t(".title", name: name, app_name: t("app_name")) %>
 
-<div class="screen">
-  <%= render "shared/screen_bar", back_path: app_field_path(@field.key), back_label: t("app.fields.edit.cancel"), title: name, switcher: false %>
+<% content_for :workspace do %>
+  <header class="screen__header">
+    <h1 class="text-display screen__title"><%= t(".headline", name: name) %></h1>
+    <p class="screen__lede"><%= t(".lede") %></p>
+  </header>
 
-  <main id="main" class="screen__body">
-    <header class="screen__header">
-      <h1 class="text-display screen__title"><%= t(".headline", name: name) %></h1>
-      <p class="screen__lede"><%= t(".lede") %></p>
-    </header>
-
-    <%= render "app/fields/edit_form", subject: @field, groups: @profile.groups(:field), url: app_field_path(@field.key), cancel_path: app_field_path(@field.key) %>
-  </main>
-</div>
+  <%= render "app/fields/edit_form", subject: @field, groups: @profile.groups(:field), url: app_field_path(@field.key),
+                                     cancel_path: app_field_path(@field.key, tab: "data"), frame: "workspace" %>
+<% end %>
+<%= render "app/fields/workspace", field: @field, tab: "data" %>

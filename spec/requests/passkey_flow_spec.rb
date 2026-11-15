@@ -100,7 +100,7 @@ RSpec.describe "Passkey sign-up and sign-in", type: :request do
     expect(field.field_crops.sole).to have_attributes(crop_name: "Maíz", scientific_name: "Zea mays", season_year: Date.current.year, role: "main", source: "farmer")
     expect(user.farmer_profile.units).to eq("imperial")
 
-    get app_field_path(field, locale: "es"), headers: native_headers
+    get app_field_path(field, locale: "es", tab: "data"), headers: native_headers
     expect(response).to have_http_status(:ok)
     expect(response.body).to include("42.0000, -93.7500")
   end

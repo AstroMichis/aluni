@@ -1,0 +1,13 @@
+<% name = plot_name(@field) %>
+<% content_for :title, t(".title", name: name, year: @year, app_name: t("app_name")) %>
+
+<% content_for :workspace do %>
+  <header class="screen__header">
+    <p class="text-label screen__eyebrow"><%= t(".eyebrow", area: field_area(@field)) %></p>
+    <h1 class="text-display screen__title"><%= t(".headline", year: @year) %></h1>
+    <p class="screen__lede"><%= t(".lede") %></p>
+  </header>
+
+  <%= render "app/field_layouts/planner", field: @field, year: @year %>
+<% end %>
+<%= render "app/fields/workspace", field: @field, tab: "summary" %>

@@ -28,23 +28,25 @@
       <% end %>
 
       <% @farm.fields.each do |field| %>
-        <% crop = field.current_crop %>
-        <div class="calendar__row" role="row">
-          <span class="calendar__name" role="rowheader">
-            <%= plot_name(field) %>
-            <small><%= crop ? crop_name(crop) : t("app.fields.index.no_crop") %></small>
-          </span>
-          <% if crop&.planting_month && crop.harvest_month %>
-            <% to = crop.harvest_month >= crop.planting_month ? crop.harvest_month + 1 : 13 %>
-            <span class="calendar__track" role="cell" style="--from: <%= crop.planting_month %>; --to: <%= to %>">
-              <span class="calendar__bar calendar__bar--crop"></span>
+        <% split = field.current_crops.size > 1 %>
+        <% (field.current_crops.presence || [ nil ]).each do |crop| %>
+          <div class="calendar__row" role="row">
+            <span class="calendar__name" role="rowheader">
+              <%= plot_name(field) %>
+              <small><%= crop ? crop_name(crop) : t("app.fields.index.no_crop") %><%= " · #{portion_area(field, crop.portion)}" if split %></small>
             </span>
-          <% else %>
-            <span class="calendar__track calendar__track--missing" role="cell">
-              <%= link_to t(".missing"), app_field_path(field.key, anchor: "group-crop") %>
-            </span>
-          <% end %>
-        </div>
+            <% if crop&.planting_month && crop.harvest_month %>
+              <% to = crop.harvest_month >= crop.planting_month ? crop.harvest_month + 1 : 13 %>
+              <span class="calendar__track" role="cell" style="--from: <%= crop.planting_month %>; --to: <%= to %>">
+                <span class="calendar__bar calendar__bar--crop"></span>
+              </span>
+            <% else %>
+              <span class="calendar__track calendar__track--missing" role="cell">
+                <%= link_to t(".missing"), crop ? edit_app_field_layout_path(field.key, year: crop.season_year) : app_field_path(field.key, anchor: "planting") %>
+              </span>
+            <% end %>
+          </div>
+        <% end %>
       <% end %>
     </div>
 

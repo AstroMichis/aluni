@@ -10,7 +10,7 @@ en:
           body: "Your %{crop} rotation against the alternatives, with the evidence for each."
         eyebrow: Main menu
         dial_label: Menu sections
-        hint: Turn the wheel with your finger, the mouse or the arrow keys, then tap where you want to go.
+        hint: Swipe the wheel sideways or use the arrows, then tap the centre to go in.
         kicker: "%{number} / %{total}"
         open: Open
         open_section: Open %{title}
@@ -21,15 +21,15 @@ en:
             title: My fields
             description: Your plots, their soil and their history.
             options:
+              planting:
+                title: Plan the planting
+                body: "Split your field between crops: give each its area or paint the map."
               add:
                 title: Add a field
                 body: Drop a pin and answer a few questions. The rest comes from the location.
               list:
                 title: My fields
                 body: Every field with its crop, its soil and what is still missing.
-              sources:
-                title: Where your data comes from
-                body: Each value with its source and how much you can trust it.
           crops:
             short: Crops
             title: My crops
@@ -82,6 +82,13 @@ en:
                 body: Download a report to share with your advisor or buyer.
         menu_title: Menu · %{app_name}
         account: Account
+        previous: Previous section
+        next: Next section
+        go_to: Go to %{title}
+        pending:
+          one: 1 thing to review
+          other: "%{count} things to review"
+        ask: Ask %{app_name}
     fields:
       back_to_menu: Back to the menu
       back_to_fields: Back to my fields
@@ -277,7 +284,6 @@ en:
         no_pin: No pin yet
       show:
         title: "%{name} · %{app_name}"
-        empty_message: This field is ready. Tell me what you grow here and you will see it come up.
         add_crop: Add your crop
         repeat: Repeated
         tips:
@@ -286,7 +292,6 @@ en:
           grain: Small grains cover the soil early and break the pest cycle of corn and soybeans. Their straw adds organic matter.
           leafy: 'This crop fixes nitrogen: whatever you plant next uses it. Avoid repeating it two years in a row so diseases do not build up.'
           bush: These crops disturb the soil a lot. Rotating them with a grain or a cover crop helps it recover its structure.
-        plant: Plant it
         image_alt: Satellite view around %{name}
         image_caption: NASA GIBS, about 40 km around the pin
         cdl: The US crop map shows %{years}. Save these seasons as yours?

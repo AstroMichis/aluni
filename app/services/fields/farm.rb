@@ -130,12 +130,12 @@ module Fields
       def observation(source) = record.observation(source)
       def observations = record.observations
 
-      def main_crops = record.field_crops.select(&:role_main?).sort_by(&:season_year)
+      def main_crops = @main_crops ||= record.field_crops.select(&:role_main?).sort_by { |c| [ c.season_year, -c.portion, c.id.to_i ] }
       # The second crop that has followed each main crop in the same season, from the
       # history (latest first wins): { "triticum-aestivum" => <FieldCrop soybeans> }.
       def double_crops
         @double_crops ||= begin
-          mains = main_crops.index_by(&:season_year)
+          mains = main_crops.group_by(&:season_year).transform_values(&:first) # a split season: its largest crop
           record.field_crops.select { |c| c.role_second? && c.season_year <= Date.current.year }.sort_by(&:season_year)
                 .each_with_object({}) do |second, map|
                   main = mains[second.season_year]
@@ -147,13 +147,28 @@ module Fields
 
       # Cover crops sown between main seasons, up to this season, oldest first.
       def cover_crops = record.field_crops.select { |c| c.role_cover? && c.season_year <= Date.current.year }.sort_by(&:season_year)
-      def current_crop = main_crops.reverse.find { |c| c.season_year <= Date.current.year }
-      def plan = main_crops.find { |c| c.season_year > Date.current.year }
+
+      # A season may split the field between crops (FieldCrop#share, #cells):
+      # its crops, the largest first.
+      def season_crops(year) = main_crops.select { |c| c.season_year == year.to_i }
+      def current_season = main_crops.map(&:season_year).select { |y| y <= Date.current.year }.max
+      def current_crops = current_season ? season_crops(current_season) : []
+      def plan_crops = season_crops(Date.current.year + 1)
+      def split?(year = current_season) = season_crops(year).any? { |c| !c.whole_field? }
+      def unassigned_share(year = current_season) = year ? [ 1 - season_crops(year).sum(&:portion), 0 ].max.round(4) : 1.0
+
+      # The largest crop of this season and of the plan, for what reads one crop.
+      def current_crop = current_crops.first
+      def plan = plan_crops.first
       def crop = current_crop&.crop_name
       def empty? = current_crop.nil?
 
-      # Season year => FieldCrop, oldest first, up to this season.
-      def history = main_crops.select { |c| c.season_year <= Date.current.year }.to_h { |c| [ c.season_year.to_s, c ] }
+      # The pieces of ground with the same crops (Fields::Zone), largest first.
+      def zones = @zones ||= Zone.for(self)
+      def zone(index) = zones[index.to_i] || zones.first
+
+      # Season year => the season's largest crop, oldest first, up to this season.
+      def history = main_crops.select { |c| c.season_year <= Date.current.year }.reverse.to_h { |c| [ c.season_year.to_s, c ] }.sort.to_h
 
       # [[label, crop], ...] for Crops::RotationCheck: the seasons, then the plan.
       def seasons
@@ -161,6 +176,10 @@ module Fields
         list << [ "plan", plan ] if plan
         list
       end
+
+      # What the sources propose for the farmer to take: each datum to confirm,
+      # and the CDL years as one.
+      def suggestions_count = readings.count { |r| r.state == :to_confirm } + (cdl_proposal.any? ? 1 : 0)
 
       # CDL years the person has not recorded yet (US pins).
       def cdl_proposal
@@ -185,11 +204,15 @@ module Fields
 
           record.respond_to?(attr) ? record.public_send(attr) : nil
         when "crops"
-          return history.transform_values(&:crop_name).presence if attr == "history"
+          return history.to_h { |year, _| [ year, season_names(year) ] }.presence if attr == "history"
+          return current_crop&.public_send(sub) if sub
 
-          sub ? current_crop&.public_send(sub) : current_crop&.crop_name
+          current_season && season_names(current_season)
         end
       end
+
+      # "Corn" or, on a split season, "Corn + Beans".
+      def season_names(year) = season_crops(year).map(&:crop_name).join(" + ")
 
       def observation_payload(source)
         obs = observation(source)

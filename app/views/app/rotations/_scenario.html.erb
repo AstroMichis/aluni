@@ -4,9 +4,10 @@
   <h2 id="scenario-title" class="screen__section-title"><%= t("app.scenario.title") %></h2>
   <nav class="scenario__chips cluster cluster--sm" aria-label="<%= t("app.scenario.title") %>">
     <% Weather::Scenario::PRESETS.each_key do |key| %>
-      <%= link_to t("app.scenario.presets.#{key}"), url_for(scenario: (key unless key == "today")),
+      <%# Keeps the zone picked (a split field) and stays in the field's workspace. %>
+      <%= link_to t("app.scenario.presets.#{key}"), url_for(scenario: (key unless key == "today"), zone: params[:zone].presence),
                   class: "choice__chip scenario__chip#{" scenario__chip--current" if scenario.key == key}",
-                  aria: { current: (scenario.key == key ? "true" : nil) } %>
+                  aria: { current: (scenario.key == key ? "true" : nil) }, data: in_workspace %>
     <% end %>
   </nav>
   <% unless scenario.today? %>
