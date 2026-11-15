@@ -44,6 +44,9 @@ Rails.application.routes.draw do
 scope "(:locale)", locale: /en|es/ do
   root "pages#home"
 
+  # The field station catalogue (public, informational).
+  get "devices", to: "devices#show", as: :devices
+
   # The welcome screen and the accessibility controls (cookie, plus the account when signed in).
   post "preferences", to: "preferences#update", as: :preferences
 

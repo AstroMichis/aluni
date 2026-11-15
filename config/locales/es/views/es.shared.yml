@@ -3,6 +3,7 @@ es:
     public_footer:
       tagline: "Código abierto, construido a la vista de todos."
       meta: "%{app_name} %{year}"
+      devices: "%{app_name} Sonda (próximamente)"
     store_buttons:
       label: "Descargar la app"
       app_store: "App Store"

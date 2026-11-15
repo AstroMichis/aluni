@@ -1,0 +1,30 @@
+<%# The station in a field: solar panel, enclosure with antenna, sun shield for the air sensor,
+    rain gauge, and the soil probe with its two depths. Shapes only (no text); the label is the
+    accessible name. Colours come from tokens through classes in pages/devices.css. %>
+<svg class="device-art" viewBox="0 0 320 360" role="img" aria-label="<%= t("devices.show.illustration_label", app_name: t("app_name")) %>" focusable="false">
+  <rect class="device-art__soil" x="0" y="262" width="320" height="98"/>
+  <rect class="device-art__soil-deep" x="0" y="312" width="320" height="48"/>
+  <path class="device-art__crop" d="M24 262c4-18 10-26 18-30M42 262c-2-16 2-24 10-30M232 262c4-16 10-24 18-28M250 262c-2-14 2-22 10-28M288 262c2-16 8-22 16-26"/>
+  <rect class="device-art__pole" x="154" y="70" width="10" height="200" rx="3"/>
+  <g class="device-art__panel">
+    <rect x="104" y="40" width="110" height="46" rx="4" transform="rotate(-12 159 63)"/>
+    <path class="device-art__panel-cells" d="M126 46l4 40M152 41l4 40M178 35l4 40M110 64l100-21" transform="rotate(-12 159 63)"/>
+  </g>
+  <rect class="device-art__box" x="128" y="118" width="62" height="76" rx="8"/>
+  <circle class="device-art__led" cx="146" cy="136" r="4"/>
+  <rect class="device-art__qr" x="164" y="160" width="16" height="16" rx="2"/>
+  <path class="device-art__antenna" d="M182 118v-30"/>
+  <circle class="device-art__antenna-tip" cx="182" cy="86" r="3"/>
+  <path class="device-art__arm" d="M164 150h52M154 168h-50"/>
+  <g class="device-art__shield">
+    <rect x="200" y="132" width="40" height="7" rx="3"/>
+    <rect x="203" y="143" width="34" height="7" rx="3"/>
+    <rect x="206" y="154" width="28" height="7" rx="3"/>
+  </g>
+  <path class="device-art__gauge" d="M80 152h36l-6 30h-24z"/>
+  <path class="device-art__cable" d="M159 194c0 30 22 40 40 64"/>
+  <rect class="device-art__probe" x="194" y="252" width="12" height="92" rx="5"/>
+  <circle class="device-art__depth" cx="200" cy="286" r="5"/>
+  <circle class="device-art__depth" cx="200" cy="322" r="5"/>
+  <path class="device-art__signal" d="M196 72a20 20 0 0 1 0 28M206 64a32 32 0 0 1 0 44"/>
+</svg>

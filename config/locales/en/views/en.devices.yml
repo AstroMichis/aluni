@@ -1,0 +1,158 @@
+en:
+  devices:
+    show:
+      title: "%{app_name} Probe"
+      description: "A field station that measures your soil and weather, keeps everything when there is no signal and sends it securely to %{app_name}."
+      nav_label: "Site"
+      back_home: "Back to home"
+      eyebrow: "Coming soon"
+      headline: "Your field, actually measured. Next to what the satellites see."
+      lede: "%{app_name} Probe is a self-powered station you stake in your field. It measures soil moisture and temperature, air and rain, and tells %{app_name} what is happening every 15 minutes. Over WiFi, a cellular network or no signal at all."
+      cta_models: "See the models"
+      cta_try: "Try %{app_name} today"
+      cta_open: "Go to %{app_name}"
+      availability: "Price and launch date to be announced."
+      illustration_label: "Illustration of the %{app_name} Probe station in a field"
+      highlights:
+        autonomy: "Solar powered, weeks without sun"
+        offline: "Months of readings without signal"
+        secure: "Every reading signed"
+        install: "Ready in 10 minutes, no special tools"
+      models:
+        kicker: "Models"
+        title: "Pick by where your field is"
+        lite:
+          name: "Probe Lite"
+          badge: "WiFi"
+          summary: "For fields close to the house or a WiFi point."
+          features:
+            - "Soil moisture and temperature at 10 and 30 cm"
+            - "Air temperature and humidity"
+            - "WiFi and Bluetooth to set it up from your phone"
+            - "Solar panel and LiFePO4 battery"
+        pro:
+          name: "Probe Pro"
+          badge: "WiFi + cellular + GPS"
+          summary: "For distant fields with no WiFi, where a cellular network reaches."
+          features:
+            - "Everything in the Lite"
+            - "LTE-M / NB-IoT cellular with a built-in eSIM"
+            - "GPS: it pins the exact spot of your field by itself"
+            - "Rain gauge and radiation sensor"
+            - "Port for professional probes (salinity, leaf wetness, wind)"
+      sensors:
+        kicker: "What it measures"
+        title: "Every sensor answers a question about your field"
+        compare_label: "Compared with"
+        soil_moisture:
+          title: "Soil moisture at two depths"
+          body: "How much water your roots have, at 10 and 30 cm. The basis for deciding when and how much to irrigate."
+          compare: "SMAP (NASA) and the Meteomatics soil moisture index"
+        soil_temperature:
+          title: "Soil temperature"
+          body: "Tells you whether the soil is ready for sowing and how germination is going."
+          compare: "NASA POWER"
+        air:
+          title: "Air: temperature and humidity"
+          body: "Inside a sun shield. Warns of frost, fungus and heat stress risk."
+          compare: "NASA POWER and the Meteomatics forecast"
+        rain:
+          title: "Real rain on your field"
+          body: "A 0.2 mm rain gauge. The rain that fell on your plot, not in town."
+          compare: "GPM IMERG (NASA)"
+        light:
+          title: "Radiation"
+          body: "The light your crop receives to grow."
+          compare: "NASA POWER"
+        expansion:
+          title: "Expansion port"
+          body: "Plug in professional SDI-12 or RS485 probes: salinity, leaf wetness, wind."
+          compare: "Whatever your crop needs"
+      offline:
+        kicker: "No signal, no problem"
+        title: "It never loses a reading"
+        body: "The Probe stores first and sends later. If the field goes days without a network, it keeps measuring and sends everything when the signal comes back, oldest reading first."
+        steps:
+          measure:
+            title: "Measure"
+            body: "Every 15 minutes, with the exact time even without a network."
+          store:
+            title: "Store"
+            body: "In its own memory, with room for months of data."
+          send:
+            title: "Send"
+            body: "Every hour over WiFi, or over cellular when there is no WiFi."
+          confirm:
+            title: "Confirm"
+            body: "%{app_name} confirms what it received and the Probe frees its memory. No duplicates."
+      security:
+        kicker: "Security"
+        title: "Secure end to end"
+        body: "Your field data is yours. The Probe is designed so nobody can impersonate it or change what it measures."
+        items:
+          identity:
+            title: "Identity in a secure chip"
+            body: "Every Probe has a private key that never leaves its chip. Not even taking it apart copies it."
+          pairing:
+            title: "Pairing with a QR code"
+            body: "Scan your Probe's code in the app and pick the field. Without the physical code, nobody can claim it."
+          signed:
+            title: "Every reading signed"
+            body: "It travels encrypted and signed, with a time and a sequence number: it cannot be forged, changed or replayed."
+          updates:
+            title: "Signed updates"
+            body: "It only accepts software signed by %{app_name}, and rolls back if something fails."
+          revoke:
+            title: "You are in control"
+            body: "Unpair or block a Probe from the app at any time."
+      compare:
+        kicker: "Your sensor next to the satellite"
+        title: "What you measure on the ground, next to what NASA sees"
+        body: "%{app_name} puts your readings next to the satellite data for the same spot. You learn when to trust the satellite and when your field behaves differently."
+        chart_label: "Illustrative soil moisture chart: Probe against satellite over two weeks"
+        legend_sensor: "Your Probe (every 15 minutes)"
+        legend_satellite: "SMAP satellite (daily)"
+        note: "Illustrative data."
+      specs:
+        kicker: "Data sheet"
+        title: "Specifications"
+        caption: "Specifications of the Lite and Pro models"
+        feature: "Feature"
+        lite: "Lite"
+        pro: "Pro"
+        rows:
+          connectivity:
+            label: "Connectivity"
+            lite: "2.4 GHz WiFi, Bluetooth"
+            pro: "WiFi, Bluetooth, LTE-M / NB-IoT (eSIM)"
+          location:
+            label: "Location"
+            lite: "From the app"
+            pro: "Built-in GPS"
+          sensors:
+            label: "Sensors"
+            lite: "Soil (2 depths), air"
+            pro: "Soil, air, rain, radiation, expansion"
+          interval:
+            label: "Measure / send"
+            lite: "15 min / 1 h"
+            pro: "15 min / 1 h"
+          storage:
+            label: "Offline memory"
+            lite: "16 MB, months of data"
+            pro: "16 MB, months of data"
+          power:
+            label: "Power"
+            lite: "5 W solar panel, LiFePO4 battery"
+            pro: "5 W solar panel, LiFePO4 battery"
+          security:
+            label: "Security"
+            lite: "Secure chip, secure boot, signed readings"
+            pro: "Secure chip, secure boot, signed readings"
+          enclosure:
+            label: "Enclosure"
+            lite: "IP67, UV protected, pole mount"
+            pro: "IP67, UV protected, pole mount"
+      closing:
+        title: "Start today with satellite data"
+        body: "While the Probe is on its way, %{app_name} already compares rotations with NASA data for your field. When you connect it, your readings join in on their own."
