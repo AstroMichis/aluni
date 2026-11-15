@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { reducedMotion } from "preferences/motion"
 
 // The landing's background scene: rolling crop fields drawn with Three.js
 // (vendored, loaded lazily so only this page pays for it). It is the one
@@ -112,7 +113,7 @@ export default class extends Controller {
     this.story = { step: 0, progress: 0, heroProgress: 0, scroll: 0 }
     this.revealTimer = setTimeout(() => this.revealHeroContent(), SAFETY_REVEAL_MS)
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (reducedMotion()) {
       this.showFallback()
       return
     }
@@ -564,6 +565,11 @@ export default class extends Controller {
 
   revealHeroContent() {
     if (this.revealTimer) { clearTimeout(this.revealTimer); this.revealTimer = null }
+    if (!this._revealed) {
+      this._revealed = true
+      // The mascot preloader waits for this before leaving the centre.
+      window.dispatchEvent(new CustomEvent("hero:revealed"))
+    }
     if (!this.hasHeroContentTarget) return
     if (this.hasHiddenClass) this.heroContentTarget.classList.remove(this.hiddenClass)
     if (this.hasVisibleClass) this.heroContentTarget.classList.add(this.visibleClass)

@@ -1,0 +1,75 @@
+es:
+  finder:
+    title: "Encuentra tu campo"
+    close: "Cerrar"
+    kicker: "Paso %{index} de %{total}"
+    back: "Atrás"
+    steps:
+      locate:
+        title: "¿Dónde está tu campo?"
+        line: "Encontremos tu campo. Usa tu ubicación, busca un pueblo, o toca el mapa y arrastra el marcador hasta tu campo."
+        use_my_location: "Usar mi ubicación"
+        search_label: "Pueblo o dirección"
+        search_placeholder: "Pueblo, vereda o dirección"
+        search: "Buscar"
+        confirm: "Este es mi campo"
+      basics:
+        title: "¿Qué crece ahí ahora?"
+        line: "Dos cosas rápidas sobre el campo. Puedes saltarlas y agregarlas después."
+        crop: "Cultivo en el campo ahora"
+        crop_placeholder: "Maíz, frijol, café..."
+        crop_hint: "Escribe el nombre que usas. Sirve en cualquier idioma."
+        irrigation: "Agua"
+        area: "Superficie"
+        optional: "opcional"
+        area_label: "Superficie del campo"
+        unit_label: "Unidad"
+        continue: "Continuar"
+        skip: "Saltar por ahora"
+      save:
+        title: "Guarda tu campo"
+        line_signed_out: "Último paso. Dime tu nombre y tu dispositivo creará una llave de acceso. Sin contraseña que recordar."
+        line_signed_in: "Todo está listo. Guarda el campo en tu cuenta."
+        name: "Tu nombre"
+        name_hint: "Con tu primer nombre o un apodo basta."
+        create_passkey: "Crear mi llave de acceso"
+        passkey_hint: "Tu dispositivo pide tu cara, tu huella o tu código. Nada que recordar."
+        have_account: "Ya tengo una cuenta"
+        save_field: "Guardar mi campo"
+        signups_closed: "Las cuentas nuevas aún no están abiertas. Inicia sesión para guardar tu campo."
+        sign_in: "Iniciar sesión"
+        no_field: "Tu cuenta aún no tiene un campo. Abre la app para agregar uno."
+        open_app: "Abrir %{app_name}"
+    map:
+      label: "Mapa de tu zona. Toca para poner el marcador, arrástralo para moverlo, usa las flechas para ajustarlo."
+      hint: "Toca el mapa o arrastra el marcador hasta tu campo."
+      satellite: "Vista satélite"
+      osm_attribution: "© Colaboradores de OpenStreetMap"
+      esri_attribution: "Teselas © Esri"
+      pin: "Tu campo"
+    status:
+      locating: "Buscando tu ubicación"
+      located: "Te encontramos. Arrastra el marcador si no está justo en tu campo."
+      denied: "No pudimos obtener tu ubicación. Busca un pueblo o toca el mapa."
+      unsupported: "Este navegador no puede compartir tu ubicación. Busca un pueblo o toca el mapa."
+      naming: "Buscando el nombre del lugar"
+      map_failed: "El mapa no se pudo cargar. Aún puedes usar tu ubicación o buscar un pueblo."
+    errors:
+      pin_required: "Primero pon el marcador en tu campo."
+  places:
+    index:
+      hint: "Escribe un pueblo, una vereda o una dirección y toca Buscar."
+      empty: "No encontramos nada para \"%{query}\". Prueba con el pueblo más cercano."
+      results_label: "Lugares encontrados"
+    reverse:
+      near: "Cerca de %{place}"
+      coordinates: "%{latitude}, %{longitude}"
+      no_name: "No pudimos nombrar este punto, pero el marcador se mantiene."
+      invalid: "Ese punto está fuera del mapa. Toca el mapa para poner el marcador otra vez."
+    unavailable: "La búsqueda de lugares está en pausa. Aún puedes poner el marcador en el mapa."
+  crops:
+    datalist_label: "Cultivos"
+  app:
+    fields:
+      update:
+        saved: "Tu campo quedó guardado."

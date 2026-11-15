@@ -1,0 +1,19 @@
+<%# The place around the confirmed pin (#place-summary). The finder copies the data attributes of .finder__place into its state; the pin travels even when the place could not be named. Locals: latitude, longitude (coerced, nil when invalid), place (a normalised row or nil), unavailable (the geocoder failed or is paused). %>
+<%= turbo_frame_tag "place-summary", class: "finder__summary" do %>
+  <% if latitude && longitude %>
+    <div class="finder__place" data-latitude="<%= latitude %>" data-longitude="<%= longitude %>"
+         <% if place %>data-place-label="<%= place[:display] %>" data-country-code="<%= place[:country_code] %>" data-admin-area="<%= place[:admin_area] %>"<% end %>>
+      <% if place %>
+        <p class="finder__place-name"><%= t("places.reverse.near", place: place[:display]) %></p>
+        <% if place[:country].present? %>
+          <p class="finder__place-detail"><%= place[:country] %></p>
+        <% end %>
+      <% else %>
+        <p class="finder__place-name" role="status"><%= t(unavailable ? "places.unavailable" : "places.reverse.no_name") %></p>
+      <% end %>
+      <p class="finder__place-coords text-mono"><%= t("places.reverse.coordinates", latitude: format("%.5f", latitude), longitude: format("%.5f", longitude)) %></p>
+    </div>
+  <% else %>
+    <p class="finder__place-name" role="status"><%= t("places.reverse.invalid") %></p>
+  <% end %>
+<% end %>

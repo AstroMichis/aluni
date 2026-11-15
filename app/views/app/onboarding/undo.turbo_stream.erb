@@ -1,0 +1,7 @@
+<%= turbo_stream.update "onboarding-toasts", "" %>
+<%= turbo_stream.replace "profile-preview" do %>
+  <%= render "app/onboarding/profile_preview", snapshot: @snapshot %>
+<% end %>
+<%= turbo_stream.update "onboarding-notice" do %>
+  <%= render "app/onboarding/notice", text: @notice, tone: "info" %>
+<% end %>

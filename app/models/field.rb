@@ -18,7 +18,7 @@ class Field < ApplicationRecord
   has_many :field_crops, -> { order(season_year: :desc, role: :asc) }, dependent: :destroy
 
   enum :location_confidence, { unknown: 0, approximate: 10, confirmed: 20 }, prefix: true
-  enum :location_source, { unknown: 0, geolocation: 10, typed: 20, assistant: 30 }, prefix: true
+  enum :location_source, { unknown: 0, geolocation: 10, typed: 20, assistant: 30, map: 40 }, prefix: true
   enum :area_unit, { hectares: 0, acres: 10 }, prefix: true
   enum :irrigation, { unknown: 0, rainfed: 10, irrigated: 20, drip: 30, sprinkler: 40, pivot: 50, gravity: 60, other: 70 }, prefix: true
   enum :water_source, { unknown: 0, rain: 10, well: 20, river_canal: 30, reservoir: 40, mixed: 50 }, prefix: true

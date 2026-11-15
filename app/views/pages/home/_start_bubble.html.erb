@@ -1,0 +1,7 @@
+<%# The bubble that starts the setup: one line and two actions. Rendered inside the mascot controller, so
+    mascot#letsGo (hide the bubble, dispatch mascot:lets-go) and mascot#dismiss are in scope. %>
+<p class="mascot__line" data-speak><%= t("mascot.question") %></p>
+<div class="cluster cluster--sm mascot__actions">
+  <button type="button" class="btn btn--primary" data-action="mascot#letsGo"><%= t("mascot.find_my_field") %></button>
+  <a class="btn btn--secondary" href="#tour-step-1" data-turbo="false" data-action="mascot#dismiss"><%= t("mascot.show_me_around") %></a>
+</div>

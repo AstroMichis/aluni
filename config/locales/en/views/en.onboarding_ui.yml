@@ -2,36 +2,25 @@ en:
   app:
     onboarding:
       show:
-        title: "Let's set up your farm"
-        lede: "A few questions, one at a time. Nothing is saved until you say so."
+        title: "Ask Aluni"
+        lede: "Ask anything about your field, or fill in the rest together. Every answer is saved right away, and you can undo it."
         companion_label: "Your profile so far"
         composer_label: "Your message"
-        composer_placeholder: "Type your answer"
+        composer_placeholder: "Ask or tell me something"
         send: "Send"
         typing: "Aluni is typing"
         skip: "Skip this topic"
         complete: "Finish setup"
         reset: "Start over"
         reset_confirm: "Start the conversation again? What you already saved stays."
-        share_location: "Share my location"
-        locating: "Finding your location"
-        location_shared_text: "My location: %{latitude}, %{longitude}"
-        location_denied: "We could not get your location. You can type the name of the nearest town instead."
-        location_unsupported: "This browser cannot share your location. Type the nearest town instead."
-        is_this_your_area: "Is this your area?"
-        area_yes: "Yes, that is my area"
-        area_no: "No, somewhere else"
         area_image_alt: "Satellite picture of the area around your field"
-        tools_label: "Location tools"
         degraded_note: "Aluni could not think that one through just now. Your message is kept and will be read with the next one."
         completed_notice: "Your setup is complete."
         back_home: "Go to your home screen"
         blocked_title: "Let's take a break"
-        confirm:
-          title: "Save this?"
-          lede: "Untick anything that is not right."
-          save: "Save selected"
-          not_now: "Not now"
+        undo: "Undo"
+        applied: "Saved: %{items}."
+        applied_generic: "Saved."
         progress:
           label: "Progress"
           step: "%{index} of %{total}"
@@ -58,34 +47,13 @@ en:
           segment: "Profile"
         errors:
           failed: "The message did not go through. Check your connection and try again."
-      confirm:
-        saved: "Saved. Your profile is updated."
-        expired: "That suggestion is no longer available. Ask Aluni again."
-      discard:
-        done: "Nothing was saved."
+      undo:
+        done: "Undone. Your profile is back to how it was."
+        nothing: "There is nothing to undo right now."
       complete:
         done: "Your profile is ready."
       reset:
         done: "A fresh start. What you saved before is still there."
-
-  landing_chat:
-    title: "Chat with %{app_name}"
-    close: "Close the chat"
-    have_account: "I already have an account"
-    welcome_back: "Welcome back, %{name}."
-    continue: "Open %{app_name}"
-    script:
-      ask_name: "What should I call you?"
-      name_label: "Your name"
-      name_placeholder: "Your first name"
-      name_submit: "That's me"
-      nice_to_meet: "Nice to meet you, %{name}."
-      ask_language: "English or Spanish?"
-      english: "English"
-      spanish: "Español"
-      ask_passkey: "Let me create your passkey so I remember you. Your device will ask for your face, fingerprint or code."
-      create_passkey: "Create my passkey"
-      passkey_hint: "No password. Nothing to remember."
 
   onboarding:
     field_labels:
@@ -192,6 +160,7 @@ en:
         geolocation: "Shared from the device"
         typed: "Typed"
         assistant: "Suggested by Aluni"
+        map: "Placed on the map"
       area_unit:
         hectares: "hectares"
         acres: "acres"

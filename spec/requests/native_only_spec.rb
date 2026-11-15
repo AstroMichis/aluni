@@ -13,8 +13,9 @@ RSpec.describe "Web access kill switch", type: :request do
 
     get app_root_path(locale: "en")
 
-    # Open: a new account is sent on to its onboarding, not back to the landing page.
-    expect(response).to redirect_to(app_onboarding_path(locale: "en"))
+    # Open: the home answers, instead of sending the browser back to the landing page.
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include(I18n.t("app.home.show.recap_title"))
   end
 
   it "always serves the native shells" do
@@ -52,7 +53,8 @@ RSpec.describe "Web access kill switch", type: :request do
       expect(response).to redirect_to(root_path(locale: "en"))
 
       get app_root_path(locale: "en"), headers: native_headers
-      expect(response).to redirect_to(app_onboarding_path(locale: "en"))
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(I18n.t("app.home.show.recap_title"))
     end
   end
 end

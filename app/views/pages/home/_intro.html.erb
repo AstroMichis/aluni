@@ -1,0 +1,32 @@
+<%# Aluni's first bubble (first visit): language chips and comfort toggles, then "Looks good". The
+    language chips post preferred_locale (the page reloads in that language with this same bubble);
+    the toggles apply at once through the preferences controller; "Looks good" posts done=1 and the
+    intro controller swaps in the start bubble without a round trip. %>
+<div class="intro" data-controller="intro" data-intro-hidden-class="hidden">
+  <div class="intro__pane" data-intro-target="intro">
+    <p class="intro__line"><strong id="mascot-greeting"><%= t("intro.hello", app_name: t("app_name")) %></strong> <%= t("intro.language_line") %> <span lang="<%= I18n.locale == :en ? "es" : "en" %>"><%= t("intro.language_switch") %></span></p>
+    <%= form_with url: preferences_path, method: :post, class: "intro__chips", "aria-label": t("intro.language_label") do |f| %>
+      <% I18n.available_locales.each do |locale| %>
+        <%= f.button t("intro.languages.#{locale}"), name: "preferred_locale", value: locale, lang: locale,
+                     class: class_names("intro__chip", "intro__chip--current": locale == I18n.locale), "aria-current": (locale == I18n.locale ? "true" : nil) %>
+      <% end %>
+    <% end %>
+    <div class="intro__comfort">
+      <p class="intro__comfort-label"><%= t("intro.comfort") %></p>
+      <div class="intro__toggles">
+        <button type="button" class="intro__toggle" data-action="intro#toggle" data-intro-pref-param="text_size" data-intro-on-param="large" data-intro-off-param="normal" aria-pressed="<%= preferences["text_size"] != "normal" %>"><%= t("intro.text_size") %></button>
+        <button type="button" class="intro__toggle" data-action="intro#toggle" data-intro-pref-param="read_aloud" aria-pressed="<%= preferences.read_aloud? %>"><%= t("intro.read_aloud") %></button>
+        <button type="button" class="intro__toggle" data-action="intro#toggle" data-intro-pref-param="motion" data-intro-on-param="reduce" data-intro-off-param="full" aria-pressed="<%= preferences["motion"] == "reduce" %>"><%= t("intro.motion") %></button>
+        <button type="button" class="intro__toggle" data-action="intro#toggle" data-intro-pref-param="contrast" data-intro-on-param="high" data-intro-off-param="normal" aria-pressed="<%= preferences["contrast"] == "high" %>"><%= t("intro.contrast") %></button>
+      </div>
+      <p class="sr-only" data-intro-target="sample"><%= t("intro.sample") %></p>
+    </div>
+    <%= form_with url: preferences_path, method: :post, class: "intro__actions", data: { intro_target: "form" } do |f| %>
+      <%= f.hidden_field :done, value: 1 %>
+      <%= f.button t("intro.done"), class: "btn btn--primary btn--sm" %>
+    <% end %>
+  </div>
+  <div class="intro__pane" data-intro-target="start" hidden>
+    <%= render "pages/home/start_bubble" %>
+  </div>
+</div>

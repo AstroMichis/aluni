@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<%= I18n.locale %>" data-theme="dark">
+<html lang="<%= I18n.locale %>" <%= tag.attributes(preferences.html_attributes) %>>
   <head>
     <title><%= content_for(:title) || t("app_name") %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -26,6 +26,7 @@
     <%= stylesheet_link_tag "base/reset", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "base/typography", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "base/global", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "base/preferences", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/button", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/card", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/badge", "data-turbo-track": "reload" %>
@@ -33,9 +34,13 @@
     <%= stylesheet_link_tag "components/store-button", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/input", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/toast", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "components/modal", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "components/intro", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "components/panel", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "components/finder", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "vendor/leaflet", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/mascot", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/chat", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "components/confirm-card", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/progress", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/language-toggle", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/public-footer", "data-turbo-track": "reload" %>
@@ -50,9 +55,10 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body data-controller="theme">
+  <body data-controller="preferences speech" <%= tag.attributes(preferences.stimulus_values) %>>
     <a class="skip-link" href="#main"><%= t("layouts.skip_to_content") %></a>
     <div id="flash"><%= render "shared/flash" %></div>
+    <%= render "shared/preferences_form" %>
     <%= yield %>
   </body>
 </html>

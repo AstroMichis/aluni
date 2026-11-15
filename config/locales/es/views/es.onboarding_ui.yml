@@ -2,36 +2,25 @@ es:
   app:
     onboarding:
       show:
-        title: "Vamos a preparar tu finca"
-        lede: "Unas pocas preguntas, una a la vez. No se guarda nada hasta que tú lo digas."
+        title: "Pregúntale a Aluni"
+        lede: "Pregunta lo que quieras sobre tu campo, o completemos el resto juntos. Cada respuesta se guarda al momento y puedes deshacerla."
         companion_label: "Tu perfil hasta ahora"
         composer_label: "Tu mensaje"
-        composer_placeholder: "Escribe tu respuesta"
+        composer_placeholder: "Pregunta o cuéntame algo"
         send: "Enviar"
         typing: "Aluni está escribiendo"
         skip: "Saltar este tema"
         complete: "Terminar"
         reset: "Empezar de nuevo"
         reset_confirm: "¿Empezar la conversación otra vez? Lo que ya guardaste se mantiene."
-        share_location: "Compartir mi ubicación"
-        locating: "Buscando tu ubicación"
-        location_shared_text: "Mi ubicación: %{latitude}, %{longitude}"
-        location_denied: "No pudimos obtener tu ubicación. Puedes escribir el nombre del pueblo más cercano."
-        location_unsupported: "Este navegador no puede compartir tu ubicación. Escribe el pueblo más cercano."
-        is_this_your_area: "¿Es esta tu zona?"
-        area_yes: "Sí, esa es mi zona"
-        area_no: "No, es en otro lugar"
         area_image_alt: "Imagen de satélite de la zona alrededor de tu campo"
-        tools_label: "Herramientas de ubicación"
         degraded_note: "Aluni no pudo pensar bien esa respuesta ahora. Tu mensaje se guarda y se leerá junto con el siguiente."
         completed_notice: "Tu configuración está completa."
         back_home: "Ir a tu pantalla de inicio"
         blocked_title: "Hagamos una pausa"
-        confirm:
-          title: "¿Guardar esto?"
-          lede: "Desmarca lo que no sea correcto."
-          save: "Guardar lo marcado"
-          not_now: "Ahora no"
+        undo: "Deshacer"
+        applied: "Guardado: %{items}."
+        applied_generic: "Guardado."
         progress:
           label: "Progreso"
           step: "%{index} de %{total}"
@@ -58,34 +47,13 @@ es:
           segment: "Perfil"
         errors:
           failed: "El mensaje no llegó. Revisa tu conexión e inténtalo de nuevo."
-      confirm:
-        saved: "Guardado. Tu perfil está actualizado."
-        expired: "Esa sugerencia ya no está disponible. Pregúntale a Aluni otra vez."
-      discard:
-        done: "No se guardó nada."
+      undo:
+        done: "Deshecho. Tu perfil volvió a como estaba."
+        nothing: "No hay nada que deshacer ahora."
       complete:
         done: "Tu perfil está listo."
       reset:
         done: "Un nuevo comienzo. Lo que guardaste antes sigue ahí."
-
-  landing_chat:
-    title: "Conversa con %{app_name}"
-    close: "Cerrar la conversación"
-    have_account: "Ya tengo una cuenta"
-    welcome_back: "Qué bueno verte de nuevo, %{name}."
-    continue: "Abrir %{app_name}"
-    script:
-      ask_name: "¿Cómo te llamo?"
-      name_label: "Tu nombre"
-      name_placeholder: "Tu nombre"
-      name_submit: "Así me llamo"
-      nice_to_meet: "Mucho gusto, %{name}."
-      ask_language: "¿Inglés o español?"
-      english: "English"
-      spanish: "Español"
-      ask_passkey: "Déjame crear tu llave de acceso para recordarte. Tu dispositivo te pedirá tu cara, tu huella o tu código."
-      create_passkey: "Crear mi llave de acceso"
-      passkey_hint: "Sin contraseña. Nada que recordar."
 
   onboarding:
     field_labels:
@@ -192,6 +160,7 @@ es:
         geolocation: "Compartido desde el dispositivo"
         typed: "Escrito"
         assistant: "Sugerido por Aluni"
+        map: "Marcado en el mapa"
       area_unit:
         hectares: "hectáreas"
         acres: "acres"

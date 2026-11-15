@@ -27,7 +27,10 @@ RACK_ATTACK_AUTH_PATH = %r{\A(?:/(?:en|es))?/(?:sign_in|sign_up|passkeys)(?:/opt
 
 # The onboarding chat actions (each one may cost a Gemini call), with or
 # without a locale prefix: /app/onboarding/message, /es/app/onboarding/skip.
-RACK_ATTACK_ASSISTANT_PATH = %r{\A(?:/(?:en|es))?/app/onboarding/(?:message|confirm|discard|skip|complete|reset)\z}
+RACK_ATTACK_ASSISTANT_PATH = %r{\A(?:/(?:en|es))?/app/onboarding/(?:message|undo|skip|complete|reset)\z}
+
+# Place search and reverse geocoding (Nominatim behind the server): /places, /es/places/reverse.
+RACK_ATTACK_PLACES_PATH = %r{\A(?:/(?:en|es))?/places(?:/reverse)?\z}
 
 # Block obvious vulnerability scanners probing for common exploits
 Rack::Attack.blocklist("vulnerability-scanners") do |req|
@@ -75,6 +78,11 @@ end
 # Sidekiq Web basic auth brute force
 Rack::Attack.throttle("sidekiq/ip", limit: 10, period: 60) do |req|
   req.remote_ip if req.path.start_with?("/sidekiq")
+end
+
+# The field finder's geocoding (Nominatim allows one request per second in total).
+Rack::Attack.throttle("places/ip", limit: 20, period: 60) do |req|
+  req.remote_ip if req.path.match?(RACK_ATTACK_PLACES_PATH)
 end
 
 # Custom blocked response

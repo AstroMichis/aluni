@@ -27,11 +27,14 @@ rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), weba
 /webhooks/...                         (empty; each provider adds a feature-gated route)
 /sidekiq                              only with SIDEKIQ_WEB_* set, on ADMIN_HOST, basic auth
 /locale/:new_locale                   locale switch
-(/:locale)/                           root: landing page
+(/:locale)/                           root: landing page (Aluni's first bubble, the field finder)
+(/:locale)/preferences                POST: comfort choices (cookie + account), language change redirects
+(/:locale)/places, places/reverse     Turbo Frames for the finder: Nominatim search and reverse geocoding through the server
 (/:locale)/sign_in, sign_in/options, sign_out, sign_up, sign_up/options
 (/:locale)/passkeys, passkeys/options
 (/:locale)/app                        authenticated area (+ device_tokens, web_push_subscriptions)
-(/:locale)/app/onboarding             the chat: show, message, confirm, discard, skip, complete (POST), reset (DELETE)
+(/:locale)/app/onboarding             Ask Aluni: show, message, undo, skip, complete (POST), reset (DELETE)
+(/:locale)/app/fields/:id             PATCH: the main field's pin and basics from the finder, signed in
 ```
 
 `default_url_options` always adds the locale, so every generated link carries `/en/` or `/es/`.
@@ -47,7 +50,7 @@ rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), weba
 | `TRUSTED_PROXIES` | production.rb (Cloudflare ranges) |
 | `NATIVE_WEB_ACCESS` (default on; `0` closes sign-in and `/app` to browsers, shells keep working), `SIGNUPS_ENABLED` | native.rb, Platform::Features |
 | `SIDEKIQ_WEB_USERNAME`, `SIDEKIQ_WEB_PASSWORD` | sidekiq_web.rb |
-| `PLATFORM_PAUSE_ALL`, `PLATFORM_ACTOR` | switchboard brake, toggle actor |
+| `PLATFORM_PAUSE_ALL`, `PLATFORM_ACTOR` | switchboard brake, toggle actor; services: jobs, cron, gemini, mail, push, geocoding (Nominatim, free, not paused at bootstrap) |
 | `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`, `..._DETERMINISTIC_KEY`, `..._KEY_DERIVATION_SALT`, `AR_ENCRYPTION_SUPPORT_UNENCRYPTED_DATA` | encryption (alternative to credentials) |
 | `GEMINI_FLASH_MODEL`, `GEMINI_PRO_MODEL`, `GEMINI_TRANSCRIBE_MODEL`, `GEMINI_CHAT_MAX_OUTPUT_TOKENS` | gemini.rb |
 | `GEMINI_BACKEND` (`api_key` default, `vertex` in production), `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION` (`global`) | gemini.rb, `Gemini::Client.backend`, `Gemini::VertexToken` |

@@ -10,6 +10,7 @@ es:
       sign_up: "Crear una cuenta"
       get_the_app: "Descargar la app"
       open_app: "Continuar con %{app_name}"
+      find_my_field: "Encontrar mi campo"
       take_the_tour: "Mira cómo funciona"
       scroll_cue: "Desplázate para ver cómo funciona"
       preview_notice: "Este recorrido usa datos de ejemplo de un campo en Iowa."

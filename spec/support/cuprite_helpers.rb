@@ -13,8 +13,19 @@ Capybara.register_driver(:cuprite) do |app|
     timeout:         15,
     process_timeout: 30,
     js_errors:       true,
+    # Map tiles are never fetched from the real servers by headless Chrome.
+    url_blacklist:   [ "*tile.openstreetmap.org*", "*arcgisonline.com*" ],
     browser_options: { "no-sandbox" => nil }
   )
+end
+
+module WelcomeHelpers
+  # The first-visit welcome (pages/home/_welcome) makes the rest of the page inert
+  # until it is answered. Specs that are not about the welcome set the cookie first.
+  def skip_welcome!(preferences = {})
+    value = Preferences.new(preferences.merge(seen_welcome: true)).to_cookie
+    page.driver.browser.cookies.set(name: Preferences::COOKIE.to_s, value: CGI.escape(value), domain: Capybara.current_session.server.host, path: "/")
+  end
 end
 
 module ServerLogHelpers
@@ -53,4 +64,5 @@ end
 
 RSpec.configure do |config|
   config.include ServerLogHelpers, type: :system
+  config.include WelcomeHelpers, type: :system
 end

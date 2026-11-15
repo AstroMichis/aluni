@@ -1,0 +1,137 @@
+/* The panel shell: a bottom sheet on phones, a 480px side panel from 1025px. The
+   field finder is the first panel; the header carries the companion slot the
+   mascot docks into (#finder-companion[data-mascot-dock]), the title, a speaker
+   button and a close button; the body scrolls; the footer holds the step actions
+   and is always visible. Enter animations with @starting-style, transform and
+   opacity only. */
+.panel {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: var(--z-modal);
+  display: flex;
+  flex-direction: column;
+  max-height: 92dvh;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-default);
+  border-bottom: 0;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text-primary);
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+}
+
+.panel[hidden] { display: none; }
+
+@starting-style {
+  .panel { opacity: 0; transform: translateY(24px); }
+}
+
+.panel__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 0 0 auto;
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+/* 56px slot: the mascot FLIPs into it; the SVG twin stands in until the canvas lands. */
+.panel__companion {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  transform: scale(1);
+}
+
+.panel__avatar { display: flex; }
+.panel__avatar[hidden] { display: none; }
+
+.panel__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: var(--leading-snug);
+}
+
+.panel__icon-button {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: var(--radius-full);
+}
+
+.panel__icon-button svg { width: 22px; height: 22px; }
+
+.panel__icon-button[aria-pressed="true"] {
+  color: var(--color-accent-text);
+  background: var(--color-accent-muted);
+}
+
+.panel__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-4);
+  scroll-padding-top: var(--space-4);
+}
+
+/* Aluni's line for the step: what the mascot says and read aloud reads. */
+.panel__line {
+  margin: 0;
+  padding-left: var(--space-3);
+  border-left: 3px solid var(--color-accent);
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-text-primary);
+}
+
+.panel__footer {
+  flex: 0 0 auto;
+  padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-secondary);
+}
+
+.panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.panel__actions[hidden] { display: none; }
+
+.panel__actions .btn { min-height: 48px; }
+.panel__actions-main { flex: 1 1 auto; }
+
+@media (min-width: 1025px) {
+  .panel {
+    inset: var(--space-20) var(--space-6) auto auto;
+    width: 480px;
+    max-height: calc(100dvh - var(--space-20) - var(--space-6));
+    border-bottom: 1px solid var(--color-border-default);
+    border-radius: var(--radius-xl);
+  }
+
+  @starting-style {
+    .panel { opacity: 0; transform: translateX(24px); }
+  }
+
+  .panel__body { padding: var(--space-5); }
+  .panel__footer { padding-inline: var(--space-5); }
+}
+
+@media (forced-colors: active) {
+  .panel { border: 2px solid CanvasText; }
+  .panel__icon-button[aria-pressed="true"] { outline: 2px solid CanvasText; }
+}

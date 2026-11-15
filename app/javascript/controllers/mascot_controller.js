@@ -1,21 +1,37 @@
 import { Controller } from "@hotwired/stimulus"
+import { reducedMotion } from "preferences/motion"
 
 // Aluni, the seedling mascot: a small Three.js stage (vendored r169, loaded
-// lazily next to the mascot/* modules) with an HTML speech bubble. Two modes:
+// lazily next to the mascot/* modules) with an HTML speech bubble. Three modes:
 //
-//   landing  the stage sits fixed bottom-left, starts offstage, slides in with
-//            a CSS transform while the character walks in place, waves, shows
-//            the bubble, and later docks (FLIP) into the chat panel's slot.
-//   docked   the companion on /app/onboarding: relative in its container, no
-//            entrance, idle from the start, no bubble.
+//   preloader  the landing. The stage is the page's loading indicator: it
+//              starts centred and enlarged (a transform of its corner box, so
+//              the corner stays the resting box), shows the SVG twin at once
+//              and swaps in the character the moment the renderer is ready,
+//              which sprouts from the soil and idles. On the go signal the
+//              stage moves to its corner (0.9 s), waves, shows the bubble and
+//              later docks (FLIP) into the finder's slot.
+//   landing    the earlier walk-in: fixed bottom-left, starts offstage, slides
+//              in while the character gaits in place, waves, shows the bubble.
+//   docked     the companion on /app/onboarding: relative in its container, no
+//              entrance, idle from the start, no bubble.
+//
+// The go signal in preloader mode: window "welcome:done" when a #welcome
+// element exists at connect (the first-visit overlay; the stage sits above
+// it), otherwise preloader:ready, derived here: window "hero:revealed" has
+// fired, at least 0.9 s have passed since connect and the sprout has finished,
+// or 2.5 s have passed. The centre is the viewport's, or #welcome-stage's box
+// when the overlay has one.
 //
 // Events on window. Dispatched: mascot:ready, mascot:arrived, mascot:docked
 // { handoff: "canvas" | "svg" }, mascot:fallback, mascot:lets-go. Listened:
 // mascot:speak { chars }, mascot:dock { selector }, mascot:hide, mascot:show,
-// and the landing's progress event (step >= 1 slides the stage away).
+// welcome:done, hero:revealed, and the landing's progress event (step >= 1
+// slides the stage away).
 //
 // Lifecycle rules (same as hero_scene_controller.js):
-// - prefers-reduced-motion: never import Three; show the SVG twin statically.
+// - reduced motion (the preference or the media query): never import Three;
+//   show the SVG twin statically, in the corner at once.
 // - any failure (no WebGL, import error, a frame throwing): warn, tear down, SVG twin.
 // - resize debounced through rAF; clock paused when hidden, away or offscreen.
 // - palette follows html[data-theme] through a MutationObserver.
@@ -24,12 +40,22 @@ import { Controller } from "@hotwired/stimulus"
 
 const STAGE = { desktop: [260, 320], phone: [170, 210] }
 const ENTRANCE_MS = 1600
+const LEAVE_MS = 900
 const DOCK_MS = 700
 const SAFETY_MS = 500
+const CENTER_MIN_MS = 900
+const CENTER_FALLBACK_MS = 2500
+const CENTER_SCALE_MIN = 1.2
+const CENTER_SCALE_MAX = 2.2
+const CENTER_PIXEL_RATIO_MAX = 3
+const WELCOME_ID = "welcome"
+const CENTER_ANCHOR_ID = "welcome-stage"
 const CAMERA_POS = [0, 2.3, 7.3]
 const CAMERA_LOOK = [0, 1.75, 0]
 const HEMI_INTENSITY = 1.1
 const SUN_INTENSITY = 1.8
+
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
 
 export default class extends Controller {
   static targets = ["canvas", "bubble", "fallback"]
@@ -40,7 +66,7 @@ export default class extends Controller {
     progressEvent: { type: String, default: "landing:progress" }
   }
   // The view passes its own BEM classes (data-mascot-arrived-class="mascot--arrived" ...).
-  static classes = ["offstage", "onstage", "arrived", "docked", "away", "hidden", "static", "fallback", "bubbleVisible"]
+  static classes = ["offstage", "onstage", "centered", "leaving", "arrived", "docked", "away", "hidden", "static", "fallback", "bubbleVisible"]
 
   connect() {
     this._connected = true
@@ -51,19 +77,27 @@ export default class extends Controller {
     this.hiddenByEvent = false
     this.paused = false
     this.phase = null
+    this.centered = false
+    this.centerScale = 1
+    this.waitingForWelcome = false
+    this.heroRevealed = false
+    this.minElapsed = false
+    this.sprouting = false
     this.timers = new Set()
     this.pointer = null
     this._evaluateDevice()
     this._bindWindowEvents()
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (reducedMotion()) {
       this.showFallback("reduced-motion")
       return
     }
     this._currentTheme = this._readTheme()
+    if (this.preloader) this.startPreloader()
     this.initScene()
   }
 
+  get preloader() { return this.modeValue === "preloader" }
   get landing() { return this.modeValue !== "docked" }
 
   _readTheme() {
@@ -89,11 +123,100 @@ export default class extends Controller {
     window.addEventListener("orientationchange", this.resizeHandler)
     this.transitionHandler = (event) => this.onTransitionEnd(event)
     this.element.addEventListener("transitionend", this.transitionHandler)
+    if (this.preloader) {
+      this.welcomeDoneHandler = () => this.leaveCenter()
+      this.heroRevealedHandler = () => { this.heroRevealed = true; this._checkReady() }
+      window.addEventListener("welcome:done", this.welcomeDoneHandler)
+      window.addEventListener("hero:revealed", this.heroRevealedHandler)
+    }
     if (this.landing) {
       this.progressHandler = (event) => this.onProgress(event)
       window.addEventListener(this.progressEventValue, this.progressHandler)
       window.dispatchEvent(new CustomEvent("landing:sync"))
     }
+  }
+
+  // ── Preloader ─────────────────────────────────────────────────────────
+
+  // The view's class and the CSS defaults already centre the stage at first
+  // paint; measure the exact centre, show the twin as the loading indicator
+  // and start the gate (unless the welcome overlay owns the go signal).
+  startPreloader() {
+    this.centered = this.hasCenteredClass && this.element.classList.contains(this.centeredClass)
+    this.waitingForWelcome = document.getElementById(WELCOME_ID) !== null
+    this.applyCenter()
+    if (this.hasFallbackTarget) this.fallbackTarget.hidden = false
+    if (this.waitingForWelcome) return
+    this.minTimer = this._after(CENTER_MIN_MS, () => { this.minElapsed = true; this._checkReady() })
+    this.readyTimer = this._after(CENTER_FALLBACK_MS, () => this.leaveCenter())
+  }
+
+  // The centred transform: the resting (corner) box translated to the anchor's
+  // centre (#welcome-stage when the overlay has one, else the viewport) and
+  // scaled up; the same maths as applyDock, so the corner stays the resting box.
+  applyCenter() {
+    if (!this.centered) return
+    const rest = this.restingRect()
+    if (!rest.width || !rest.height) return
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+    const anchor = document.getElementById(CENTER_ANCHOR_ID)
+    const box = anchor ? anchor.getBoundingClientRect() : null
+    let cx = vw / 2
+    let cy = vh / 2
+    let scale = (0.5 * Math.min(vw, vh)) / rest.height
+    let min = CENTER_SCALE_MIN
+    if (box && box.width > 0 && box.height > 0) {
+      cx = box.left + box.width / 2
+      cy = box.top + box.height / 2
+      scale = Math.min(scale, box.height / rest.height, box.width / rest.width)
+      min = 1
+    }
+    this.centerScale = clamp(scale, min, CENTER_SCALE_MAX)
+    const dx = cx - (rest.left + rest.width / 2)
+    const dy = cy - (rest.top + rest.height / 2)
+    this.element.style.setProperty("--mascot-pre-x", `${dx.toFixed(1)}px`)
+    this.element.style.setProperty("--mascot-pre-y", `${dy.toFixed(1)}px`)
+    this.element.style.setProperty("--mascot-pre-scale", this.centerScale.toFixed(3))
+  }
+
+  // preloader:ready, derived: the hero copy is revealed, the centred phase has
+  // lasted its minimum and the sprout has finished (the fallback timer calls
+  // leaveCenter() directly).
+  _checkReady() {
+    if (this.waitingForWelcome || this.arrived || this.phase === "leaving") return
+    if (this.heroRevealed && this.minElapsed && !this.sprouting) this.leaveCenter()
+  }
+
+  startSprout() {
+    this.sprouting = true
+    this.sproutTimer = this._after(this.animator.sprout(), () => { this.sprouting = false; this._checkReady() })
+  }
+
+  // The go signal: the stage moves from the centre to its resting corner (the
+  // CSS transition once the centred class goes), then transitionend or the
+  // safety timer calls arrive(). Runs at most once.
+  leaveCenter() {
+    if (!this._connected || this.arrived || this.phase === "leaving") return
+    this._clear(this.minTimer)
+    this._clear(this.readyTimer)
+    if (!this.centered) { this.arrive(); return }
+    this.phase = "leaving"
+    this.centered = false
+    if (this.hasLeavingClass) this.element.classList.add(this.leavingClass)
+    void this.element.offsetWidth
+    this.element.classList.remove(this.centeredClass)
+    this.safetyTimer = this._after(LEAVE_MS + SAFETY_MS, () => this.arrive())
+  }
+
+  // Leaves the centred state without the move (the stage docks from the
+  // centre, or the twin takes over): classes and timers only.
+  _dropCenter() {
+    this.centered = false
+    this._clear(this.minTimer)
+    this._clear(this.readyTimer)
+    if (this.hasCenteredClass) this.element.classList.remove(this.centeredClass)
+    if (this.hasLeavingClass) this.element.classList.remove(this.leavingClass)
   }
 
   // ── Scene ─────────────────────────────────────────────────────────────
@@ -135,6 +258,15 @@ export default class extends Controller {
       this.character = buildCharacter(THREE, this.palette)
       this.scene.add(this.character.group)
       this.animator = new Animator(this.character.parts)
+      // The first frame renders in this state: a small seedling for the
+      // preloader (unless the go signal already came), offstage for the
+      // walk-in, idle for the companion.
+      if (this.preloader) {
+        if (this.arrived) this.animator.setState("idle")
+        else this.startSprout()
+      } else {
+        this.animator.setState(this.landing ? "offstage" : "idle")
+      }
 
       this.clock = new THREE.Clock()
       this.animate()
@@ -146,11 +278,13 @@ export default class extends Controller {
       if (!this.isMobile) this._bindPointer()
 
       this.emit("ready")
-      if (this.landing) {
-        this.animator.setState("offstage")
+      if (this.preloader) {
+        // The character has its first frame: the twin steps aside.
+        if (this.hasFallbackTarget) this.fallbackTarget.hidden = true
+        if (this.arrived) this.positionBubble()
+      } else if (this.landing) {
         this.entranceTimer = this._after(this.entranceDelayValue, () => this.startEntrance())
       } else {
-        this.animator.setState("idle")
         this._swapClass(this.hasOffstageClass ? this.offstageClass : null, this.hasOnstageClass ? this.onstageClass : null)
         this.arrive()
       }
@@ -168,9 +302,12 @@ export default class extends Controller {
     return this.isMobile ? STAGE.phone : STAGE.desktop
   }
 
+  // The centred stage is CSS-scaled up, so it renders at the scaled
+  // resolution (capped) to stay crisp; arrive() drops back to the base ratio.
   _chooseRendererPixelRatio() {
     const dpr = window.devicePixelRatio || 1
-    return Math.min(dpr, this.isMobile ? 1.5 : 2)
+    const base = Math.min(dpr, this.isMobile ? 1.5 : 2)
+    return this.centered ? Math.min(base * this.centerScale, CENTER_PIXEL_RATIO_MAX) : base
   }
 
   _bindPointer() {
@@ -224,11 +361,15 @@ export default class extends Controller {
     this.safetyTimer = this._after(ENTRANCE_MS + SAFETY_MS, () => this.arrive())
   }
 
+  // The stage is in its resting corner: wave, bubble, mascot:arrived. Reached
+  // from the walk-in, from the preloader's move and from the twin.
   arrive() {
     if (!this._connected || this.arrived) return
     this.arrived = true
     this.phase = null
     this._clear(this.safetyTimer)
+    this._dropCenter()
+    if (this.renderer) this.renderer.setPixelRatio(this._chooseRendererPixelRatio())
     if (this.animator && this.landing) this.animator.arrive()
     if (this.hasArrivedClass) this.element.classList.add(this.arrivedClass)
     this.measureStage()
@@ -239,7 +380,7 @@ export default class extends Controller {
 
   onTransitionEnd(event) {
     if (event.target !== this.element || event.propertyName !== "transform") return
-    if (this.phase === "entering") this.arrive()
+    if (this.phase === "entering" || this.phase === "leaving") this.arrive()
     else if (this.phase === "docking") this.finishDock()
   }
 
@@ -286,7 +427,10 @@ export default class extends Controller {
   }
 
   // FLIP toward the slot: translate and scale only, from the stage's resting
-  // box (offset* ignores transforms) to the target's rect.
+  // box (offset* ignores transforms) to the target's rect. Asked for while
+  // still centred or moving (the hero's button during the preloader), the FLIP
+  // starts from where the stage is and the corner, the wave and the bubble
+  // are skipped.
   onDock(event) {
     const selector = (event.detail && event.detail.selector) || this.dockSelectorValue
     if (!selector || this.docked) return
@@ -294,6 +438,11 @@ export default class extends Controller {
     if (!target) return
     this.dockTarget = target
     this.docked = true
+    if (this.centered || this.phase === "leaving") {
+      this._dropCenter()
+      this._clear(this.safetyTimer)
+      this.arrived = true
+    }
     this.hideBubble()
     this.applyDock()
     if (this.animator) this.animator.startDock()
@@ -390,6 +539,7 @@ export default class extends Controller {
     if (!this._connected) return
     const wasMobile = this.isMobile
     this._evaluateDevice()
+    if (this.centered) this.applyCenter()
     if (this.renderer && this.camera) {
       const [w, h] = this._stageSize()
       this.camera.aspect = w / h
@@ -421,13 +571,17 @@ export default class extends Controller {
   // ── Fallback ──────────────────────────────────────────────────────────
 
   // The SVG twin stands in for the scene (reduced motion, no WebGL, a crash):
-  // placed onstage at once, bubble shown, arrived dispatched.
+  // placed in the corner at once (no centred phase, no transition), bubble
+  // shown, arrived dispatched.
   showFallback(reason) {
     if (this._fallbackShown) return
     this._fallbackShown = true
+    this._clear(this.sproutTimer)
+    this.sprouting = false
     if (this.animator) this.animator.setStatic()
     if (this.hasFallbackClass) this.element.classList.add(this.fallbackClass)
     if (this.hasStaticClass) this.element.classList.add(this.staticClass)
+    this._dropCenter()
     if (this.hasCanvasTarget) this.canvasTarget.hidden = true
     if (this.hasFallbackTarget) this.fallbackTarget.hidden = false
     this._swapClass(this.hasOffstageClass ? this.offstageClass : null, this.hasOnstageClass ? this.onstageClass : null)
@@ -493,6 +647,8 @@ export default class extends Controller {
     window.removeEventListener("resize", this.resizeHandler)
     window.removeEventListener("orientationchange", this.resizeHandler)
     this.element.removeEventListener("transitionend", this.transitionHandler)
+    if (this.welcomeDoneHandler) window.removeEventListener("welcome:done", this.welcomeDoneHandler)
+    if (this.heroRevealedHandler) window.removeEventListener("hero:revealed", this.heroRevealedHandler)
     if (this.progressHandler) window.removeEventListener(this.progressEventValue, this.progressHandler)
     if (this.visibilityHandler) document.removeEventListener("visibilitychange", this.visibilityHandler)
     if (this.themeObserver) { this.themeObserver.disconnect(); this.themeObserver = null }
