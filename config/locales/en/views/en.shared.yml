@@ -4,6 +4,9 @@ en:
       tagline: "Open source, built in the open."
       meta: "%{app_name} %{year}"
       devices: "%{app_name} Probe"
+    devices_link:
+      short: "Probe"
+      label: "%{app_name} Probe: field station"
     store_buttons:
       label: "Download the app"
       app_store: "App Store"
