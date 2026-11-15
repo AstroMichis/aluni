@@ -5,7 +5,7 @@ ruby file: ".ruby-version"
 gem "rails", "~> 8.1.4"
 gem "pg", "~> 1.5"
 gem "puma", "~> 7.2", ">= 7.2.1"
-gem "redis", "~> 5.0"
+gem "redis", "~> 6.0"
 gem "sidekiq", "~> 8.1"
 gem "sidekiq-cron", "~> 2.4"
 
