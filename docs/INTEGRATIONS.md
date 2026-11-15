@@ -44,8 +44,17 @@ OpenStreetMap's Nominatim, through the server only (the browser never calls it):
 
 - NASA's point-extraction service for SMAP, MODIS, ECOSTRESS and more (`docs/data_sources/appeears.md`). Asynchronous: `submit_point` returns a task id, `status` polls it, `results_csv(task_id, product:)` reads one product's CSV from the bundle (following the redirect to the file).
 - Auth: `EARTHDATA_USERNAME` and `EARTHDATA_PASSWORD` in the credentials (the team's Earthdata account, which must have signed in to AppEEARS once to authorise it; an account that never did gets a 504 from `/login` after 60 s). The 48 h bearer token is cached in `Rails.cache` until an hour before it expires; a 401 logs in again once.
-- `Platform::Switchboard.guard!(:data)` before each call; failures raise `DataSources::Client::Error`. Only `Fields::FetchSoilMoistureJob` calls it: submit, then poll every 5 minutes for up to 3 hours, keeping the `smap` observation `pending` meanwhile.
+- `Platform::Switchboard.guard!(:data)` before each call; failures raise `DataSources::Client::Error`. Only `Fields::FetchAppeearsJob` calls it, one task per source (`smap`, `modis`, `ecostress`; product, layers, window and summary in `FetchAppeearsJob.sources`): submit, then poll every 5 minutes for up to 3 hours, keeping the source's observation `pending` meanwhile. `Fields::FetchSoilMoistureJob` only forwards SMAP polls queued before the rename.
+- **AppEEARS runs one task at a time per account** (seen 2026-11-15: five tasks queued behind one processing). A year of SMAP L4 takes about 45 minutes; a field's three sources arrive over an hour or two.
+- CSVs are read by `Appeears::Csv` (no csv gem; columns found by suffix).
 - Specs: `spec/services/appeears/client_spec.rb` (WebMock, tag `:appeears_api`), `spec/jobs/fields/fetch_soil_moisture_job_spec.rb`.
+
+## GRACE (`app/services/grace/client.rb`)
+
+- The JPL GRACE/GRACE-FO mascon series (`docs/data_sources/grace.md`) is one 44 MB netCDF behind Earthdata Login, and PO.DAAC's OPeNDAP cannot subset it (it has no DMR++ for the file: 404). `Grace::Client#series(latitude:, longitude:)` reads PO.DAAC's open kerchunk reference file (cached a day) and fetches only the four zlib chunks of `lwe_thickness` that hold the cell plus one `scale_factor` chunk, with HTTP Range requests that follow the redirect to a signed S3 URL: under 1 MB and about 15 s a field.
+- Auth: `Earthdata::Token.fetch`, the account's bearer token from `find_or_create_token` with the same EARTHDATA credentials, cached until a day before it expires.
+- `Weather::WaterStorage.summarize` keeps the last 12 months against 2004-2009, the 10-year trend, each year's mean and the lowest year; stored as the `grace` observation by `Fields::FetchObservationsJob`.
+- Specs: `spec/services/grace/client_spec.rb` (a small stand-in file built in the spec), `spec/services/weather/water_storage_spec.rb`.
 
 ## Outbound client pattern
 

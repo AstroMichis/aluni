@@ -76,6 +76,28 @@ RSpec.describe Rotations::Timeline do
     expect(line.windows.map(&:cover).uniq).to eq([ "vigna-unguiculata" ])
   end
 
+  it "keeps a second crop the field grows after the same main crop" do
+    # Last season: soybeans as the main crop, then wheat sown after them (as the history records it).
+    create(:field_crop, field: record, role: :second, crop_name: "Wheat", scientific_name: "Triticum aestivum",
+                        season_year: Date.current.year - 1, planting_month: nil, harvest_month: nil)
+    line = described_class.new(Fields::Farm.for(user).field(record.id), first_year: year).for(%w[glycine-max zea-mays glycine-max])
+
+    wheat = line.months.select { |m| m.crop == "triticum-aestivum" }.map { |m| [ m.year, m.month ] }
+    # Soybeans May-September, then wheat from October for its FAO-56 length (135 days: 5 months).
+    expect(wheat.first(5)).to eq([ [ year, 10 ], [ year, 11 ], [ year, 12 ], [ year + 1, 1 ], [ year + 1, 2 ] ])
+    expect(line.months.select { |m| m.crop == "zea-mays" }.map(&:month)).to eq((4..10).to_a) # the corn keeps its months
+    expect(wheat.select { |y, _| y == year + 2 }.map(&:last)).to eq([ 10, 11, 12 ]) # after the third season's soybeans
+  end
+
+  it "moves the weather strip under a warmer climate: fewer frost months, more dry ones" do
+    hot = described_class.new(field, first_year: year, scenario: Weather::Scenario.find("warm2_dry"))
+    count = ->(t, risk) { t.weather.values.count { |risks| risks.include?(risk) } }
+
+    expect(count.call(hot, "frost")).to be <= count.call(timeline, "frost")
+    expect(count.call(hot, "dry")).to be >= count.call(timeline, "dry")
+    expect(count.call(hot, "dry") + count.call(timeline, "frost")).to be > count.call(timeline, "dry") + count.call(hot, "frost")
+  end
+
   it "covers a perennial stand all year and leaves an unknown season blank" do
     line = timeline.for(%w[medicago-sativa medicago-sativa secale-cereale])
 

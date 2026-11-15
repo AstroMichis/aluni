@@ -256,6 +256,12 @@ en:
         soil_moisture:
           label: Soil moisture (root zone)
           value: "Percentile %{value} of its usual range (0 driest, 100 wettest)"
+        water_storage:
+          label: Regional water storage
+          value: "%{value} cm against 2004-2009 (groundwater, soil and surface water)"
+        water_stress:
+          label: Crop water stress
+          value: "%{value} (1 no stress, under 0.3 short of water)"
       index:
         title: My fields · %{app_name}
         lede: Your fields with their crop, their soil and what is still missing.
@@ -549,6 +555,8 @@ en:
           ph: pH
           texture: Texture
           drainage: Drainage
+          depth: Soil depth
+          salinity: Salinity
         statuses:
           optimal: optimal
           possible: possible
@@ -776,6 +784,7 @@ en:
         gaps: What we do not know
         use_as_plan: Use as plan for %{year}
         disclaimer: Scores combine public data at your pin with rules of thumb. They support your judgment and your local experts; they never replace them.
+        glossary: What each number means and its limits.
       score: "%{value}/100"
       no_data: no data
       strategies:
@@ -797,7 +806,7 @@ en:
       criteria:
         crop_fit:
           short: Crop fit
-          how: FAO GAEZ suitability of each season's crop at your pin.
+          how: FAO GAEZ suitability of each season's crop at your pin, less what your soil's texture, drainage, depth and salinity take off (FAO ECOCROP).
           benefit: The crops suit your land and climate better.
         pest_break:
           short: Pest break
@@ -828,9 +837,22 @@ en:
         water: "%{crop} needs about %{need} mm; the usual rain covers about %{effective} mm."
         slope: Slope of %{value} %.
         cover_history: "This field already had a cover crop (%{crops}) in %{years}."
+        soil_texture: "%{crop}: grows best in %{need} soil; yours is %{value}."
+        soil_drainage: "%{crop}: needs this drainage: %{need}; yours is %{value}."
+        soil_depth: "%{crop}: needs soil at least %{need} deep; yours is %{value}."
+        soil_salinity: "%{crop}: takes salinity up to %{need}; yours is %{value}."
+        irrigation_supply: "You irrigate from %{source}, and the region's water store is well below its usual level."
+        double_crop: "After %{main} this field grows %{second} in the same season; the timeline keeps it."
         heavy_rain: "About %{days} days a year bring 25 mm of rain or more, most of them in %{months} (%{years} years of satellite rain)."
         soil_dry: "Over the last year the root zone was in the driest fifth of its usual range in %{months} (satellite soil moisture)."
         soil_usual: Over the last year the root zone stayed within its usual range of moisture (satellite soil moisture).
+        water_stress: "The plants at your pin were short of water in %{months} over the last year (evaporative stress index under 0.3, seen from the space station)."
+        water_stress_none: The plants at your pin did not show strong water stress over the last year (seen from the space station).
+        vegetation_below: "The vegetation at your pin was well below its usual green in %{months}, against %{years} years of satellite records."
+        vegetation_usual: "The vegetation at your pin followed its usual rhythm over the last year, against %{years} years of satellite records."
+        storage_low: "The region's water store (groundwater, soil and surface water) is about %{cm} cm below its 2004-2009 level, and it moves %{trend} cm a decade."
+        storage_below: "The region's water store is about %{cm} cm below its 2004-2009 level (trend %{trend} cm a decade)."
+        storage_above: "The region's water store is about %{cm} cm above its 2004-2009 level (trend %{trend} cm a decade)."
         heavy_rain_rare: "Heavy rain is rare here: about %{days} days a year with 25 mm or more (%{years} years of satellite rain)."
         same_family: "%{crop} would follow its own family."
         monoculture: "%{crop} three seasons or more in a row."
@@ -841,12 +863,15 @@ en:
         harvester: Small grains need a combine; your equipment does not list one.
         same_family: Pests that live on one family could carry over.
         dry_soil: The root zone was unusually dry for several months of the last year. Check the soil's moisture before planting and keep residue to hold it.
+        water_storage: The region's groundwater and surface water are well below their usual level. Wells, canals and reservoirs may give less; check your water rights and favour crops that need less irrigation.
         heavy_rain: Days of 50 mm or more come every year here. Row crops leave soil bare between seasons; keep residue or a cover crop over the stormy months.
         establishment: Alfalfa takes a season to establish and needs a market or animals.
         new_crop: It brings a crop your field has not grown before, and you prefer to change carefully. Try it on part of a field first.
         contract: You sell under contract or for export. Check with your buyer before changing the crop.
       gaps:
         market: 'Prices and buyers: there is no source for your local market yet.'
+        water_source: Where the irrigation water comes from is not known yet (well, canal, reservoir).
+        second_crop: You grow two crops a year, but the second one is not recorded yet; add it to the field's history to see it on the timeline.
         soil: Your soil texture is not confirmed yet.
         ecocrop: The crops' temperature and pH requirements (FAO ECOCROP) are not loaded yet.
         suitability: FAO GAEZ has no value for some of these crops at your pin.

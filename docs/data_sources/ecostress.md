@@ -9,6 +9,11 @@ Crop water use and heat stress, measured from thermal infrared. ECOSTRESS (on th
 | `MOD11A2.061` | MODIS land surface temperature, day and night | 1 km | 8 day | 2000-02-18 |
 | `MOD16A2GF.061` | MODIS actual ET and potential ET, gap-filled | 500 m | 8 day | 2000-01-01 |
 
+
+## What the app uses: water stress (`Weather::WaterStress`)
+
+`Fields::FetchAppeearsJob` (source `ecostress`) asks AppEEARS for `ECO_L4T_ESI.002` `ESI` and `cloud` at the pin over the last 3 years. AppEEARS names the results file with dashes for the product's dots **and underscores** (`...-ECO-L4T-ESI-002-results.csv`). Measured on 2026-11-15 at Buin, Chile (fixture `spec/fixtures/data_sources/ecostress_esi_buin.csv`): 190 overpasses from 2023-11 to 2026-10, of which 69 clear (clouded rows come with an empty ESI and `cloud` 1). The usual ESI is 0.1 to 0.2 from December to March (the dry Mediterranean summer) and above 0.8 from June to October; the months of stress over the last year were December to March.
+
 ## Layers (Captured from the AppEEARS catalog)
 
 ### `ECO_L2T_LSTE.002`

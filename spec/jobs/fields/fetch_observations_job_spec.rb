@@ -11,7 +11,7 @@ RSpec.describe Fields::FetchObservationsJob do
     described_class.perform_now(field.id)
 
     expect(field.observations.pluck(:source, :status).to_h).to eq(
-      "fcc" => "ok", "nasa_power" => "ok", "gaez" => "ok", "vegetation" => "ok", "nasadem" => "ok", "gpm_imerg" => "ok", "ssurgo" => "ok", "usgs_elevation" => "ok", "cdl" => "ok")
+      "fcc" => "ok", "nasa_power" => "ok", "gaez" => "ok", "vegetation" => "ok", "nasadem" => "ok", "gpm_imerg" => "ok", "grace" => "ok", "ssurgo" => "ok", "usgs_elevation" => "ok", "cdl" => "ok")
     expect(field.observation("vegetation").payload["months"].size).to eq(6)
     expect(field.observation("gaez").payload.dig("crops", "Maize", "yield")).to eq(6867.0)
     expect(field.observation("cdl").payload["years"]).to include((Date.current.year - 1).to_s => "Corn")

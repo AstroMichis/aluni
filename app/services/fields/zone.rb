@@ -16,7 +16,7 @@ module Fields
     attr_reader :field, :cells, :index
 
     # What Rotations::Comparator and Rotations::Timeline read besides the crops.
-    delegate :record, :observation, :cover_crops, to: :field
+    delegate :record, :observation, :cover_crops, :double_crops, to: :field
 
     # The field's zones, the largest first; cells with no crop this season
     # come last as a fallow zone.

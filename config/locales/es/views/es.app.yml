@@ -256,6 +256,12 @@ es:
         soil_moisture:
           label: Humedad del suelo (raíces)
           value: "Percentil %{value} de lo habitual (0 lo más seco, 100 lo más húmedo)"
+        water_storage:
+          label: Agua almacenada en la región
+          value: "%{value} cm frente a 2004-2009 (agua subterránea, del suelo y superficial)"
+        water_stress:
+          label: Estrés hídrico del cultivo
+          value: "%{value} (1 sin estrés, bajo 0,3 le falta agua)"
       index:
         title: Mis terrenos · %{app_name}
         lede: Tus terrenos con su cultivo, su suelo y lo que todavía falta.
@@ -549,6 +555,8 @@ es:
           ph: pH
           texture: Textura
           drainage: Drenaje
+          depth: Profundidad del suelo
+          salinity: Salinidad
         statuses:
           optimal: óptimo
           possible: posible
@@ -776,6 +784,7 @@ es:
         gaps: Lo que no sabemos
         use_as_plan: Usar como plan para %{year}
         disclaimer: Los puntajes combinan datos públicos de tu punto con reglas prácticas. Apoyan tu criterio y a tus expertos locales; nunca los reemplazan.
+        glossary: Qué significa cada número y sus límites.
       score: "%{value}/100"
       no_data: sin datos
       strategies:
@@ -797,7 +806,7 @@ es:
       criteria:
         crop_fit:
           short: Aptitud
-          how: Aptitud FAO GAEZ del cultivo de cada temporada en tu punto.
+          how: Aptitud FAO GAEZ del cultivo de cada temporada en tu punto, menos lo que restan la textura, el drenaje, la profundidad y la salinidad de tu suelo (FAO ECOCROP).
           benefit: Los cultivos se adaptan mejor a tu tierra y tu clima.
         pest_break:
           short: Corte de plagas
@@ -828,9 +837,22 @@ es:
         water: "%{crop} necesita unos %{need} mm; la lluvia usual cubre unos %{effective} mm."
         slope: Pendiente de %{value} %.
         cover_history: "Este terreno ya tuvo un cultivo de cobertura (%{crops}) en %{years}."
+        soil_texture: "%{crop}: crece mejor en suelo %{need}; el tuyo es %{value}."
+        soil_drainage: "%{crop}: necesita este drenaje: %{need}; el tuyo: %{value}."
+        soil_depth: "%{crop}: necesita un suelo de al menos %{need}; el tuyo es %{value}."
+        soil_salinity: "%{crop}: tolera salinidad de hasta %{need}; la tuya es %{value}."
+        irrigation_supply: "Riegas desde %{source}, y el agua almacenada en la región está muy por debajo de lo habitual."
+        double_crop: "Después de %{main} este terreno siembra %{second} en la misma temporada; la línea de tiempo lo mantiene."
         heavy_rain: "Unos %{days} días al año llueven 25 mm o más, sobre todo en %{months} (%{years} años de lluvia por satélite)."
         soil_dry: "En el último año la zona de raíces estuvo en el quinto más seco de lo habitual en %{months} (humedad del suelo por satélite)."
         soil_usual: En el último año la humedad de la zona de raíces se mantuvo dentro de lo habitual (humedad del suelo por satélite).
+        water_stress: "Las plantas de tu punto tuvieron falta de agua en %{months} durante el último año (índice de estrés evaporativo bajo 0,3, visto desde la estación espacial)."
+        water_stress_none: Las plantas de tu punto no mostraron estrés hídrico fuerte en el último año (visto desde la estación espacial).
+        vegetation_below: "La vegetación de tu punto estuvo bastante por debajo de su verde habitual en %{months}, frente a %{years} años de registros satelitales."
+        vegetation_usual: "La vegetación de tu punto siguió su ritmo habitual en el último año, frente a %{years} años de registros satelitales."
+        storage_low: "El agua almacenada en la región (subterránea, del suelo y superficial) está unos %{cm} cm por debajo de su nivel de 2004-2009, y cambia %{trend} cm por década."
+        storage_below: "El agua almacenada en la región está unos %{cm} cm por debajo de su nivel de 2004-2009 (tendencia %{trend} cm por década)."
+        storage_above: "El agua almacenada en la región está unos %{cm} cm por encima de su nivel de 2004-2009 (tendencia %{trend} cm por década)."
         heavy_rain_rare: "Aquí la lluvia fuerte es rara: unos %{days} días al año con 25 mm o más (%{years} años de lluvia por satélite)."
         same_family: "%{crop} seguiría a su propia familia."
         monoculture: "%{crop} tres temporadas o más seguidas."
@@ -841,12 +863,15 @@ es:
         harvester: Los cereales pequeños necesitan cosechadora; tu equipo no la incluye.
         same_family: Las plagas de una misma familia podrían mantenerse.
         dry_soil: La zona de raíces estuvo inusualmente seca varios meses del último año. Revisa la humedad del suelo antes de sembrar y deja rastrojo para conservarla.
+        water_storage: El agua subterránea y superficial de la región está muy por debajo de lo habitual. Pozos, canales y embalses pueden entregar menos; revisa tus derechos de agua y prefiere cultivos que necesiten menos riego.
         heavy_rain: Aquí hay días de 50 mm o más todos los años. Los cultivos en hilera dejan el suelo descubierto entre temporadas; deja rastrojo o un cultivo de cobertura en los meses de tormenta.
         establishment: La alfalfa tarda una temporada en establecerse y necesita mercado o animales.
         new_crop: Trae un cultivo que tu campo no ha tenido, y prefieres cambiar con cuidado. Pruébalo primero en una parte del campo.
         contract: Vendes por contrato o para exportar. Consulta con tu comprador antes de cambiar el cultivo.
       gaps:
         market: 'Precios y compradores: todavía no hay fuente para tu mercado local.'
+        water_source: Todavía no se sabe de dónde viene el agua de riego (pozo, canal, reservorio).
+        second_crop: Siembras dos cultivos al año, pero el segundo todavía no está registrado; agrégalo al historial del terreno para verlo en la línea de tiempo.
         soil: La textura de tu suelo todavía no está confirmada.
         ecocrop: Los requisitos de temperatura y pH de los cultivos (FAO ECOCROP) todavía no están cargados.
         suitability: FAO GAEZ no tiene valor para algunos de estos cultivos en tu punto.

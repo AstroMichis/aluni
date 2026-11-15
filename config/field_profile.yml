@@ -45,6 +45,9 @@ sources:
   fao56:            { name: "FAO-56", layer: global, scale: species, resolution: "-", doc: fao56_crop_coefficients.md, status: planned }
   srtm:             { name: "NASADEM (SRTM)", layer: global, scale: parcel, resolution: "30 m", doc: terrain.md, status: connected }
   hls:              { name: "HLS (Landsat + Sentinel-2)", layer: global, scale: parcel, resolution: "30 m", doc: vegetation_indices.md, status: connected }
+  grace:            { name: "NASA GRACE / GRACE-FO", layer: global, scale: region, resolution: "3° mascons (0.5° grid)", doc: grace.md, status: connected }
+  modis:            { name: "NASA MODIS NDVI", layer: global, scale: zone, resolution: "250 m", doc: vegetation_indices.md, status: connected }
+  ecostress:        { name: "NASA ECOSTRESS", layer: global, scale: parcel, resolution: "70 m", doc: ecostress.md, status: connected }
   modis_phenology:  { name: "MODIS MCD12Q2", layer: global, scale: zone, resolution: "500 m", doc: vegetation_indices.md, status: planned }
   smap:             { name: "NASA SMAP L4", layer: global, scale: zone, resolution: "9 km", doc: smap.md, status: connected }
   gpm_imerg:        { name: "NASA GPM IMERG", layer: global, scale: zone, resolution: "0.1°", doc: gpm_imerg.md, status: connected }
@@ -67,6 +70,9 @@ observations:
   nasadem: srtm
   gpm_imerg: gpm_imerg
   smap: smap
+  modis: modis
+  grace: grace
+  ecostress: ecostress
 
 data:
   farm:
@@ -325,6 +331,19 @@ data:
       observation: { value: smap.latest.pctl }
       precision: 0
       sources: { global: [smap] }
+      feeds: [water, risk]
+    water_storage:
+      group: climate
+      origin: auto
+      observation: { value: grace.recent_cm }
+      sources: { global: [grace] }
+      feeds: [water, risk]
+    water_stress:
+      group: climate
+      origin: auto
+      observation: { value: ecostress.latest.esi }
+      precision: 2
+      sources: { global: [ecostress] }
       feeds: [water, risk]
 
 # The add-a-field form: one question per screen, in this order. The profile

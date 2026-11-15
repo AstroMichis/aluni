@@ -6,7 +6,8 @@
 #   mise exec -- bin/rails ecocrop:extract CSV=path/to/EcoCrop_DB.csv
 #
 # Temperatures in °C, rainfall in mm per year, pH, growing period in days;
-# TEXT and DRA are ECOCROP's own classes (heavy/medium/light/organic, poorly/well/excessive).
+# TEXT, DRA, DEP and SAL are ECOCROP's own classes (heavy/medium/light/organic; poorly/well/excessive;
+# shallow/medium/deep; low/medium/high dS/m), the optimal one; the R columns are the range tolerated.
 # ECOCROP keeps older botanical names for a few crops; their rows are stored
 # under the current name config/crops/agronomy.yml uses.
 ECOCROP_SYNONYMS = {
@@ -18,7 +19,7 @@ namespace :ecocrop do
   desc "Extract ECOCROP requirements for config/crops/agronomy.yml into config/ecocrop.yml (CSV=path)"
   task extract: :environment do
     path = ENV.fetch("CSV") { abort "Pass CSV=path/to/EcoCrop_DB.csv" }
-    columns = %w[FAMNAME TOPMN TOPMX TMIN TMAX ROPMN ROPMX RMIN RMAX PHOPMN PHOPMX PHMIN PHMAX TEXT DRA GMIN GMAX]
+    columns = %w[FAMNAME TOPMN TOPMX TMIN TMAX ROPMN ROPMX RMIN RMAX PHOPMN PHOPMX PHMIN PHMAX TEXT TEXTR DRA DRAR DEP DEPR SAL SALR GMIN GMAX]
     wanted = YAML.safe_load(File.read(Crops::Agronomy::PATH)).values.map { |crop| crop["scientific"] }
     # The OpenCLIM CSV is Latin-1 in places (accented common names); read UTF-8
     # when the file is valid UTF-8, otherwise transcode from ISO-8859-1.

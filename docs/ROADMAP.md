@@ -39,7 +39,7 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 **Rate limit (fixed):** Planetary Computer rate-limits bursts (429). The client now asks 2 months at a time, retries 429/5xx with exponential backoff and jitter (about 2, 4, 8, 16 s, or `Retry-After`), and stops the other months once one fails. A rate-limited field reruns only the NDVI later (15, 30, 45 min plus jitter, 3 times).
 
 **Still missing:**
-- **NASA breadth.** Done: POWER, Landsat, NASADEM (SRTM), GPM IMERG, SMAP. Missing from the challenge list: ECOSTRESS, MODIS, GRACE.
+- **NASA breadth.** Done: every dataset on the challenge list (POWER, Landsat, NASADEM/SRTM, GPM IMERG, SMAP, MODIS, ECOSTRESS, GRACE).
 - **Alerts on the phone.** The daily alerts run and show in the app; push and email go out once the `cron`, `push` and `mail` switches are resumed and the shells ship.
 - **Global soil.** Outside the US it depends on the farmer (the slope now comes from NASADEM).
 
@@ -50,24 +50,24 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 | P0.1 | Gemini on (Vertex, daily cap 2000) | ✅ |
 | P0.2 | Finishing the profile opens **Your plan**; a "Your rotation plan" card sits above the home dial | ✅ #21 |
 | P0.3 | Water need for 20 of 27 catalog crops (FAO-56 Tables 11/12), with seasons flipped south of 15°S | ✅ #21 |
-| P0.3b | ECOCROP requirements (`config/ecocrop.yml`, 25 of 27; the task reads the Latin-1 CSV and maps older names) | ✅ #21; tomato and cabbage pending |
+| P0.3b | ECOCROP requirements (`config/ecocrop.yml`, 27 of 27; the task reads the Latin-1 CSV and maps older names such as Lycopersicon esculentum) | ✅ #21, tomato and cabbage added |
 | P0.4 | Use the profile's priorities: conservation practices count as the soil health goal; a cautious farmer sees "new crop" risks; contract or export sales see "check your buyer" | ✅ #21 |
-| P0.5 | Cover crops: the timeline marks every bare window of two months or more and proposes a cover from the catalog by its weather (rye where it freezes, oats when cool, cowpea when warm; dry windows flagged), with the exposed months it saves (the first month still counts); the comparator cites the field's past cover crops (`role: cover`). Second crops (`role: second`) still wait | ✅ cover crops; second crops ⏳ |
-| P0.6 | Use irrigation water source and soil depth, salinity and drainage in the water and fit scores | ⏳ |
+| P0.5 | Cover crops: the timeline marks every bare window of two months or more and proposes a cover from the catalog by its weather (rye where it freezes, oats when cool, cowpea when warm; dry windows flagged), with the exposed months it saves (the first month still counts); the comparator cites the field's past cover crops (`role: cover`). Second crops (`role: second`): the timeline repeats the one the field grew after the same main crop (its own months, or from the month after the main harvest for its FAO-56 length), the plan cites it, and "two crops a year" with none recorded is a gap | ✅ #32 and second crops |
+| P0.6 | Water source and soil in the scores: each soil property outside a crop's ECOCROP tolerance (texture, drainage, depth, salinity) takes 20 crop-fit points (5 when only tolerated) and is cited; irrigation from wells, canals or reservoirs loses 15 water points where GRACE finds the region's store depleted; irrigation from an unknown source is a gap | ✅ |
 
 ## P1: NASA depth (each item checks one dataset off the challenge list)
 
-Suggested next order: MODIS and ECOSTRESS (same AppEEARS task path as SMAP), then GRACE.
+All done. AppEEARS runs one task at a time per account, so a new field's SMAP, MODIS and ECOSTRESS arrive over an hour or two; load the demo farms hours before the demo.
 
 | Item | Dataset | How |
 |---|---|---|
 | ✅ Crop health and **bare-field periods** | Landsat (NASA/USGS) + Sentinel-2 NDVI | Done (#22): `monthly_ndvi`, the `vegetation` observation, `Fields::Vegetation`, "Your field from space". Next: compare the observed bare months with the timeline's current rotation. |
-| Long-term vegetation baseline and anomalies | MODIS NDVI (16-day, 20+ years) | AppEEARS or Planetary Computer |
+| ✅ Long-term vegetation baseline and anomalies | MODIS NDVI (16-day, since 2001) | Done: `Fields::FetchAppeearsJob` source `modis`, `Fields::VegetationNormal`; the usual NDVI of each month is drawn on "Your field from space" and the plan cites months well below it. |
 | ✅ **Global slope** for erosion | NASADEM (SRTM) | Done: `PlanetaryComputer::Client#terrain`, the `nasadem` observation; 3DEP first in the US, NASADEM everywhere else (56°S to 60°N) in the profile and the comparator. |
 | ✅ Extreme rain frequency | GPM IMERG | Done: 20 years of daily IMERG through NASA POWER (`IMERG_PRECTOT`, no account), `Weather::RainExtremes`, the `gpm_imerg` observation; storm-prone months and 50 mm days raise the erosion of row crops in the comparator. The stormy months are on the 3-season timeline. |
-| ✅ Soil moisture and anomalies | SMAP L4 | Done: `Appeears::Client` (submit, poll, results CSV), `Fields::FetchSoilMoistureJob` (the `smap` observation stays `pending` while AppEEARS works), `Weather::SoilMoisture`; the plan cites dry months and warns a rainfed field. |
-| Long-term water trend | GRACE / GRACE-FO | One trend indicator per region |
-| Heat stress and evaporation | ECOSTRESS | AppEEARS |
+| ✅ Soil moisture and anomalies | SMAP L4 | Done: `Appeears::Client` (submit, poll, results CSV), `Fields::FetchAppeearsJob` (source `smap`) (the `smap` observation stays `pending` while AppEEARS works), `Weather::SoilMoisture`; the plan cites dry months and warns a rainfed field. |
+| ✅ Long-term water trend | GRACE / GRACE-FO | Done: `Grace::Client` reads the cell's chunks of the JPL mascon file by HTTP Range (Earthdata token), `Weather::WaterStorage`; the plan cites the region's store against 2004-2009 and warns irrigated fields when it is depleted. |
+| ✅ Heat stress and evaporation | ECOSTRESS | Done: `Fields::FetchAppeearsJob` source `ecostress` (ESI, 70 m), `Weather::WaterStress`; the plan cites months of water stress. |
 | Global soil | SoilGrids (ISRIC) | REST point query; fills texture and pH outside SSURGO |
 
 ## P2: a reason to come back
@@ -78,9 +78,9 @@ Suggested next order: MODIS and ECOSTRESS (same AppEEARS task path as SMAP), the
 
 ## P3: the wow
 
-- **Scenario sliders** (+2 °C, −20 % rain) that recompute water need and frost for each strategy.
-- **NDVI overlay** on the field map (Planetary Computer tiles).
-- **Glossary and uncertainty** (evapotranspiration, NDVI, anomalies), and satellite next to ground readings (the field station, `docs/DEVICES.md`).
+- ✅ **Scenarios** on Your plan (`Weather::Scenario`): today, +1 °C, +2 °C, +2 °C with 20 % less rain. NASA POWER's normals shifted (frost days fall a quarter per °C), so FAO-56 water need, scores and the timeline's frost, heat and dry months recompute; the "why" is told the scenario.
+- ✅ **NDVI map** in "Your field from space" (`ndvi_map_controller.js`, `VegetationHelper#ndvi_tiles_url`): Esri imagery with the latest clear scene's NDVI on top, tiles rendered by Planetary Computer's data API from the same band math as the point series; Leaflet loads when the map scrolls into view; the layer can be hidden.
+- ✅ **Glossary and uncertainty** (`/glossary`, public, en/es): 14 terms, each with what it is, the dataset and scale behind it, and its limits; the evidence sources on Your plan link to their entry. Still to come: satellite next to ground readings (the field station, `docs/DEVICES.md`).
 
 ## Demo checklist
 
@@ -91,5 +91,5 @@ Suggested next order: MODIS and ECOSTRESS (same AppEEARS task path as SMAP), the
   bin/rails demo:farm USER_ID=<id> PRESET=chile      # Spanish: Buin, canal-irrigated maize and wheat, cautious, sells under contract
   ```
   In production: `kamal app exec --reuse --roles=web 'bin/rails demo:farm USER_ID=.. PRESET=..'`. It refuses an account with other farms (`FORCE=1` overrides), replaces only its own sample farm when run again, and waits for the worker to fetch the data at the pin (about a minute; SMAP arrives later).
-- [ ] Disk snapshot of the VM before the demo (`docs/deploy/DEPLOY.md`)
-- [ ] Script: landing pin → profile chat → Your plan → one strategy's why, evidence and risks → the timeline → the field station catalogue
+- [x] Disk snapshot of the VM before the demo (`docs/deploy/DEPLOY.md`): `aluni-vm-2026-11-15`; take a fresh one on the day
+- [x] Script: `docs/DEMO.md` (landing pin → profile → Your plan → evidence → field from space → timeline → risks → weather → field station)

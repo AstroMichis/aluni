@@ -50,6 +50,14 @@ RSpec.describe "Plan the planting", type: :request do
     get app_field_rotation_path(field, locale: "en"), headers: native_headers
     expect(response.body).to include('class="zone-picker"').and include("Corn · 1 ha").and include("Beans · 1 ha")
 
+    # A climate scenario keeps the zone picked, and the zone picker keeps the scenario.
+    scenario = (Weather::Scenario::PRESETS.keys - [ "today" ]).first
+    get app_field_rotation_path(field, locale: "en", zone: 1, scenario: scenario), headers: native_headers
+    path = "/en/app/fields/#{field.id}/rotation"
+    expect(response.body).to include(%(href="#{path}?zone=1"))                                  # back to today, same zone
+    expect(response.body).to include(%(href="#{path}?scenario=#{scenario}&amp;zone=0"))           # the other zone, same scenario
+    expect(response.body).to include(%(src="#{path}/why/current?scenario=#{scenario}&amp;zone=1")) # the "why" of this zone and scenario
+
     patch plan_app_crops_path(locale: "en"), headers: native_headers, params: { field: field.id, zone: 1, crop: "triticum-aestivum" }
     plan = field.field_crops.where(season_year: year + 1).sole
     expect(plan).to have_attributes(scientific_name: "Triticum aestivum", share: 0.5)

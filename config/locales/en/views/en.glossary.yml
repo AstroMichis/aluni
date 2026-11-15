@@ -1,0 +1,85 @@
+en:
+  glossary:
+    show:
+      title: Glossary · %{app_name}
+      description: What each number in the plan means, which NASA dataset measures it, at what scale, and what it cannot tell.
+      nav_label: Main navigation
+      back_home: Home
+      headline: What the numbers mean
+      lede: "%{app_name} turns satellite and model data into a few sentences about your field. Here is what each one is, where it comes from, and its limits: none of it replaces looking at your field or asking someone who knows it."
+      index_label: Terms
+      from: "From:"
+      limits: "Limits:"
+      closing: Every value in the app names its source. When two sources disagree with what you see on the ground, trust the ground and tell your adviser.
+      source_title: What this source measures and its limits
+    terms:
+      ndvi:
+        name: NDVI (how green the field is)
+        what: A number from about 0 to 1 computed from the red and near-infrared light the plants reflect. Bare soil or stubble reads under 0.25; a closed, growing canopy over 0.45. The app keeps one clear-sky value per month at your pin and marks the bare months.
+        from: Landsat 8 and 9 (NASA/USGS) and Sentinel-2 (ESA), 10 to 30 m, every few days; read through Microsoft Planetary Computer, cloudy pixels discarded.
+        limits: One pixel at the pin, not the whole field. A month with only cloudy passes stays unknown. Weeds and residue also look green or bare.
+      vegetation_normal:
+        name: Usual green for the month
+        what: The median NDVI of each calendar month over the past years at your spot, drawn as a tick on each month of the last year, so you can see whether this year was greener or browner than usual.
+        from: MODIS on NASA's Terra satellite (MOD13Q1), every 16 days at 250 m since 2001, through NASA AppEEARS.
+        limits: 250 m mixes your field with its neighbours. A change of crop changes the curve; "below normal" is a prompt to look, not a diagnosis.
+      evapotranspiration:
+        name: Evapotranspiration (ET)
+        what: The water the air takes from the soil and the plants, in mm a day. The reference value (ET0) is for a short green grass; each crop takes a share of it that changes over its season.
+        from: The FAO-56 Penman-Monteith method on NASA POWER's monthly normals (temperature, humidity, wind, sunshine).
+        limits: Monthly averages from a cell about 50 km wide; a hot, windy week takes more than the average says.
+      water_need:
+        name: Crop water need
+        what: How much water a crop uses over its season (mm), against how much of the usual rain it can use (effective rain). The gap is what irrigation or the soil's stored water has to cover.
+        from: FAO-56 crop coefficients (Allen et al., 1998) times the reference ET from NASA POWER, from your field's sowing month or FAO-56's.
+        limits: It does not count water already in the soil at sowing, so in humid places the shortfall reads high. Normals, not this year's weather.
+      soil_moisture:
+        name: Root-zone soil moisture
+        what: How much water the top metre of soil holds, and its percentile against what is usual there (0 driest, 100 wettest). The app lists the months that were in the driest fifth over the last year.
+        from: NASA SMAP L4 (the SMAP satellite's radiometer assimilated into a land model), 9 km, every 3 hours, through NASA AppEEARS.
+        limits: One 9 km cell does not tell an irrigated field from a dry one next to it. In the driest months the product sometimes leaves the percentile empty.
+      water_stress:
+        name: Water stress (ESI)
+        what: The evaporative stress index, the water the plants actually use over what they could use. Near 1 they have all they need; under 0.3 they are short of water.
+        from: ECOSTRESS on the International Space Station (NASA), 70 m, at irregular days and hours, through NASA AppEEARS; cloudy readings discarded.
+        limits: A few clear readings a month at most, and some months none. A reading is one moment of one day.
+      water_storage:
+        name: Regional water storage
+        what: All the water in and on the ground across your region (groundwater, soil, snow, lakes, rivers) as a thickness in cm against its 2004-2009 average. Below zero, wells, canals and reservoirs draw on a smaller store.
+        from: NASA's GRACE and GRACE-FO satellites, which weigh the water through tiny changes in gravity; JPL mascons, monthly since 2002.
+        limits: A region about 300 km wide, never your farm alone. It tells the trend of the water bank, not how much a given well has.
+      heavy_rain:
+        name: Heavy rain days
+        what: How many days a year bring 25 mm of rain or more (and 50 mm or more), and in which months, over the last 20 years. Those are the months bare soil washes away.
+        from: NASA GPM IMERG (satellite rain merged with gauges), 0.1° (about 10 km), daily, through NASA POWER.
+        limits: "In mountains one cell can mix a wet slope with a dry valley. It counts days, not hours: a 30-minute storm and a rainy day look alike."
+      slope:
+        name: Slope
+        what: How steep the ground is at your pin, in percent (5 % is 5 m up over 100 m). On steeper ground row crops leave soil to wash away.
+        from: USGS 3DEP (lidar, 1 to 10 m) in the United States; NASA NASADEM (the Space Shuttle radar, 30 m) everywhere else, read 90 m around the pin.
+        limits: A slope for the area around the pin, not a terrace or a single row. Radar heights are in whole metres, so very flat or very small fields read roughly.
+      suitability:
+        name: Crop suitability
+        what: How well a crop fits the climate, soil and terrain of your spot, from 0 to 10,000, and the yield it could attain, under rainfed farming at the input level of your farm.
+        from: FAO GAEZ v4 (Global Agro-Ecological Zones), about 9 km.
+        limits: A regional potential, not a forecast for your field or this year.
+      requirements:
+        name: Crop requirements
+        what: The temperature, rain, pH, texture, drainage, depth and salinity a crop grows best in, and what it tolerates. The plan compares them with your field's climate and the soil you confirmed.
+        from: FAO ECOCROP, expert ranges per species.
+        limits: Ranges for the species, not for a variety; your local varieties may do better or worse.
+      climate_normals:
+        name: Climate normals
+        what: The usual temperature, rain, humidity, wind, sunshine and frost days of each month at your pin, averaged over decades.
+        from: NASA POWER (Prediction Of Worldwide Energy Resources), about 50 km cells.
+        limits: "Regional context: valleys, hills and the coast can differ from the cell's average."
+      percentile:
+        name: Percentile and anomaly
+        what: "A percentile says where a value sits among the usual ones: 20 means only a fifth of the usual values were lower. An anomaly is the difference from the usual average."
+        from: Each dataset's own history at your pin (SMAP's climatology, MODIS since 2001, GRACE's 2004-2009 average).
+        limits: The usual is only as long as the record behind it, and the climate is changing under it.
+      scenario:
+        name: Climate scenarios
+        what: '"What if" on the plan: the normals warmed by 1 or 2 °C, with or without 20 % less rain, and everything recomputed from them (water need, frost, heat and dry months).'
+        from: NASA POWER normals shifted by the app, with FAO-56 for the water need.
+        limits: A sketch to compare strategies under a plausible change, not a climate projection for your place.
