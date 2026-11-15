@@ -1,0 +1,48 @@
+es:
+  sign_in_codes:
+    choice:
+      passkey_title: "Usa tu cara o tu huella"
+      passkey_line: "Tu dispositivo comprueba que eres tú. No nos envía nada sobre ti."
+      what_is_passkey_question: "¿Qué es una llave de acceso?"
+      what_is_passkey: "Una llave de acceso es una llave que tu dispositivo guarda para este sitio y abre con tu cara, tu huella o el PIN del dispositivo. Nunca sale de tu dispositivo, así que no hay nada que recordar ni nada que robar."
+      email_title: "Envíame un código por correo"
+      email_line: "Te enviamos un código de 6 dígitos a tu correo. Escríbelo aquí. Nada que recordar."
+      email_label: "Tu correo"
+      name_label: "Tu nombre"
+      send_button: "Enviar el código"
+      errors:
+        invalid_email: "Eso no parece una dirección de correo. Revísala e inténtalo de nuevo."
+        unavailable: "El correo no está disponible ahora. Usa tu cara o tu huella."
+        expired: "Ese código ya no sirve. Pide uno nuevo."
+        signups_closed: "Las cuentas nuevas aún no están abiertas. Entra con el correo que ya usas o vuelve pronto."
+    code:
+      sent: "Te envié un código a %{destination}."
+      valid_for: "Sirve durante 10 minutos."
+      label: "Tu código de 6 dígitos"
+      placeholder: "000 000"
+      continue: "Continuar"
+      resend: "Enviar otro código"
+      resend_in: "Reenviar en %{seconds} s"
+      attempts_left:
+        one: "Te queda 1 intento."
+        other: "Te quedan %{count} intentos."
+      wrong: "Ese código no coincide."
+      use_passkey: "Usar mi cara o mi huella"
+      check_spam: "¿Nada todavía? Espera un minuto y revisa la carpeta de spam."
+    name:
+      title: "¿Cómo debería llamarte?"
+      confirmed: "%{destination} está confirmado."
+      label: "Tu nombre"
+      hint: "Con un nombre o un apodo basta."
+      continue: "Continuar"
+      errors:
+        name_required: "Dime primero cómo llamarte."
+    link:
+      title: "Tu código"
+      line: "Escribe este código donde lo pediste:"
+      hint: "Es para %{destination} y sirve durante 10 minutos. Después puedes cerrar esta página."
+    show:
+      titles:
+        sign_in: "Iniciar sesión"
+        sign_up: "Crear una cuenta"
+        finder: "Guarda tu campo"

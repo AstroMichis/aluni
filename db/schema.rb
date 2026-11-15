@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_15_062636) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_15_190316) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,6 +24,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_062636) do
     t.datetime "updated_at", null: false
     t.index ["owner_type", "owner_id"], name: "index_action_push_native_devices_on_owner"
     t.index ["platform", "token"], name: "index_action_push_native_devices_on_platform_and_token", unique: true
+  end
+
+  create_table "auth_handoffs", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "token_digest", null: false
+    t.string "sign_in_method", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token_digest"], name: "index_auth_handoffs_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_auth_handoffs_on_user_id"
   end
 
   create_table "device_tokens", force: :cascade do |t|
@@ -108,6 +120,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_062636) do
     t.index ["farm_id"], name: "index_fields_on_farm_id"
   end
 
+  create_table "identities", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "provider", null: false
+    t.string "uid", null: false
+    t.string "email"
+    t.boolean "email_verified", default: false, null: false
+    t.string "name"
+    t.datetime "last_used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid", unique: true
+    t.index ["user_id", "provider"], name: "index_identities_on_user_id_and_provider", unique: true
+  end
+
   create_table "notification_deliveries", force: :cascade do |t|
     t.string "purpose", null: false
     t.string "recipient_type", null: false
@@ -176,7 +202,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_062636) do
     t.string "user_agent"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "sign_in_method", default: "passkey", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
+  create_table "sign_in_codes", force: :cascade do |t|
+    t.integer "channel", default: 0, null: false
+    t.string "destination", null: false
+    t.string "code_digest", null: false
+    t.datetime "expires_at", null: false
+    t.integer "attempts", default: 0, null: false
+    t.datetime "consumed_at"
+    t.datetime "verified_at"
+    t.datetime "used_at"
+    t.string "requester_ip"
+    t.string "locale", default: "en", null: false
+    t.jsonb "pending", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["destination", "created_at"], name: "index_sign_in_codes_on_destination_and_created_at"
   end
 
   create_table "users", force: :cascade do |t|
@@ -187,6 +231,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_062636) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "preferences", default: {}, null: false
+    t.datetime "email_verified_at"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true, where: "(email_address IS NOT NULL)"
     t.index ["webauthn_id"], name: "index_users_on_webauthn_id", unique: true
   end
@@ -204,11 +249,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_062636) do
     t.index ["user_id"], name: "index_web_push_subscriptions_on_user_id"
   end
 
+  add_foreign_key "auth_handoffs", "users"
   add_foreign_key "device_tokens", "users"
   add_foreign_key "farmer_profiles", "users"
   add_foreign_key "farms", "users"
   add_foreign_key "field_crops", "fields"
   add_foreign_key "fields", "farms"
+  add_foreign_key "identities", "users"
   add_foreign_key "onboarding_sessions", "users"
   add_foreign_key "passkeys", "users"
   add_foreign_key "sessions", "users"

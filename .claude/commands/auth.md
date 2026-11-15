@@ -1,4 +1,4 @@
-# /auth -- Passkeys, sessions and the native gate
+# /auth -- Passkeys, emailed codes, sessions and the web kill switch
 
 You are changing authentication for Aluni. The request is: $ARGUMENTS
 

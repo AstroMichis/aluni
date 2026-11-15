@@ -1,6 +1,8 @@
 # Every automatic message the app sends. Code calls
 #   NotificationRouter.deliver(recipient:, purpose:, payload:, idempotency_key:)
-# and never a mailer or a push sender directly.
+# and never a mailer or a push sender directly. The one exception is
+# SignInMailer#code (Auth::RequestCodeService): a sign-in code to someone who may
+# not have an account yet, sent inline, still subject to the mail switch.
 #
 # Per purpose:
 #   audience   user

@@ -22,6 +22,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+    <%# Shared files are tracked "reload" (a new digest after a deploy reloads the page); files only one layout
+        links are "dynamic", so a visit between the landing and the app swaps them without a full reload,
+        which would also drop any flash set across that boundary. %>
     <%= stylesheet_link_tag "base/variables", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "base/reset", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "base/typography", "data-turbo-track": "reload" %>
@@ -30,24 +33,26 @@
     <%= stylesheet_link_tag "components/button", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/card", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/badge", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "components/phone-frame", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "components/store-button", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "components/phone-frame", "data-turbo-track": "dynamic" %>
+    <%= stylesheet_link_tag "components/store-button", "data-turbo-track": "dynamic" %>
     <%= stylesheet_link_tag "components/input", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/toast", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "components/auth-choice", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "components/code-input", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/modal", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "components/intro", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "components/panel", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "components/finder", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "vendor/leaflet", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "components/intro", "data-turbo-track": "dynamic" %>
+    <%= stylesheet_link_tag "components/panel", "data-turbo-track": "dynamic" %>
+    <%= stylesheet_link_tag "components/finder", "data-turbo-track": "dynamic" %>
+    <%= stylesheet_link_tag "vendor/leaflet", "data-turbo-track": "dynamic" %>
     <%= stylesheet_link_tag "components/mascot", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/chat", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/progress", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/language-toggle", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "components/public-footer", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "components/public-footer", "data-turbo-track": "dynamic" %>
     <%= stylesheet_link_tag "layouts/container", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "layouts/grid", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "layouts/stack", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "pages/landing", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "pages/landing", "data-turbo-track": "dynamic" %>
     <%= stylesheet_link_tag "pages/auth", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "utilities/spacing", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "utilities/visibility", "data-turbo-track": "reload" %>

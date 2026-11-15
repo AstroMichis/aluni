@@ -40,6 +40,7 @@ RSpec.describe "Ask Aluni chat", type: :request do
       expect(response.body).to include(I18n.t("app.onboarding.show.progress.step", index: 1, total: total))
       expect(response.body).to include(I18n.t("app.onboarding.show.preview.title")).and include('id="profile-preview"')
       expect(response.body).to include('id="chat-companion"').and include("data-mascot-dock").and include('data-mascot-mode-value="docked"')
+      expect(response.body).to include('data-mascot-stage-value="3"')
       expect(response.body).to include(I18n.t("app.onboarding.show.composer_placeholder")).and include(I18n.t("app.onboarding.show.skip"))
       expect(user.reload.onboarding_session).to be_present
       expect(user.farms.count).to eq(1)

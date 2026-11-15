@@ -31,7 +31,7 @@ No inbound port but Tailscale SSH; TLS at Cloudflare; the app connects to Postgr
 
 ```
 bin/kamal app exec --reuse "bin/rails platform:status"
-bin/kamal app exec --reuse "bin/rails 'platform:resume[mail]'"      # after SMTP credentials and DNS records
+bin/kamal app exec --reuse "bin/rails 'platform:resume[mail]'"      # after SMTP credentials (Resend free tier) and the SPF, DKIM and DMARC records; this is also what turns emailed sign-in codes on
 bin/kamal app exec --reuse "bin/rails 'platform:resume[cron]'"      # after the first deploy is stable
 bin/kamal app exec --reuse "bin/rails 'platform:resume[gemini]'"    # after the Gemini backend is configured (Vertex: GOOGLE_CLOUD_PROJECT + roles/aiplatform.user on the VM's service account; api_key: credentials gemini.api_key) and a budget alert; the onboarding chat answers with continuation lines until then
 bin/kamal app exec --reuse "bin/rails 'platform:resume[push]'"      # after APNs/FCM credentials

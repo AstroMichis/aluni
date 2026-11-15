@@ -50,8 +50,9 @@ module Authentication
       redirect_to app_root_path if resume_session
     end
 
-    def start_new_session_for(user)
-      user.sessions.create!(user_agent: request.user_agent, ip_address: request.remote_ip).tap do |session|
+    # sign_in_method: "passkey" (the ceremonies) or "email_code" (SignInCodesController).
+    def start_new_session_for(user, sign_in_method: "passkey")
+      user.sessions.create!(user_agent: request.user_agent, ip_address: request.remote_ip, sign_in_method: sign_in_method).tap do |session|
         Current.session = session
         cookies.signed.permanent[:session_id] = { value: session.id, httponly: true, same_site: :lax }
       end

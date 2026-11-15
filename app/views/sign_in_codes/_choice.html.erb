@@ -1,0 +1,129 @@
+<%# Two equal ways in, both in the DOM and both folded at first (choice_controller.js opens the tapped
+    card and folds the other; passkey_controller.js runs its connect-time checks either way, and where
+    passkeys cannot work the email card starts open). Locals: mode ("sign_in" | "sign_up" | "finder"),
+    error (nil | :invalid_email | :unavailable | :expired | :signups_closed); every error comes from the
+    email path, so an error re-renders the email card open. In sign_in and sign_up modes the passkey card
+    carries its own passkey controller; in the finder that controller is on #finder (its button sits in
+    the panel footer, shown while this card is the chosen one) and the card holds the #finder-save form
+    with the finder's hidden flat inputs. The email card appears only where SignInCodesController can
+    answer it: mail configured and not paused, and the browser let in (NativeOnly). Its form posts the
+    same flat inputs plus "mode", so the server re-renders the right choice after an error. %>
+<% mode = local_assigns.fetch(:mode, "sign_in") %>
+<% error = local_assigns[:error] %>
+<% finder = mode == "finder" %>
+<% newcomer = mode != "sign_in" %>
+<% prefix = finder ? "finder" : "auth" %>
+<% heading = finder ? :h4 : :h2 %>
+<% email_offered = Platform::Features.mail? && !Platform::Switchboard.paused?(:mail) && (hotwire_native_app? || Platform::Features.native_web_access?) %>
+<% open = error && email_offered ? "email" : nil %>
+<div class="auth-choice" data-controller="choice" data-choice-open-class="auth-choice__card--open">
+  <% if finder %>
+    <p class="panel__line" data-speak><%= t(email_offered ? "finder.steps.save.line_signed_out" : "finder.steps.save.line_passkey_only") %></p>
+  <% end %>
+  <% if error %>
+    <p class="auth-choice__error" role="alert"><%= t("sign_in_codes.choice.errors.#{error}") %></p>
+  <% end %>
+
+  <article class="auth-choice__card<%= " auth-choice__card--open" if open == "passkey" %>"
+           data-choice-target="card" data-choice-name-param="passkey"
+           <% unless finder %>
+           data-controller="passkey"
+           data-passkey-mode-value="<%= mode == "sign_in" ? "get" : "create" %>"
+           data-passkey-options-url-value="<%= mode == "sign_in" ? sign_in_options_path : sign_up_options_path %>"
+           data-passkey-submit-url-value="<%= mode == "sign_in" ? sign_in_path : sign_up_path %>"
+           data-passkey-messages-value="<%= passkey_messages %>"
+           <% end %>>
+    <%= content_tag heading, class: "auth-choice__heading" do %>
+      <button type="button" class="auth-choice__head" aria-expanded="<%= open == "passkey" %>" aria-controls="<%= prefix %>-choice-passkey"
+              data-action="choice#pick" data-choice-name-param="passkey">
+        <span class="auth-choice__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6.5 7.5A7 7 0 0 1 19 12c0 2.2-.3 4.3-1 6.3M4.6 10.2A8 8 0 0 0 4 13c0 1.5.3 3 .8 4.3M12 8a4 4 0 0 1 4 4c0 2.6-.5 5.1-1.5 7.4M8 12c0 3.2-.6 6-1.8 8.2M12 12c0 3.6-.8 6.9-2.3 9.6"/></svg>
+        </span>
+        <span class="auth-choice__title"><%= t("sign_in_codes.choice.passkey_title") %></span>
+        <svg class="auth-choice__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+      </button>
+    <% end %>
+    <div class="auth-choice__body" id="<%= prefix %>-choice-passkey" <% if open != "passkey" %>hidden<% end %>>
+      <p class="auth-choice__line"><%= t("sign_in_codes.choice.passkey_line") %></p>
+
+      <% case mode %>
+      <% when "sign_in" %>
+        <button type="button" class="btn btn--primary btn--lg btn--full" data-passkey-target="button" data-action="passkey#start">
+          <%= t("sessions.new.button") %>
+        </button>
+      <% when "sign_up" %>
+        <form id="auth-save" class="stack stack--md" data-passkey-target="form" data-action="submit->passkey#start" novalidate>
+          <div class="input-group">
+            <label class="input-group__label" for="auth-name"><%= t("registrations.new.display_name") %></label>
+            <input class="input" type="text" id="auth-name" name="display_name" required maxlength="<%= User::NAME_MAX %>" autocomplete="name" autocapitalize="words">
+            <p class="input-group__hint"><%= t("registrations.new.display_name_hint") %></p>
+          </div>
+          <div class="input-group">
+            <label class="input-group__label" for="auth-email-address"><%= t("registrations.new.email_address") %></label>
+            <input class="input" type="email" id="auth-email-address" name="email_address" maxlength="<%= User::NAME_MAX %>" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false">
+            <p class="input-group__hint"><%= t("registrations.new.email_hint") %></p>
+          </div>
+          <button type="submit" class="btn btn--primary btn--lg btn--full" data-passkey-target="button"><%= t("registrations.new.button") %></button>
+        </form>
+      <% else %>
+        <form id="finder-save" class="stack stack--md finder__save" data-finder-target="saveForm" data-passkey-target="form" data-action="submit->passkey#start" novalidate>
+          <div class="input-group">
+            <label class="input-group__label" for="finder-name"><%= t("finder.steps.save.name") %></label>
+            <input class="input" id="finder-name" type="text" name="display_name" required maxlength="<%= User::NAME_MAX %>" autocomplete="name" autocapitalize="words">
+            <p class="input-group__hint"><%= t("finder.steps.save.name_hint") %></p>
+          </div>
+          <% Fields::SaveSetupService::KEYS.each do |key| %>
+            <input type="hidden" name="<%= key %>" value="" data-finder-target="field">
+          <% end %>
+          <input type="hidden" name="locale" value="<%= I18n.locale %>">
+        </form>
+      <% end %>
+
+      <p class="auth__status<%= " finder__error" if finder %>" data-passkey-target="error" data-choice-target="passkeyStatus" role="status" aria-live="polite"></p>
+
+      <details class="auth-choice__details">
+        <summary class="auth-choice__summary"><%= t("sign_in_codes.choice.what_is_passkey_question") %></summary>
+        <p class="auth-choice__answer"><%= t("sign_in_codes.choice.what_is_passkey") %></p>
+      </details>
+    </div>
+  </article>
+
+  <% if email_offered %>
+    <article class="auth-choice__card<%= " auth-choice__card--open" if open == "email" %>" data-choice-target="card" data-choice-name-param="email">
+      <%= content_tag heading, class: "auth-choice__heading" do %>
+        <button type="button" class="auth-choice__head" aria-expanded="<%= open == "email" %>" aria-controls="<%= prefix %>-choice-email"
+                data-action="choice#pick" data-choice-name-param="email">
+          <span class="auth-choice__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 6.5h18v11H3zM3 7l9 6 9-6"/></svg>
+          </span>
+          <span class="auth-choice__title"><%= t("sign_in_codes.choice.email_title") %></span>
+          <svg class="auth-choice__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+        </button>
+      <% end %>
+      <div class="auth-choice__body" id="<%= prefix %>-choice-email" <% if open != "email" %>hidden<% end %>>
+        <p class="auth-choice__line"><%= t("sign_in_codes.choice.email_line") %></p>
+
+        <%= form_with url: sign_in_code_path, id: "#{prefix}-code", class: "stack stack--md" do %>
+          <% if newcomer %>
+            <div class="input-group">
+              <label class="input-group__label" for="<%= prefix %>-code-name"><%= t("sign_in_codes.choice.name_label") %></label>
+              <input class="input" id="<%= prefix %>-code-name" type="text" name="display_name" required maxlength="<%= User::NAME_MAX %>" autocomplete="name" autocapitalize="words">
+            </div>
+          <% end %>
+          <div class="input-group">
+            <label class="input-group__label" for="<%= prefix %>-code-email"><%= t("sign_in_codes.choice.email_label") %></label>
+            <input class="input" id="<%= prefix %>-code-email" type="email" name="email" required maxlength="<%= User::NAME_MAX %>" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" enterkeyhint="send">
+          </div>
+          <% if finder %>
+            <% Fields::SaveSetupService::KEYS.each do |key| %>
+              <input type="hidden" name="<%= key %>" value="" data-finder-target="field">
+            <% end %>
+          <% end %>
+          <input type="hidden" name="locale" value="<%= I18n.locale %>">
+          <input type="hidden" name="mode" value="<%= mode %>">
+          <button type="submit" class="btn btn--primary btn--lg btn--full"><%= t("sign_in_codes.choice.send_button") %></button>
+        <% end %>
+      </div>
+    </article>
+  <% end %>
+</div>

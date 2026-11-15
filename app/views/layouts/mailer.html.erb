@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="<%= I18n.locale %>">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <style>
-      /* Email styles need to be inline */
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
 
-  <body>
-    <%= yield %>
+  <body style="margin: 0; padding: 24px 16px; background: #F1EBDD; color: #173D2D; font-family: Inter, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size: 16px; line-height: 1.5;">
+    <div style="max-width: 520px; margin: 0 auto; background: #FAF7EF; border: 1px solid #E7DFCB; border-radius: 12px; padding: 24px;">
+      <p style="margin: 0 0 16px; font-weight: 700; font-size: 20px;"><%= t("app_name") %></p>
+      <%= yield %>
+      <p style="margin: 24px 0 0; color: #6B7650; font-size: 13px;"><%= t("layouts.mailer.tagline") %></p>
+    </div>
   </body>
 </html>

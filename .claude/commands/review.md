@@ -33,7 +33,7 @@ Read every file in scope, then check EVERY item below. Report issues by severity
 - [ ] Authenticated screens inherit `App::BaseController` (session + Pundit + the NativeOnly kill switch); public pages use `allow_unauthenticated_access` and `layout "public"`
 - [ ] JSON for native screens inherits `Api::V1::BaseController` (`X-Aluni-Native` on writes)
 - [ ] Queries scoped to `Current.user` (`Current.user.things.find(...)`), never `Thing.find(params[:id])`
-- [ ] No passwords, no secrets in sessions; the passkey ceremony code stays in `PasskeyCeremony` and the three auth controllers
+- [ ] No passwords, no secrets in sessions; the passkey ceremony code stays in `PasskeyCeremony` and the three auth controllers; sign-in codes only through `app/services/auth/` (hashed, locked attempts, one use, never logged)
 - [ ] Path configuration rules updated in `ConfigurationsController` when a new modal or native screen appears
 
 ## Hotwire / Stimulus

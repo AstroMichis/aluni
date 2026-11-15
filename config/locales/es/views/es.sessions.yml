@@ -2,9 +2,12 @@ es:
   sessions:
     new:
       title: "Iniciar sesión"
-      lede: "Usa la llave de acceso de este dispositivo. Tu cara, tu huella o el código del dispositivo confirman que eres tú."
-      button: "Entrar con llave de acceso"
+      lede: "Entra sin contraseña."
+      button: "Entrar"
       no_account: "¿Primera vez?"
       sign_up: "Crear una cuenta"
+    create:
+      suggest_passkey: "¿La próxima vez entras con tu cara o tu huella?"
+      suggest_passkey_action: "Configurarlo"
     destroy:
       signed_out: "Cerraste sesión."

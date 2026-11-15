@@ -1,19 +1,23 @@
 // Aluni's colours as hex ints, mirroring the --color-mascot-* tokens in
-// base/variables.css (change both together). Dark uses the cover-crop and
-// olive greens of the hero palette; light the deeper greens so the seedling
-// reads on cream. The light rig (hemisphere sky/ground, sun) is per theme too.
+// base/variables.css (change both together). Dark sits on the deep green of
+// the hero: cover-crop greens, pale herbarium roots, the accent gold at the
+// growing tip. Light uses deeper greens and an older gold so the seedling
+// reads on cream. The light rig (hemisphere sky and ground, the key sun, the
+// gold rim light) and the tone-mapping exposure are per theme too.
 export const PALETTES = {
   dark: {
-    seed: 0xA67C4E, seedShade: 0x6F4F2F,
-    leaf: 0x3E7A4A, leafShade: 0x6B7650,
-    eye: 0x1F1B16, eyeGlow: 0x3A332B, cheek: 0xD9C48F, mouth: 0x4A2E1A,
-    sky: 0xE4E9DD, ground: 0x3A3328, sun: 0xF1EBDD
+    soil: 0x46392A, soilShade: 0x2E2619,
+    seedCoat: 0x8C6A43, seedCoatShade: 0x5E4428,
+    stem: 0xA6B587, leaf: 0x4F8F55, leafShade: 0x2F6A3E, vein: 0x86A06E,
+    tip: 0xB69A5B, root: 0xD9CBA8,
+    sky: 0xE4E9DD, ground: 0x3A3328, sun: 0xF1EBDD, rim: 0xB69A5B, exposure: 1.0
   },
   light: {
-    seed: 0x9C7244, seedShade: 0x6A4A2A,
-    leaf: 0x35703F, leafShade: 0x55663F,
-    eye: 0x1F1B16, eyeGlow: 0x3A332B, cheek: 0xC9AF72, mouth: 0x3E2715,
-    sky: 0xFFFFFF, ground: 0x8C7332, sun: 0xFFFFFF
+    soil: 0x5A4A33, soilShade: 0x43372A,
+    seedCoat: 0x8C6A43, seedCoatShade: 0x5E4428,
+    stem: 0x6F8A52, leaf: 0x35703F, leafShade: 0x24502E, vein: 0x9DB383,
+    tip: 0x8A6A1E, root: 0x8C7A5A,
+    sky: 0xFFFFFF, ground: 0x8C7332, sun: 0xFFFFFF, rim: 0x8A6A1E, exposure: 1.05
   }
 }
 

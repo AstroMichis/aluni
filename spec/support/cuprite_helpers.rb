@@ -2,10 +2,12 @@
 
 # Cuprite (headless Chrome) for system specs. js_errors: true makes any
 # uncaught JavaScript exception fail the example. Each system spec calls
-# `driven_by(:cuprite)`.
+# `driven_by(:aluni_cuprite)`.
 require "capybara/cuprite"
 
-Capybara.register_driver(:cuprite) do |app|
+# Registered under a project name on purpose: Rails' `driven_by(:cuprite)` would re-register
+# the :cuprite driver with its own defaults and drop every option below.
+Capybara.register_driver(:aluni_cuprite) do |app|
   Capybara::Cuprite::Driver.new(
     app,
     window_size:     [ 1280, 800 ],
@@ -14,7 +16,7 @@ Capybara.register_driver(:cuprite) do |app|
     process_timeout: 30,
     js_errors:       true,
     # Map tiles are never fetched from the real servers by headless Chrome.
-    url_blacklist:   [ "*tile.openstreetmap.org*", "*arcgisonline.com*" ],
+    url_blacklist:   [ /tile\.openstreetmap\.org/, /arcgisonline\.com/ ],
     browser_options: { "no-sandbox" => nil }
   )
 end

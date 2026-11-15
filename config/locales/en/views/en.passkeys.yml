@@ -3,6 +3,7 @@ en:
     index:
       title: "Your passkeys"
       lede: "Each device you sign in from has its own passkey. Add one before you switch phones."
+      lede_empty: "Add a passkey to sign in with your face or fingerprint next time."
       added_on: "Added %{date}"
       last_used: "last used %{date}"
       never_used: "not used yet"

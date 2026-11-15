@@ -13,6 +13,7 @@ module App
       @topic = @onboarding_session.topic
       @index, @total = progress_for(@topic)
       @snapshot = snapshot
+      @mascot_stage = Current.user.farms.exists? ? 3 : 0.5
     end
 
     def message

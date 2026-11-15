@@ -39,6 +39,10 @@ An integration that costs money ships with no defaults: its initializer reads EN
 
 VAPID keys in credentials `web_push.{public_key,private_key,subject}` (`bin/rails web_push:vapid_keys` prints a pair). `WebPushSubscription` rows per account and browser endpoint (`App::WebPushSubscriptionsController`, `web_push_controller.js`, `web_push/_opt_in.html.erb`); `Notifications::WebPushJob` sends and deletes expired subscriptions; the service worker shows the notification and opens its URL.
 
+## Sign-in codes by mail (`SignInMailer`, `Auth::RequestCodeService`)
+
+The one mail that goes to someone who may not have an account yet, so it bypasses `NotificationRouter` (which needs a persisted recipient and queues its mail) and is sent inline with `deliver_now`. It still respects the operator's `mail` switch (a paused switch answers "email is not available right now" and the option is hidden), `Platform::Features.mail?` (SMTP credentials present in production), and the throttles in `config/initializers/rack_attack.rb`. Delivery errors (`Net::SMTPError`, timeouts, socket errors) are logged by class only and answered calmly; the row is deleted. Production sends through Resend's free tier (3,000 a month, 100 a day) once `smtp.*` credentials and the SPF, DKIM and DMARC records for aluni.us exist and `platform:resume[mail]` has run. Development writes every mail to `tmp/mails/<address>`.
+
 ## Notification router
 
 `NotificationRouter.deliver(recipient:, purpose:, payload:, idempotency_key:)` reads `config/notification_purposes.yml` (validated at boot by `Notifications::Purposes`), tries the purpose's channels in order (`push`, `web_push`, `email`) and records every attempt on a `NotificationDelivery`. Same key twice: once sent, nothing is sent again. The shell ships with no purposes and one generic mailer action (`NotificationMailer#generic(user, subject, body)`).

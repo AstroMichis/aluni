@@ -1,4 +1,5 @@
-# An account signs in with passkeys only: no password, no required email.
+# An account signs in with a passkey, an emailed code or a linked provider
+# account (Identity: Google, Apple, Microsoft): no password, no required email.
 # webauthn_id is the opaque user handle authenticators return with a
 # discoverable credential; display_name is what the person is called.
 class User < ApplicationRecord
@@ -6,6 +7,8 @@ class User < ApplicationRecord
 
   has_many :sessions, dependent: :destroy
   has_many :passkeys, dependent: :destroy
+  has_many :identities, dependent: :destroy
+  has_many :auth_handoffs, dependent: :delete_all
   has_many :device_tokens, dependent: :destroy
   has_many :web_push_subscriptions, dependent: :destroy
   has_many :notification_deliveries, as: :recipient, dependent: :destroy

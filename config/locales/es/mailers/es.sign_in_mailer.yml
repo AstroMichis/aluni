@@ -1,0 +1,13 @@
+es:
+  sign_in_mailer:
+    code:
+      subject: "Tu código de %{app_name}: %{code}"
+      greeting: "Aquí está tu código para continuar:"
+      valid_for: "Funciona durante %{minutes} minutos y una sola vez."
+      link_lead: "O toca para continuar en el navegador donde lo pediste:"
+      link_text: "Continuar a %{app_name}"
+      link_note: "Si el enlace se abre en otro lugar, te mostrará el código para escribirlo."
+      ignore: "Si no pediste esto, puedes ignorar este correo."
+  layouts:
+    mailer:
+      tagline: "Tu asistente inteligente de cultivo"

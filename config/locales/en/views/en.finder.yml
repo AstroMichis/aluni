@@ -7,7 +7,7 @@ en:
     steps:
       locate:
         title: "Where is your field?"
-        line: "Let's find your field. Use your location, search for a town, or tap the map and drag the pin onto your field."
+        line: "Let's find your field. If your device asks to share your location, allow it. Or search for a town, or tap the map and drag the pin onto your field."
         use_my_location: "Use my location"
         search_label: "Town or address"
         search_placeholder: "Town, village or address"
@@ -28,12 +28,13 @@ en:
         skip: "Skip for now"
       save:
         title: "Save your field"
-        line_signed_out: "Last step. Tell me your name and your device will create a passkey. No password to remember."
+        line_signed_out: "Last step. Choose how you want to come back next time: your face or fingerprint, or a code by email."
+        line_passkey_only: "Last step. Tell me your name and your device will keep you signed in with your face or fingerprint."
+        line_code: "Type it here and your field is saved."
         line_signed_in: "Everything is ready. Save the field to your account."
         name: "Your name"
         name_hint: "A first name or a nickname is enough."
-        create_passkey: "Create my passkey"
-        passkey_hint: "Your device asks for your face, fingerprint or code. Nothing to remember."
+        create_passkey: "Save my field"
         have_account: "I already have an account"
         save_field: "Save my field"
         signups_closed: "New accounts are not open yet. Sign in to save your field."
@@ -48,7 +49,7 @@ en:
       esri_attribution: "Tiles © Esri"
       pin: "Your field"
     status:
-      locating: "Finding your location"
+      locating: "Finding your location. If your device asks, allow it."
       located: "Found you. Drag the pin if it is not exactly on your field."
       denied: "We could not get your location. Search for a town or tap the map instead."
       unsupported: "This browser cannot share your location. Search for a town or tap the map instead."

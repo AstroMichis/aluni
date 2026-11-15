@@ -5,10 +5,8 @@ require "rails_helper"
 # nothing leaves the machine; an uncaught exception in finder_controller.js,
 # field_map_controller.js or Leaflet fails the example (js_errors).
 #
-# The tile block is set on the running browser because Rails' driven_by(:cuprite)
-# re-registers the :cuprite driver with its own defaults, so the options in
-# spec/support/cuprite_helpers.rb (url_blacklist, js_errors, window size) do not
-# reach Chrome; the after hook proves no tile was received.
+# The driver (`:aluni_cuprite`, spec/support/cuprite_helpers.rb) blocks the tile hosts;
+# the after hook proves no tile was received.
 RSpec.describe "Field finder", type: :system do
   let(:ames) do
     { label: "Ames, Story County, Iowa, United States", display: "Ames, Iowa", latitude: 42.030781, longitude: -93.631913,
@@ -17,15 +15,12 @@ RSpec.describe "Field finder", type: :system do
   let(:geocoder) { instance_double(Geocoding::Client, reverse: ames, search: [ ames ], last_error: nil) }
 
   before do
-    driven_by(:cuprite)
-    page.driver.browser.url_blacklist = TILE_HOSTS
+    driven_by(:aluni_cuprite)
     allow(Geocoding::Client).to receive(:new).and_return(geocoder)
     skip_welcome!
   end
 
   after { expect(tile_requests).to be_empty }
-
-  TILE_HOSTS = [ "*tile.openstreetmap.org*", "*arcgisonline.com*" ].freeze
 
   # Tile URLs the page actually received bytes for (an aborted request has none).
   def tile_requests
@@ -59,12 +54,13 @@ RSpec.describe "Field finder", type: :system do
     within("#finder") do
       expect(page).to have_content(I18n.t("finder.steps.locate.title"))
       expect(page).to have_css(".finder__map.leaflet-container", wait: 10)
-      expect(page).to have_button(I18n.t("finder.steps.locate.confirm"), disabled: true)
-
-      click_button I18n.t("finder.steps.locate.use_my_location")
+      # No tap needed: the step asked the device as it opened, and the pin is placed when it answers.
       expect(page).to have_css(".finder__status", text: I18n.t("finder.status.located"), wait: 10)
       expect(page).to have_css(".finder__pin", wait: 5)
       expect(page).to have_button(I18n.t("finder.steps.locate.confirm"), disabled: false)
+      # "Use my location" stays over the map to ask again, free once the device has answered.
+      expect(page).to have_button(I18n.t("finder.steps.locate.use_my_location"), disabled: false)
+      expect(page).to have_css(".finder__locate[aria-busy='false']")
 
       click_button I18n.t("finder.steps.locate.confirm")
       expect(page).to have_content(I18n.t("places.reverse.near", place: "Ames, Iowa"), wait: 10)
@@ -79,6 +75,9 @@ RSpec.describe "Field finder", type: :system do
       click_button I18n.t("finder.steps.basics.continue")
 
       expect(page).to have_content(I18n.t("finder.steps.save.title"))
+      # Both ways in start folded; the passkey card opens on a tap and brings its footer button.
+      expect(page).not_to have_button(I18n.t("finder.steps.save.create_passkey"))
+      click_button I18n.t("sign_in_codes.choice.passkey_title")
       expect(page).to have_field("finder-name")
       expect(page).to have_button(I18n.t("finder.steps.save.create_passkey"))
       expect(hidden_value("latitude")).to eq("42.00000")
@@ -141,6 +140,11 @@ RSpec.describe "Field finder", type: :system do
     open_finder
 
     within("#finder") do
+      # Without permission the automatic attempt fails quietly, points at the other ways in and leaves the button ready.
+      expect(page).to have_css(".finder__status", text: I18n.t("finder.status.denied", locale: :es), wait: 20)
+      expect(page).to have_button(I18n.t("finder.steps.locate.use_my_location", locale: :es), disabled: false)
+      expect(page).to have_button(I18n.t("finder.steps.locate.confirm", locale: :es), disabled: true)
+
       expect(page).to have_content(I18n.t("places.index.hint", locale: :es))
       fill_in "finder-query", with: "Ames, Iowa"
       click_button I18n.t("finder.steps.locate.search", locale: :es)

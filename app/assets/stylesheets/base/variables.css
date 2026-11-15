@@ -98,13 +98,16 @@
 
   /* Aluni, the seedling mascot. Mirrored as hex ints in
      app/javascript/mascot/palette.js; change both together. */
-  --color-mascot-seed: #A67C4E;
-  --color-mascot-seed-shade: #6F4F2F;
-  --color-mascot-leaf: #3E7A4A;
-  --color-mascot-leaf-shade: #6B7650;
-  --color-mascot-eye: #1F1B16;
-  --color-mascot-cheek: #D9C48F;
-  --color-mascot-mouth: #4A2E1A;
+  --color-mascot-soil: #46392A;
+  --color-mascot-soil-shade: #2E2619;
+  --color-mascot-seed-coat: #8C6A43;
+  --color-mascot-seed-coat-shade: #5E4428;
+  --color-mascot-stem: #A6B587;
+  --color-mascot-leaf: #4F8F55;
+  --color-mascot-leaf-shade: #2F6A3E;
+  --color-mascot-vein: #86A06E;
+  --color-mascot-tip: #B69A5B;
+  --color-mascot-root: #D9CBA8;
 }
 
 /* Light mode override: cream surfaces, deep green text and accent */
@@ -141,11 +144,14 @@
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
   --shadow-glow: none;
-  --color-mascot-seed: #9C7244;
-  --color-mascot-seed-shade: #6A4A2A;
+  --color-mascot-soil: #5A4A33;
+  --color-mascot-soil-shade: #43372A;
+  --color-mascot-seed-coat: #8C6A43;
+  --color-mascot-seed-coat-shade: #5E4428;
+  --color-mascot-stem: #6F8A52;
   --color-mascot-leaf: #35703F;
-  --color-mascot-leaf-shade: #55663F;
-  --color-mascot-eye: #1F1B16;
-  --color-mascot-cheek: #C9AF72;
-  --color-mascot-mouth: #3E2715;
+  --color-mascot-leaf-shade: #24502E;
+  --color-mascot-vein: #9DB383;
+  --color-mascot-tip: #8A6A1E;
+  --color-mascot-root: #8C7A5A;
 }

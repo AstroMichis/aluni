@@ -43,17 +43,24 @@ const ENTRANCE_MS = 1600
 const LEAVE_MS = 900
 const DOCK_MS = 700
 const SAFETY_MS = 500
-const CENTER_MIN_MS = 900
-const CENTER_FALLBACK_MS = 2500
+const CENTER_MIN_MS = 1200
+const CENTER_FALLBACK_MS = 4500
 const CENTER_SCALE_MIN = 1.2
 const CENTER_SCALE_MAX = 2.2
 const CENTER_PIXEL_RATIO_MAX = 3
 const WELCOME_ID = "welcome"
 const CENTER_ANCHOR_ID = "welcome-stage"
-const CAMERA_POS = [0, 2.3, 7.3]
-const CAMERA_LOOK = [0, 1.75, 0]
-const HEMI_INTENSITY = 1.1
-const SUN_INTENSITY = 1.8
+// From a little above, as the hero looks at the fields, so the leaf tops show.
+const CAMERA_POS = [0, 3.5, 6.7]
+const CAMERA_LOOK = [0, 1.55, 0]
+// A soft hemisphere fill, the key light from the upper left and a low gold rim
+// light from behind on the right, so leaf edges catch the accent.
+const LIGHTS = { hemi: 1.0, key: 2.2, rim: 0.7 }
+const KEY_POS = [-3, 6, 4]
+const RIM_POS = [3, 3.5, -4]
+const COMPANION_QUERY = "(min-width: 1025px)"
+const BUBBLE_ATTEND = { x: 0.6, y: 0.7 }
+const DOCK_ATTEND_SELECTOR = ".panel__body"
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
 
@@ -63,7 +70,11 @@ export default class extends Controller {
     mode: { type: String, default: "landing" },
     dockSelector: { type: String, default: "" },
     entranceDelay: { type: Number, default: 700 },
-    progressEvent: { type: String, default: "landing:progress" }
+    progressEvent: { type: String, default: "landing:progress" },
+    // Growth stage 0..3 at connect (the companion renders the profile's); the
+    // window event mascot:stage { stage } moves it later.
+    stage: { type: Number, default: 0 },
+    rootsSelector: { type: String, default: "#mascot-roots" }
   }
   // The view passes its own BEM classes (data-mascot-arrived-class="mascot--arrived" ...).
   static classes = ["offstage", "onstage", "centered", "leaving", "arrived", "docked", "away", "hidden", "static", "fallback", "bubbleVisible"]
@@ -85,6 +96,8 @@ export default class extends Controller {
     this.sprouting = false
     this.timers = new Set()
     this.pointer = null
+    this.stage = clamp(Number(this.stageValue) || 0, 0, 3)
+    this.element.dataset.stage = String(this.stage)
     this._evaluateDevice()
     this._bindWindowEvents()
 
@@ -94,6 +107,19 @@ export default class extends Controller {
     }
     this._currentTheme = this._readTheme()
     if (this.preloader) this.startPreloader()
+    // The companion is display: none below 1025 px: no scene until it shows.
+    if (!this.landing && this.element.getClientRects().length === 0) {
+      this.companionQuery = window.matchMedia(COMPANION_QUERY)
+      this.companionHandler = () => {
+        if (!this._connected || this.renderer || this._fallbackShown) return
+        if (this.element.getClientRects().length === 0) return
+        this.companionQuery.removeEventListener("change", this.companionHandler)
+        this.companionHandler = null
+        this.initScene()
+      }
+      this.companionQuery.addEventListener("change", this.companionHandler)
+      return
+    }
     this.initScene()
   }
 
@@ -118,6 +144,13 @@ export default class extends Controller {
     window.addEventListener("mascot:dock", this.dockHandler)
     window.addEventListener("mascot:hide", this.hideHandler)
     window.addEventListener("mascot:show", this.showHandler)
+    this.stageHandler = (event) => this.onStage(event)
+    this.attendHandler = (event) => this.onAttend(event)
+    window.addEventListener("mascot:stage", this.stageHandler)
+    window.addEventListener("mascot:attend", this.attendHandler)
+    this.motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
+    this.motionHandler = () => this.onMotionChange()
+    this.motionQuery.addEventListener("change", this.motionHandler)
     this.resizeHandler = () => this.onResize()
     window.addEventListener("resize", this.resizeHandler)
     window.addEventListener("orientationchange", this.resizeHandler)
@@ -238,6 +271,8 @@ export default class extends Controller {
       this._tmpVec = new THREE.Vector3()
 
       this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "low-power" })
+      this.renderer.toneMapping = THREE.ACESFilmicToneMapping
+      this.renderer.toneMappingExposure = this.palette.exposure
       this.renderer.setPixelRatio(this._chooseRendererPixelRatio())
       this.renderer.domElement.style.width = "100%"
       this.renderer.domElement.style.height = "100%"
@@ -250,17 +285,20 @@ export default class extends Controller {
       this.camera.lookAt(...CAMERA_LOOK)
       this.renderer.setSize(w, h, false)
 
-      this.hemi = new THREE.HemisphereLight(this.palette.sky, this.palette.ground, HEMI_INTENSITY)
-      this.sun = new THREE.DirectionalLight(this.palette.sun, SUN_INTENSITY)
-      this.sun.position.set(-3, 6, 4)
-      this.scene.add(this.hemi, this.sun)
+      this.hemi = new THREE.HemisphereLight(this.palette.sky, this.palette.ground, LIGHTS.hemi)
+      this.sun = new THREE.DirectionalLight(this.palette.sun, LIGHTS.key)
+      this.sun.position.set(...KEY_POS)
+      this.rim = new THREE.DirectionalLight(this.palette.rim, LIGHTS.rim)
+      this.rim.position.set(...RIM_POS)
+      this.scene.add(this.hemi, this.sun, this.rim)
 
       this.character = buildCharacter(THREE, this.palette)
       this.scene.add(this.character.group)
       this.animator = new Animator(this.character.parts)
-      // The first frame renders in this state: a small seedling for the
-      // preloader (unless the go signal already came), offstage for the
-      // walk-in, idle for the companion.
+      this.animator.setStage(this.stage, { immediate: true })
+      // The first frame renders in this state: the closed seed about to sprout
+      // for the preloader (unless the go signal already came), offstage for
+      // the walk-in, idle at its stage for the companion.
       if (this.preloader) {
         if (this.arrived) this.animator.setState("idle")
         else this.startSprout()
@@ -273,8 +311,8 @@ export default class extends Controller {
 
       this.visibilityHandler = () => this.onVisibilityChange()
       document.addEventListener("visibilitychange", this.visibilityHandler)
-      this.themeObserver = new MutationObserver(() => this.onThemeChange())
-      this.themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] })
+      this.themeObserver = new MutationObserver(() => { this.onThemeChange(); this.onMotionChange() })
+      this.themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-motion"] })
       if (!this.isMobile) this._bindPointer()
 
       this.emit("ready")
@@ -401,6 +439,7 @@ export default class extends Controller {
     if (!this.hasBubbleTarget || this.docked) return
     this.bubbleTarget.hidden = false
     if (this.hasBubbleVisibleClass) this.bubbleTarget.classList.add(this.bubbleVisibleClass)
+    if (this.animator) this.animator.attend(BUBBLE_ATTEND)
   }
 
   hideBubble() {
@@ -426,6 +465,50 @@ export default class extends Controller {
     this.animator.speak(this.talkDuration(chars))
   }
 
+  // Growth stage 0..3 (mascot:stage { stage }): eased by the animator, mirrored
+  // on the element as data-stage so the page and the specs can read it.
+  onStage(event) {
+    const next = clamp(Number(event.detail && event.detail.stage) || 0, 0, 3)
+    this.stage = next
+    this.element.dataset.stage = String(next)
+    if (this.animator) this.animator.setStage(next)
+  }
+
+  // Lean toward something (mascot:attend): { x, y } in viewport pixels,
+  // { selector } for an element's centre, or { clear: true }.
+  onAttend(event) {
+    if (!this.animator) return
+    const detail = event.detail || {}
+    if (detail.clear) { this.animator.attend(null); return }
+    let x = Number(detail.x)
+    let y = Number(detail.y)
+    if (detail.selector) {
+      const target = document.querySelector(detail.selector)
+      if (!target) return
+      const rect = target.getBoundingClientRect()
+      x = rect.left + rect.width / 2
+      y = rect.top + rect.height / 2
+    }
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return
+    this.animator.attend(this._toStageUnits(x, y))
+  }
+
+  // Viewport pixels to the -1..1 units the animator uses (the pointer's convention).
+  _toStageUnits(clientX, clientY) {
+    if (!this.stageCenter) this.measureStage()
+    return {
+      x: (clientX - this.stageCenter.x) / (window.innerWidth / 2),
+      y: -(clientY - this.stageCenter.y) / (window.innerHeight / 2)
+    }
+  }
+
+  // The motion preference flipped while the scene is up (the intro bubble's
+  // "Less motion", or the system): the plant stands still but stays.
+  onMotionChange() {
+    if (!this.animator) return
+    this.animator.setMotion(reducedMotion())
+  }
+
   // FLIP toward the slot: translate and scale only, from the stage's resting
   // box (offset* ignores transforms) to the target's rect. Asked for while
   // still centred or moving (the hero's button during the preloader), the FLIP
@@ -445,7 +528,10 @@ export default class extends Controller {
     }
     this.hideBubble()
     this.applyDock()
-    if (this.animator) this.animator.startDock()
+    if (this.animator) {
+      this.animator.setDockDirection(parseFloat(this.element.style.getPropertyValue("--mascot-dock-x")) || 1)
+      this.animator.startDock()
+    }
     this.phase = "docking"
     if (this.hasAwayClass) this.element.classList.remove(this.awayClass)
     this.away = false
@@ -491,6 +577,13 @@ export default class extends Controller {
       this.emit("docked", { handoff: "svg" })
     } else {
       this.positionBubble()
+      this.measureStage()
+      const body = this.dockTarget && this.dockTarget.closest(".panel")
+      const focus = body && body.querySelector(DOCK_ATTEND_SELECTOR)
+      if (focus && this.animator) {
+        const rect = focus.getBoundingClientRect()
+        this.animator.attend(this._toStageUnits(rect.left + rect.width / 2, rect.top + rect.height / 2))
+      }
       this.emit("docked", { handoff: "canvas" })
     }
   }
@@ -566,6 +659,8 @@ export default class extends Controller {
     this.hemi.color.setHex(this.palette.sky)
     this.hemi.groundColor.setHex(this.palette.ground)
     this.sun.color.setHex(this.palette.sun)
+    this.rim.color.setHex(this.palette.rim)
+    if (this.renderer) this.renderer.toneMappingExposure = this.palette.exposure
   }
 
   // ── Fallback ──────────────────────────────────────────────────────────
@@ -632,6 +727,7 @@ export default class extends Controller {
     this.renderer = null
     this.hemi = null
     this.sun = null
+    this.rim = null
     this.clock = null
   }
 
@@ -644,6 +740,10 @@ export default class extends Controller {
     window.removeEventListener("mascot:dock", this.dockHandler)
     window.removeEventListener("mascot:hide", this.hideHandler)
     window.removeEventListener("mascot:show", this.showHandler)
+    window.removeEventListener("mascot:stage", this.stageHandler)
+    window.removeEventListener("mascot:attend", this.attendHandler)
+    if (this.motionQuery) { this.motionQuery.removeEventListener("change", this.motionHandler); this.motionQuery = null }
+    if (this.companionQuery && this.companionHandler) { this.companionQuery.removeEventListener("change", this.companionHandler); this.companionHandler = null }
     window.removeEventListener("resize", this.resizeHandler)
     window.removeEventListener("orientationchange", this.resizeHandler)
     this.element.removeEventListener("transitionend", this.transitionHandler)
