@@ -29,6 +29,28 @@ RSpec.describe "Rack::Attack", type: :request do
     end
   end
 
+  it "throttles the assistant turns per IP" do
+    # The middleware counts before the app answers, so the sign-in redirect is enough.
+    20.times do
+      post message_app_onboarding_path(locale: "en"), params: { text: "hi" }
+      expect(response).to redirect_to(sign_in_path(locale: "en"))
+    end
+
+    post message_app_onboarding_path(locale: "en"), params: { text: "hi" }
+
+    expect(response).to have_http_status(:too_many_requests)
+  end
+
+  it "matches the assistant paths with and without a locale prefix" do
+    %w[/app/onboarding/message /en/app/onboarding/confirm /es/app/onboarding/discard /app/onboarding/skip
+       /en/app/onboarding/complete /es/app/onboarding/reset].each do |path|
+      expect(path).to match(RACK_ATTACK_ASSISTANT_PATH)
+    end
+    %w[/en/app/onboarding /en/app /app/onboarding/message/extra /en/app/onboarding/show].each do |path|
+      expect(path).not_to match(RACK_ATTACK_ASSISTANT_PATH)
+    end
+  end
+
   it "blocks vulnerability scanners" do
     get "/wp-login.php"
 

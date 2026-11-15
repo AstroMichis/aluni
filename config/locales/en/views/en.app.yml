@@ -7,3 +7,11 @@ en:
         lede: "This is where Aluni starts. The first screens will arrive here."
         passkeys: "Manage passkeys"
         sign_out: "Sign out"
+        recap_title: "Your farm at a glance"
+        talk_to: "Talk to %{app_name}"
+        recap:
+          farm: "Farm"
+          pin: "Field pin"
+          area: "Area"
+          segment: "Profile"
+          goals: "Goals"

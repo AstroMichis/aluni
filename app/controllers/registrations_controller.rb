@@ -27,7 +27,8 @@ class RegistrationsController < ApplicationController
     )
     session[:registration] = {
       "webauthn_id" => webauthn_id, "display_name" => display_name,
-      "email_address" => email_address, "challenge" => options.challenge
+      "email_address" => email_address, "challenge" => options.challenge,
+      "locale" => chosen_locale
     }
     render json: options
   end
@@ -40,17 +41,30 @@ class RegistrationsController < ApplicationController
       credential = WebAuthn::Credential.from_create(credential_params)
       credential.verify(pending["challenge"], user_verification: true)
 
+      locale = pending["locale"] || I18n.locale.to_s
       user = User.transaction do
         User.create!(
           webauthn_id: pending["webauthn_id"], display_name: pending["display_name"],
-          email_address: pending["email_address"], locale: I18n.locale.to_s
+          email_address: pending["email_address"], locale: locale
         ).tap { |u| u.passkeys.create!(passkey_attributes(credential)) }
       end
 
       start_new_session_for(user)
-      render json: { redirect_to: app_root_url }, status: :created
+      cookies.permanent[:locale] = locale
+      render json: { redirect_to: app_onboarding_url(locale: locale) }, status: :created
     end
   rescue ActiveRecord::RecordInvalid => e
     render json: { error: "invalid", messages: e.record.errors.full_messages }, status: :unprocessable_content
+  end
+
+  private
+
+  # The language the person picked in the landing chat, posted in the JSON
+  # body. It is read from the body on purpose: params[:locale] is the URL
+  # segment of the page the ceremony runs on (/en/sign_up/options), which
+  # shadows a body field of the same name. Nil when absent or not offered.
+  def chosen_locale
+    locale = request.request_parameters["locale"].to_s
+    locale if I18n.available_locales.map(&:to_s).include?(locale)
   end
 end

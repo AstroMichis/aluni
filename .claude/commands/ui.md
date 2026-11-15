@@ -55,7 +55,7 @@ You are creating a UI component or view for Aluni. The request is: $ARGUMENTS
 - No brand name in views (`t("app_name")`), no em dashes
 - Semantic HTML (`<main id="main">`, `<nav aria-label>`, `<button type="button">`), `aria-label` on icon-only buttons, `.sr-only` for screen-reader text
 - `turbo_frame_tag` for sections that update independently; `data-controller` for behaviour
-- Inside the native shells `native.css` hides the web chrome; check the page both ways (`NATIVE_WEB_ACCESS=1` in development, or a native user agent)
+- Inside the native shells `native.css` hides the web chrome; check the page both ways (a browser, and a native user agent)
 
 ## Aesthetic direction
 

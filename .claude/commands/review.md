@@ -30,7 +30,7 @@ Read every file in scope, then check EVERY item below. Report issues by severity
 - [ ] Messages through `NotificationRouter`; outside calls through a client with `Platform::Switchboard.guard!`
 
 ## Authentication and native
-- [ ] Authenticated screens inherit `App::BaseController` (NativeOnly + session + Pundit); public pages use `allow_unauthenticated_access` and `layout "public"`
+- [ ] Authenticated screens inherit `App::BaseController` (session + Pundit + the NativeOnly kill switch); public pages use `allow_unauthenticated_access` and `layout "public"`
 - [ ] JSON for native screens inherits `Api::V1::BaseController` (`X-Aluni-Native` on writes)
 - [ ] Queries scoped to `Current.user` (`Current.user.things.find(...)`), never `Thing.find(params[:id])`
 - [ ] No passwords, no secrets in sessions; the passkey ceremony code stays in `PasskeyCeremony` and the three auth controllers
@@ -60,5 +60,5 @@ Read every file in scope, then check EVERY item below. Report issues by severity
 
 ## Tests
 - [ ] Specs for new and changed code; success and failure paths; outside APIs stubbed
-- [ ] Request specs render pages and assert content; native-only paths tested with and without `native_headers`
+- [ ] Request specs render pages and assert content; gated paths tested as a browser and with `native_headers`, and once with `with_native_web_access(false)` when the switch matters
 - [ ] Factories used; edge cases covered; suite green (`mise exec -- bundle exec rspec`)

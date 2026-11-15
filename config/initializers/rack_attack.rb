@@ -25,6 +25,10 @@ end
 # /sign_in, /es/sign_in/options, /en/sign_up, /passkeys, /passkeys/options.
 RACK_ATTACK_AUTH_PATH = %r{\A(?:/(?:en|es))?/(?:sign_in|sign_up|passkeys)(?:/options)?\z}
 
+# The onboarding chat actions (each one may cost a Gemini call), with or
+# without a locale prefix: /app/onboarding/message, /es/app/onboarding/skip.
+RACK_ATTACK_ASSISTANT_PATH = %r{\A(?:/(?:en|es))?/app/onboarding/(?:message|confirm|discard|skip|complete|reset)\z}
+
 # Block obvious vulnerability scanners probing for common exploits
 Rack::Attack.blocklist("vulnerability-scanners") do |req|
   req.path.match?(/\.(php|asp|aspx|jsp|cgi|bak|sql)$/i) ||
@@ -46,6 +50,16 @@ end
 # Passkey ceremonies (options + verification POSTs): stricter than page views.
 Rack::Attack.throttle("passkey-ceremony/ip", limit: 8, period: 60) do |req|
   req.remote_ip if req.post? && req.path.match?(RACK_ATTACK_AUTH_PATH)
+end
+
+# Assistant turns (POST and DELETE): a burst limit and an hourly budget per IP.
+# Strikes for abusive content live on the OnboardingSession row, not here.
+Rack::Attack.throttle("assistant/ip/min", limit: 20, period: 60) do |req|
+  req.remote_ip if (req.post? || req.delete?) && req.path.match?(RACK_ATTACK_ASSISTANT_PATH)
+end
+
+Rack::Attack.throttle("assistant/ip/hour", limit: 150, period: 3600) do |req|
+  req.remote_ip if (req.post? || req.delete?) && req.path.match?(RACK_ATTACK_ASSISTANT_PATH)
 end
 
 # JSON API for the native screens

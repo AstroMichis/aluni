@@ -1,0 +1,7 @@
+<%# An inline line under the log (saved, expired, blocked). Locals: text; optional title, tone (info | success | warning | muted). %>
+<% tone = local_assigns.fetch(:tone, "info") %>
+<% title = local_assigns[:title] %>
+<div class="chat__notice chat__notice--<%= tone %>" role="status">
+  <% if title.present? %><strong class="chat__notice-title"><%= title %></strong><% end %>
+  <span><%= text %></span>
+</div>

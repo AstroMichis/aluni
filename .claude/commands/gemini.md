@@ -62,15 +62,15 @@ module Assistant
 end
 ```
 
-Run it from a job on the `gemini` queue (`queue_as :gemini`), never inline in a request that a person is waiting on, unless the product decides otherwise.
+Run it from a job on the `gemini` queue (`queue_as :gemini`) unless a person is waiting on the answer: the onboarding chat (`Onboarding::ReplyService`, `docs/ONBOARDING.md`) calls Gemini inline by product decision, with a 20 s timeout, the classifier in a thread, and an in-character continuation line whenever the call fails or the service is paused.
 
 ## Rules
 
 - Structured output through `response_schema`; rescue `JSON::ParserError`; never show a raw processing error, retry or continue in character
 - Prompts: set the persona, the language lock, the boundaries and the output format; never mention "AI", "model" or "bot" in text a person reads unless the product decides otherwise
-- Multi-turn state: a Redis store with a TTL, encrypted at rest, PII redacted before storage; keep pending state for follow-up turns and never treat a follow-up as a fresh extraction
+- Multi-turn state: encrypted at rest (the onboarding keeps its transcript in `onboarding_sessions.transcript`, an `encrypts` column, so a refresh resumes), PII redacted before storage (`Onboarding::Redactor`); keep pending state for follow-up turns and never treat a follow-up as a fresh extraction
 - Abuse: an intent classifier with rate limits and a strike/block system before any person-facing assistant ships
-- Rack::Attack: throttle the assistant's endpoints per IP (20/min, 150/hour) in `config/initializers/rack_attack.rb`
+- Rack::Attack: throttle the assistant's endpoints per IP (20/min, 150/hour) in `config/initializers/rack_attack.rb` (`RACK_ATTACK_ASSISTANT_PATH` covers `/app/onboarding/*`)
 - Cost: Flash for text, Pro only with images; low temperature for extraction; log token-heavy prompts
 - The operator can pause Gemini at any time (`platform:pause[gemini]`); the product must degrade gracefully
 

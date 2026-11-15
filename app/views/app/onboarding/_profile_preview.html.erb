@@ -1,0 +1,17 @@
+<%# What is saved so far. Local: snapshot (Onboarding::ProfileSnapshot#to_h). %>
+<div id="profile-preview" class="profile-preview">
+  <% field = snapshot[:field] %>
+  <% if field && field[:latitude] && field[:longitude] %>
+    <%= image_tag Onboarding::AreaImage.url(latitude: field[:latitude], longitude: field[:longitude]),
+                  loading: "lazy", referrerpolicy: "no-referrer", width: 512, height: 512,
+                  alt: t("app.onboarding.show.area_image_alt"), class: "profile-preview__image" %>
+  <% end %>
+  <dl class="profile-preview__list">
+    <% preview_rows(snapshot).each do |row| %>
+      <div class="profile-preview__row">
+        <dt class="profile-preview__term"><%= row[:label] %></dt>
+        <dd class="profile-preview__value"><%= row[:value] %></dd>
+      </div>
+    <% end %>
+  </dl>
+</div>

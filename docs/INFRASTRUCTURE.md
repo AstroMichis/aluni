@@ -27,10 +27,11 @@ rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), weba
 /webhooks/...                         (empty; each provider adds a feature-gated route)
 /sidekiq                              only with SIDEKIQ_WEB_* set, on ADMIN_HOST, basic auth
 /locale/:new_locale                   locale switch
-(/:locale)/                           root: informational site
+(/:locale)/                           root: landing page
 (/:locale)/sign_in, sign_in/options, sign_out, sign_up, sign_up/options
 (/:locale)/passkeys, passkeys/options
 (/:locale)/app                        authenticated area (+ device_tokens, web_push_subscriptions)
+(/:locale)/app/onboarding             the chat: show, message, confirm, discard, skip, complete (POST), reset (DELETE)
 ```
 
 `default_url_options` always adds the locale, so every generated link carries `/en/` or `/es/`.
@@ -44,7 +45,7 @@ rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), weba
 | `RAILS_MAX_THREADS`, `SIDEKIQ_CONCURRENCY`, `RAILS_LOG_LEVEL`, `MALLOC_ARENA_MAX`, `RAILS_SERVE_STATIC_FILES`, `PORT`, `PIDFILE` | puma, sidekiq, logging |
 | `APP_DOMAIN`, `APP_PORT`, `ADMIN_HOST`, `DEV_HOSTS` | app_domain.rb, hosts, mailer URLs, WebAuthn RP id |
 | `TRUSTED_PROXIES` | production.rb (Cloudflare ranges) |
-| `NATIVE_WEB_ACCESS`, `SIGNUPS_ENABLED` | native.rb, Platform::Features |
+| `NATIVE_WEB_ACCESS` (default on; `0` closes sign-in and `/app` to browsers, shells keep working), `SIGNUPS_ENABLED` | native.rb, Platform::Features |
 | `SIDEKIQ_WEB_USERNAME`, `SIDEKIQ_WEB_PASSWORD` | sidekiq_web.rb |
 | `PLATFORM_PAUSE_ALL`, `PLATFORM_ACTOR` | switchboard brake, toggle actor |
 | `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`, `..._DETERMINISTIC_KEY`, `..._KEY_DERIVATION_SALT`, `AR_ENCRYPTION_SUPPORT_UNENCRYPTED_DATA` | encryption (alternative to credentials) |

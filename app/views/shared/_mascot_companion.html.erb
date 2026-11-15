@@ -1,0 +1,19 @@
+<%# Aluni docked beside a chat (the onboarding's <aside id="chat-companion">): the same controller in docked mode, positioned inside its container, no entrance and no bubble. Starts idle and talks on window "mascot:speak". Render with: render "shared/mascot_companion" %>
+<div class="mascot mascot--companion"
+     data-controller="mascot"
+     data-mascot-mode-value="docked"
+     data-mascot-offstage-class="mascot--offstage"
+     data-mascot-onstage-class="mascot--onstage"
+     data-mascot-arrived-class="mascot--arrived"
+     data-mascot-docked-class="mascot--docked"
+     data-mascot-away-class="mascot--away"
+     data-mascot-hidden-class="mascot--hidden"
+     data-mascot-static-class="mascot--static"
+     data-mascot-fallback-class="mascot--fallback"
+     data-mascot-bubble-visible-class="mascot__bubble--visible">
+  <div class="mascot__shadow" aria-hidden="true"></div>
+  <div class="mascot__canvas" data-mascot-target="canvas" aria-hidden="true"></div>
+  <div class="mascot__fallback" data-mascot-target="fallback" hidden>
+    <%= render "shared/mascot_avatar", size: "lg" %>
+  </div>
+</div>

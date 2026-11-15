@@ -1,0 +1,55 @@
+es:
+  onboarding:
+    persona_name: "Aluni"
+    welcome_message: "Hola %{name}, soy Aluni. Te haré unas preguntas cortas sobre tu finca para que los consejos se ajusten a tu tierra, y nada se guarda hasta que tú lo digas. ¿Empezamos por quién eres?"
+    topics:
+      welcome: "Bienvenida"
+      location: "Ubicación"
+      land: "Tu tierra"
+      crops: "Cultivos"
+      soil: "Suelo"
+      operation: "Cómo trabajas"
+      goals: "Metas"
+      summary: "Resumen"
+    transitions:
+      welcome: "Empecemos por quién eres."
+      location: "Ahora busquemos tu campo principal en el mapa. Puedes compartir tu ubicación o decirme el pueblo más cercano."
+      land: "Sigamos con la tierra: qué tan grande es y cómo recibe el agua."
+      crops: "Ahora los cultivos. ¿Qué crece ahí esta temporada?"
+      soil: "Hablemos del suelo, con tus propias palabras."
+      operation: "Ya casi. Unas preguntas rápidas sobre cómo trabajas."
+      goals: "Última parte: ¿qué es lo que más te importa este año?"
+      summary: "Déjame juntarlo todo para que lo revises."
+    continuations:
+      welcome:
+        - "Dame un segundo, todavía me estoy poniendo al día. ¿Me lo repites?"
+        - "Perdí el hilo un momento. ¿Me cuentas otra vez quién eres en la finca?"
+      location:
+        - "Espera, todavía estoy desplegando mis hojas. ¿Dónde queda tu campo?"
+        - "Un momento, eso no me llegó. ¿Puedes compartir tu ubicación o decirme el pueblo más cercano?"
+      land:
+        - "Dame un segundo, me estoy poniendo al día. ¿Qué tan grande es el campo?"
+        - "Se me pasó esa. ¿Me cuentas otra vez sobre la tierra?"
+      crops:
+        - "Espera, hoy mis raíces van lentas. ¿Qué cultivos dijiste?"
+        - "Eso se me escapó. ¿Qué crece en el campo esta temporada?"
+      soil:
+        - "Un momento, todavía me estoy poniendo al día. ¿Qué me decías del suelo?"
+        - "Se me pasó. Cuéntame otra vez cómo es el suelo, con tus palabras."
+      operation:
+        - "Dame un segundo, me estoy poniendo al día. ¿Qué herramientas y ventas mencionaste?"
+        - "Eso no me llegó. ¿Me lo repites?"
+      goals:
+        - "Espera, todavía me estoy poniendo al día. ¿Qué es lo que más te importa este año?"
+        - "Lo perdí un momento. ¿Me cuentas tus metas otra vez?"
+      summary:
+        - "Un momento, estoy juntándolo todo. ¿Me lo repites?"
+        - "Ya casi, se me pasó eso. ¿Lo dices una vez más?"
+    refusals:
+      insult: "Solo soy una plantita, pero eso me dolió un poco. Volvamos a tu finca: ¿qué llenamos ahora?"
+      sexual: "De eso no puedo hablar. Estoy aquí para tus campos, así que sigamos por ahí."
+      spam: "Eso parece otra cosa y no un mensaje para mí. Sigamos con el perfil de tu finca."
+      injection: "Solo puedo ayudarte con el perfil de tu finca, así que sigamos con eso. ¿Qué llenamos ahora?"
+      off_topic_hostile: "Mantengamos esto amable y sobre tu finca. ¿Qué llenamos ahora?"
+    blocked: "Necesito un poco de calma para recuperarme. Vuelve mañana y seguimos donde quedamos."
+    error_fallback: "Algo se enredó de mi lado. Dame un momento y dímelo otra vez."

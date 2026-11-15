@@ -1,0 +1,65 @@
+<% content_for :title, t(".title") %>
+
+<div class="onboarding">
+  <section class="chat onboarding__chat"
+           aria-labelledby="onboarding-title"
+           data-controller="chat geolocate"
+           data-chat-messages-value="<%= { failed: t(".errors.failed") }.to_json %>"
+           data-chat-notice-class="chat__notice chat__notice--warning"
+           data-geolocate-template-value="<%= t(".location_shared_text") %>"
+           data-geolocate-denied-value="<%= t(".location_denied") %>"
+           data-geolocate-unsupported-value="<%= t(".location_unsupported") %>"
+           data-geolocate-locating-value="<%= t(".locating") %>"
+           data-action="geolocate:located->chat#submit">
+    <header class="chat__header">
+      <div class="chat__heading">
+        <h1 id="onboarding-title" class="text-heading chat__title"><%= t(".title") %></h1>
+        <p class="chat__lede"><%= t(".lede") %></p>
+      </div>
+      <%= render "app/onboarding/progress", topic: @topic, index: @index, total: @total %>
+    </header>
+
+    <div id="onboarding-messages" class="chat__log" data-chat-target="log" role="log" aria-live="polite" aria-relevant="additions">
+      <% turns = transcript_turns(@turns) %>
+      <% if turns.empty? %>
+        <%= render "app/onboarding/message", role: "assistant", text: t("onboarding.welcome_message", name: Current.user.display_name) %>
+      <% else %>
+        <% turns.each_with_index do |turn, i| %>
+          <%= render "app/onboarding/message", role: turn[:role], text: turn[:text], silent: i < turns.size - 1 %>
+        <% end %>
+      <% end %>
+      <% if @onboarding_session.completed? %>
+        <div class="chat__notice chat__notice--success" role="status">
+          <span><%= t(".completed_notice") %></span>
+          <%= link_to t(".back_home"), app_root_path, class: "chat__notice-link" %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="chat__typing" data-chat-target="typing" hidden>
+      <%= render "app/onboarding/typing" %>
+    </div>
+
+    <div id="onboarding-notice" class="chat__notices" data-chat-target="notice"></div>
+
+    <div id="onboarding-confirm" class="chat__confirm">
+      <%= render "app/onboarding/confirm_card", proposal: @proposal if @proposal %>
+    </div>
+
+    <div id="onboarding-location-tools" class="chat__tools-slot">
+      <%= render "app/onboarding/location_tools", pin: @pin if @topic == "location" %>
+    </div>
+
+    <%= render "app/onboarding/composer" %>
+  </section>
+
+  <aside id="chat-companion" class="onboarding__companion" data-mascot-dock aria-label="<%= t(".companion_label") %>">
+    <div class="onboarding__mascot"><%= render "shared/mascot_companion" %></div>
+    <details class="onboarding__preview card" open>
+      <summary class="onboarding__preview-summary"><%= t(".preview.title") %></summary>
+      <div class="card__body">
+        <%= render "app/onboarding/profile_preview", snapshot: @snapshot %>
+      </div>
+    </details>
+  </aside>
+</div>

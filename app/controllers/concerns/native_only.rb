@@ -1,10 +1,12 @@
-# Soft gate for the native-first split: sign-in, sign-up, passkey management
-# and /app answer only to the Hotwire Native shells (turbo-rails'
-# hotwire_native_app?, a user-agent check) unless NATIVE_WEB_ACCESS opens them
-# to browsers (Platform::Features.native_web_access?, on in development).
+# Operator kill switch for the browser side of the product. Sign-in, sign-up,
+# passkey management and /app answer to browsers and to the Hotwire Native
+# shells alike while NATIVE_WEB_ACCESS is on (the default). Turning it off
+# (Platform::Features.native_web_access? false) sends browsers back to the
+# landing page with a notice and answers JSON with 403; the shells
+# (turbo-rails' hotwire_native_app?, a user-agent check) keep working.
 #
-# This is a product gate, not a security boundary: the session cookie and the
-# passkey ceremony are the boundary.
+# This is a product switch, not a security boundary: the session cookie and
+# the passkey ceremony are the boundary.
 module NativeOnly
   extend ActiveSupport::Concern
 

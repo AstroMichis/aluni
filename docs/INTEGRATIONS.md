@@ -6,12 +6,13 @@ Every outside service has one client class, a switchboard guard, structured erro
 
 - `BASE_URL = https://generativelanguage.googleapis.com/v1beta`; API key from credentials `gemini.api_key` as `x-goog-api-key`.
 - Model tiers from `config.x.gemini` (`GEMINI_FLASH_MODEL`, `GEMINI_PRO_MODEL`, `GEMINI_TRANSCRIBE_MODEL`, default `gemini-3.8-flash`) and `GEMINI_CHAT_MAX_OUTPUT_TOKENS` (2048). `thinking_config_for` keeps thinking minimal per model family.
-- `generate(prompt, system_instruction:, images:, response_schema:, max_tokens:)` single turn, temperature 0.3, inline base64 images, structured JSON via `responseMimeType` + `responseSchema`; `chat(messages:, system_instruction:)` multi turn, temperature 0.4.
+- `generate(prompt, system_instruction:, images:, response_schema:, max_tokens:)` single turn, temperature 0.3, inline base64 images, structured JSON via `responseMimeType` + `responseSchema`; `chat(messages:, system_instruction:, response_schema:, max_tokens:)` multi turn, temperature 0.4, the same structured JSON when a schema is given. `Gemini::Client.new(model:, timeout:)` overrides the 30 s read timeout per caller (the chat uses 20 s).
 - Retries: backoffs `[0.5, 1.5, 3.0]` s plus jitter within a 6 s budget, `Retry-After` parsed from the 429 message (capped at 5 s); retryable types `rate_limited`, `service_unavailable`, `network_error`, `empty_response`. On exhaustion returns `nil` and exposes `last_error` (`{ type:, status:, message:, retry_after: }`). Faraday: JSON in and out, `retry max: 2`, timeout 30 s, open timeout 10 s.
 - `Platform::Switchboard.guard!(:gemini)` right before the request; `fix_unicode_escapes` repairs a known structured-output bug.
 - Callers handle `nil`, rescue `JSON::ParserError`, and never show a raw processing error to a person: `try_external(Faraday::Error, JSON::ParserError)` in services.
 - `Gemini::LanguagePrompt.lock(locale)` forces the answer language.
-- Shapes to add when an assistant exists: a Redis TTL session store encrypted at rest, a PII redactor before storage, an intent classifier with rate limits and a strike/block system, Rack::Attack throttles on the AI-backed endpoints (20/min and 150/hour per IP).
+- The onboarding chat (`docs/ONBOARDING.md`, `app/services/onboarding/`) is the first assistant: the encrypted transcript lives on `onboarding_sessions` (Postgres, so a refresh resumes), `Onboarding::Redactor` scrubs emails and phone numbers before storage, `Onboarding::ClassifyIntentService` runs beside every reply with a 3-strike 24 h block, and Rack::Attack throttles `/app/onboarding/*` at 20/min and 150/hour per IP (`RACK_ATTACK_ASSISTANT_PATH`).
+- Pictures of the farmer's area come from NASA GIBS WMS (`Onboarding::AreaImage.url`), loaded by the browser as an `<img>` (`img-src https:` in the CSP); the server never fetches them, so there is no client and no switchboard entry. The default layer is static Blue Marble; the daily true-colour layer needs a `TIME`.
 - Specs: `spec/services/gemini/client_spec.rb` (WebMock); `spec/support/external_apis.rb` fails the suite if any other spec reaches a Google host.
 
 ## Outbound client pattern

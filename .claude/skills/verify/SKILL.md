@@ -15,7 +15,7 @@ Violating this is a hard stop, not a judgment call. The one scripted browser in 
 ## Allowed verification surfaces
 
 ### Server / Rails
-- `curl` for HTTP responses and redirects (add `-A "Aluni Hotwire Native iOS"` to reach the native-only pages, or run with `NATIVE_WEB_ACCESS=1`)
+- `curl` for HTTP responses and redirects (add `-A "Aluni Hotwire Native iOS"` to see a page as the native shell sees it)
 - `mise exec -- bundle exec rails runner "..."` for in-process checks
 - `mise exec -- bundle exec rspec spec/...` for request specs (they must render the page, not just assert a redirect)
 - `mise exec -- bundle exec rspec spec/system` for Cuprite system specs

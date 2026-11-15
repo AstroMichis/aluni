@@ -44,7 +44,7 @@ Rails.application.routes.draw do
   scope "(:locale)", locale: /en|es/ do
     root "pages#home"
 
-    # Passkey sign-in and sign-up (native shells; NATIVE_WEB_ACCESS opens them to browsers).
+    # Passkey sign-in and sign-up (browsers and native shells; NATIVE_WEB_ACCESS=0 closes them to browsers).
     get    "sign_in",         to: "sessions#new",          as: :sign_in
     post   "sign_in/options", to: "sessions#options",      as: :sign_in_options
     post   "sign_in",         to: "sessions#create"
@@ -60,6 +60,15 @@ Rails.application.routes.draw do
     # Authenticated area (native shells).
     namespace :app do
       root "home#show"
+      # The onboarding chat: one page, Turbo Stream actions for every turn.
+      resource :onboarding, only: :show, controller: "onboarding" do
+        post :message
+        post :confirm
+        post :discard
+        post :skip
+        post :complete
+        delete :reset
+      end
       resources :device_tokens, only: :create
       delete "device_tokens", to: "device_tokens#destroy"
       resources :web_push_subscriptions, only: :create

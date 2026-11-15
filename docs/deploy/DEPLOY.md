@@ -33,11 +33,18 @@ No inbound port but Tailscale SSH; TLS at Cloudflare; the app connects to Postgr
 bin/kamal app exec --reuse "bin/rails platform:status"
 bin/kamal app exec --reuse "bin/rails 'platform:resume[mail]'"      # after SMTP credentials and DNS records
 bin/kamal app exec --reuse "bin/rails 'platform:resume[cron]'"      # after the first deploy is stable
-bin/kamal app exec --reuse "bin/rails 'platform:resume[gemini]'"    # after gemini.api_key and a budget alert
+bin/kamal app exec --reuse "bin/rails 'platform:resume[gemini]'"    # after gemini.api_key and a budget alert; the onboarding chat answers with continuation lines until then
 bin/kamal app exec --reuse "bin/rails 'platform:resume[push]'"      # after APNs/FCM credentials
 ```
 
 Or the Platform switch GitHub workflow (works from the phone). `PLATFORM_PAUSE_ALL=1` in `config/deploy.yml` env plus a deploy pauses everything even with the database down.
+
+## Before a demo
+
+1. `gemini.api_key` in the production credentials and `platform:resume[gemini]` (above); without it Aluni only says her continuation lines.
+2. `NATIVE_WEB_ACCESS` defaults to on, so sign-in, the onboarding chat and `/app` work in any current browser; set it to `0` only to close the web and keep the shells.
+3. Passkeys and the share-location button need a secure context: the production domain, or `localhost` in development.
+4. Open the landing page, wait for Aluni to walk in, run the sign-up and a full onboarding in English and in Spanish, refresh once mid-way to see the transcript resume.
 
 ## Keeping it running
 
