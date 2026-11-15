@@ -90,6 +90,35 @@ Kc ini is printed only on group rows and on some crop rows. FAO-56 Chapter 6 sta
 
 Table 12 footnotes used above: 10 "The higher value is for hand-harvested crops"; 11 first Kc end is for harvest at high grain moisture, second for harvest after complete field drying of the grain (to about 18% moisture, wet mass basis); 13 overall average Kc mid for hay crops averaging before and following cuttings; 14 values immediately following cutting, at full cover, and immediately before cutting; 18 Kc end values are prior to leaf drop (after leaf drop, Kc end about 0.20 for bare, dry soil or dead ground cover and about 0.50 to 0.80 for actively growing ground cover); 19 refer to Eq. 94, 97 or 98 for immature stands.
 
+### Rows used by config/crops/agronomy.yml (Captured 2026-11-15)
+
+Read from `x0490e0b.htm` (Tables 11 and 12) for the catalog crops. In Table 12 the "Kc ini" of most rows is printed in an image, so a blank initial takes the crop group row (as the maize row does). Where a value is printed as a range, `agronomy.yml` uses its midpoint, or the dry-harvest end for grain legumes, and each `row` text says which.
+
+| Crop (Table 12 row) | Kc ini (group) | Kc mid | Kc end | Table 11 row: Init / Dev / Mid / Late, plant date, region |
+|---|---|---|---|---|
+| Sorghum (grain) | 0.3 (cereals) | 1.00-1.10 | 0.55 | 20 / 35 / 40 / 30, May/June, USA |
+| Spring Wheat | 0.3 (cereals) | 1.15 | 0.25-0.4 | 20 / 25 / 60 / 30, March/April, 35-45 degrees latitude |
+| Oats | 0.3 (cereals) | 1.15 | 0.25 | 20 / 25 / 60 / 30, March/April, 35-45 degrees latitude |
+| Barley | 0.3 (cereals) | 1.15 | 0.25 | 20 / 25 / 60 / 30, March/April, 35-45 degrees latitude |
+| Rice | 1.05 | 1.20 | 0.90-0.60 | 30 / 30 / 80 / 40, May, Tropics |
+| Millet | 0.3 (cereals) | 1.00 | 0.30 | 20 / 30 / 55 / 35, April, Central USA |
+| Beans, dry | 0.4 | 1.15 | 0.35 | 20 / 30 / 40 / 20, May/June, continental climates |
+| Groundnut | 0.4 (legumes) | 1.15 | 0.60 | 35 / 45 / 35 / 25, May/June, Mediterranean |
+| Peas, dry | 0.4 (legumes) | 1.15 | 0.30 | 15 / 25 / 35 / 15, May, Europe |
+| Cowpeas | 0.4 (legumes) | 1.05 | 0.60-0.35 | 20 / 30 / 30 / 20, March, Mediterranean |
+| Potato | 0.5 (roots and tubers) | 1.15 | 0.75 | 25 / 30 / 45 / 30, April, Europe |
+| Tomato | 0.6 (solanum) | 1.15 | 0.70-0.90 | 35 / 40 / 50 / 30, April/May, California |
+| Sunflower | 0.35 (oil crops) | 1.0-1.15 | 0.35 | 25 / 35 / 45 / 25, April/May, Mediterranean and California |
+| Cabbage | 0.7 (small vegetables) | 1.05 | 0.95 | 40 / 60 / 50 / 15, September, California desert |
+| Sweet potato | 0.5 (roots and tubers) | 1.15 | 0.65 | 20 / 30 / 60 / 40, April, Mediterranean |
+| Onions, dry | 0.7 (small vegetables) | 1.05 | 0.75 | 15 / 25 / 70 / 40, April, Mediterranean |
+| Sugar Beet | 0.35 | 1.20 | 0.70 | 30 / 45 / 90 / 15, March, California |
+| Cotton | 0.35 (fibre crops) | 1.15-1.20 | 0.70-0.50 | 30 / 50 / 60 / 55, March-May, Egypt, Pakistan and California |
+
+Not used: chick pea and canola have no Table 11 row; sugarcane, cassava, coffee and alfalfa are perennial or planted with the rains, so the single-season model does not fit them.
+
+Table 11 rows are northern-hemisphere plantings. `Crops::WaterNeed` moves the default planting month by six months south of 15 degrees S; a farmer's own planting month always wins.
+
 ### Chapter 7 page (Table 17)
 
 ```

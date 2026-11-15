@@ -35,6 +35,28 @@ RSpec.describe Rotations::Comparator do
     expect(comparator.strategies.drop(1).flat_map(&:benefits)).not_to be_empty
   end
 
+  it "counts conservation practices as the soil health goal" do
+    user.farmer_profile.update!(goals: [], practices: [ "no_till" ])
+
+    expect(comparator.weights).to include("soil_health" => 3, "nitrogen" => 3, "erosion" => 3, "pest_break" => 1)
+  end
+
+  it "flags new crops for a cautious farmer and for contract sales, never on the current rotation" do
+    user.farmer_profile.update!(risk_tolerance: :cautious, market_channels: [ "contract" ])
+
+    current, *others = comparator.strategies
+    expect(current.risks).not_to include("new_crop", "contract")
+    flagged = others.select { |s| s.risks.include?("new_crop") }
+    expect(flagged).not_to be_empty
+    expect(flagged).to all(have_attributes(risks: include("contract")))
+  end
+
+  it "says nothing about new crops for a farmer open to change" do
+    user.farmer_profile.update!(risk_tolerance: :bold, market_channels: [ "local_market" ])
+
+    expect(comparator.strategies.flat_map(&:risks)).not_to include("new_crop", "contract")
+  end
+
   it "still offers three strategies when the current crop is already a legume" do
     record.field_crops.find_by(season_year: Date.current.year).update!(crop_name: "Soybeans", scientific_name: "Glycine max")
     comparator = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile)

@@ -241,6 +241,16 @@ RSpec.describe "Ask Aluni chat", type: :request do
     expect(Onboarding::CompleteService).to have_received(:call).with(user: user)
   end
 
+  it "completes and opens the rotation plan when the main field has a crop" do
+    field = create_farm_for(user)
+    allow(Onboarding::CompleteService).to receive(:call).and_return(Success(segment: "small_commercial"))
+
+    post complete_app_onboarding_path(locale: "en")
+
+    expect(response).to redirect_to(app_field_rotation_path(field, locale: "en"))
+    expect(response).to have_http_status(:see_other)
+  end
+
   it "resets and comes back to the chat with a 303" do
     allow(Onboarding::ResetService).to receive(:call).and_return(Success())
 

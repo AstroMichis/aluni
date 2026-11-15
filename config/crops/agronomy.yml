@@ -15,30 +15,48 @@
 # Loaded by Crops::Agronomy.
 zea-mays:             { scientific: Zea mays, aliases: [corn, maize, maiz, elote], family: poaceae, shape: stalk, gaez: Maize,
                         fao56: { kc: [0.3, 1.20, 0.35], stages: [30, 40, 50, 30], planting_month: 4, row: "Maize (grain), April, Spain and California; Kc ini from the cereals group, Kc end for grain dried in the field" } }
-sorghum-bicolor:      { scientific: Sorghum bicolor, aliases: [sorghum, sorgo], family: poaceae, shape: stalk, gaez: Sorghum }
-triticum-aestivum:    { scientific: Triticum aestivum, aliases: [wheat, trigo], family: poaceae, shape: grain, gaez: Wheat }
-avena-sativa:         { scientific: Avena sativa, aliases: [oats, oat, avena], family: poaceae, shape: grain, gaez: Oat }
-hordeum-vulgare:      { scientific: Hordeum vulgare, aliases: [barley, cebada], family: poaceae, shape: grain, gaez: Barley }
+sorghum-bicolor:      { scientific: Sorghum bicolor, aliases: [sorghum, sorgo], family: poaceae, shape: stalk, gaez: Sorghum,
+                       fao56: { kc: [0.3, 1.05, 0.55], stages: [20, 35, 40, 30], planting_month: 5, row: "Sorghum (grain), May/June, USA; Kc ini from the cereals group, Kc mid the midpoint of 1.00-1.10" } }
+triticum-aestivum:    { scientific: Triticum aestivum, aliases: [wheat, trigo], family: poaceae, shape: grain, gaez: Wheat,
+                       fao56: { kc: [0.3, 1.15, 0.3], stages: [20, 25, 60, 30], planting_month: 3, row: "Spring Wheat, March/April, 35-45 degrees latitude; Kc ini from the cereals group, Kc end within 0.25-0.4" } }
+avena-sativa:         { scientific: Avena sativa, aliases: [oats, oat, avena], family: poaceae, shape: grain, gaez: Oat,
+                       fao56: { kc: [0.3, 1.15, 0.25], stages: [20, 25, 60, 30], planting_month: 3, row: "Oats, March/April, 35-45 degrees latitude (small grains block); Kc ini from the cereals group" } }
+hordeum-vulgare:      { scientific: Hordeum vulgare, aliases: [barley, cebada], family: poaceae, shape: grain, gaez: Barley,
+                       fao56: { kc: [0.3, 1.15, 0.25], stages: [20, 25, 60, 30], planting_month: 3, row: "Barley, March/April, 35-45 degrees latitude (small grains block); Kc ini from the cereals group" } }
 secale-cereale:       { scientific: Secale cereale, aliases: [rye, centeno], family: poaceae, shape: grain, gaez: Rye }
-oryza-sativa:         { scientific: Oryza sativa, aliases: [rice, arroz], family: poaceae, shape: grain, gaez: Wetland rice }
+oryza-sativa:         { scientific: Oryza sativa, aliases: [rice, arroz], family: poaceae, shape: grain, gaez: Wetland rice,
+                       fao56: { kc: [1.05, 1.20, 0.75], stages: [30, 30, 80, 40], planting_month: 5, row: "Rice, May, Tropics; Kc end the midpoint of 0.90-0.60" } }
 saccharum-officinarum: { scientific: Saccharum officinarum, aliases: [sugarcane, cana-de-azucar, cana], family: poaceae, shape: stalk, gaez: Sugarcane }
-pennisetum-glaucum:   { scientific: Pennisetum glaucum, aliases: [pearl-millet, millet, mijo], family: poaceae, shape: grain, gaez: Pearl millet }
+pennisetum-glaucum:   { scientific: Pennisetum glaucum, aliases: [pearl-millet, millet, mijo], family: poaceae, shape: grain, gaez: Pearl millet,
+                       fao56: { kc: [0.3, 1.00, 0.30], stages: [20, 30, 55, 35], planting_month: 4, row: "Millet, April, Central USA; Kc ini from the cereals group" } }
 glycine-max:          { scientific: Glycine max, aliases: [soybeans, soybean, soy, soya, soja], family: fabaceae, shape: leafy, gaez: Soybean,
                         fao56: { kc: [0.4, 1.15, 0.50], stages: [20, 30, 60, 25], planting_month: 5, row: "Soybeans, May, Central USA; Kc ini from the legumes group" } }
-phaseolus-vulgaris:   { scientific: Phaseolus vulgaris, aliases: [beans, bean, frijol, frijoles, poroto], family: fabaceae, shape: leafy, gaez: Phaseolus bean }
+phaseolus-vulgaris:   { scientific: Phaseolus vulgaris, aliases: [beans, bean, frijol, frijoles, poroto], family: fabaceae, shape: leafy, gaez: Phaseolus bean,
+                       fao56: { kc: [0.4, 1.15, 0.35], stages: [20, 30, 40, 20], planting_month: 5, row: "Beans (dry), May/June, continental climates" } }
 medicago-sativa:      { scientific: Medicago sativa, aliases: [alfalfa], family: fabaceae, shape: leafy, gaez: Alfalfa }
 cicer-arietinum:      { scientific: Cicer arietinum, aliases: [chickpea, garbanzo], family: fabaceae, shape: leafy, gaez: Chickpea }
-arachis-hypogaea:     { scientific: Arachis hypogaea, aliases: [peanut, groundnut, mani, cacahuate], family: fabaceae, shape: leafy, gaez: Groundnut }
-pisum-sativum:        { scientific: Pisum sativum, aliases: [pea, peas, arveja, chicharo], family: fabaceae, shape: leafy, gaez: Dry pea }
-vigna-unguiculata:    { scientific: Vigna unguiculata, aliases: [cowpea, caupi], family: fabaceae, shape: leafy, gaez: Cowpea }
-solanum-tuberosum:    { scientific: Solanum tuberosum, aliases: [potato, potatoes, papa, patata], family: solanaceae, shape: bush, gaez: White potato }
-solanum-lycopersicum: { scientific: Solanum lycopersicum, aliases: [tomato, tomate], family: solanaceae, shape: bush, gaez: Tomato }
-helianthus-annuus:    { scientific: Helianthus annuus, aliases: [sunflower, girasol], family: asteraceae, shape: stalk, gaez: Sunflower }
+arachis-hypogaea:     { scientific: Arachis hypogaea, aliases: [peanut, groundnut, mani, cacahuate], family: fabaceae, shape: leafy, gaez: Groundnut,
+                       fao56: { kc: [0.4, 1.15, 0.60], stages: [35, 45, 35, 25], planting_month: 5, row: "Groundnut, May/June, Mediterranean; Kc ini from the legumes group" } }
+pisum-sativum:        { scientific: Pisum sativum, aliases: [pea, peas, arveja, chicharo], family: fabaceae, shape: leafy, gaez: Dry pea,
+                       fao56: { kc: [0.4, 1.15, 0.30], stages: [15, 25, 35, 15], planting_month: 5, row: "Peas (dry), May, Europe; Kc ini from the legumes group" } }
+vigna-unguiculata:    { scientific: Vigna unguiculata, aliases: [cowpea, caupi], family: fabaceae, shape: leafy, gaez: Cowpea,
+                       fao56: { kc: [0.4, 1.05, 0.35], stages: [20, 30, 30, 20], planting_month: 3, row: "Cowpeas, March, Mediterranean; Kc ini from the legumes group, Kc end for dry harvest (0.60-0.35)" } }
+solanum-tuberosum:    { scientific: Solanum tuberosum, aliases: [potato, potatoes, papa, patata], family: solanaceae, shape: bush, gaez: White potato,
+                       fao56: { kc: [0.5, 1.15, 0.75], stages: [25, 30, 45, 30], planting_month: 4, row: "Potato, April, Europe; Kc ini from the roots and tubers group" } }
+solanum-lycopersicum: { scientific: Solanum lycopersicum, aliases: [tomato, tomate], family: solanaceae, shape: bush, gaez: Tomato,
+                       fao56: { kc: [0.6, 1.15, 0.80], stages: [35, 40, 50, 30], planting_month: 4, row: "Tomato, April/May, California; Kc ini from the solanum group, Kc end the midpoint of 0.70-0.90" } }
+helianthus-annuus:    { scientific: Helianthus annuus, aliases: [sunflower, girasol], family: asteraceae, shape: stalk, gaez: Sunflower,
+                       fao56: { kc: [0.35, 1.08, 0.35], stages: [25, 35, 45, 25], planting_month: 4, row: "Sunflower, April/May, Mediterranean and California; Kc ini from the oil crops group, Kc mid the midpoint of 1.0-1.15" } }
 brassica-napus:       { scientific: Brassica napus, aliases: [canola, rapeseed, colza], family: brassicaceae, shape: bush, gaez: Rapeseed }
-brassica-oleracea:    { scientific: Brassica oleracea, aliases: [cabbage, repollo, col], family: brassicaceae, shape: bush, gaez: Cabbage }
+brassica-oleracea:    { scientific: Brassica oleracea, aliases: [cabbage, repollo, col], family: brassicaceae, shape: bush, gaez: Cabbage,
+                       fao56: { kc: [0.7, 1.05, 0.95], stages: [40, 60, 50, 15], planting_month: 9, row: "Cabbage, September, California desert; Kc ini from the small vegetables group" } }
 manihot-esculenta:    { scientific: Manihot esculenta, aliases: [cassava, yuca, mandioca], family: euphorbiaceae, shape: bush, gaez: Cassava }
-ipomoea-batatas:      { scientific: Ipomoea batatas, aliases: [sweet-potato, camote, batata], family: convolvulaceae, shape: bush, gaez: Sweet potato }
+ipomoea-batatas:      { scientific: Ipomoea batatas, aliases: [sweet-potato, camote, batata], family: convolvulaceae, shape: bush, gaez: Sweet potato,
+                       fao56: { kc: [0.5, 1.15, 0.65], stages: [20, 30, 60, 40], planting_month: 4, row: "Sweet potato, April, Mediterranean; Kc ini from the roots and tubers group" } }
 coffea-arabica:       { scientific: Coffea arabica, aliases: [coffee, cafe], family: rubiaceae, shape: bush, gaez: Coffee }
-allium-cepa:          { scientific: Allium cepa, aliases: [onion, cebolla], family: amaryllidaceae, shape: bush, gaez: Onion }
-beta-vulgaris:        { scientific: Beta vulgaris, aliases: [sugar-beet, sugarbeet, remolacha], family: amaranthaceae, shape: bush, gaez: Sugarbeet }
-gossypium-hirsutum:   { scientific: Gossypium hirsutum, aliases: [cotton, algodon], family: malvaceae, shape: bush, gaez: Cotton }
+allium-cepa:          { scientific: Allium cepa, aliases: [onion, cebolla], family: amaryllidaceae, shape: bush, gaez: Onion,
+                       fao56: { kc: [0.7, 1.05, 0.75], stages: [15, 25, 70, 40], planting_month: 4, row: "Onion (dry), April, Mediterranean; Kc ini from the small vegetables group" } }
+beta-vulgaris:        { scientific: Beta vulgaris, aliases: [sugar-beet, sugarbeet, remolacha], family: amaranthaceae, shape: bush, gaez: Sugarbeet,
+                       fao56: { kc: [0.35, 1.20, 0.70], stages: [30, 45, 90, 15], planting_month: 3, row: "Sugar beet, March, California" } }
+gossypium-hirsutum:   { scientific: Gossypium hirsutum, aliases: [cotton, algodon], family: malvaceae, shape: bush, gaez: Cotton,
+                       fao56: { kc: [0.35, 1.18, 0.60], stages: [30, 50, 60, 55], planting_month: 3, row: "Cotton, March-May, Egypt, Pakistan and California; Kc ini from the fibre crops group, Kc mid and end the midpoints of 1.15-1.20 and 0.70-0.50" } }

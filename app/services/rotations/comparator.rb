@@ -24,6 +24,10 @@ module Rotations
     DRY_SHARE = 0.5     # a rainfed crop whose season rain is under half its need
     PERENNIALS = %w[medicago-sativa].freeze # a stand of several seasons is one crop, not a repeat
     LOW_SUITABILITY = 4000
+    # Practices that already put soil health first count as that goal.
+    SOIL_PRACTICES = %w[no_till regenerative organic certified_organic].freeze
+    # Sales tied to a buyer: changing the crop needs the buyer's agreement.
+    BOUND_CHANNELS = %w[contract export].freeze
 
     Strategy = Struct.new(:key, :crops, :scores, :total, :why, :benefits, :evidence, :gaps, :risks, keyword_init: true) do
       def current? = key == "current"
@@ -37,6 +41,7 @@ module Rotations
       @potential = Crops::Potential.new(field.observation("gaez"))
       @power = field.observation("nasa_power")
       @goals = Array(profile&.goals)
+      @goals |= [ "soil_health" ] if (Array(profile&.practices) & SOIL_PRACTICES).any?
     end
 
     def strategies
@@ -193,6 +198,9 @@ module Rotations
       list << "harvester" if crops.any? { |c| SMALL_GRAINS.include?(Crops::Agronomy.gaez_name(c)) } && !harvester?
       list << "same_family" if scores["pest_break"].to_i < 75
       list << "establishment" if crops.include?("medicago-sativa")
+      new_crops = crops.uniq - grown
+      list << "new_crop" if new_crops.any? && @profile&.risk_tolerance_cautious?
+      list << "contract" if new_crops.any? && (Array(@profile&.market_channels) & BOUND_CHANNELS).any?
       list
     end
 
@@ -213,6 +221,8 @@ module Rotations
 
     def suitable?(gaez_name) = @potential.rows.any? { |r| r.gaez == gaez_name && r.suitability.to_i >= LOW_SUITABILITY }
     def harvester? = Array(@profile&.equipment).include?("harvester")
+    # Catalog keys of every crop the field has had (main crops, past seasons).
+    def grown = (@grown ||= @field.history.values.filter_map { |c| key_of(c) }.uniq)
     def key_of(crop) = crop && (Crops::Agronomy.find(crop)&.key || crop.crop_key)
   end
 end

@@ -29,6 +29,12 @@
       <div class="dial-page__intro">
         <p class="text-label dial-page__eyebrow"><%= t(".eyebrow") %></p>
         <h1 class="text-display dial-page__title"><%= t(".greeting", name: Current.user.display_name) %></h1>
+        <% if @plan_field %>
+          <%= link_to app_field_rotation_path(@plan_field.key), class: "dial-page__plan" do %>
+            <span class="dial-page__plan-title"><%= t(".plan.title") %></span>
+            <span class="dial-page__plan-body"><%= t(".plan.body", crop: @plan_field.crop) %></span>
+          <% end %>
+        <% end %>
       </div>
 
       <div class="dial"

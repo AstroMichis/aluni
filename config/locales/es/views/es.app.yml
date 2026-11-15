@@ -6,6 +6,9 @@ es:
         lede: 'Gira la rueda para elegir a dónde ir: tus terrenos, cultivos, clima, equipo o reportes.'
         talk_to: Hablar con %{app_name}
         eyebrow: Menú principal
+        plan:
+          title: Tu plan de rotación
+          body: "Tu rotación de %{crop} frente a las alternativas, con la evidencia de cada una."
         dial_label: Secciones del menú
         hint: Gira la rueda con el dedo, el mouse o las flechas del teclado. Toca el centro para abrir.
         kicker: "%{number} / %{total}"
@@ -797,6 +800,8 @@ es:
         harvester: Los cereales pequeños necesitan cosechadora; tu equipo no la incluye.
         same_family: Las plagas de una misma familia podrían mantenerse.
         establishment: La alfalfa tarda una temporada en establecerse y necesita mercado o animales.
+        new_crop: Trae un cultivo que tu campo no ha tenido, y prefieres cambiar con cuidado. Pruébalo primero en una parte del campo.
+        contract: Vendes por contrato o para exportar. Consulta con tu comprador antes de cambiar el cultivo.
       gaps:
         market: 'Precios y compradores: todavía no hay fuente para tu mercado local.'
         soil: La textura de tu suelo todavía no está confirmada.
