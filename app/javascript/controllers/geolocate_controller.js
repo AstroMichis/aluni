@@ -1,10 +1,11 @@
 import { Controller } from "@hotwired/stimulus"
 
-// "Share my location": asks the browser for a position, fills the composer's
-// hidden latitude/longitude fields and its text with the fixed line from the
-// view, then dispatches "geolocate:located" so the chat sends the message
-// (the chat element listens with data-action="geolocate:located->chat#submit").
-// Errors show the view's copy in the status line; nothing is sent.
+// "Use my location" / "Share my location": asks the browser for a position, fills
+// the optional latitude/longitude/text targets (the chat's composer) and dispatches
+// "geolocate:located" { latitude, longitude } for whoever mounts it: the field
+// finder (data-action="geolocate:located->finder#located") moves its pin, the chat
+// sends the message. Errors show the view's copy in the status target; nothing is
+// sent. The status target may be shared with another controller on the element.
 export default class extends Controller {
   static targets = ["latitude", "longitude", "text", "status"]
   static values = {

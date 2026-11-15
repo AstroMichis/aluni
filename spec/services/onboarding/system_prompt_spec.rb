@@ -22,7 +22,15 @@ RSpec.describe Onboarding::SystemPrompt do
     crop [ID:1] 2025: Corn (Zea mays), main, planted 4, harvest 10, field 1
   TEXT
 
-  let(:snapshot) { instance_double(Onboarding::ProfileSnapshot, to_prompt: FIXED_SNAPSHOT) }
+  # The slice of ProfileSnapshot#to_h the KNOWN FIELD BASICS block reads.
+  FIXED_BASICS = {
+    farm: { name: "Finca Ana", country_code: "CR", admin_area: "Cartago" },
+    field: { latitude: 42.0, longitude: -93.75, place_label: "Near Ames", location_confidence: "confirmed",
+             area: 12.5, area_unit: "hectares", irrigation: "rainfed" },
+    crops: [ { season_year: 2025, crop_name: "Corn", scientific_name: "Zea mays", role: "main" } ]
+  }.freeze
+
+  let(:snapshot) { instance_double(Onboarding::ProfileSnapshot, to_prompt: FIXED_SNAPSHOT, to_h: FIXED_BASICS) }
   let(:fixture) { Rails.root.join("spec/fixtures/onboarding/system_prompt.txt") }
 
   it "matches the golden master for a fixed snapshot" do
@@ -31,15 +39,35 @@ RSpec.describe Onboarding::SystemPrompt do
     expect(prompt).to eq(fixture.read.chomp), "spec/fixtures/onboarding/system_prompt.txt is stale; regenerate it from SystemPrompt.build"
   end
 
-  it "stacks persona, lock, topic, guidance, snapshot, rules and output rules in that order" do
-    prompt = described_class.build(snapshot: snapshot, topic: "location", locale: "en", display_name: "Ana")
+  it "stacks persona, lock, topic, guidance, known basics, snapshot, rules and output rules in that order" do
+    prompt = described_class.build(snapshot: snapshot, topic: "crops", locale: "en", display_name: "Ana")
 
-    markers = [ "You are Aluni", "LANGUAGE LOCK", "CURRENT TOPIC: location", "REQUIRED FACTS: field.latitude", "TOPIC GUIDANCE:",
-                "PROFILE SO FAR:\nFARMER: Ana", "RULES:", "OUTPUT RULES:" ]
+    markers = [ "You are Aluni", "LANGUAGE LOCK", "CURRENT TOPIC: crops", "REQUIRED FACTS: crops", "TOPIC GUIDANCE:",
+                "KNOWN FIELD BASICS", "PROFILE SO FAR:\nFARMER: Ana", "RULES:", "OUTPUT RULES:" ]
     positions = markers.map { |m| prompt.index(m) || raise("#{m} missing") }
     expect(positions).to eq(positions.sort)
     expect(prompt).to include("ALWAYS respond in English")
     expect(prompt).not_to include("OPENING LINE")
+  end
+
+  it "lists the field basics settled during setup so the model never asks for them again" do
+    prompt = described_class.build(snapshot: snapshot, topic: "welcome", locale: "en", display_name: "Ana")
+
+    expect(prompt).to include("never ask for them again")
+    expect(prompt).to include("- pin: 42.0, -93.75 (confirmed)")
+    expect(prompt).to include("- place: Near Ames, Cartago, CR")
+    expect(prompt).to include("- crop now: Corn (Zea mays), 2025 season")
+    expect(prompt).to include("- irrigation: rainfed")
+    expect(prompt).to include("- area: 12.5 hectares")
+  end
+
+  it "marks the basics setup left empty as not set" do
+    empty = instance_double(Onboarding::ProfileSnapshot, to_prompt: "FARMER: Ana", to_h: { farm: nil, field: nil, crops: [] })
+
+    prompt = described_class.build(snapshot: empty, topic: "welcome", locale: "en", display_name: "Ana")
+
+    expect(prompt).to include("- pin: not set").and include("- place: not set").and include("- crop now: not set")
+    expect(prompt).to include("- irrigation: not set").and include("- area: not set")
   end
 
   it "adds the opening line only when given" do

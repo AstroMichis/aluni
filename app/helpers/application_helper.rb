@@ -17,11 +17,4 @@ module ApplicationHelper
   def passkey_messages
     I18n.t("passkeys.errors").to_json
   end
-
-  # The scripted landing chat in every locale, so picking Spanish mid-chat
-  # swaps the remaining lines client-side; the next page loads in that locale
-  # through the cookie RegistrationsController#create sets.
-  def landing_chat_script
-    I18n.available_locales.index_with { |locale| I18n.t("landing_chat.script", locale: locale) }.to_json
-  end
 end

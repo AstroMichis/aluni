@@ -1,5 +1,7 @@
 # The public landing page (public layout) and the locale switcher.
 class PagesController < ApplicationController
+  include LocaleRedirects
+
   allow_unauthenticated_access
   layout "public"
 
@@ -15,18 +17,5 @@ class PagesController < ApplicationController
     cookies.permanent[:locale] = locale
     Current.user&.update_column(:locale, locale) if authenticated?
     redirect_to locale_redirect_target(locale), status: :see_other
-  end
-
-  private
-
-  def locale_redirect_target(locale)
-    uri = URI.parse(request.referer.to_s)
-    return root_path(locale: locale) unless uri.host == request.host
-
-    prefix = %r{\A/(#{I18n.available_locales.join('|')})(?=/|\z)}
-    path = uri.path.sub(prefix, "")
-    "/#{locale}#{path}#{"?#{uri.query}" if uri.query.present?}"
-  rescue URI::InvalidURIError
-    root_path(locale: locale)
   end
 end

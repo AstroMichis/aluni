@@ -10,9 +10,7 @@
       <% end %>
       <div class="cluster cluster--sm">
         <%= render "shared/language_toggle" %>
-        <button type="button" class="btn btn--ghost btn--sm" data-action="theme#toggle" aria-label="<%= t("theme.toggle") %>">
-          <%= t("theme.toggle_short") %>
-        </button>
+        <%= render "shared/access_buttons" %>
       </div>
     </div>
   </nav>
@@ -36,7 +34,7 @@
             <%= link_to t(".open_app", app_name: t("app_name")), app_root_path, class: "btn btn--primary btn--lg" %>
             <a class="btn btn--ghost btn--lg" data-turbo="false" href="#tour-step-1"><%= t(".take_the_tour") %></a>
           <% else %>
-            <%= link_to t(".sign_up"), sign_up_path, class: "btn btn--primary btn--lg" if signups_enabled? %>
+            <button type="button" class="btn btn--primary btn--lg" data-controller="emit" data-emit-event-value="mascot:lets-go" data-action="emit#fire"><%= t(".find_my_field") %></button>
             <%= link_to t(".sign_in"), sign_in_path, class: "btn btn--secondary btn--lg" %>
             <a class="btn btn--ghost btn--lg" data-turbo="false" href="#tour-step-1"><%= t(".take_the_tour") %></a>
           <% end %>
@@ -51,7 +49,7 @@
 
     <% unless hotwire_native_app? %>
       <%= render "pages/home/mascot" %>
-      <%= render "pages/home/chat_panel" %>
+      <%= render "pages/home/finder" %>
 
       <div id="tour" class="tour"
            data-controller="scroll-story"
@@ -61,7 +59,7 @@
            data-scroll-story-in-tour-class="tour--in-tour">
         <p class="landing__notice container container--md">
           <span><%= t(".preview_notice") %></span>
-          <%= link_to t(".preview_notice_link"), landing_start_path, class: "landing__notice-link" %>
+          <%= render "pages/home/start_link", text: t(".preview_notice_link"), css: "landing__notice-link" %>
         </p>
 
         <nav class="tour-nav" aria-label="<%= t(".tour_label") %>" data-scroll-story-target="nav">

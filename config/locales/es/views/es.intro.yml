@@ -1,0 +1,22 @@
+es:
+  intro:
+    hello: "Hola, soy %{app_name}."
+    language_line: "Seguimos en español."
+    language_switch: "Prefer English?"
+    language_label: "Idioma"
+    languages:
+      en: "English"
+      es: "Español"
+    comfort: "Ponlo a tu gusto"
+    text_size: "Texto más grande"
+    read_aloud: "Leer en voz alta"
+    motion: "Menos movimiento"
+    contrast: "Alto contraste"
+    sample: "Te iré leyendo todo mientras avanzamos."
+    done: "Así está bien"
+  preferences:
+    read_aloud_on: "La lectura en voz alta está activada"
+    read_aloud_off: "La lectura en voz alta está desactivada"
+    toggle_read_aloud: "Leer en voz alta"
+    text_size: "Tamaño del texto"
+    text_size_short: "Aa"

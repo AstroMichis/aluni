@@ -7,7 +7,7 @@
       <h2 id="tour-step-<%= number %>-title" class="text-heading tour-step__title"><%= t("#{scope}.title") %></h2>
       <p class="tour-step__body"><%= t("#{scope}.body") %></p>
       <% if number == total %>
-        <%= link_to t("pages.home.finish"), landing_start_path, class: "btn btn--accent btn--lg tour-step__next" %>
+        <%= render "pages/home/start_link", text: t("pages.home.finish"), css: "btn btn--accent btn--lg tour-step__next" %>
       <% else %>
         <a class="btn btn--secondary btn--lg tour-step__next" data-turbo="false" href="#tour-step-<%= number + 1 %>"><%= t("pages.home.next", title: t("pages.home.steps.#{tour_steps[number]}.title")) %></a>
       <% end %>

@@ -1,9 +1,16 @@
+/* Toasts: the flash messages (fixed, top right from 641 px) and the "Saved ... Undo"
+   toast the chat renders in flow (components/chat.css places it). The action is a
+   48 px button inside the toast; toast_controller.js holds the toast while it is
+   hovered or focused. */
 .toast {
   position: fixed;
   top: var(--space-5);
   right: var(--space-5);
   left: var(--space-5);
   z-index: var(--z-toast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-md);
   background: var(--color-bg-secondary);
@@ -22,6 +29,44 @@
 .toast--info { border-left: 3px solid var(--color-info); }
 .toast--warning { border-left: 3px solid var(--color-warning); }
 
+.toast__message {
+  flex: 1 1 auto;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Room for the 48 px action without a tall toast. */
+.toast--with-action { padding-block: var(--space-2); }
+
+.toast__actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.toast__actions form { display: contents; }
+
+.toast__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0 var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-accent-text);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+.toast__action:hover { background: var(--color-bg-hover); color: var(--color-text-primary); }
+.toast__action:active { background: var(--color-bg-active); }
+
 @media (min-width: 641px) {
   .toast {
     left: auto;
@@ -29,4 +74,8 @@
     transform: translateX(120%);
   }
   .toast--visible { transform: translateX(0); }
+}
+
+@media (forced-colors: active) {
+  .toast__action { border-color: ButtonText; }
 }

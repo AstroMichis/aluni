@@ -15,12 +15,16 @@
     <%= render "app/onboarding/completion" %>
   <% end %>
 <% end %>
-<%= turbo_stream.update "onboarding-confirm" do %>
-  <%= render "app/onboarding/confirm_card", proposal: payload[:proposal] if payload[:proposal].present? %>
+<% if payload[:applied].present? %>
+  <%# One toast at a time: Undo always restores the latest apply (session.last_applied). %>
+  <%= turbo_stream.update "onboarding-toasts" do %>
+    <%= render "shared/toast", message: applied_summary(payload[:applied]), type: "success",
+               action: button_to(t("app.onboarding.show.undo"), undo_app_onboarding_path, class: "toast__action") %>
+  <% end %>
+  <%= turbo_stream.replace "profile-preview" do %>
+    <%= render "app/onboarding/profile_preview", snapshot: @snapshot %>
+  <% end %>
 <% end %>
 <%= turbo_stream.replace "onboarding-progress" do %>
   <%= render "app/onboarding/progress", topic: @topic, index: @index, total: @total %>
-<% end %>
-<%= turbo_stream.update "onboarding-location-tools" do %>
-  <%= render "app/onboarding/location_tools", pin: @pin if @topic == "location" %>
 <% end %>
