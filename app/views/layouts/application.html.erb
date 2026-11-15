@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<%= I18n.locale %>" data-theme="dark">
+<html lang="<%= I18n.locale %>" <%= tag.attributes(preferences.html_attributes) %>>
   <head>
     <title><%= content_for(:title) || t("app_name") %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -26,6 +26,7 @@
     <%= stylesheet_link_tag "base/reset", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "base/typography", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "base/global", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "base/preferences", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/button", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/card", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/badge", "data-turbo-track": "reload" %>
@@ -35,7 +36,6 @@
     <%= stylesheet_link_tag "components/toast", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/mascot", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/chat", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "components/confirm-card", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/progress", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/dropdown", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "components/avatar", "data-turbo-track": "reload" %>
@@ -54,9 +54,10 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body data-controller="theme" class="app-shell">
+  <body data-controller="preferences speech" class="app-shell" <%= tag.attributes(preferences.stimulus_values) %>>
     <a class="skip-link" href="#main"><%= t("layouts.skip_to_content") %></a>
     <div id="flash"><%= render "shared/flash" %></div>
+    <%= render "shared/preferences_form" %>
 
     <header class="app-shell__header">
       <div class="container app-shell__header-inner">

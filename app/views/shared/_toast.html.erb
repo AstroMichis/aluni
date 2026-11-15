@@ -1,0 +1,16 @@
+<%# One toast (toast_controller.js slides it in and dismisses it). Locals: message; type ("notice" | "success" |
+    "alert" | "error" | "warning" | anything else is info); optional action (HTML: a button or link shown
+    beside the message, which gives the toast a longer life and pauses it while hovered or focused). %>
+<% action = local_assigns[:action] %>
+<% toast_class = case type.to_s
+  when "notice", "success" then "toast--success"
+  when "alert", "error" then "toast--error"
+  when "warning" then "toast--warning"
+  else "toast--info"
+end %>
+<div class="toast <%= toast_class %><%= " toast--with-action" if action.present? %>" data-controller="toast" role="status">
+  <p class="toast__message"><%= message %></p>
+  <% if action.present? %>
+    <div class="toast__actions" data-toast-target="action"><%= action %></div>
+  <% end %>
+</div>

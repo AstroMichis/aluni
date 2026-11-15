@@ -1,0 +1,336 @@
+/* The field finder's steps inside the .panel shell: the status line, the place summary,
+   the locate step (device button, search row, results listbox, the Leaflet map with
+   its CSS pin and the satellite toggle), the basics step (datalist input, chips,
+   area with a unit) and the save step. Mobile first; the map grows at 1025px. */
+.finder__status {
+  margin: 0 0 var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-info-bg);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.finder__status:empty { display: none; }
+
+.finder__step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.finder__step[hidden] { display: none; }
+
+.finder__kicker {
+  margin: 0;
+  color: var(--color-accent-text);
+}
+
+.finder__heading {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+}
+
+.finder__kicker + .finder__heading { margin-top: calc(-1 * var(--space-2)); }
+
+/* The step heading takes focus when a step appears (tabindex -1): a soft ring, not a box. */
+.finder__heading:focus { outline: none; }
+.finder__heading:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 6px;
+  border-radius: var(--radius-sm);
+}
+
+.finder__locate svg { width: 20px; height: 20px; }
+
+/* Search: the input and its button on one row. */
+.finder__search {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.finder__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 48px;
+}
+
+.finder__search-button { flex: 0 0 auto; min-height: 48px; }
+
+/* Results (#place-results): a hint, or a listbox of up to five places. */
+.finder__results { display: block; }
+.finder__results:empty { display: none; }
+
+.finder__results-hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+.finder__options {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.finder__option {
+  display: grid;
+  gap: 2px;
+  min-height: 48px;
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.finder__option:hover { background: var(--color-bg-hover); border-color: var(--color-border-strong); }
+.finder__option[aria-selected="true"] { border-color: var(--color-accent); background: var(--color-accent-muted); }
+
+.finder__option-name { font-weight: 600; }
+
+.finder__option-detail {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  overflow-wrap: anywhere;
+}
+
+/* The map: at least 45vh on phones, 360px from 1025px. The pin is a CSS div icon. */
+.finder__map-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.finder__map {
+  width: 100%;
+  min-height: 45vh;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-tertiary);
+  overflow: hidden;
+  isolation: isolate;
+  touch-action: none;
+}
+
+.finder__map[hidden] { display: none; }
+
+.finder__map:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+
+.finder__map.leaflet-container { font-family: var(--font-sans); }
+
+.finder__satellite {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  z-index: 1000; /* above Leaflet's panes (400) and controls (800 to 1000) */
+  min-height: 40px;
+  box-shadow: var(--shadow-sm);
+}
+
+.finder__satellite[hidden] { display: none; }
+
+.finder__map-hint {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* The pin (L.divIcon, iconSize 32x36, anchor at the tip): a teardrop and a dot. */
+.finder__pin {
+  position: relative;
+  width: 32px;
+  height: 36px;
+  background: none;
+  border: 0;
+}
+
+.finder__pin::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--color-accent);
+  border: 2px solid var(--color-text-inverse);
+  box-shadow: var(--shadow-md);
+}
+
+.finder__pin::after {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 9px;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-text-inverse);
+}
+
+.leaflet-marker-draggable.finder__pin { cursor: grab; }
+.leaflet-marker-draggable.finder__pin:active { cursor: grabbing; }
+
+.finder__confirm { display: contents; }
+
+/* The place around the confirmed pin (#place-summary), shown on steps 2 and 3. */
+.finder__summary { display: block; margin-bottom: var(--space-4); }
+.finder__summary[hidden] { display: none; }
+
+.finder__place {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-accent-muted);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.finder__place-name {
+  margin: 0;
+  font-weight: 600;
+}
+
+.finder__place-detail {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.finder__place-coords {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* Basics: chips are labels wrapping a hidden radio, 48px targets, obvious state. */
+.finder__group {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.finder__legend {
+  margin-bottom: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.finder__optional {
+  font-weight: 400;
+  color: var(--color-text-tertiary);
+}
+
+.finder__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.finder__chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: var(--space-2) var(--space-5);
+  border: 2px solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+}
+
+.finder__chip--compact { padding-inline: var(--space-4); font-size: var(--text-sm); }
+
+.finder__chip input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.finder__chip:hover { transform: translateY(-1px); border-color: var(--color-border-strong); }
+
+.finder__chip:has(input:checked) {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+}
+
+.finder__chip:has(input:focus-visible) {
+  outline: 3px solid var(--color-accent-text);
+  outline-offset: 3px;
+}
+
+.finder__area {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.finder__area-input {
+  flex: 1 1 120px;
+  min-height: 48px;
+  font-family: var(--font-mono);
+}
+
+/* Save */
+.finder__save { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.finder__hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.finder__error { margin: 0; }
+.finder__error:empty { display: none; }
+.finder__error.auth__status--error {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-danger-bg);
+}
+
+.finder__alt {
+  margin: 0;
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.finder__alt a { color: var(--color-accent-text); }
+
+/* The ceremony is running: the companion breathes. */
+.finder--waiting .panel__companion { animation: finder-breathe 1.6s ease-in-out infinite; }
+
+@keyframes finder-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+@media (min-width: 641px) {
+  .finder__area-input { flex: 0 1 160px; }
+}
+
+@media (min-width: 1025px) {
+  .finder__map { min-height: 360px; }
+}
+
+@media (forced-colors: active) {
+  .finder__chip:has(input:checked) { outline: 3px solid CanvasText; }
+  .finder__pin::before { background: Highlight; border-color: CanvasText; }
+}

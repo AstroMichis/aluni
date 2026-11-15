@@ -1,7 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "Landing page", type: :system do
-  before { driven_by(:cuprite) }
+  before do
+    driven_by(:cuprite)
+    skip_welcome!
+  end
 
   it "renders the hero and runs its JavaScript without errors" do
     visit root_path(locale: "en")
@@ -27,7 +30,7 @@ RSpec.describe "Landing page", type: :system do
   it "switches the theme" do
     visit root_path(locale: "en")
 
-    find("button[data-action='theme#toggle']").click
+    find("button[data-action='preferences#toggleTheme']").click
     expect(page).to have_css("html[data-theme='light']")
   end
 end

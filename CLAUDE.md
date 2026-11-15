@@ -48,7 +48,7 @@ Read the relevant doc before working on that area:
 | `docs/NATIVE.md` | The iOS and Android shells, path configuration, app links, bridge components, building them |
 | `docs/DESIGN_SYSTEM.md` | Any UI work: tokens, typography, CSS components, layouts, the Three.js hero |
 | `docs/DATA_MODEL.md` | Tables, migrations, associations, conventions |
-| `docs/ONBOARDING.md` | Aluni the mascot and the onboarding chat: flow, topics (`config/onboarding/topics.yml`), the Gemini turn, proposal and confirm card, abuse rules, demo runbook |
+| `docs/ONBOARDING.md` | Getting a farmer started: Aluni as the preloader and first bubble (language, comfort), the field finder (pin, crop, irrigation, area, passkey), the optional Ask Aluni chat (auto-apply with undo, topics in `config/onboarding/topics.yml`), accessibility, demo runbook |
 | `docs/RAILS_PATTERNS.md` | Service objects, controllers, Hotwire, Stimulus, jobs, the switchboard |
 | `docs/I18N.md` | Locale files, switching, formats, the copy specs |
 | `docs/INTEGRATIONS.md` | Gemini, push, web push, mail, R2, outbound client and inbound webhook shapes |
@@ -72,18 +72,23 @@ app/
     registrations_controller.rb  # Passkey sign-up
     passkeys_controller.rb   # Add/remove passkeys
     pages_controller.rb      # Landing page + locale switch
+    preferences_controller.rb  # Comfort choices (cookie + account); places_controller.rb: Turbo Frames for the finder
     configurations_controller.rb, app_links_controller.rb  # Native shell endpoints
-  javascript/controllers/    # Stimulus (passkey, hero_scene, mascot, chat, landing_chat, theme, toast, bridge/*)
+  javascript/controllers/    # Stimulus (preferences, speech, intro, emit, mascot, finder, field_map, geolocate, passkey, hero_scene, chat, toast, bridge/*)
+  javascript/preferences/    # reducedMotion() helper read by every animated controller
   javascript/mascot/         # Aluni's character, animator and palette (plain modules behind the mascot controller)
   jobs/                      # ApplicationJob (switchboard aware), sessions/, notifications/
   mailers/                   # ApplicationMailer, NotificationMailer
-  models/                    # User, Session, Passkey, FarmerProfile, Farm, Field, FieldCrop, OnboardingSession, PlatformSwitch, DeviceToken, WebPushSubscription, NotificationDelivery, Result
+  models/                    # User, Session, Passkey, Preferences (value object), FarmerProfile, Farm, Field, FieldCrop, OnboardingSession, PlatformSwitch, DeviceToken, WebPushSubscription, NotificationDelivery, Result
   services/
     application_service.rb   # Result + step + try_external
     core/                    # Ruby wrappers around the Rust extension
     gemini/                  # Gemini client + language lock
     notifications/           # Router channels, purposes registry, push devices
-    onboarding/              # The chat engine: topics, reply (two Gemini calls), proposal apply, snapshot, segment
+    onboarding/              # Ask Aluni's engine: topics, reply (two Gemini calls), auto-apply + undo, snapshot, segment
+    geocoding/               # Nominatim client (search, reverse) behind the geocoding switch
+    crops/                   # Catalog (config/crops/common.yml) + NormalizeService (one Gemini call for free text)
+    fields/                  # SaveSetupService: the finder's pin and basics into farm, field, crop, profile
     platform/                # Switchboard, toggle, cron control, features
   views/
     layouts/                 # public.html.erb (landing + auth), application.html.erb (app), mailer
@@ -91,10 +96,11 @@ app/
 config/
   locales/{en,es}/           # Nested locale trees (parity enforced by spec/i18n)
   initializers/              # app_domain, redis, sidekiq, rack_attack, csp, webauthn, native, gemini, ...
-  onboarding/topics.yml      # The onboarding topics and the model guidance per topic (English, not copy)
+  onboarding/topics.yml      # Ask Aluni's topics and the model guidance per topic (English, not copy)
+  crops/common.yml           # About 60 crops: scientific name, English and Spanish names, aliases
   native_app.yml, notification_purposes.yml, sidekiq.yml, sidekiq_cron.yml, deploy.yml
 ios/  android/               # Hotwire Native shells (docs/NATIVE.md)
 vendor/gems/aluni_core/      # Rust extension (docs/RUST.md)
-vendor/javascript/           # three.js, hotwire-native-bridge (vendored)
+vendor/javascript/           # three.js, leaflet.js, hotwire-native-bridge (vendored)
 spec/                        # RSpec: requests render pages; i18n/ enforces copy rules; system/ uses Cuprite
 ```

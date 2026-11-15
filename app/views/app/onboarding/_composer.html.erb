@@ -1,11 +1,9 @@
 <%# The message form (intercepted by chat_controller.js) and the topic tools under it. %>
 <%= form_with url: message_app_onboarding_path, method: :post, class: "chat__composer", data: { chat_target: "form", action: "submit->chat#submit" } do %>
-  <input type="hidden" name="latitude" value="" data-geolocate-target="latitude">
-  <input type="hidden" name="longitude" value="" data-geolocate-target="longitude">
   <label class="sr-only" for="onboarding-text"><%= t("app.onboarding.show.composer_label") %></label>
   <textarea id="onboarding-text" class="input chat__input" name="text" rows="1" maxlength="2000" required
             placeholder="<%= t("app.onboarding.show.composer_placeholder") %>" autocomplete="off" enterkeyhint="send"
-            data-chat-target="input" data-geolocate-target="text"></textarea>
+            data-chat-target="input"></textarea>
   <button type="submit" class="btn btn--primary chat__send" data-chat-target="send" aria-label="<%= t("app.onboarding.show.send") %>">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
   </button>

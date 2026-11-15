@@ -1,8 +1,9 @@
 en:
   mascot:
     greeting: "Hi, I'm %{app_name}."
-    question: "Ready to get started?"
+    question: "Let's find your field."
     lets_go: "Let's go"
+    find_my_field: "Find my field"
     show_me_around: "Show me around"
     avatar_label: "%{app_name}, a smiling seedling"
     dismiss: "Not now"

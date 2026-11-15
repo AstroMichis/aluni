@@ -1,22 +1,30 @@
 // Drives Aluni's parts frame by frame. States:
 //
 //   offstage -> entering -> waving -> idle <-> talking -> docking -> docked
+//   sprouting -> idle (the preloader: the seedling grows out of the soil)
 //   plus static (nothing moves; the SVG twin is showing instead).
 //
 // Layers composed in update(dt, elapsed): breathing, leaf sway, blink, glance,
-// the gait while entering, the wave, the talk, the dock settle. The controller
-// owns the clock, the stage transforms and the events; this file only moves
-// the character. All angles are radians, all times seconds.
+// the gait while entering, the growth while sprouting, the wave, the talk, the
+// dock settle. The controller owns the clock, the stage transforms and the
+// events; this file only moves the character. All angles are radians, all
+// times seconds.
 
 const TWO_PI = Math.PI * 2
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
 const lerp = (a, b, t) => a + (b - a) * t
 const smooth = (t) => { const k = clamp(t, 0, 1); return k * k * (3 - 2 * k) }
+// Ease out with a small overshoot past 1 before settling; `s` sets how far.
+const backOut = (t, s) => { const k = clamp(t, 0, 1) - 1; return 1 + (s + 1) * k * k * k + s * k * k }
 
 export const TALK_MS_PER_CHAR = 28
 export const TALK_MIN_MS = 900
 export const TALK_MAX_MS = 5000
 export const talkDuration = (chars) => clamp((Number(chars) || 0) * TALK_MS_PER_CHAR, TALK_MIN_MS, TALK_MAX_MS)
+
+export const SPROUT_SECONDS = 1.2
+const SPROUT_FROM = 0.15
+const SPROUT_LEAF_FROM = 0.2
 
 const BREATH_HZ = 0.25
 const BREATH_AMOUNT = 0.02
@@ -49,6 +57,9 @@ export class Animator {
     this.wave = null
     this.talk = null
     this.dock = null
+    this.growth = null
+    this.grow = { body: 1, leaf: 1, arm: 1 }
+    this.footRest = parts.feet.map((pivot) => ({ x: pivot.position.x, y: pivot.position.y }))
     this.squash = 1
     this.blink = { countdown: this.between(2, 4), t: -1 }
     this.glance = { countdown: this.between(4, 9), hold: 0, target: { x: 0, y: 0 }, current: { x: 0, y: 0 } }
@@ -60,6 +71,17 @@ export class Animator {
 
   // The stage starts sliding in: gait in place until arrive().
   enter() { this.state = "entering" }
+
+  // The preloader: the seedling pushes out of the soil over 1.2 s. Body and
+  // feet grow from 15%, the arms and then the leaves unfurl a little later,
+  // each with a slight overshoot. Growth is a layer, so arrive() may cut in
+  // (waving) without a jump. Returns the duration in ms.
+  sprout() {
+    this.state = "sprouting"
+    this.growth = { t: 0 }
+    this.updateGrowth(0)
+    return SPROUT_SECONDS * 1000
+  }
 
   // The stage has stopped: stop walking, wave, then settle into idle.
   arrive() {
@@ -118,16 +140,55 @@ export class Animator {
       p.armRight.rotation.z = p.armRight.userData.rest.z + SWAY_ARM * Math.sin(TWO_PI * SWAY_HZ * t + p.armRight.userData.phase)
     }
 
+    if (this.growth) this.updateGrowth(dt)
     if (this.talk) nod = this.updateTalk(dt)
     if (this.dock) this.updateDock(dt)
 
     this.updateBlink(dt)
     this.updateGlance(dt)
 
+    // The body scales about the ground (its height follows the growth) so the
+    // seedling grows out of the soil rather than shrinking toward its centre.
+    const g = this.grow.body
     const breath = 1 + BREATH_AMOUNT * Math.sin(TWO_PI * BREATH_HZ * t)
-    p.body.position.y = p.bodyY + bob
+    p.body.position.y = p.bodyY * g + bob
     p.body.rotation.set(nod, 0, roll + tilt)
-    p.body.scale.set(breath, breath * this.squash, breath)
+    p.body.scale.set(breath * g, breath * this.squash * g, breath * g)
+  }
+
+  // Body and feet reach full size at 85% of the time, the arms at 90%, the
+  // leaves at the end; each curve overshoots a little before settling.
+  updateGrowth(dt) {
+    this.growth.t += dt
+    const u = this.growth.t / SPROUT_SECONDS
+    if (u >= 1) {
+      this.growth = null
+      this.grow.body = 1
+      this.grow.arm = 1
+      this.grow.leaf = 1
+      this.applyGrowth()
+      if (this.state === "sprouting") this.state = "idle"
+      return
+    }
+    this.grow.body = lerp(SPROUT_FROM, 1, backOut(u / 0.85, 1.2))
+    this.grow.arm = lerp(SPROUT_LEAF_FROM, 1, backOut((u - 0.15) / 0.75, 1.4))
+    this.grow.leaf = lerp(SPROUT_LEAF_FROM, 1, backOut((u - 0.3) / 0.7, 1.7))
+    this.applyGrowth()
+  }
+
+  // Leaves and arms scale at their pivots (compounding with the body); the
+  // feet scale about the ground and move inward with the body.
+  applyGrowth() {
+    const p = this.parts
+    const g = this.grow
+    p.leaves.forEach((pivot) => pivot.scale.setScalar(g.leaf))
+    p.armLeft.scale.setScalar(g.arm)
+    p.armRight.scale.setScalar(g.arm)
+    p.feet.forEach((pivot, i) => {
+      pivot.scale.setScalar(g.body)
+      pivot.position.x = this.footRest[i].x * g.body
+      pivot.position.y = this.footRest[i].y * g.body
+    })
   }
 
   // Raise over 0.3 s, three swings over 1.0 s, back over 0.3 s; the head tilts along.

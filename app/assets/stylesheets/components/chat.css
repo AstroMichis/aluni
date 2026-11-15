@@ -1,6 +1,6 @@
-/* Chat log, bubbles, typing dots and composer (the onboarding chat), plus the
-   landing chat panel: a bottom sheet on phones, a 420 px side panel from 1025 px.
-   Tokens only; motion on transform and opacity; 48 px targets. */
+/* Chat log, bubbles, typing dots, notices, the inline "Saved ... Undo" toast and
+   the composer (the Ask Aluni chat). Tokens only; motion on transform and
+   opacity; 48 px targets. */
 
 /* --- the chat block ---------------------------------------------------- */
 .chat {
@@ -120,13 +120,8 @@
   30% { transform: translateY(-4px); opacity: 1; }
 }
 
-/* --- notices, cards, tools, dividers ----------------------------------- */
-.chat__notices:empty,
-.chat__confirm:empty,
-.chat__tools-slot:empty { display: none; }
-
-.chat__confirm,
-.chat__tools-slot { padding: 0 var(--space-4) var(--space-3); }
+/* --- notices, cards, dividers ------------------------------------------ */
+.chat__notices:empty { display: none; }
 
 .chat__notice {
   display: flex;
@@ -150,23 +145,6 @@
 .chat__card { align-self: stretch; }
 .chat__card-title { font-size: var(--text-lg); }
 
-.chat__tools { display: flex; flex-direction: column; gap: var(--space-3); }
-.chat__area { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
-.chat__area-image {
-  display: block;
-  width: 100%;
-  max-width: 320px;
-  height: auto;
-  aspect-ratio: 1;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border-default);
-  background: var(--color-bg-tertiary);
-}
-.chat__area-caption { font-size: var(--text-sm); color: var(--color-text-secondary); }
-.chat__tools-status { margin: 0; min-height: 1.5em; font-size: var(--text-sm); color: var(--color-text-secondary); }
-.chat__locate,
-.chat__quick .btn { min-height: 48px; }
-
 .chat__divider {
   display: flex;
   align-items: center;
@@ -179,6 +157,32 @@
 }
 .chat__divider::before,
 .chat__divider::after { content: ""; flex: 1; height: 1px; background: var(--color-border-subtle); }
+
+/* --- the "Saved ... Undo" toast ----------------------------------------- */
+/* The toast sits in flow above the composer instead of fixed at the viewport
+   edge, so it never covers the log; it fades up rather than sliding in. */
+.chat__toasts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0 var(--space-4) var(--space-3);
+}
+.chat__toasts:empty { display: none; }
+
+.chat__toasts .toast {
+  position: static;
+  inset: auto;
+  max-width: none;
+  box-shadow: var(--shadow-md);
+  font-size: var(--text-sm);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+.chat__toasts .toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 /* --- composer ---------------------------------------------------------- */
 .chat__composer {
@@ -218,123 +222,6 @@
 .chat__tool { display: inline-flex; }
 .chat__tool .btn { min-height: 48px; }
 
-/* --- the landing chat panel -------------------------------------------- */
-.chat-panel {
-  position: fixed;
-  inset: auto 0 0 0;
-  z-index: var(--z-modal);
-  display: flex;
-  flex-direction: column;
-  max-height: 85dvh;
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border-default);
-  border-bottom: 0;
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  box-shadow: var(--shadow-lg);
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity var(--transition-slow), transform var(--transition-slow);
-}
-.chat-panel[hidden] { display: none; }
-
-@starting-style {
-  .chat-panel { opacity: 0; transform: translateY(24px); }
-}
-
-.chat-panel__header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--color-border-subtle);
-}
-
-.chat-panel__companion {
-  position: relative;
-  flex: 0 0 auto;
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: scale(1);
-}
-.chat-panel__avatar { display: flex; }
-.chat-panel__avatar[hidden] { display: none; }
-
-.chat-panel__title { flex: 1 1 auto; font-size: var(--text-base); font-weight: 600; }
-
-.chat-panel__close {
-  width: 48px;
-  height: 48px;
-  padding: 0;
-  border-radius: var(--radius-full);
-}
-.chat-panel__close svg { width: 20px; height: 20px; }
-
-.chat-panel__log {
-  flex: 1 1 auto;
-  min-height: 120px;
-  max-height: 40dvh;
-}
-
-.chat-panel__steps,
-.chat-panel__body { padding: var(--space-3) var(--space-4); }
-
-.chat-panel__step { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.chat-panel__step[hidden] { display: none; }
-.chat-panel__input { flex: 1 1 200px; min-height: 48px; }
-.chat-panel__submit { min-height: 48px; }
-.chat-panel__languages .btn { flex: 1 1 140px; min-height: 48px; }
-.chat-panel__passkey { flex-direction: column; }
-.chat-panel__hint { margin: 0; font-size: var(--text-sm); color: var(--color-text-secondary); }
-
-.chat-panel__status {
-  margin: 0;
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-}
-.chat-panel__status:empty { display: none; }
-.chat-panel__status.auth__status--error { background: var(--color-danger-bg); }
-
-.chat-panel--waiting .chat-panel__companion { animation: chat-breathe 1.6s ease-in-out infinite; }
-
-@keyframes chat-breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.06); }
-}
-
-.chat-panel__footer {
-  padding: var(--space-2) var(--space-4) calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
-  border-top: 1px solid var(--color-border-subtle);
-  text-align: center;
-  font-size: var(--text-sm);
-}
-.chat-panel__alt {
-  display: inline-flex;
-  align-items: center;
-  min-height: 48px;
-  color: var(--color-accent-text);
-}
-.chat-panel__welcome { font-size: var(--text-lg); }
-
-@media (min-width: 1025px) {
-  .chat-panel {
-    inset: var(--space-20) var(--space-6) var(--space-6) auto;
-    width: 420px;
-    max-height: calc(100dvh - var(--space-20) - var(--space-6));
-    border-bottom: 1px solid var(--color-border-default);
-    border-radius: var(--radius-xl);
-  }
-
-  @starting-style {
-    .chat-panel { opacity: 0; transform: translateX(24px); }
-  }
-
-  .chat-panel__log { max-height: none; }
-}
-
 @media (forced-colors: active) {
-  .chat__bubble,
-  .chat-panel { border: 1px solid CanvasText; }
+  .chat__bubble { border: 1px solid CanvasText; }
 }

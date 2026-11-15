@@ -10,6 +10,7 @@ en:
       sign_up: "Create an account"
       get_the_app: "Get the app"
       open_app: "Continue with %{app_name}"
+      find_my_field: "Find my field"
       take_the_tour: "See how it works"
       scroll_cue: "Scroll to see how it works"
       preview_notice: "This tour uses sample data from one field in Iowa."

@@ -1,24 +1,102 @@
-# Onboarding: the profile-building chat
+# Getting a farmer started
 
-Aluni's first product screen is a chat that builds a farm profile. Gemini drafts
-every line Aluni says; the app decides what is saved, when the conversation moves
-on, and what happens when Gemini cannot answer. This document covers the engine
-(`app/services/onboarding/`). The chat UI, the routes and the demo runbook are
-described in their own sections below (Stream F adds them).
+Setup is not a conversation. Aluni, the mascot, is the preloader and the host; the
+only required step is the field pin; crop and irrigation are two taps; everything
+else is progressive and lives in the app. The Gemini chat (`/app/onboarding`,
+"Ask Aluni") is optional and saves what it hears right away with an Undo.
 
-Read with: `docs/DATA_MODEL.md` (the five tables), `docs/INTEGRATIONS.md`
-(Gemini client), `docs/RAILS_PATTERNS.md` (services), `docs/I18N.md`.
+Read with: `docs/DESIGN_SYSTEM.md` (preferences, the mascot, `.panel`, `.intro`),
+`docs/DATA_MODEL.md` (the tables), `docs/INTEGRATIONS.md` (Gemini and geocoding
+clients), `docs/AUTH.md` (the sign-up that carries the field), `docs/I18N.md`.
 
-## Flow
+## The flow
 
 ```
-/app/onboarding
-  welcome -> location -> land -> crops -> soil -> operation -> goals -> summary -> completed
-  every turn: farmer bubble + Aluni bubble (+ confirm card with the staged facts)
-  nothing is written to profile, farm, field or crops until the farmer taps "Save selected"
+GET /   (locale from the cookie, else Accept-Language)
+  Aluni sprouts in the centre while the hero loads (the SVG twin at once, the 3D character when ready),
+  moves to its corner once the hero has revealed (0.9 s minimum, 2.5 s fallback), waves, and speaks:
+  first visit   "Hi, I'm Aluni. I'll keep things in English. ¿Prefieres español?"  [English] [Español]
+                "Make it comfortable" [Larger text] [Read aloud] [Less motion] [High contrast]   [Looks good]
+  afterwards    "Let's find your field."  [Find my field] [Show me around]
+Field finder (panel: bottom sheet on phones, side panel from 1025 px; Aluni docks into its header)
+  1 Locate   [Use my location]  or  town / address -> Search (Turbo Frame #place-results)
+             Leaflet map (OpenStreetMap tiles, satellite toggle), draggable pin  ->  [This is my field]
+             -> reverse geocoding (Turbo Frame #place-summary): place, region, country, coordinates
+  2 Basics   crop now (type-ahead over config/crops/common.yml, free text normalised later)
+             [Rainfed] [Irrigated]   area (optional) [ha | acres]   [Continue] [Skip for now]
+  3 Save     signed out: your name + [Create passkey]  (flat hidden inputs carry pin and basics)
+             signed in:  [Save field]  (PATCH /app/fields/:id)
+  -> /app
+/app/onboarding   optional "Ask Aluni": welcome -> crops -> soil -> goals -> summary; auto-apply + Undo toast
 ```
 
-One turn, in order (`Onboarding::ReplyService`):
+## Language and comfort first (`Preferences`, `PreferencesController`, `pages/home/_intro`)
+
+The page renders in the locale the browser asked for (`Accept-Language`, then the
+`locale` cookie), so the first bubble is already in the right language and only
+offers the other one. The bubble is `pages/home/_intro` inside the mascot's
+speech bubble: two language chips (each a submit button posting
+`preferred_locale` to `POST /preferences`; the server sets the locale cookie and
+redirects to the same page in that language, where the same bubble appears again),
+four pill toggles (`intro#toggle` → `preferences.set(name, value)`: larger text,
+read aloud, less motion, high contrast; each applies at once on `<html>` and is
+persisted through the hidden `shared/_preferences_form`), and "Looks good", which
+posts `done=1` (marks `seen_welcome`) and swaps in `pages/home/_start_bubble`.
+Returning visitors get the start bubble directly. The choices live in the
+`aluni_prefs` cookie and, once signed in, in `users.preferences`; the layouts
+render them on `<html>` and the `preferences` controller re-applies them after
+every Turbo visit. Read aloud uses the browser's own voices (`speech_controller.js`):
+any new Aluni line dispatches `speech:read { text, lang }` and is spoken only when
+the preference is on. The small `shared/_access_buttons` in the nav (theme, text
+size, read aloud) stay available afterwards, from 641 px.
+
+## The field finder (`pages/home/_finder`, `finder_controller.js`, `field_map_controller.js`)
+
+Opens on the window event `mascot:lets-go` (the bubble's "Find my field", the hero
+button and the tour's last step fire it through `emit_controller.js`) and docks the
+mascot into `#finder-companion`. It is a `.panel` with three steps, one visible at a
+time, each announced (`aria-live`) and spoken (`data-speak`).
+
+1. **Locate.** `geolocate_controller.js` asks the device for a position; the search
+   form submits to `GET /places?q=` and renders `places/_results` into the
+   `place-results` frame (a listbox of up to five results from
+   `Geocoding::Client#search`); picking one, or the device position, moves the
+   Leaflet pin (`vendor/javascript/leaflet.js`, OpenStreetMap tiles with a satellite
+   toggle on Esri World Imagery, tap to move, arrow keys nudge). "This is my field"
+   loads `GET /places/reverse?lat&lon` into the `place-summary` frame: place label,
+   region, country code and the coordinates. Both frames answer 200 with a calm
+   line when the geocoder fails or the `geocoding` switch is paused. Nothing is
+   fetched from the browser except map tiles (images).
+2. **Basics.** Crop now (a `<datalist>` from `Crops::Catalog`, free text allowed),
+   rainfed or irrigated, an optional area with a unit that defaults from the
+   country (`US`, `LR`, `MM` → acres). The crop text is normalised at save time by
+   `Crops::NormalizeService`: the catalog first (about 60 crops with English and
+   Spanish names and aliases, accent-insensitive), otherwise one structured Gemini
+   call (`crop_name`, `scientific_name`, `confidence`), falling back to the raw text.
+3. **Save.** Signed out: a name and the passkey ceremony (`passkey_controller.js`);
+   the form's flat hidden inputs (`latitude, longitude, place_label, country_code,
+   admin_area, location_source, crop_name, irrigation, area, area_unit, locale`) are
+   posted as a flat JSON map, parked in `session[:registration]["field"]` by
+   `RegistrationsController#options` (coerced with `Onboarding::Allowlist.coerce`
+   and the enums) and written by `Fields::SaveSetupService` inside the sign-up
+   transaction; the answer redirects to `/app`. Signed in: `PATCH /app/fields/:id`
+   through the same service.
+
+`Fields::SaveSetupService` writes the main field (pin, `location_confidence:
+confirmed`, place label, area, unit, irrigation), the farm's country and region, a
+`field_crops` row for the current season (`source: farmer`), the profile's units,
+and completes the onboarding session, so nothing anywhere forces the chat.
+
+## Ask Aluni (`/app/onboarding`)
+
+The chat is reachable from the home page only. Gemini drafts every line Aluni
+says; the app filters what it extracts, applies it right away and offers an Undo
+toast; the conversation moves through `welcome -> crops -> soil -> goals ->
+summary` (`config/onboarding/topics.yml`), and the system prompt carries the
+field basics settled during setup so they are never asked again. The engine lives
+in `app/services/onboarding/` and is described below.
+
+### One turn, in order (`Onboarding::ReplyService`)
 
 1. `EnsureProfileService` gives the user a profile, one farm with one field and
    an `OnboardingSession` row (idempotent). `Failure(code: :blocked)` while the
@@ -33,23 +111,20 @@ One turn, in order (`Onboarding::ReplyService`):
 4. Two Gemini calls run side by side: `ClassifyIntentService` in a `Thread`
    (`Rails.application.executor.wrap`, its own `Gemini::Client`, every error
    rescued to "safe") and `DraftReplyService` on the request thread. The join is
-   wrapped in `ActiveSupport::Dependencies.interlock.permit_concurrent_loads`
-   and bounded by `gemini_timeout`; a classifier that has not finished counts
-   as safe.
+   bounded by `gemini_timeout`; a classifier that has not finished counts as safe.
 5. Unsafe: a strike, the draft is thrown away, Aluni answers with
    `onboarding.refusals.<abuse_type>` (`refusal: true`). At `strike_limit`
-   strikes the row is blocked for `block_ttl` and the answer is
-   `onboarding.blocked`.
+   strikes the row is blocked for `block_ttl` and the answer is `onboarding.blocked`.
 6. Draft failed (Gemini down, bad JSON, or the `gemini` switch paused): Aluni
    answers with a continuation line (`onboarding.continuations.<topic>`, rotated
    by `fallbacks_count`), the message is kept in `pending_message` and replayed
-   into the next request so the model still addresses it (`degraded: true`).
-   The farmer's turn stays in the transcript.
-7. Otherwise the answer's `updates` go through the allowlist, the pin is merged
-   (see below), the result replaces `session.proposal`, and when
-   `topic_complete` is true the topic advances (the next topic's
-   `onboarding.transitions.<topic>` line is appended to Aluni's bubble) or, on
-   the last topic, `CompleteService` closes the session and stores the segment.
+   into the next request (`degraded: true`).
+7. Otherwise the answer's `updates` go through the allowlist and are applied at
+   once (`ApplyProposalService`, which captures the previous values); the result is
+   stored in `session.last_applied` and returned as `applied:` for the toast. A
+   failed apply is logged, the proposal stays staged on the row, and the turn still
+   answers. When `topic_complete` is true the topic advances, or on the last topic
+   `CompleteService` closes the session and stores the segment.
 
 The transcript is trimmed to `max_turns`; `turns_count`, `last_message_at` and
 `language` are updated on every answered turn. An unexpected exception anywhere
@@ -157,32 +232,23 @@ the last row wins for a `[season_year, role]` pair. Latitude and longitude from
 `geolocation`) or from a `location_guess` with confidence `medium` or `high`
 (approximate, `assistant`, with `place_label`). The browser pin wins over a guess.
 
-## The proposal and the accepted keys (contract with the UI)
+## Auto-apply and Undo
 
-`session.proposal` is a string-keyed hash, replaced on every answered turn:
-
-```ruby
-{ "profile" => { "budget_level" => "low", "goals" => ["rotation"] },
-  "farm"    => { "name" => "Finca Ana" },
-  "field"   => { "area" => 12.5, "area_unit" => "hectares", "latitude" => 9.93, "longitude" => -84.08,
-                 "place_label" => "Cartago", "location_confidence" => "approximate", "location_source" => "assistant",
-                 "soil" => { "texture" => "medium", "ph" => 6.1 } },
-  "crops"   => [ { "season_year" => 2025, "role" => "main", "crop_name" => "Corn", "scientific_name" => "Zea mays",
-                   "planting_month" => 4, "harvest_month" => 10 } ] }
-```
-
-The confirm card posts accepted keys: `profile.<key>`, `farm.<key>`,
-`field.<key>`, `field.soil.<key>`, `crops.<season_year>.<role>`. The pin is one
-fact: accepting any of `field.latitude`, `field.longitude`, `field.place_label`,
-`field.location_confidence` or `field.location_source` applies all five
-(`Allowlist.keys_for(proposal)` lists the keys a card should offer, with the pin
-once as `field.latitude`). `ApplyProposalService` reads the proposal from the row
-(never from the request), keeps the accepted keys, filters again, and writes
-profile, farm, main field (soil merged into the existing hash) and crops
-(upserted by `[field_id, season_year, role]`, `source: "assistant"`) in one
-transaction, then clears the proposal. An empty proposal is `Failure(:expired)`;
-a validation error rolls everything back into `Failure(:invalid, messages:)`.
-Accepting nothing clears the proposal and applies nothing.
+`ApplyProposalService.call(user:, accepted:)` reads the proposal from the row (never
+from the request), keeps the accepted keys (`Allowlist.keys_for(proposal)`: the pin
+counts once, as `field.latitude`), filters again, and writes profile, farm, main
+field (soil merged into the existing hash) and crops (upserted by
+`[field_id, season_year, role]`, `source: "assistant"`) in one transaction. Before
+writing it captures `before`: the attribute slices it is about to change, the old
+soil hash, and per crop either `"new_record" => true` or the old attributes. It
+returns `Success(applied:, before:)`; `ReplyService` stores
+`{ "before" => ..., "applied" => ..., "at" => iso8601 }` in
+`onboarding_sessions.last_applied` and the stream shows a toast ("Saved: area 12.5
+hectares, irrigation drip." built by `OnboardingHelper#applied_summary`) with an
+Undo button. `UndoApplyService.call(user:)` restores `before` in one transaction
+(new crops destroyed, old attributes put back), clears `last_applied` and answers
+`Success(restored:)`; with nothing to undo it is `Failure(code: :nothing_to_undo)`.
+Only the latest apply can be undone, so the toast slot is replaced, never appended.
 
 ## The session row
 
@@ -262,24 +328,25 @@ sub-services stubbed (`reply_service_spec`); and plain database specs
 
 Run: `mise exec -- bundle exec rspec spec/services/onboarding spec/services/gemini spec/i18n`.
 
-## The screens
+## Accessibility
 
-**Landing** (`app/views/pages/home.html.erb`, browsers only). `pages/home/_mascot` mounts Aluni (`mascot_controller.js`, `docs/DESIGN_SYSTEM.md`): the stage walks in from the bottom-left corner, waves, and shows the greeting bubble with "Let's go" (only while sign-ups are open) and "Show me around" (a plain hash jump to the tour, `data-turbo="false"` like every in-page anchor on the landing, because Turbo would otherwise re-render the page and restart the walk-in). "Let's go" dispatches `mascot:lets-go`; `pages/home/_chat_panel` (`landing_chat_controller.js` together with `passkey_controller.js` in create mode) opens as a bottom sheet on phones or a 420 px side panel from 1025 px, dispatches `mascot:dock { selector: "#landing-chat-companion" }`, and runs three scripted steps with no Gemini and no account: the name (never posted, it fills the hidden `display_name`), the language (two buttons; the remaining lines switch locale client-side from `ApplicationHelper#landing_chat_script`), and the passkey (hidden `display_name` + `locale` inputs posted to `/sign_up/options`; `RegistrationsController#create` sets the locale cookie and answers `redirect_to: /app/onboarding`). Progress survives a reload through `sessionStorage` (`aluni.landing-chat`). A signed-in visitor sees a "welcome back" line and a link to the app instead.
-
-**`/app/onboarding`** (`App::OnboardingController`, `app/views/app/onboarding/`). One page, every turn a Turbo Stream. Layout `.onboarding`: the chat (`.chat`: `__log` with the bubbles, `__composer`, the progress dots, the confirm card slot, the location tools while the topic is `location`) and, from 1025 px, a sticky companion column (`<aside id="chat-companion" data-mascot-dock>`) with `shared/mascot_companion` (the mascot in docked mode, idle, talking on every new assistant bubble) above the profile preview (`<details open>`; below 1025 px the preview folds under the chat). Stream targets, enforced by `spec/views/onboarding_turbo_stream_targets_spec.rb`: `#onboarding-messages` (append), `#onboarding-confirm` (update), `#onboarding-progress` (replace), `#onboarding-location-tools` (update), `#onboarding-notice` (update), `#profile-preview` (replace). Actions: `message` (POST text, optional latitude/longitude from the share-location button), `confirm` (accepted keys, "Save selected"), `discard` ("Not now"), `skip`, `complete` (303 to `/app`), `reset` (DELETE). The first bubble before any Gemini call is `onboarding.welcome_message`. `App::HomeController` forwards to the chat while `User#onboarding_complete?` is false and shows a recap plus "Talk to Aluni" afterwards.
-
-**Stimulus** (`app/javascript/controllers/`): `chat` (intercepts the composer and the quick-answer forms, posts with `Accept: text/vnd.turbo-stream.html`, renders the stream whatever the status so a 429 notice shows, Enter sends, Shift+Enter breaks a line, `AbortController` on disconnect), `chat-message` (scrolls a new bubble into view and dispatches `mascot:speak { chars }` for assistant bubbles; history bubbles are `silent`), `geolocate` (`getCurrentPosition` fills the hidden pin and a fixed composer text, then `geolocate:located` submits), `landing-chat` (above), `mascot` (`docs/DESIGN_SYSTEM.md`). Window events: `mascot:ready|arrived|docked|fallback|lets-go` from the mascot; `mascot:speak|dock|hide|show` to it.
-
-**Throttle**: `RACK_ATTACK_ASSISTANT_PATH` in `config/initializers/rack_attack.rb` limits `/app/onboarding/*` writes to 20 per minute and 150 per hour per IP.
+- Language first: the page is already in the browser language; the first bubble only offers the other one, and the chips reload the page in that language with the same bubble.
+- Comfort choices (text size, read aloud, less motion, high contrast) are one tap each, apply instantly, persist for every visit (cookie, then the account) and are repeated by the small nav buttons from 641 px.
+- Read aloud is the browser voice (`speech:read`); every new Aluni line and every finder step is spoken when it is on; nothing ever waits on speech.
+- Less motion by choice behaves like the OS setting: the mascot skips the centre and the walk, the hero shows its CSS backdrop, nothing animates in (`reducedMotion()` everywhere).
+- Keyboard: every control is a real button, link or form field with a visible focus ring; the finder moves focus to each step heading, Escape closes it, arrow keys nudge the map pin, and the search box and "Use my location" are the keyboard paths around the map.
+- Screen readers: the bubble is a labelled dialog, the finder steps announce through `aria-live`, map tiles are decorative and the place summary is text.
+- 48 px targets, `min-width` queries, both themes and high contrast checked at 390, 768, 1024 and 1400 px.
 
 ## Demo runbook
 
-1. A configured Gemini backend (development: `gemini.api_key` in the credentials; production: `GEMINI_BACKEND=vertex` with `GOOGLE_CLOUD_PROJECT`, `docs/INTEGRATIONS.md`) and `mise exec -- bin/rails 'platform:resume[gemini]'`; while Gemini is paused or unconfigured Aluni answers only with the continuation lines (`degraded: true`).
-2. `mise exec -- bin/dev`, open `http://localhost:3000` (a secure context: passkeys and the share-location button need one; a phone needs an https tunnel with `APP_DOMAIN`, `docs/AUTH.md`).
-3. Wait for Aluni to walk in, press "Let's go", give a name, pick a language, create the passkey. The chat opens at the welcome topic.
-4. Walk the eight topics in English and in Spanish; tick a few proposals, skip one topic, refresh once mid-way (the transcript resumes from the row), send an insult to see the refusal, pause Gemini (`platform:pause[gemini]`) to see the calm continuation line, finish to reach the recap on `/app`.
-5. `DELETE /app/onboarding` ("Start over" on the page) resets the chat and keeps the profile data.
+1. A configured Gemini backend (development: `gemini.api_key` in the credentials; production: `GEMINI_BACKEND=vertex` with `GOOGLE_CLOUD_PROJECT`) and `mise exec -- bin/rails 'platform:resume[gemini]'`; without it the crop normaliser falls back to the typed text and Ask Aluni answers with continuation lines.
+2. `mise exec -- bin/dev`, open `http://localhost:3000` (a secure context: passkeys and the share-location button need one; a phone needs an https tunnel with `APP_DOMAIN`, `docs/AUTH.md`). A browser set to Spanish lands on `/es` with the Spanish bubble.
+3. Watch Aluni sprout in the centre and settle in the corner; pick a language, switch on read aloud and larger text, press "Looks good".
+4. "Find my field": allow the location prompt or search "Ames, Iowa", drag the pin, confirm, type "papa criolla" as the crop (it becomes Solanum tuberosum at save), choose irrigated, enter 12 hectares, give a name and create the passkey; land on `/app`.
+5. Reload the landing: no intro, Aluni goes straight to "Let's find your field". Open Ask Aluni from the home page, say "I rotate with beans every other year", see the toast and press Undo.
+6. `platform:pause[geocoding]` shows the calm fallback in the finder; `platform:pause[gemini]` shows the continuation lines.
 
 ## Phase 2 candidates
 
-A map for field boundaries (`fields.boundary`); the first data fetches (NASA POWER climatology, SSURGO and CDL for US pins, GAEZ suitability) behind switchboard-guarded clients; crop cards built from ECOCROP, FAO-56 and GAEZ ("the optimal environment for potatoes"); the real `/app` home; a welcome notification through `NotificationRouter`.
+A field boundary on the map (`fields.boundary`); the first data fetches (NASA POWER climatology, SSURGO and CDL for US pins, GAEZ suitability) behind switchboard-guarded clients; crop cards built from ECOCROP, FAO-56 and GAEZ ("the optimal environment for potatoes"); progressive questions inside the app reusing the Ask Aluni engine; the real `/app` home; a welcome notification through `NotificationRouter`.
