@@ -1,0 +1,64 @@
+# Sample farms for the demo (bin/rails demo:farm USER_ID=.. PRESET=..), loaded
+# by Demo::FarmService into an account that already signed up with a passkey.
+# Seasons are relative: 0 is this season, -1 the one before, and so on.
+nebraska:
+  locale: en
+  farm: { name: Prairie View Farm, country_code: US, admin_area: Nebraska }
+  profile:
+    role: owner
+    experience: experienced
+    team: family
+    team_size: 3
+    land_tenure: own
+    units: imperial
+    budget_level: high
+    risk_tolerance: balanced
+    segment: mid_mechanized
+    goals: [rotation, soil_health]
+    equipment: [tractor, planter, sprayer, harvester]
+    market_channels: [cooperative]
+  field:
+    name: North 80
+    latitude: 40.95
+    longitude: -97.5
+    place_label: York County, Nebraska
+    area: 32.4
+    area_unit: hectares
+    irrigation: rainfed
+    water_source: rain
+  crops:
+    - { season: 0, crop_name: Corn, scientific_name: Zea mays, planting_month: 4, harvest_month: 10 }
+    - { season: -1, crop_name: Soybeans, scientific_name: Glycine max, planting_month: 5, harvest_month: 9 }
+    - { season: -2, crop_name: Corn, scientific_name: Zea mays, planting_month: 4, harvest_month: 10 }
+    - { season: -3, crop_name: Soybeans, scientific_name: Glycine max, planting_month: 5, harvest_month: 9 }
+
+chile:
+  locale: es
+  farm: { name: Fundo Los Maitenes, country_code: CL, admin_area: Región Metropolitana }
+  profile:
+    role: owner
+    experience: few_years
+    team: small_team
+    team_size: 4
+    land_tenure: mixed
+    units: metric
+    budget_level: low
+    risk_tolerance: cautious
+    segment: small_commercial
+    goals: [water_saving, crop_fit]
+    equipment: [tractor, sprayer]
+    market_channels: [local_market, contract]
+  field:
+    name: Potrero Sur
+    latitude: -33.73
+    longitude: -70.74
+    place_label: Buin, Región Metropolitana
+    area: 12
+    area_unit: hectares
+    irrigation: gravity
+    water_source: river_canal
+  crops:
+    - { season: 0, crop_name: Maíz, scientific_name: Zea mays, planting_month: 10, harvest_month: 3 }
+    - { season: -1, crop_name: Trigo, scientific_name: Triticum aestivum, planting_month: 6, harvest_month: 12 }
+    - { season: -2, crop_name: Maíz, scientific_name: Zea mays, planting_month: 10, harvest_month: 3 }
+    - { season: -3, crop_name: Maíz, scientific_name: Zea mays, planting_month: 10, harvest_month: 3 }

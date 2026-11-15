@@ -87,6 +87,11 @@ Suggested next order: SMAP, then MODIS, GRACE and ECOSTRESS.
 ## Demo checklist
 
 - [ ] Gemini resumed, `geocoding` resumed (Platform switch `status`)
-- [ ] A seeded farm in English and one in Spanish with a crop history, so Your plan has three strategies with evidence
+- [x] A sample farm in English and one in Spanish with a crop history, so Your plan has three strategies with evidence. Sign up a **dedicated demo account** with a passkey (nothing signs in for you), then load a preset from `config/demo_farms.yml` into it:
+  ```
+  bin/rails demo:farm USER_ID=<id> PRESET=nebraska   # English: York, Nebraska, rainfed corn and soybeans, mechanized
+  bin/rails demo:farm USER_ID=<id> PRESET=chile      # Spanish: Buin, canal-irrigated maize and wheat, cautious, sells under contract
+  ```
+  In production: `kamal app exec --reuse --roles=web 'bin/rails demo:farm USER_ID=.. PRESET=..'`. It refuses an account with other farms (`FORCE=1` overrides), replaces only its own sample farm when run again, and waits for the worker to fetch the data at the pin (about a minute; SMAP arrives later).
 - [ ] Disk snapshot of the VM before the demo (`docs/deploy/DEPLOY.md`)
 - [ ] Script: landing pin → profile chat → Your plan → one strategy's why, evidence and risks → the timeline → the field station catalogue
