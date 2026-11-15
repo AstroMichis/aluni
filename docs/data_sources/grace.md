@@ -14,6 +14,18 @@ GRACE (2002-2017) and GRACE Follow-On (2018-present) measure month-to-month chan
 | Rate limits / quotas | not published |
 | Documentation | https://grace.jpl.nasa.gov/data/get-data/jpl_global_mascons/ ; https://www2.csr.utexas.edu/grace/RL06_mascons.html ; https://nasagrace.unl.edu/ ; https://docserver.gesdisc.eosdis.nasa.gov/public/project/hydrology/README_GRACEDADM4.pdf |
 
+## What the app uses
+
+`Grace::Client` reads the JPL CRI mascon file through PO.DAAC's open reference file (`..._virtual_https.json`, 1,527 keys, about 380 KB): `lwe_thickness` is chunked `[66, 90, 180]` (64 zlib chunks of about 175 KB), so one cell is four Range requests, plus the `scale_factor` chunk (`[1, 360, 720]`, the land scale factors to multiply by). OPeNDAP was tried first and answers 404 ("Failed to read the DMR++ from S3"). Bearer tokens come from `find_or_create_token` on Earthdata Login.
+
+Checked on 2026-11-15 (last 12 months against 2004-2009, 10-year trend):
+
+| Pin | Last 12 months | Trend | Lowest year |
+|---|---|---|---|
+| Buin, Chile (-33.60, -70.70) | -19.7 cm | -3.1 cm a decade | 2011 (-30.1 cm): the central Chile megadrought from 2010 |
+| York, Nebraska (40.95, -97.50) | +4.5 cm | -44.5 cm a decade | 2006 (-12.7 cm); peak 2019 (+47 cm, the Midwest floods) |
+| Alajuela, Costa Rica (10.03, -84.20) | -12.3 cm | -1.0 cm a decade | 2015 (-17.5 cm) |
+
 ## Requests
 
 ### JPL mascon granule discovery (CMR)

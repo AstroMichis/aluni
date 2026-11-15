@@ -83,6 +83,22 @@ RSpec.describe Rotations::Comparator do
     expect(current.evidence.find { |f| f.key == "cover_history" }.values).to eq(crops: "Cereal rye", years: (Date.current.year - 1).to_s)
   end
 
+  it "cites water stress (ECOSTRESS), the vegetation's normal (MODIS) and the region's water store (GRACE)" do
+    record.update!(irrigation: :gravity)
+    create(:field_observation, field: record, source: "ecostress", payload: {
+      "months" => [ { "month" => "2026-01", "esi" => 0.2, "readings" => 3 }, { "month" => "2026-04", "esi" => 0.6, "readings" => 2 } ] })
+    create(:field_observation, field: record, source: "modis", payload: {
+      "normal" => { "1" => 0.4 }, "years" => 24, "below" => [ "2026-02" ] })
+    create(:field_observation, field: record, source: "grace", payload: { "recent_cm" => -19.7, "trend_cm_per_decade" => -3.1 })
+    current = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first
+    facts = current.evidence.to_h { |f| [ f.key, [ f.values, f.source ] ] }
+
+    expect(facts["water_stress"]).to eq([ { months: [ 1 ] }, "NASA ECOSTRESS" ])
+    expect(facts["vegetation_below"]).to eq([ { months: [ 2 ], years: 24 }, "NASA MODIS (Terra)" ])
+    expect(facts["storage_low"]).to eq([ { cm: 19.7, trend: -3.1 }, "NASA GRACE / GRACE-FO" ])
+    expect(current.risks).to include("water_storage") # irrigated, and the store is depleted
+  end
+
   it "says what is better than now, what is unknown and what to check locally" do
     alternative = comparator.strategies.drop(1).first
     expect(alternative.gaps).to include("market", "soil")

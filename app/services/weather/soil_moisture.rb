@@ -4,7 +4,7 @@ module Weather
   # Root-zone soil moisture (0-100 cm) at a field's pin over the last year from
   # NASA SMAP L4 (SPL4SMGP: the SMAP radiometer assimilated into a land model,
   # 9 km, 3-hourly, no gaps), read from the AppEEARS results CSV that
-  # Fields::FetchSoilMoistureJob downloads.
+  # Fields::FetchAppeearsJob downloads.
   #
   # .summarize keeps one row per month (mean volumetric moisture and mean
   # percentile against the product's own climatology), the latest value, and
@@ -33,20 +33,11 @@ module Weather
 
     # The AppEEARS SPL4SMGP results CSV => the observation payload, or {} without values.
     def self.summarize(csv_text)
-      lines = csv_text.to_s.lines.map { |line| fields(line.chomp) }
-      headers = lines.shift.to_a
-      date_col = headers.index("Date")
-      rootzone_col = headers.index { |h| h.end_with?("_sm_rootzone") }
-      pctl_col = headers.index { |h| h.end_with?("_sm_rootzone_pctl") }
-      return {} unless date_col && rootzone_col
+      readings = Appeears::Csv.rows(csv_text, rootzone: "_sm_rootzone", pctl: "_sm_rootzone_pctl").filter_map do |row|
+        value = row[:rootzone]
+        next if value.nil? || value <= FILL || value.negative?
 
-      readings = lines.filter_map do |row|
-        value = Float(row[rootzone_col].to_s, exception: false)
-        at = Time.zone.parse(row[date_col].to_s) rescue nil
-        next if at.nil? || value.nil? || value <= FILL || value.negative?
-
-        pctl = pctl_col && Float(row[pctl_col].to_s, exception: false)
-        [ at, value, pctl&.between?(0, 100) ? pctl : nil ]
+        [ row[:at], value, row[:pctl]&.between?(0, 100) ? row[:pctl] : nil ]
       end
       return {} if readings.empty?
 
@@ -67,25 +58,7 @@ module Weather
 
     def self.mean(values, digits) = (values.sum / values.size.to_f).round(digits)
 
-    # One CSV line into its fields, honouring double quotes (the stdlib csv
-    # is a separate gem since Ruby 3.4, and these files are plain).
-    def self.fields(line)
-      out = [ +"" ]
-      quoted = false
-      chars = line.chars
-      i = 0
-      while i < chars.size
-        c = chars[i]
-        if c == '"' && quoted && chars[i + 1] == '"' then out.last << '"'; i += 1
-        elsif c == '"' then quoted = !quoted
-        elsif c == "," && !quoted then out << +""
-        else out.last << c
-        end
-        i += 1
-      end
-      out
-    end
-    private_class_method :mean, :fields
+    private_class_method :mean
 
     def initialize(observation)
       @payload = observation&.ok? ? observation.payload.to_h : {}

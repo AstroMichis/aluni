@@ -103,6 +103,7 @@ module Rotations
       }
       cover_history_fact(facts)
       double_crop_fact(crops, facts, gaps)
+      vegetation_fact(facts)
       gaps << "market"
       gaps << "soil" if @record.soil["texture"].blank?
       gaps << "ecocrop" unless crops.all? { |c| Crops::Agronomy.find(c)&.requirements.present? }
@@ -152,6 +153,8 @@ module Rotations
     # How much of the crops' water need the usual rain covers (irrigation fills the rest).
     def water(crops, facts, gaps)
       soil_moisture_fact(facts)
+      water_stress_fact(facts)
+      water_storage_fact(facts)
       needs = crops.uniq.filter_map do |crop|
         need = water_need(crop) or next
         facts << Fact.new(key: "water", values: { crop: crop, need: need.crop_mm, effective: need.effective_mm }, source: "NASA POWER · FAO-56")
@@ -233,6 +236,41 @@ module Rotations
       end
     end
 
+    # Whether the plants at the pin were short of water over the last year (ECOSTRESS).
+    def water_stress_fact(facts)
+      return unless stress.present?
+
+      stressed = stress.stressed_months.map { |m| m.label_date.month }
+      key, values = stressed.any? ? [ "water_stress", { months: stressed } ] : [ "water_stress_none", {} ]
+      facts << Fact.new(key: key, values: values, source: Weather::WaterStress::SOURCE)
+    end
+
+    def stress = (@stress ||= Weather::WaterStress.new(@field.observation("ecostress")))
+
+    # The region's water bank against 2004-2009 (GRACE): what wells and canals draw on.
+    def water_storage_fact(facts)
+      return unless storage.present?
+
+      values = { cm: storage.recent_cm.abs, trend: storage.trend }
+      key = if storage.recent_cm <= Weather::WaterStorage::LOW_CM then "storage_low"
+      elsif storage.recent_cm.negative? then "storage_below"
+      else "storage_above"
+      end
+      facts << Fact.new(key: key, values: values, source: Weather::WaterStorage::SOURCE)
+    end
+
+    def storage = (@storage ||= Weather::WaterStorage.new(@field.observation("grace")))
+
+    # The last year's vegetation against its 20-year normal at the pin (MODIS).
+    def vegetation_fact(facts)
+      normal = Fields::VegetationNormal.new(@field.observation("modis"))
+      return unless normal.present?
+
+      below = normal.below.map { |m| m[5, 2].to_i }
+      key, values = below.any? ? [ "vegetation_below", { months: below, years: normal.years } ] : [ "vegetation_usual", { years: normal.years } ]
+      facts << Fact.new(key: key, values: values, source: Fields::VegetationNormal::SOURCE)
+    end
+
     # Fewer different crops and machinery the farm already has mean less work.
     def workload(crops)
       distinct = crops.uniq.size
@@ -254,6 +292,7 @@ module Rotations
     def risks(crops, scores)
       list = []
       list << "dry" if !@record.uses_irrigation? && crops.uniq.any? { |c| (n = water_need(c)) && n.rain_mm < n.crop_mm * DRY_SHARE }
+      list << "water_storage" if @record.uses_irrigation? && storage.depleted?
       list << "dry_soil" if !@record.uses_irrigation? && soil.dry_months.size >= DRY_SOIL_MONTHS
       list << "low_suitability" if crops.any? { |c| (r = @potential.for(c)) && r.suitability && r.suitability < LOW_SUITABILITY }
       list << "harvester" if crops.any? { |c| SMALL_GRAINS.include?(Crops::Agronomy.gaez_name(c)) } && !harvester?

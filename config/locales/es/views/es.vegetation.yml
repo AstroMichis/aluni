@@ -3,6 +3,10 @@ es:
     vegetation:
       eyebrow: Landsat y Sentinel-2
       title: Tu campo desde el espacio
+      normal_key: "Lo habitual del mes (%{years} años, MODIS)"
+      normal_point: "Suele estar en %{ndvi} este mes."
+      normal_below: "Frente a su verde habitual (NASA MODIS, desde 2001), tu punto estuvo bastante por debajo en %{months}. Si no lo planeaste, vale la pena revisarlo."
+      normal_usual: Frente a su verde habitual (NASA MODIS, desde 2001), tu punto siguió su ritmo normal este año.
       lede: Cuánta vegetación tuvo el punto de tu campo cada mes del último año (NDVI), medido por satélite.
       chart_label: Vegetación mensual de los últimos 12 meses
       month: "%{month}: NDVI %{ndvi}, %{cover}"

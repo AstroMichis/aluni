@@ -249,6 +249,12 @@ en:
         soil_moisture:
           label: Soil moisture (root zone)
           value: "Percentile %{value} of its usual range (0 driest, 100 wettest)"
+        water_storage:
+          label: Regional water storage
+          value: "%{value} cm against 2004-2009 (groundwater, soil and surface water)"
+        water_stress:
+          label: Crop water stress
+          value: "%{value} (1 no stress, under 0.3 short of water)"
       index:
         title: My fields · %{app_name}
         lede: Your fields with their crop, their soil and what is still missing.
@@ -827,6 +833,13 @@ en:
         heavy_rain: "About %{days} days a year bring 25 mm of rain or more, most of them in %{months} (%{years} years of satellite rain)."
         soil_dry: "Over the last year the root zone was in the driest fifth of its usual range in %{months} (satellite soil moisture)."
         soil_usual: Over the last year the root zone stayed within its usual range of moisture (satellite soil moisture).
+        water_stress: "The plants at your pin were short of water in %{months} over the last year (evaporative stress index under 0.3, seen from the space station)."
+        water_stress_none: The plants at your pin did not show strong water stress over the last year (seen from the space station).
+        vegetation_below: "The vegetation at your pin was well below its usual green in %{months}, against %{years} years of satellite records."
+        vegetation_usual: "The vegetation at your pin followed its usual rhythm over the last year, against %{years} years of satellite records."
+        storage_low: "The region's water store (groundwater, soil and surface water) is about %{cm} cm below its 2004-2009 level, and it moves %{trend} cm a decade."
+        storage_below: "The region's water store is about %{cm} cm below its 2004-2009 level (trend %{trend} cm a decade)."
+        storage_above: "The region's water store is about %{cm} cm above its 2004-2009 level (trend %{trend} cm a decade)."
         heavy_rain_rare: "Heavy rain is rare here: about %{days} days a year with 25 mm or more (%{years} years of satellite rain)."
         same_family: "%{crop} would follow its own family."
         monoculture: "%{crop} three seasons or more in a row."
@@ -837,6 +850,7 @@ en:
         harvester: Small grains need a combine; your equipment does not list one.
         same_family: Pests that live on one family could carry over.
         dry_soil: The root zone was unusually dry for several months of the last year. Check the soil's moisture before planting and keep residue to hold it.
+        water_storage: The region's groundwater and surface water are well below their usual level. Wells, canals and reservoirs may give less; check your water rights and favour crops that need less irrigation.
         heavy_rain: Days of 50 mm or more come every year here. Row crops leave soil bare between seasons; keep residue or a cover crop over the stormy months.
         establishment: Alfalfa takes a season to establish and needs a market or animals.
         new_crop: It brings a crop your field has not grown before, and you prefer to change carefully. Try it on part of a field first.

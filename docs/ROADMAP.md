@@ -39,7 +39,7 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 **Rate limit (fixed):** Planetary Computer rate-limits bursts (429). The client now asks 2 months at a time, retries 429/5xx with exponential backoff and jitter (about 2, 4, 8, 16 s, or `Retry-After`), and stops the other months once one fails. A rate-limited field reruns only the NDVI later (15, 30, 45 min plus jitter, 3 times).
 
 **Still missing:**
-- **NASA breadth.** Done: POWER, Landsat, NASADEM (SRTM), GPM IMERG, SMAP. Missing from the challenge list: ECOSTRESS, MODIS, GRACE.
+- **NASA breadth.** Done: every dataset on the challenge list (POWER, Landsat, NASADEM/SRTM, GPM IMERG, SMAP, MODIS, ECOSTRESS, GRACE).
 - **Alerts on the phone.** The daily alerts run and show in the app; push and email go out once the `cron`, `push` and `mail` switches are resumed and the shells ship.
 - **Global soil.** Outside the US it depends on the farmer (the slope now comes from NASADEM).
 
@@ -57,17 +57,17 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 
 ## P1: NASA depth (each item checks one dataset off the challenge list)
 
-Suggested next order: MODIS and ECOSTRESS (same AppEEARS task path as SMAP), then GRACE.
+All done. AppEEARS runs one task at a time per account, so a new field's SMAP, MODIS and ECOSTRESS arrive over an hour or two; load the demo farms hours before the demo.
 
 | Item | Dataset | How |
 |---|---|---|
 | ✅ Crop health and **bare-field periods** | Landsat (NASA/USGS) + Sentinel-2 NDVI | Done (#22): `monthly_ndvi`, the `vegetation` observation, `Fields::Vegetation`, "Your field from space". Next: compare the observed bare months with the timeline's current rotation. |
-| Long-term vegetation baseline and anomalies | MODIS NDVI (16-day, 20+ years) | AppEEARS or Planetary Computer |
+| ✅ Long-term vegetation baseline and anomalies | MODIS NDVI (16-day, since 2001) | Done: `Fields::FetchAppeearsJob` source `modis`, `Fields::VegetationNormal`; the usual NDVI of each month is drawn on "Your field from space" and the plan cites months well below it. |
 | ✅ **Global slope** for erosion | NASADEM (SRTM) | Done: `PlanetaryComputer::Client#terrain`, the `nasadem` observation; 3DEP first in the US, NASADEM everywhere else (56°S to 60°N) in the profile and the comparator. |
 | ✅ Extreme rain frequency | GPM IMERG | Done: 20 years of daily IMERG through NASA POWER (`IMERG_PRECTOT`, no account), `Weather::RainExtremes`, the `gpm_imerg` observation; storm-prone months and 50 mm days raise the erosion of row crops in the comparator. The stormy months are on the 3-season timeline. |
-| ✅ Soil moisture and anomalies | SMAP L4 | Done: `Appeears::Client` (submit, poll, results CSV), `Fields::FetchSoilMoistureJob` (the `smap` observation stays `pending` while AppEEARS works), `Weather::SoilMoisture`; the plan cites dry months and warns a rainfed field. |
-| Long-term water trend | GRACE / GRACE-FO | One trend indicator per region |
-| Heat stress and evaporation | ECOSTRESS | AppEEARS |
+| ✅ Soil moisture and anomalies | SMAP L4 | Done: `Appeears::Client` (submit, poll, results CSV), `Fields::FetchAppeearsJob` (source `smap`) (the `smap` observation stays `pending` while AppEEARS works), `Weather::SoilMoisture`; the plan cites dry months and warns a rainfed field. |
+| ✅ Long-term water trend | GRACE / GRACE-FO | Done: `Grace::Client` reads the cell's chunks of the JPL mascon file by HTTP Range (Earthdata token), `Weather::WaterStorage`; the plan cites the region's store against 2004-2009 and warns irrigated fields when it is depleted. |
+| ✅ Heat stress and evaporation | ECOSTRESS | Done: `Fields::FetchAppeearsJob` source `ecostress` (ESI, 70 m), `Weather::WaterStress`; the plan cites months of water stress. |
 | Global soil | SoilGrids (ISRIC) | REST point query; fills texture and pH outside SSURGO |
 
 ## P2: a reason to come back
@@ -91,5 +91,5 @@ Suggested next order: MODIS and ECOSTRESS (same AppEEARS task path as SMAP), the
   bin/rails demo:farm USER_ID=<id> PRESET=chile      # Spanish: Buin, canal-irrigated maize and wheat, cautious, sells under contract
   ```
   In production: `kamal app exec --reuse --roles=web 'bin/rails demo:farm USER_ID=.. PRESET=..'`. It refuses an account with other farms (`FORCE=1` overrides), replaces only its own sample farm when run again, and waits for the worker to fetch the data at the pin (about a minute; SMAP arrives later).
-- [ ] Disk snapshot of the VM before the demo (`docs/deploy/DEPLOY.md`)
-- [ ] Script: landing pin → profile chat → Your plan → one strategy's why, evidence and risks → the timeline → the field station catalogue
+- [x] Disk snapshot of the VM before the demo (`docs/deploy/DEPLOY.md`): `aluni-vm-2026-11-15`; take a fresh one on the day
+- [x] Script: `docs/DEMO.md` (landing pin → profile → Your plan → evidence → field from space → timeline → risks → weather → field station)
