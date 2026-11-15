@@ -236,6 +236,12 @@ RSpec.describe Onboarding::ReplyService, type: :service do
       )
     end
 
+    it "keeps a point placed on the map as a confirmed map pin" do
+      result = reply("my field is here", coords: { latitude: 9.934, longitude: -84.08, source: "map" })
+
+      expect(result.value[:proposal]["field"]).to include("location_confidence" => "confirmed", "location_source" => "map")
+    end
+
     it "merges a confident location guess as an approximate assistant pin" do
       guess = { "latitude" => 9.9, "longitude" => -84.1, "label" => "Cartago, Costa Rica", "confidence" => "medium" }
       allow(Onboarding::DraftReplyService).to receive(:call).and_return(Success(draft.value.merge("location_guess" => guess, "updates" => { "field" => { "area" => 3, "latitude" => 50 } })))

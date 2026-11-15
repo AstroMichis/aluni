@@ -91,6 +91,26 @@ RSpec.describe "Onboarding chat", type: :request do
   end
 
   describe "POST /app/onboarding/message" do
+    it "passes a map pin with its source, and falls back to geolocation for an unknown source" do
+      allow(Onboarding::ReplyService).to receive(:call).and_return(Success(payload(topic: "location", progress: { index: 2, total: 8 })))
+
+      post message_app_onboarding_path(locale: "en"), params: { text: "My field is here", latitude: "9.934", longitude: "-84.08", location_source: "map" }, headers: stream_headers
+      post message_app_onboarding_path(locale: "en"), params: { text: "Here", latitude: "9.934", longitude: "-84.08", location_source: "assistant" }, headers: stream_headers
+
+      expect(Onboarding::ReplyService).to have_received(:call).with(hash_including(coords: { latitude: 9.934, longitude: -84.08, source: "map" }))
+      expect(Onboarding::ReplyService).to have_received(:call).with(hash_including(coords: { latitude: 9.934, longitude: -84.08, source: "geolocation" }))
+    end
+
+    it "renders the field map with the pin and the tile-free fallback picture" do
+      allow(Onboarding::ReplyService).to receive(:call).and_return(Success(payload(topic: "location", progress: { index: 2, total: 8 })))
+
+      post message_app_onboarding_path(locale: "en"), params: { text: "near Ames" }, headers: stream_headers
+
+      body = response.body
+      expect(body).to include('data-controller="field-map"').and include('data-field-map-has-pin-value="true"')
+      expect(body).to include(I18n.t("app.onboarding.show.map_use_point")).and include(I18n.t("app.onboarding.show.map_satellite"))
+    end
+
     it "answers a turn with both bubbles, the confirm card, the progress and the location tools" do
       allow(Onboarding::ReplyService).to receive(:call).and_return(Success(payload(topic: "location", progress: { index: 2, total: 8 })))
 
@@ -99,7 +119,7 @@ RSpec.describe "Onboarding chat", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
       expect(Onboarding::ReplyService).to have_received(:call)
-        .with(user: user, text: "I farm 12 hectares near Ames", locale: :en, coords: { latitude: 42.0, longitude: -93.75 })
+        .with(user: user, text: "I farm 12 hectares near Ames", locale: :en, coords: { latitude: 42.0, longitude: -93.75, source: "geolocation" })
 
       body = response.body
       expect(body).to include('target="onboarding-messages"').and include("I farm 12 hectares near Ames").and include("Twelve hectares, lovely.")

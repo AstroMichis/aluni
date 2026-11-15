@@ -7,10 +7,11 @@
            data-chat-messages-value="<%= { failed: t(".errors.failed") }.to_json %>"
            data-chat-notice-class="chat__notice chat__notice--warning"
            data-geolocate-template-value="<%= t(".location_shared_text") %>"
+           data-geolocate-picked-template-value="<%= t(".map_picked_text") %>"
            data-geolocate-denied-value="<%= t(".location_denied") %>"
            data-geolocate-unsupported-value="<%= t(".location_unsupported") %>"
            data-geolocate-locating-value="<%= t(".locating") %>"
-           data-action="geolocate:located->chat#submit">
+           data-action="geolocate:located->chat#submit field-map:picked->geolocate#fill">
     <header class="chat__header">
       <div class="chat__heading">
         <h1 id="onboarding-title" class="text-heading chat__title"><%= t(".title") %></h1>

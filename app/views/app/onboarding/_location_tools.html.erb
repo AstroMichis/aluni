@@ -1,14 +1,45 @@
-<%# Shown while the topic is "location": share the device location, and once a pin exists, the GIBS
-    picture of the area with two quick answers that post fixed texts through the chat. Local: pin
-    ({ latitude:, longitude: } or nil). %>
+<%# Shown while the topic is "location". With a pin: the map opens on it (field_map_controller.js), with
+    the GIBS picture as the no-JavaScript fallback, and two quick answers that post fixed texts through
+    the chat. Without a pin: a button opens the map. Sharing the device location stays available.
+    Local: pin ({ latitude:, longitude: } or nil). %>
 <div class="chat__tools" role="group" aria-label="<%= t("app.onboarding.show.tools_label") %>">
+  <div class="field-map"
+       data-controller="field-map"
+       data-field-map-has-pin-value="<%= pin.present? %>"
+       <% if pin %>data-field-map-latitude-value="<%= pin[:latitude] %>" data-field-map-longitude-value="<%= pin[:longitude] %>"<% end %>
+       data-field-map-pin-title-value="<%= t("app.onboarding.show.map_pin_title") %>"
+       data-field-map-point-template-value="<%= t("app.onboarding.show.map_point") %>"
+       data-field-map-unavailable-value="<%= t("app.onboarding.show.map_unavailable") %>">
+    <% if pin %>
+      <figure class="chat__area" data-field-map-target="fallback">
+        <%= image_tag Onboarding::AreaImage.url(latitude: pin[:latitude], longitude: pin[:longitude]),
+                      loading: "lazy", referrerpolicy: "no-referrer", width: 512, height: 512,
+                      alt: t("app.onboarding.show.area_image_alt"), class: "chat__area-image" %>
+        <figcaption class="chat__area-caption"><%= t("app.onboarding.show.is_this_your_area") %></figcaption>
+      </figure>
+    <% else %>
+      <button type="button" class="btn btn--secondary chat__locate" data-field-map-target="open" data-action="field-map#open"><%= t("app.onboarding.show.map_open") %></button>
+    <% end %>
+
+    <div class="field-map__panel" data-field-map-target="panel" hidden>
+      <div class="field-map__layers cluster cluster--sm" role="group" aria-label="<%= t("app.onboarding.show.map_layers_label") %>">
+        <button type="button" class="btn btn--ghost btn--sm" aria-pressed="true" data-field-map-target="layer"
+                data-action="field-map#showLayer" data-field-map-layer-param="satellite"><%= t("app.onboarding.show.map_satellite") %></button>
+        <button type="button" class="btn btn--ghost btn--sm" aria-pressed="false" data-field-map-target="layer"
+                data-action="field-map#showLayer" data-field-map-layer-param="streets"><%= t("app.onboarding.show.map_streets") %></button>
+      </div>
+      <div class="field-map__canvas" data-field-map-target="canvas" aria-label="<%= t("app.onboarding.show.map_label") %>"></div>
+      <p class="field-map__hint"><%= t("app.onboarding.show.map_hint") %></p>
+      <p class="field-map__point" data-field-map-target="point" aria-live="polite"></p>
+      <div class="cluster cluster--sm">
+        <button type="button" class="btn btn--primary" data-action="field-map#use"><%= t("app.onboarding.show.map_use_point") %></button>
+        <button type="button" class="btn btn--secondary" data-action="field-map#centerPin"><%= t("app.onboarding.show.map_center_pin") %></button>
+      </div>
+    </div>
+    <p class="chat__tools-status" data-field-map-target="status" role="status" aria-live="polite"></p>
+  </div>
+
   <% if pin %>
-    <figure class="chat__area">
-      <%= image_tag Onboarding::AreaImage.url(latitude: pin[:latitude], longitude: pin[:longitude]),
-                    loading: "lazy", referrerpolicy: "no-referrer", width: 512, height: 512,
-                    alt: t("app.onboarding.show.area_image_alt"), class: "chat__area-image" %>
-      <figcaption class="chat__area-caption"><%= t("app.onboarding.show.is_this_your_area") %></figcaption>
-    </figure>
     <div class="cluster cluster--sm">
       <%= button_to t("app.onboarding.show.area_yes"), message_app_onboarding_path, params: { text: t("app.onboarding.show.area_yes") },
                     class: "btn btn--primary", form_class: "chat__quick", form: { data: { action: "submit->chat#submit" } } %>

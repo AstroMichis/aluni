@@ -82,8 +82,9 @@ is logged and becomes a continuation line; the service never raises.
   completed: false, degraded: false, refusal: false }
 ```
 
-`coords` is `{ latitude:, longitude: }` from the browser's share-location button
-(strings or numbers; out-of-range values are ignored).
+`coords` is `{ latitude:, longitude:, source: }` from the browser's share-location button
+(`source: "geolocation"`) or a point placed on the field map (`source: "map"`); strings or
+numbers, out-of-range values are ignored, and an unknown source counts as `geolocation`.
 
 ## Topics and how to add one
 
@@ -154,7 +155,7 @@ into `field["soil"]`; `ph` must be 0..14, months 1..12, `season_year` within
 a crop row needs `crop_name` and `season_year`, defaults `role` to `main`, and
 the last row wins for a `[season_year, role]` pair. Latitude and longitude from
 `updates` are ignored: the pin only comes from `coords` (confirmed,
-`geolocation`) or from a `location_guess` with confidence `medium` or `high`
+`geolocation` or `map`) or from a `location_guess` with confidence `medium` or `high`
 (approximate, `assistant`, with `place_label`). The browser pin wins over a guess.
 
 ## The proposal and the accepted keys (contract with the UI)
@@ -268,7 +269,7 @@ Run: `mise exec -- bundle exec rspec spec/services/onboarding spec/services/gemi
 
 **`/app/onboarding`** (`App::OnboardingController`, `app/views/app/onboarding/`). One page, every turn a Turbo Stream. Layout `.onboarding`: the chat (`.chat`: `__log` with the bubbles, `__composer`, the progress dots, the confirm card slot, the location tools while the topic is `location`) and, from 1025 px, a sticky companion column (`<aside id="chat-companion" data-mascot-dock>`) with `shared/mascot_companion` (the mascot in docked mode, idle, talking on every new assistant bubble) above the profile preview (`<details open>`; below 1025 px the preview folds under the chat). Stream targets, enforced by `spec/views/onboarding_turbo_stream_targets_spec.rb`: `#onboarding-messages` (append), `#onboarding-confirm` (update), `#onboarding-progress` (replace), `#onboarding-location-tools` (update), `#onboarding-notice` (update), `#profile-preview` (replace). Actions: `message` (POST text, optional latitude/longitude from the share-location button), `confirm` (accepted keys, "Save selected"), `discard` ("Not now"), `skip`, `complete` (303 to `/app`), `reset` (DELETE). The first bubble before any Gemini call is `onboarding.welcome_message`. `App::HomeController` forwards to the chat while `User#onboarding_complete?` is false and shows a recap plus "Talk to Aluni" afterwards.
 
-**Stimulus** (`app/javascript/controllers/`): `chat` (intercepts the composer and the quick-answer forms, posts with `Accept: text/vnd.turbo-stream.html`, renders the stream whatever the status so a 429 notice shows, Enter sends, Shift+Enter breaks a line, `AbortController` on disconnect), `chat-message` (scrolls a new bubble into view and dispatches `mascot:speak { chars }` for assistant bubbles; history bubbles are `silent`), `geolocate` (`getCurrentPosition` fills the hidden pin and a fixed composer text, then `geolocate:located` submits), `landing-chat` (above), `mascot` (`docs/DESIGN_SYSTEM.md`). Window events: `mascot:ready|arrived|docked|fallback|lets-go` from the mascot; `mascot:speak|dock|hide|show` to it.
+**Stimulus** (`app/javascript/controllers/`): `chat` (intercepts the composer and the quick-answer forms, posts with `Accept: text/vnd.turbo-stream.html`, renders the stream whatever the status so a 429 notice shows, Enter sends, Shift+Enter breaks a line, `AbortController` on disconnect), `chat-message` (scrolls a new bubble into view and dispatches `mascot:speak { chars }` for assistant bubbles; history bubbles are `silent`), `geolocate` (`getCurrentPosition` fills the hidden pin, `location_source` and a fixed composer text, then `geolocate:located` submits; `fill` does the same for a map point), `field-map` (the location step's Leaflet map, loaded lazily from `vendor/javascript/leaflet.js`: EOxCloudless Sentinel-2 imagery or OpenStreetMap tiles, a draggable pin, Move pin to centre for keyboards, Use this point dispatches `field-map:picked` to `geolocate#fill`; opens on its own when a pin exists, the GIBS picture is the no-JavaScript fallback), `landing-chat` (above), `mascot` (`docs/DESIGN_SYSTEM.md`). Window events: `mascot:ready|arrived|docked|fallback|lets-go` from the mascot; `mascot:speak|dock|hide|show` to it.
 
 **Throttle**: `RACK_ATTACK_ASSISTANT_PATH` in `config/initializers/rack_attack.rb` limits `/app/onboarding/*` writes to 20 per minute and 150 per hour per IP.
 

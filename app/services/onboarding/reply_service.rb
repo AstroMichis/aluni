@@ -185,7 +185,8 @@ module Onboarding
       longitude = Allowlist.coerce(coords[:longitude], :longitude)
       return nil unless latitude && longitude
 
-      { "latitude" => latitude, "longitude" => longitude, "location_confidence" => "confirmed", "location_source" => "geolocation" }
+      source = coords[:source].to_s == "map" ? "map" : "geolocation"
+      { "latitude" => latitude, "longitude" => longitude, "location_confidence" => "confirmed", "location_source" => source }
     end
 
     def guess_pin(guess)

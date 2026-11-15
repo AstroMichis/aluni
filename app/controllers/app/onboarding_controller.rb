@@ -135,13 +135,17 @@ module App
       [ Onboarding::Topics.index(topic) || 0, Onboarding::Topics.size ]
     end
 
-    # Browser geolocation shared through the composer's hidden fields.
+    # A pin shared through the composer's hidden fields: browser geolocation
+    # or a point placed on the map (field_map_controller.js).
+    PIN_SOURCES = %w[geolocation map].freeze
+
     def coordinates
       latitude = params[:latitude].presence
       longitude = params[:longitude].presence
       return nil unless latitude && longitude
 
-      { latitude: latitude.to_f, longitude: longitude.to_f }
+      source = PIN_SOURCES.include?(params[:location_source]) ? params[:location_source] : "geolocation"
+      { latitude: latitude.to_f, longitude: longitude.to_f, source: source }
     end
 
     def accepted_fields
