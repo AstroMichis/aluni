@@ -800,7 +800,7 @@ es:
       criteria:
         crop_fit:
           short: Aptitud
-          how: Aptitud FAO GAEZ del cultivo de cada temporada en tu punto.
+          how: Aptitud FAO GAEZ del cultivo de cada temporada en tu punto, menos lo que restan la textura, el drenaje, la profundidad y la salinidad de tu suelo (FAO ECOCROP).
           benefit: Los cultivos se adaptan mejor a tu tierra y tu clima.
         pest_break:
           short: Corte de plagas
@@ -831,6 +831,11 @@ es:
         water: "%{crop} necesita unos %{need} mm; la lluvia usual cubre unos %{effective} mm."
         slope: Pendiente de %{value} %.
         cover_history: "Este terreno ya tuvo un cultivo de cobertura (%{crops}) en %{years}."
+        soil_texture: "%{crop}: crece mejor en suelo %{need}; el tuyo es %{value}."
+        soil_drainage: "%{crop}: necesita este drenaje: %{need}; el tuyo: %{value}."
+        soil_depth: "%{crop}: necesita un suelo de al menos %{need}; el tuyo es %{value}."
+        soil_salinity: "%{crop}: tolera salinidad de hasta %{need}; la tuya es %{value}."
+        irrigation_supply: "Riegas desde %{source}, y el agua almacenada en la región está muy por debajo de lo habitual."
         double_crop: "Después de %{main} este terreno siembra %{second} en la misma temporada; la línea de tiempo lo mantiene."
         heavy_rain: "Unos %{days} días al año llueven 25 mm o más, sobre todo en %{months} (%{years} años de lluvia por satélite)."
         soil_dry: "En el último año la zona de raíces estuvo en el quinto más seco de lo habitual en %{months} (humedad del suelo por satélite)."
@@ -859,6 +864,7 @@ es:
         contract: Vendes por contrato o para exportar. Consulta con tu comprador antes de cambiar el cultivo.
       gaps:
         market: 'Precios y compradores: todavía no hay fuente para tu mercado local.'
+        water_source: Todavía no se sabe de dónde viene el agua de riego (pozo, canal, reservorio).
         second_crop: Siembras dos cultivos al año, pero el segundo todavía no está registrado; agrégalo al historial del terreno para verlo en la línea de tiempo.
         soil: La textura de tu suelo todavía no está confirmada.
         ecocrop: Los requisitos de temperatura y pH de los cultivos (FAO ECOCROP) todavía no están cargados.

@@ -99,6 +99,35 @@ RSpec.describe Rotations::Comparator do
     expect(current.risks).to include("water_storage") # irrigated, and the store is depleted
   end
 
+  it "takes the field's soil off the crop fit where a crop does not tolerate it (ECOCROP)" do
+    allow(Crops::Agronomy).to receive(:find).and_call_original
+    %w[glycine-max zea-mays].each do |key|
+      entry = Crops::Agronomy.find(key).dup
+      entry.requirements = { "dep" => "deep (>>150 cm)", "depr" => "medium (50-150 cm)", "sal" => "low (<4 dS/m)", "salr" => "low (<4 dS/m)" }
+      allow(Crops::Agronomy).to receive(:find).with(key).and_return(entry)
+    end
+    before = comparator.strategies.first.scores["crop_fit"]
+
+    record.update!(soil: record.soil.merge("depth" => "shallow", "salinity" => "low"))
+    current = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first
+
+    expect(current.scores["crop_fit"]).to eq(before - described_class::SOIL_OUTSIDE) # shallow is under the medium floor
+    expect(current.evidence.find { |f| f.key == "soil_depth" }.values).to include(value: "shallow", need: "deep (>>150 cm)")
+  end
+
+  it "weighs where the irrigation water comes from" do
+    record.update!(irrigation: :gravity, water_source: :unknown)
+    expect(described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first.gaps).to include("water_source")
+
+    record.update!(water_source: :river_canal)
+    base = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first.scores["water"]
+    create(:field_observation, field: record, source: "grace", payload: { "recent_cm" => -19.7, "trend_cm_per_decade" => -3.1 })
+    current = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first
+
+    expect(current.scores["water"]).to eq(base - described_class::SUPPLY_RISK)
+    expect(current.evidence.map(&:key)).to include("irrigation_supply")
+  end
+
   it "says what is better than now, what is unknown and what to check locally" do
     alternative = comparator.strategies.drop(1).first
     expect(alternative.gaps).to include("market", "soil")

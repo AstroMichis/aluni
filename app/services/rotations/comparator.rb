@@ -26,6 +26,11 @@ module Rotations
     SLOPE_SOURCES = { "usgs_elevation" => "USGS 3DEP", "nasadem" => "NASA NASADEM" }.freeze
     STORM_PENALTY = 7   # more per row-crop season where 50 mm days come every year (GPM IMERG)
     DRY_SOIL_MONTHS = 3 # months of the last year in the driest fifth of the usual soil moisture (SMAP)
+    SOIL_FACTORS = %w[texture drainage depth salinity].freeze
+    SOIL_OUTSIDE = 20   # crop-fit points a soil property outside a crop's tolerance takes off
+    SOIL_POSSIBLE = 5   # and one it only tolerates
+    STORED_WATER = %w[well river_canal reservoir mixed].freeze # irrigation that draws on the region's store
+    SUPPLY_RISK = 15    # water-score points when that store is depleted (GRACE)
     DRY_SHARE = 0.5     # a rainfed crop whose season rain is under half its need
     PERENNIALS = %w[medicago-sativa].freeze # a stand of several seasons is one crop, not a repeat
     LOW_SUITABILITY = 4000
@@ -119,7 +124,8 @@ module Rotations
       (present.sum { |c, v| v * w[c] } / present.keys.sum { |c| w[c] }.to_f).round
     end
 
-    # GAEZ suitability (0-10000) averaged over the seasons' crops.
+    # GAEZ suitability (0-10000) averaged over the seasons' crops, less what the
+    # field's own soil takes off (ECOCROP: texture, drainage, depth, salinity).
     def crop_fit(crops, facts, gaps)
       values = crops.filter_map do |crop|
         row = @potential.for(crop)
@@ -127,8 +133,33 @@ module Rotations
         row&.suitability
       end
       gaps << "suitability" if values.size < crops.size
-      values.any? ? (values.sum / values.size / 100.0).round : nil
+      return nil if values.empty?
+
+      ((values.sum / values.size / 100.0) - soil_penalty(crops, facts)).clamp(0, 100).round
     end
+
+    # Per crop, the soil checks outside what it tolerates (SOIL_OUTSIDE each) or only
+    # tolerated (SOIL_POSSIBLE each), averaged over the seasons; each "outside" is cited.
+    def soil_penalty(crops, facts)
+      penalties = crops.map do |crop|
+        soil_checks(crop).sum do |check|
+          next 0 unless %i[outside possible].include?(check.status)
+
+          if check.status == :outside
+            facts << Fact.new(key: "soil_#{check.factor}", values: { crop: crop, value: check.value, need: check.range.first.to_s }, source: "FAO ECOCROP")
+          end
+          check.status == :outside ? SOIL_OUTSIDE : SOIL_POSSIBLE
+        end
+      end
+      penalties.sum / penalties.size.to_f
+    end
+
+    def soil_checks(crop)
+      @soil_checks ||= {}
+      @soil_checks[crop] ||= Crops::Fit.new(crop, season: season, soil: @record.soil).checks.select { |c| SOIL_FACTORS.include?(c.factor) }
+    end
+
+    def season = (@season ||= Weather::Season.for(@power))
 
     def pest_break(crops, facts)
       planned = crops.each_with_index.map { |c, i| [ "+#{i + 1}", c ] }
@@ -166,8 +197,21 @@ module Rotations
       end
       covered = crops.filter_map { |c| needs[c] }.map { |n| n.effective_mm / n.crop_mm.to_f }
       share = covered.sum / covered.size
-      score = @record.uses_irrigation? ? 60 + (40 * share) : 100 * share
+      score = @record.uses_irrigation? ? 60 + (40 * share) - irrigation_risk(facts, gaps) : 100 * share
       score.clamp(0, 100).round
+    end
+
+    # Irrigation drawn from wells, canals or reservoirs is less sure where the region's
+    # water store is depleted (GRACE); irrigation from an unknown source is a gap.
+    def irrigation_risk(facts, gaps)
+      if @record.water_source_unknown?
+        gaps << "water_source"
+        return 0
+      end
+      return 0 unless STORED_WATER.include?(@record.water_source) && storage.depleted?
+
+      facts << Fact.new(key: "irrigation_supply", values: { source: @record.water_source }, source: Weather::WaterStorage::SOURCE)
+      SUPPLY_RISK
     end
 
     def erosion(crops, facts, gaps)
