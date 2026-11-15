@@ -27,6 +27,24 @@
       <button type="submit" class="btn btn--primary btn--sm"><%= t(".save") %></button>
     <% end %>
 
+    <section class="screen__section" aria-labelledby="recent-alerts">
+      <h2 class="screen__section-title" id="recent-alerts"><%= t(".recent.title") %></h2>
+      <% if @recent.any? %>
+        <ul class="forecast__alerts" role="list">
+          <% @recent.each do |delivery, field_id, date, kind| %>
+            <% field = @farm.field(field_id) %>
+            <li class="forecast__alert forecast__alert--<%= kind %>">
+              <strong><%= l(date, format: "%A %-d %B") %> · <%= field ? plot_name(field) : t(".recent.removed_field") %>:</strong>
+              <%= t("notifications.weather_alert.kinds.#{kind}") %>
+              <small>· <%= delivery.sent? ? t(".recent.sent", channel: t(".recent.channels.#{delivery.channel}", default: delivery.channel)) : t(".recent.here_only") %></small>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="choice-set__hint"><%= @farm.alerts.any? ? t(".recent.none") : t(".recent.choose") %></p>
+      <% end %>
+    </section>
+
     <%= render "app/weather/field_picker" %>
 
     <% if @season.any? %>

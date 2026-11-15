@@ -75,6 +75,8 @@ VAPID keys in credentials `web_push.{public_key,private_key,subject}` (`bin/rail
 
 `NotificationRouter.deliver(recipient:, purpose:, payload:, idempotency_key:)` reads `config/notification_purposes.yml` (validated at boot by `Notifications::Purposes`), tries the purpose's channels in order (`push`, `web_push`, `email`) and records every attempt on a `NotificationDelivery`. Same key twice: once sent, nothing is sent again. The shell ships with no purposes and one generic mailer action (`NotificationMailer#generic(user, subject, body)`).
 
+The first purpose is `weather_alert` (`Weather::DailyAlertsJob`): channels push, web push, then email; text in `config/locales/*/<locale>.notifications.yml`; idempotency key `weather:<field>:<date>:<kind>`, which the alerts screen parses back to list recent alerts.
+
 ## Mail
 
 `ApplicationMailer` sends from credentials `mailer.from` (or `MAILER_FROM`). Development writes mail to `tmp/mails`; production uses SMTP from credentials `smtp.*` (pick a free tier such as Resend or Brevo; add SPF, DKIM and DMARC at the DNS provider). `Platform::MailPauseInterceptor` drops mail while `mail` is paused unless the message carries `X-Platform-Critical`.

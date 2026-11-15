@@ -141,6 +141,15 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
     expect(response.body).to include('<turbo-frame id="forecast">').and include("frost possible")
   end
 
+  it "lists the recent weather alerts, sent or shown here only" do
+    NotificationDelivery.create!(recipient: user, purpose: "weather_alert", status: :skipped,
+                                 idempotency_key: Weather::DailyAlertsJob.key(field.id, Date.current, "frost"))
+
+    get alerts_app_weather_path(locale: "en"), headers: native_headers
+
+    expect(response.body).to include(I18n.t("app.weather.alerts.recent.title")).and include(I18n.t("app.weather.alerts.recent.here_only"))
+  end
+
   it "explains why there is no weather yet for a field without a pin" do
     bare = create(:field, :unlocated, farm: field.farm)
     get app_weather_path(field: bare.id, locale: "en"), headers: native_headers
