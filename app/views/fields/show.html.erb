@@ -1,0 +1,57 @@
+<% name = field_name(@field) %>
+<% history = @field.history %>
+<% groups = @profile.groups(:field) %>
+<% groups = groups.merge("crop" => groups["crop"].reject { |d| d.key == "crop_history" }) if history.any? %>
+<% content_for :title, t(".title", name: name, app_name: t("app_name")) %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: menu_fields_path, back_label: t("fields.back_to_fields"), title: t("fields.index.crumb") %>
+  <%= render "fields/plot_defs" %>
+
+  <main id="main" class="screen__body" data-controller="section-nav" data-section-nav-current-class="section-nav__link--current">
+    <header class="field-hero">
+      <%= render "fields/plot", crop: @field.crop, size: "lg", id: "plot-hero-#{@field.key}" %>
+      <div class="field-hero__copy">
+        <h1 class="text-display screen__title"><%= name %></h1>
+        <p class="screen__lede"><%= hectares(@field.area) %> · <%= @field.empty? ? t("fields.index.no_crop") : crop_name(@field.crop) %></p>
+        <% if @field.empty? %>
+          <%= render "shared/aluni", message: t(".empty_message") %>
+          <% crop = @profile.fetch("current_crop") %>
+          <%= form_with url: menu_field_reading_path(subject: @field.key, datum: crop.key), method: :patch, class: "field-hero__crop" do %>
+            <%= render "fields/input", datum: crop, name: "value", current: nil %>
+            <button type="submit" class="btn btn--primary"><%= t(".plant") %></button>
+          <% end %>
+        <% else %>
+          <%= render "shared/aluni", message: t(".tips.#{crop_shape(@field.crop) || "fallow"}") %>
+        <% end %>
+      </div>
+    </header>
+
+    <%= render "shared/preview_note" %>
+    <%= render "fields/todo", subject: @field %>
+    <%= render "fields/section_nav", groups: (history.any? ? ["history"] : []) + groups.keys %>
+
+    <% if history.any? %>
+      <% history_reading = @field.reading("crop_history") %>
+      <section class="screen__section" id="group-history" aria-labelledby="group-title-history" data-section-nav-target="section">
+        <h2 class="reading-group__title" id="group-title-history">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><%= render "shared/glyph", name: "history" %></svg>
+          <%= t("fields.groups.history") %>
+        </h2>
+        <p class="reading-group__note"><%= [ t("fields.state_labels.#{history_reading.state}"), reading_origin(history_reading) ].compact_blank.join(" · ") %></p>
+        <ol class="history" role="list">
+          <% history.each_with_index do |(year, crop), i| %>
+            <% repeat = i.positive? && history.values[i - 1] == crop %>
+            <li class="history__year<%= " history__year--repeat" if repeat %>">
+              <span class="history__label text-mono"><%= year %></span>
+              <span class="history__crop"><%= crop_name(crop) %></span>
+              <% if repeat %><span class="history__flag"><%= t(".repeat") %></span><% end %>
+            </li>
+          <% end %>
+        </ol>
+      </section>
+    <% end %>
+
+    <%= render "fields/groups", subject: @field, groups: groups %>
+  </main>
+</div>

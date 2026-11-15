@@ -46,6 +46,43 @@ Rails.application.routes.draw do
 
     # The main menu dial: a web preview for now, the app's first screen later.
     get "menu", to: "pages#menu", as: :menu
+    # Section 1 of the menu, My fields: a preview on the sample farm (Fields::SampleFarm).
+    scope "menu", as: "menu" do
+      resources :fields, only: %i[index show new create] do
+        collection do
+          get :farm
+          get :sources
+          delete :preview, action: :reset
+        end
+      end
+      patch "fields/:subject/readings/:datum", to: "field_readings#update", as: :field_reading
+
+      # Sections 2 to 5, on the same farm preview.
+      resource :crops, only: :show do
+        get :rotation
+        get :calendar
+        patch :plan
+      end
+      resource :weather, only: :show, controller: "weather" do
+        get :alerts
+        patch :alerts, action: :update_alerts
+      end
+      resource :staff, only: :show, controller: "staff" do
+        get :tasks
+        get :roles
+        post :members, action: :create_member
+        patch "members/:id", action: :update_member, as: :member
+        delete "members/:id", action: :destroy_member
+        post :tasks, action: :create_task
+        patch "tasks/:id", action: :update_task, as: :task
+        delete "tasks/:id", action: :destroy_task
+      end
+      resource :reports, only: :show do
+        get :harvest
+        get :export
+        get :download, constraints: { format: /json|csv/ }
+      end
+    end
 
     # Passkey sign-in and sign-up (native shells; NATIVE_WEB_ACCESS opens them to browsers).
     get    "sign_in",         to: "sessions#new",          as: :sign_in

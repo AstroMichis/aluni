@@ -1,0 +1,16 @@
+# The crops the screens know: botanical family (for the rotation rules) and
+# the plant shape the illustrated field draws. Keys match the current_crop
+# options in config/field_profile.yml. Families are standard botany; FAO
+# ECOCROP (FAMNAME, docs/data_sources/ecocrop.md) will supply them for any
+# crop once connected. Loaded by Crops::Catalog.
+corn:       { family: poaceae, shape: stalk }
+sorghum:    { family: poaceae, shape: stalk }
+wheat:      { family: poaceae, shape: grain }
+oats:       { family: poaceae, shape: grain }
+rice:       { family: poaceae, shape: grain }
+soybeans:   { family: fabaceae, shape: leafy }
+beans:      { family: fabaceae, shape: leafy }
+alfalfa:    { family: fabaceae, shape: leafy }
+potato:     { family: solanaceae, shape: bush }
+vegetables: { family: null, shape: bush }   # many families: no rotation rule applies
+fallow:     { family: null, shape: null }   # resting: nothing grows on the plot

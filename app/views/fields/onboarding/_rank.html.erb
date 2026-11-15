@@ -1,0 +1,11 @@
+<%# Step: the goals, up to three in order of importance (the order weighs the scoring). %>
+<% step.data.each do |datum| %>
+  <div class="choice choice--rank" data-onboarding-target="rank">
+    <% datum.options.each do |option| %>
+      <label class="choice__chip">
+        <input type="checkbox" name="answers[<%= datum.key %>][]" value="<%= option %>" data-action="onboarding#rank">
+        <span><%= option_label(datum, option) %></span>
+      </label>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,21 @@
+<%# Step: what the location already told us, each with its source: agree, or correct it. %>
+<ul class="found" role="list">
+  <% step.data.each do |datum| %>
+    <% reading = @farm.reading(datum) %>
+    <li class="found__item">
+      <span class="reading__label"><%= datum_label(datum) %></span>
+      <span class="reading__value"><%= reading_text(reading) %></span>
+      <span class="reading__origin"><%= reading_origin(reading) %></span>
+      <% if reading.known? %>
+        <div class="found__actions">
+          <label class="choice__chip"><input type="checkbox" name="confirmed[]" value="<%= datum.key %>"><span><%= t("fields.new.looks_right") %></span></label>
+          <details class="reading__edit">
+            <summary class="btn btn--ghost btn--sm"><%= t("fields.actions.correct") %></summary>
+            <input class="input" type="text" name="answers[<%= datum.key %>]" maxlength="<%= Fields::AnswerService::MAX_TEXT %>"
+                   aria-label="<%= datum_label(datum) %>" placeholder="<%= t("fields.actions.correct_hint") %>">
+          </details>
+        </div>
+      <% end %>
+    </li>
+  <% end %>
+</ul>

@@ -1,0 +1,15 @@
+<%# Step: where the farm is. A placeholder map until a base map is chosen; the
+    preview places every farm at its one measured point (docs/FIELDS.md). %>
+<% location = format("%.2f, %.2f", @farm.location["lat"], @farm.location["lon"]) %>
+<div class="map-stub">
+  <svg class="map-stub__art" viewBox="0 0 240 140" aria-hidden="true" focusable="false">
+    <path class="map-stub__grid" d="M0 35h240M0 70h240M0 105h240M60 0v140M120 0v140M180 0v140"/>
+    <path class="map-stub__road" d="M0 118 C60 96 90 60 140 54 S220 30 240 18"/>
+    <circle class="plot__pulse" cx="120" cy="62" r="10"/>
+    <path class="plot__pin" d="M120 76c-5-6.5-8-11-8-15a8 8 0 0 1 16 0c0 4-3 8.5-8 15z"/>
+    <circle class="plot__pin-dot" cx="120" cy="61" r="2.6"/>
+  </svg>
+  <p class="map-stub__coords text-mono"><%= location %></p>
+</div>
+<p class="layer-note layer-note--us"><%= t("fields.new.preview_point") %></p>
+<input type="hidden" name="answers[location]" value="<%= location %>">

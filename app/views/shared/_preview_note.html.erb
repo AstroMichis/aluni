@@ -1,0 +1,11 @@
+<%# Says whose farm this is: the sample, or the person's own (kept only in this browser session). %>
+<aside class="preview-note<%= " preview-note--sample" if @farm.sample? %>">
+  <% if @farm.sample? %>
+    <p><strong><%= t("fields.preview.sample_title") %></strong> <%= t("fields.preview.sample_body") %></p>
+    <%= link_to t("fields.preview.start"), new_menu_field_path, class: "btn btn--primary btn--sm" %>
+  <% else %>
+    <p><strong><%= t("fields.preview.own_title") %></strong> <%= t("fields.preview.own_body") %></p>
+    <%= button_to t("fields.preview.reset"), preview_menu_fields_path, method: :delete, class: "btn btn--ghost btn--sm",
+                  form: { data: { turbo_confirm: t("fields.preview.reset_confirm") } } %>
+  <% end %>
+</aside>

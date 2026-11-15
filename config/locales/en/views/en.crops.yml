@@ -1,0 +1,61 @@
+en:
+  crops:
+    tabs:
+      now: Now
+      rotation: Rotation
+      calendar: Calendar
+    families:
+      poaceae: Grasses (Poaceae)
+      fabaceae: Legumes (Fabaceae)
+      solanaceae: Nightshades (Solanaceae)
+    show:
+      title: My crops · %{app_name}
+      crumb: My crops
+      headline: My crops
+      summary: 'Growing now: %{crops}, on %{area}.'
+      none: Nothing is planted yet.
+      season: "%{from} to %{to}"
+      plant: Choose a crop
+    rotation:
+      title: Rotation · %{app_name}
+      headline: Rotation
+      lede: Each field's seasons, what you plan next and a few basic checks. They point at what to look at; the comparison of strategies will come with the rotation engine.
+      labels:
+        now: This season
+        plan: Planned
+      no_history: No seasons recorded for this field yet.
+      plan_label: Next season
+      plan_none: Not decided
+      plan_save: Save plan
+      findings:
+        ok: No basic rotation rule is broken here.
+        same_family:
+          label: Same family
+          text: "%{crop} follows a crop of its own family (%{years}). Pests and diseases that live on that family carry over."
+        monoculture:
+          label: Same crop
+          text: "%{crop} three seasons or more in a row (%{years})."
+        no_legume:
+          label: No legume
+          text: No legume in %{years}. A legume adds nitrogen for the next crop.
+      compare:
+        title: Compare strategies
+        text: 'Your current rotation against at least two alternatives, each with:'
+        parts:
+          why: why it is suggested
+          evidence: the evidence behind it
+          benefits: its benefits
+          gaps: what we do not know
+          risks: the risks to check locally
+        missing:
+          one: One detail is missing on this field before we can compare.
+          other: "%{count} details are missing on this field before we can compare."
+        ready: This field has what the comparison needs. It will run once the rotation engine is connected.
+        complete: Complete this field
+    calendar:
+      title: Crop calendar · %{app_name}
+      headline: Crop calendar
+      lede: Each field's planting and harvest against the frost-free stretch of this season.
+      frost_free: Frost-free
+      missing: Add planting and harvest months
+      note: 'Frost-free stretch from NASA POWER (regional context): last spring frost %{last}; first fall frost %{first}.'

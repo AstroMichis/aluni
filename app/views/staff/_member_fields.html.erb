@@ -1,0 +1,26 @@
+<%# A member's role and fields, in the add and edit forms. Locals: member (a hash). %>
+<fieldset class="choice-set">
+  <legend class="choice-set__legend"><%= t("staff.show.role") %></legend>
+  <div class="choice">
+    <% Staff::Roles.keys.each do |role| %>
+      <label class="choice__chip">
+        <input type="radio" name="member[role]" value="<%= role %>"<%= " checked" if member["role"] == role %>>
+        <span><%= t("staff.role_names.#{role}") %></span>
+      </label>
+    <% end %>
+  </div>
+</fieldset>
+<% if @farm.fields.any? %>
+  <fieldset class="choice-set">
+    <legend class="choice-set__legend"><%= t("staff.show.fields") %></legend>
+    <input type="hidden" name="member[fields][]" value="">
+    <div class="choice">
+      <% @farm.fields.each do |field| %>
+        <label class="choice__chip">
+          <input type="checkbox" name="member[fields][]" value="<%= field.key %>"<%= " checked" if member["fields"].include?(field.key) %>>
+          <span><%= field_name(field) %></span>
+        </label>
+      <% end %>
+    </div>
+  </fieldset>
+<% end %>

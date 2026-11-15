@@ -1,0 +1,432 @@
+en:
+  fields:
+    back_to_menu: Back to the menu
+    back_to_fields: Back to my fields
+    layers:
+      us: 'Your farm is in the US: besides the global data we use finer national sources, like the soil survey and the crop map.'
+      global: 'Your farm is outside the US: we work with global data, which is less precise. What you tell us corrects it.'
+    layers_short:
+      global: Global
+      us: US
+    units:
+      hectares: "%{value} ha"
+      hectares_short: ha
+    sample:
+      north: North field
+      creek: Creek field
+      home: Home field
+    states:
+      answered: Answered
+      unanswered: Add it whenever you like
+      auto: Filled in
+      to_confirm: Waiting for you to confirm
+      confirmed: Confirmed
+      pending: Fills in by itself
+      gap: We will ask you
+      corrected: Corrected
+    state_labels:
+      answered: Your answer
+      unanswered: Not answered
+      auto: Automatic
+      to_confirm: To confirm
+      confirmed: Confirmed
+      pending: On its way
+      gap: No source
+      corrected: Corrected by you
+    confidence:
+      high: Field · high confidence
+      medium: Area · medium confidence
+      low: Regional context
+    origins:
+      ask: We ask you
+      confirm: You confirm
+      auto: Automatic
+    groups:
+      place: Place
+      climate: Weather in your area
+      water: Water
+      resources: Resources
+      market: Market
+      goals: Priorities
+      profile: Your profile
+      plot: The field
+      crop: Crop
+      soil: Soil
+      terrain: Terrain
+      vegetation: Vegetation and imagery
+      notes: Notes
+      history: Crop history
+      harvest: Harvest
+    feeds:
+      all: everything else
+      confidence: how much each value can be trusted
+      interface: how the app talks to you
+      calendar: the planting calendar
+      water: how much water a crop needs
+      risk: weather risks
+      suitability: which crops fit
+      baseline: your current rotation, the starting point
+      scoring: the score of each option
+      feasibility: what is possible for you
+      classification: your profile
+      rotation_rules: the rotation rules
+      erosion: erosion risk
+    classification:
+      size:
+        label: Size
+        small: Small (under 2 ha)
+        medium: Medium (2 to 50 ha)
+        large: Large (over 50 ha)
+      water:
+        label: Water
+      inputs:
+        label: Inputs
+      goal:
+        label: Top priority
+      tech:
+        label: Detail
+    data:
+      location:
+        label: Location
+      country:
+        label: Country and region
+      climate_normals:
+        label: Typical year (rain and temperature)
+      frost_window:
+        label: Typical frost dates
+      season_weather:
+        label: This season
+        value: "%{rain} mm of rain · %{temp} °C on average"
+      frost_days:
+        label: Frost days
+        value: "%{value} days"
+      growing_degree_days:
+        label: Heat for the crop
+        value: "%{value} growing degree days (base 10 °C)"
+      heat_days:
+        label: Extreme heat days
+        value: "%{value} days above 32 °C"
+      recent_rain:
+        label: Recent rain
+      soil_moisture:
+        label: Root zone moisture
+        value: "%{value} (0 dry, 1 saturated)"
+      evapotranspiration:
+        label: Water lost by soil and plants
+      drought:
+        label: Drought and groundwater
+      vegetation_calendar:
+        label: Typical vegetation calendar
+      crop_suitability:
+        label: Crops that fit your area
+      water_access:
+        label: Irrigation
+      water_source:
+        label: Water source
+      fertilizer_level:
+        label: Fertilizer
+      team:
+        label: Who does the work
+      machinery:
+        label: Machinery
+      livestock:
+        label: Animals
+      market_channels:
+        label: Where you sell
+      no_market_crops:
+        label: Crops with no buyer
+      goals:
+        label: Priorities
+      tech_level:
+        label: Level of detail
+      units:
+        label: Units
+      boundary:
+        label: Outline
+      area:
+        label: Area
+        value: "%{value} ha"
+        unit: ha
+      current_crop:
+        label: Current crop
+      crop_history:
+        label: Crop history
+      crop_family:
+        label: Crop family
+      soil_type:
+        label: Soil type
+      soil_texture:
+        label: Texture
+        value: "%{sand} % sand · %{clay} % clay"
+      organic_matter:
+        label: Organic matter
+        value: "%{value} %"
+      water_capacity:
+        label: Water the soil holds
+        value: "%{value} cm per cm of soil"
+      drainage:
+        label: Drainage
+      soil_ph:
+        label: pH
+      soil_test:
+        label: Soil test
+      slope:
+        label: Slope
+        value: "%{value} %"
+      elevation:
+        label: Elevation
+        value: "%{value} m"
+      ndvi:
+        label: Plant vigor (NDVI)
+      bare_soil:
+        label: Bare soil periods
+      imagery:
+        label: Images of your field
+      field_notes:
+        label: Your notes
+      name:
+        label: Name
+      planting_month:
+        label: Planting month
+      harvest_month:
+        label: Harvest month
+      yield:
+        label: Last harvest yield
+        value: "%{value} t/ha"
+        unit: t/ha
+    options:
+      water_access:
+        rainfed: Rain only
+        partial: Irrigated in part
+        full: Fully irrigated
+      water_source:
+        rain: Rain
+        well: Well
+        river: River or stream
+        reservoir: Pond or reservoir
+        district: Irrigation district
+      fertilizer_level:
+        low: Little or none
+        medium: The usual for my area
+        high: Quite a lot
+      team:
+        alone: I work alone
+        family: With my family
+        crew: With a hired crew
+      machinery:
+        hand_tools: Hand tools
+        tractor: Tractor
+        planter: Planter
+        sprayer: Sprayer
+        harvester: Harvester
+        irrigation_gear: Irrigation equipment
+      livestock:
+        none: None
+        cattle: Cattle
+        small_ruminants: Sheep or goats
+        poultry: Poultry
+        pigs: Pigs
+      market_channels:
+        own_use: Own use
+        local_market: Local market
+        elevator: Grain elevator
+        cooperative: Cooperative
+        contract: Contract with a buyer
+        export: Export
+      no_market_crops:
+        vegetables: Vegetables
+        legumes: Legumes
+        small_grains: Small grains
+        forage: Forage
+        oilseeds: Oilseeds
+      goals:
+        soil: Improve the soil
+        water: Save water
+        nitrogen: Fix nitrogen
+        erosion: Reduce erosion
+        forage: Grow forage
+        income: Improve income
+      tech_level:
+        basic: Keep it simple
+        intermediate: Some numbers are fine
+        advanced: Show me every detail
+      units:
+        metric: Metric (ha, mm, °C)
+        imperial: Imperial (acres, inches, °F)
+      boundary:
+        drawn: I drew the outline
+        pin: Just the pin
+      current_crop:
+        corn: Corn
+        soybeans: Soybeans
+        wheat: Wheat
+        oats: Oats
+        rice: Rice
+        sorghum: Sorghum
+        beans: Beans
+        potato: Potato
+        alfalfa: Alfalfa
+        vegetables: Vegetables
+        fallow: Nothing (resting)
+    index:
+      title: My fields · %{app_name}
+      lede: Your fields with their crop, their soil and what is still missing.
+      crumb: My fields
+      headline: My fields
+      summary:
+        one: "%{count} field · %{area} in total"
+        other: "%{count} fields · %{area} in total"
+      no_crop: No crop yet
+      add: Add a field
+      add_hint: Drop a pin and answer a few questions
+      no_fields: No fields yet.
+      greeting:
+        one: Hello. One thing is waiting for you across your farm.
+        other: Hello. %{count} things are waiting for you across your farm.
+      greeting_done: 'Hello. Your farm is complete: we are ready to compare rotations.'
+      farm_todo:
+        one: One farm detail to review
+        other: "%{count} farm details to review"
+    show:
+      title: "%{name} · %{app_name}"
+      empty_message: This field is ready. Tell me what you grow here and you will see it come up.
+      add_crop: Add your crop
+      repeat: Repeated
+      tips:
+        fallow: A resting field rebuilds soil. A cover crop now keeps it covered and adds organic matter for the next season.
+        stalk: Alternating this crop with a legume breaks the pest cycle in the soil. A cover crop after harvest protects the ground through winter.
+        grain: Small grains cover the soil early and break the pest cycle of corn and soybeans. Their straw adds organic matter.
+        leafy: 'This crop fixes nitrogen: whatever you plant next uses it. Avoid repeating it two years in a row so diseases do not build up.'
+        bush: These crops disturb the soil a lot. Rotating them with a grain or a cover crop helps it recover its structure.
+      plant: Plant it
+    new:
+      title: Add a field · %{app_name}
+      crumb: Add a field
+      progress: Progress
+      count: Step %{number} of %{total}
+      why: We use it for %{uses}.
+      back: Back
+      next: Continue
+      finish: See my fields
+      looks_right: Looks right
+      change: Change
+      optional: You can skip this.
+      history_prefilled: 'In the US we fill these years in from the crop map: just check they are right.'
+      pick_crop: Choose a crop
+      steps:
+        location:
+          question: Where is your farm?
+          aluni: Drop a pin on the map. With that I can read the weather, the soil and the slope of your area without asking you about any of it.
+        found:
+          question: Here is what I found
+          aluni: 'Check these values for your area. You know your land better than a satellite: if something does not match, change it.'
+        boundary:
+          question: What is this field like?
+          aluni: Draw the outline if you can and I will work out the area. If not, the pin is enough and you tell me how big it is.
+        crop:
+          question: What is growing there now?
+          aluni: 'What you grow today is the starting point: I compare other rotations against it.'
+        history:
+          question: What did you grow before?
+          aluni: With the last three years I can see whether a crop family repeats, which is when pests build up the most.
+        water:
+          question: How do you water?
+          aluni: That tells me how much water a crop can ask for before I suggest it.
+        inputs:
+          question: How much fertilizer do you use?
+          aluni: A rough idea is enough. If you use little, legumes pay off more.
+        resources:
+          question: What do you have to work with?
+          aluni: I will not suggest something you cannot plant or harvest with what you have.
+        market:
+          question: Where do you sell your harvest?
+          aluni: A crop with no buyer is not a good option, however much it helps the soil.
+        goals:
+          question: What matters most to you?
+          aluni: Choose up to three, in order. That is how I rank the options I show you.
+        done:
+          question: Check and save
+          aluni: This is what you told me. Save it and I will set up your field.
+      save: Save field
+      review_empty: Not answered
+      review_edit: Edit
+      review_note: You can change any answer later from the field page.
+      preview_point: In this preview the pin stays near Ames, Iowa, the one point with real measured data.
+      pick_month: Choose a month
+    sources:
+      title: Where your data comes from · %{app_name}
+      eyebrow: Sources and confidence
+      headline: Where your data comes from
+      lede: We only ask what your location cannot tell us. Everything else comes from public sources, each with its scale and how much it can be trusted.
+      legend_title: How to read this page
+      origins:
+        ask: 'Only you know it: no source covers it.'
+        confirm: We work it out from your location and you tell us if it matches.
+        auto: We take it from public sources. You can always see it and correct it.
+      confidence:
+        high: 'Measured at 30 m or finer: it describes your field.'
+        medium: 'Measured at 250 m to 9 km: it describes your area.'
+        low: 'Measured at 25 km or more: the weather of your region, not of your field.'
+      levels:
+        farm: Your farm
+        field: Each field
+      no_source: No source yet
+      undocumented: not documented yet
+      feeds: Used for %{uses}.
+      gaps_title: What no source covers yet
+      gaps_lede: We will ask you for these until we find a source we can trust.
+    untitled: Untitled field
+    tabs:
+      label: My fields sections
+      fields: Fields
+      farm: My farm
+      sources: Sources
+    sections_label: Sections of this page
+    season_period: 'Season measured: %{from} to %{to}'
+    progress: "%{done} of %{total} ready"
+    origin:
+      corrected: Corrected by you
+    actions:
+      confirm: Looks right
+      answer: Answer
+      change: Change
+      correct: Correct
+      save: Save
+      correct_hint: Tell us what you see in your field.
+    placeholders:
+      default: Write it here
+      name: 'For example: Field by the road'
+      field_notes: Puddles after rain, weeds, a corner that never yields...
+      soil_test: Lab, date and main results
+    preview:
+      sample_title: This is a sample farm.
+      sample_body: Add your field and this preview turns into yours.
+      start: Add my field
+      own_title: This is your farm.
+      own_body: In this preview your answers stay in this browser session and are not stored anywhere else.
+      reset: Start over
+      reset_confirm: Erase your answers and go back to the sample farm?
+    todo:
+      title: What is left
+      done: Everything I need is here. I can compare rotations for you.
+      message:
+        one: One thing is missing before I can compare rotations here.
+        other: "%{count} things are missing before I can compare rotations here."
+      verbs:
+        to_confirm: Confirm
+        unanswered: Answer
+        gap: Tell us
+    farm:
+      title: My farm · %{app_name}
+      headline: My farm
+      lede: 'What applies to all your fields: weather, water, resources, market and priorities.'
+      profile_label: Your profile
+    create:
+      added: Field added.
+      too_many: This preview holds up to 8 fields.
+    reset:
+      reset: Back to the sample farm.
+  preview:
+    saved: Saved.
+    invalid: That value does not fit. Please check it.
+    too_many: This preview has reached its limit.

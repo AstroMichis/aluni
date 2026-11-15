@@ -1,0 +1,11 @@
+<%# Step: one or more asked data, as chips. The crop step draws its choice on a preview plot. %>
+<% if step.data.any? { |d| d.key == "current_crop" } %>
+  <div class="onboarding__plot"><%= render "fields/plot", crop: nil, size: "lg", preview: true %></div>
+<% end %>
+<% step.data.each do |datum| %>
+  <fieldset class="choice-set">
+    <legend class="choice-set__legend<%= " sr-only" if step.data.one? %>"><%= datum_label(datum) %></legend>
+    <%= render "fields/input", datum: datum, name: "answers[#{datum.key}]", current: nil, preview: true %>
+    <% if datum.optional %><p class="choice-set__hint"><%= t("fields.new.optional") %></p><% end %>
+  </fieldset>
+<% end %>

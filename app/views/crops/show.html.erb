@@ -1,0 +1,45 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% planted = @farm.fields.reject(&:empty?) %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: menu_path, back_label: t("fields.back_to_menu"), title: t(".crumb"), section: :crops %>
+  <%= render "fields/plot_defs" %>
+
+  <main id="main" class="screen__body">
+    <header class="screen__header">
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <p class="screen__lede">
+        <%= planted.any? ? t(".summary", crops: planted.map { |f| crop_name(f.crop) }.uniq.to_sentence, area: hectares(planted.sum(&:area))) : t(".none") %>
+      </p>
+    </header>
+
+    <%= render "shared/preview_note" %>
+
+    <ul class="crop-list" role="list">
+      <% @farm.fields.each do |field| %>
+        <li class="crop-card<%= " crop-card--empty" if field.empty? %>">
+          <%= link_to menu_field_path(field.key), class: "crop-card__plot", aria: { label: field_name(field) } do %>
+            <%= render "fields/plot", crop: field.crop, size: "sm", id: "plot-crop-#{field.key}" %>
+          <% end %>
+          <div class="crop-card__body">
+            <p class="crop-card__field"><%= field_name(field) %> · <%= hectares(field.area) %></p>
+            <h2 class="crop-card__crop"><%= field.empty? ? t("fields.index.no_crop") : crop_name(field.crop) %></h2>
+            <% unless field.empty? %>
+              <p class="crop-card__meta">
+                <% if (family = Crops::Catalog.family(field.crop)) %><span class="tag"><%= t("crops.families.#{family}") %></span><% end %>
+                <% planting = field.reading("planting_month") %>
+                <% harvest = field.reading("harvest_month") %>
+                <% if planting.known? && harvest.known? %>
+                  <span class="tag"><%= t(".season", from: reading_text(planting), to: reading_text(harvest)) %></span>
+                <% end %>
+              </p>
+              <%= render "shared/aluni", message: t("fields.show.tips.#{crop_shape(field.crop) || "fallow"}") %>
+            <% else %>
+              <%= link_to t(".plant"), menu_field_path(field.key), class: "btn btn--primary btn--sm" %>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </main>
+</div>

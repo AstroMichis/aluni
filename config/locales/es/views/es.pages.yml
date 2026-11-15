@@ -123,16 +123,13 @@ es:
           options:
             add:
               title: "Agregar un terreno"
-              body: "Marca un punto o dibuja el contorno. El suelo se completa solo."
-            map:
-              title: "Mapa de terrenos"
-              body: "Todas tus parcelas en un mapa, coloreadas por su cultivo actual."
-            soil:
-              title: "Perfiles de suelo"
-              body: "Textura, materia orgánica, drenaje y pendiente de cada terreno."
-            history:
-              title: "Historial del terreno"
-              body: "Cultivos y temporadas pasadas, año por año."
+              body: "Marca un punto y responde unas preguntas. Lo demás sale de la ubicación."
+            list:
+              title: "Mis terrenos"
+              body: "Cada terreno con su cultivo, su suelo y lo que todavía falta."
+            sources:
+              title: "De dónde salen tus datos"
+              body: "Cada valor con su fuente y qué tanto puedes confiar en él."
         crops:
           short: "Cultivos"
           title: "Mis cultivos"

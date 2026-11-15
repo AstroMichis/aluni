@@ -1,0 +1,74 @@
+es:
+  weather:
+    tabs:
+      season: Esta temporada
+      alerts: Alertas
+    show:
+      title: Clima · %{app_name}
+      crumb: Clima
+      headline: El clima de esta temporada
+      lede: Del %{from} al %{to}, día por día.
+      regional: 'Contexto regional: valores de NASA POWER para una celda de unos 50 km alrededor de tu finca, no de tu terreno.'
+      kpis:
+        rain: Lluvia
+        temp: Temperatura media
+        frost_days: Días con helada
+        heat_days: Días sobre 32 °C
+        wetness: Humedad en la raíz
+      charts:
+        temp:
+          title: Temperatura diaria
+          note: Banda de mínima a máxima, línea para la media del día
+          frost_line: 0 °C
+          summary: Temperatura diaria de %{low} a %{high} °C durante la temporada.
+          point: "%{low} a %{high} °C · media %{mean} °C"
+        rain:
+          title: Lluvia por semana
+          note: Milímetros sumados en 7 días
+          week: Semana desde el %{date}
+          summary: "%{total} mm en la temporada; la semana más lluviosa tuvo %{wettest} mm."
+        moisture:
+          title: Humedad en la zona de raíces
+          note: 0 seco, 1 saturado
+          summary: Humedad en la zona de raíces entre %{low} y %{high} durante la temporada.
+      table:
+        title: Ver los datos por mes
+        month: Mes
+        rain: Lluvia (mm)
+        tmin: Mínima media (°C)
+        tmax: Máxima media (°C)
+        wetness: Raíz (0 a 1)
+      forecast:
+        title: Pronóstico
+        body: 'El pronóstico todavía no está conectado: ninguna de nuestras fuentes documentadas lo ofrece. Mientras tanto te muestro lo que ha pasado esta temporada.'
+    alerts:
+      title: Alertas de clima · %{app_name}
+      headline: Alertas de clima
+      lede: Elige de qué quieres enterarte. Abajo, lo que esta temporada te habría enviado.
+      prefs_title: Avísame de
+      prefs_hint: Las alertas llegarán a tu teléfono cuando estén activas. Por ahora ajustan esta página.
+      save: Guardar
+      kinds:
+        frost:
+          label: Helada
+          event: Mínima de %{value} °C
+        heat:
+          label: Calor extremo
+          event: Máxima de %{value} °C
+        heavy_rain:
+          label: Lluvia fuerte
+          event: "%{value} mm en un día"
+        dry_spell:
+          label: Racha seca
+          event: "%{days} días casi sin lluvia"
+      frost_free:
+        title: Periodo sin heladas
+        last_spring: 'Última helada de primavera:'
+        first_fall: 'Primera helada de otoño:'
+        none: ninguna esta primavera
+        not_yet: ninguna hasta el %{date}
+      timeline_title: Esta temporada
+      timeline_aluni:
+        zero: Con lo que elegiste, esta temporada habría sido tranquila.
+        one: Con lo que elegiste, esta temporada te habría enviado una alerta.
+        other: Con lo que elegiste, esta temporada te habría enviado %{count} alertas.

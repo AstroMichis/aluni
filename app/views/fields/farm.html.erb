@@ -1,0 +1,31 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% groups = @profile.groups(:farm) %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: menu_path, back_label: t("fields.back_to_menu"), title: t("fields.index.crumb"), section: :fields %>
+
+  <main id="main" class="screen__body" data-controller="section-nav" data-section-nav-current-class="section-nav__link--current">
+    <header class="screen__header">
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <p class="screen__lede"><%= t(".lede") %> <span class="text-mono"><%= @farm.answers["location"] %></span></p>
+      <p class="layer-note layer-note--<%= @farm.layer %>"><%= t("fields.layers.#{@farm.layer}") %></p>
+    </header>
+
+    <%= render "shared/preview_note" %>
+
+    <% if @farm.classification.any? %>
+      <ul class="profile-chips" role="list" aria-label="<%= t(".profile_label") %>">
+        <% @farm.classification.each do |axis, value| %>
+          <li class="profile-chips__chip">
+            <span class="profile-chips__axis"><%= t("fields.classification.#{axis}.label") %></span>
+            <span class="profile-chips__value"><%= classification_value(axis, value) %></span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <%= render "fields/todo", subject: @farm %>
+    <%= render "fields/section_nav", groups: groups.keys %>
+    <%= render "fields/groups", subject: @farm, groups: groups %>
+  </main>
+</div>

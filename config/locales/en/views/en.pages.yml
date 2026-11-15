@@ -123,16 +123,13 @@ en:
           options:
             add:
               title: "Add a field"
-              body: "Drop a pin or draw the outline. Soil fills in by itself."
-            map:
-              title: "Field map"
-              body: "All your plots on one map, colored by their current crop."
-            soil:
-              title: "Soil profiles"
-              body: "Texture, organic matter, drainage and slope for each field."
-            history:
-              title: "Field history"
-              body: "Past crops and seasons, year by year."
+              body: "Drop a pin and answer a few questions. The rest comes from the location."
+            list:
+              title: "My fields"
+              body: "Every field with its crop, its soil and what is still missing."
+            sources:
+              title: "Where your data comes from"
+              body: "Each value with its source and how much you can trust it."
         crops:
           short: "Crops"
           title: "My crops"

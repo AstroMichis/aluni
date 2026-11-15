@@ -1,0 +1,34 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% roles = [ "owner" ] + Staff::Roles.keys %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: menu_path, back_label: t("fields.back_to_menu"), title: t("staff.show.crumb"), section: :staff %>
+
+  <main id="main" class="screen__body">
+    <header class="screen__header">
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <p class="screen__lede"><%= t(".lede") %></p>
+    </header>
+
+    <ul class="role-cards" role="list">
+      <% roles.each do |role| %>
+        <% people = role == "owner" ? [ t("staff.show.you") ] : @farm.team.select { |m| m["role"] == role }.map { |m| m["name"] } %>
+        <li class="role-card">
+          <h2 class="role-card__name"><%= t("staff.role_names.#{role}") %></h2>
+          <p class="role-card__text"><%= t("staff.role_descriptions.#{role}") %></p>
+          <ul class="role-card__caps" role="list">
+            <% Staff::Roles::CAPABILITIES.each do |capability| %>
+              <% allowed = Staff::Roles.can?(role, capability) %>
+              <li class="role-card__cap<%= " role-card__cap--off" unless allowed %>">
+                <span class="role-card__mark" aria-hidden="true"><%= allowed ? "✓" : "–" %></span>
+                <span><%= t("staff.capabilities.#{capability}") %></span>
+                <span class="sr-only"><%= t(allowed ? ".allowed" : ".not_allowed") %></span>
+              </li>
+            <% end %>
+          </ul>
+          <p class="role-card__people"><%= people.any? ? people.to_sentence : t(".nobody") %></p>
+        </li>
+      <% end %>
+    </ul>
+  </main>
+</div>

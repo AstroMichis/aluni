@@ -9,6 +9,7 @@ Pure CSS, custom properties, BEM. No Tailwind, no Bootstrap, no bundler.
 - Surfaces `--color-bg-{primary,secondary,tertiary,hover,active}`; text `--color-text-{primary,secondary,tertiary,inverse}`; borders `--color-border-{default,subtle,strong}`
 - Accent `--color-accent{,-hover,-muted,-text}` (brand gold in dark, deep green in light; gold on `bg-secondary` is 4.46:1, so text on cards uses `-text`), secondary `--color-secondary{,-hover,-muted}` (olive, decorative fills only, never text), chrome `--color-chrome` (slate, device bezels and rails)
 - Status `--color-{success,warning,danger,info}{,-bg}`
+- Chart series `--chart-{rain,temp,moisture}` (dataviz reference palette, validated with `validate_palette.js` against `bg-secondary` in each theme; one measure per chart, never the status colors)
 - Shadows `--shadow-{sm,md,lg,glow}`; radius `--radius-{sm,md,lg,xl,full}`; transitions `--transition-{fast 120ms,base 200ms,slow 350ms}`
 - Spacing `--space-{1,2,3,4,5,6,8,10,12,16,20}` (4 px steps on an 8 px base)
 - Type `--font-{sans,serif,mono}`, scale `--text-{xs..5xl}`, `--leading-*`, `--tracking-*`
@@ -20,9 +21,9 @@ Fonts (placeholders, swap in one place): Inter (UI, `--font-sans`), Fraunces (di
 
 ```
 base/        variables, reset, typography, global (focus ring, forced-colors, the one global reduced-motion rule, print)
-components/  button, card, badge, input, nav, modal, toast, dropdown, avatar, skeleton, language-toggle, tab-bar, public-footer, phone-frame, store-button
+components/  button, card, badge, input, nav, modal, toast, dropdown, avatar, skeleton, language-toggle, tab-bar, public-footer, phone-frame, store-button, screen, chart
 layouts/     container, grid, stack (.stack, .cluster)
-pages/       landing, auth, menu, app
+pages/       landing, auth, menu, fields, sections, app
 utilities/   spacing (mt-*, mb-*, p-*), visibility (.sr-only, .hidden, .hidden-mobile, .hidden-desktop)
 native.css   loaded only when hotwire_native_app?: hides web chrome the shells replace
 application.css  empty on purpose
@@ -44,6 +45,8 @@ Each layout links its files with one `stylesheet_link_tag "<path>", "data-turbo-
 
 `.btn` (`--primary --secondary --ghost --accent --danger --sm --lg --full`), `.card` (`__header __body __footer --interactive --nested`), `.badge` (`--info --success --warning --danger --accent --secondary`), `.input`, `.input-group` (`__label __hint __error`), `.select`, `dialog.dialog` (`__header __body __footer`, native `<dialog>`), `.toast` (`--success --error --info --warning`, `toast_controller.js`), `.dropdown` (`--open`, `dropdown_controller.js`), `.avatar` (`--sm --md --lg --xl`), `.skeleton`, `.language-toggle`, `.tab-bar`, `.public-footer`, `.nav`, `.store-button` (`--soon`, `__glyph __text __hint __name __badge`; `shared/_store_buttons`), `.phone-frame` (`__bar __pill __content __map __pin __row __meter __chip __option __alert`; a simulated phone for the landing tour that animates from `--reveal-opacity`, `--reveal-shift` and `--reveal-scale`), `.tour-step` (`--idle --active`, `__copy __device __next`) and `.tour-nav` (`__dot`).
 
+The menu sections share one app shell (`components/screen.css`, `shared/_screen_bar`, `shared/_aluni`, `shared/_preview_note`): `.screen` (`__bar __back __crumb __tools __tabs __tab __body __header __title __lede __section`), `.preview-note`, `.aluni` (`__avatar __bubble`), `.reading` (a datum card with `__actions __edit __form`), `.choice` (`__chip`, real radios and checkboxes), `.meter` (`--share` 0 to 1), `.section-nav` and `.layer-note`. Charts (`components/chart.css`, `shared/_chart`, `ChartHelper`, `chart_controller.js`): server-drawn SVG that stretches to the card with strokes that do not scale, axis text in HTML placed by percent, a crosshair and tooltip on pointer and arrow keys, plus `.data-table` (the table view), `.kpis`/`.kpi` and `.meter-list`.
+
 ## The hero scene (`hero_scene_controller.js`)
 
 The landing hero mounts `data-controller="hero-scene"` with a `canvas` target (`.landing__hero-bg`: fixed, inset 0, `z-index: -1`, `pointer-events: none`, a CSS vignette in `::after`) and a `heroContent` target whose hidden/visible classes the view passes as `data-hero-scene-hidden-class` / `-visible-class`; `-fallback-class` (`.landing__hero-bg--static`) is a CSS-only field backdrop the controller applies when the scene cannot run. The scene is rolling crop fields: a `PlaneGeometry` (120 or 60 segments) displaced by deterministic value noise with one vertex colour per 5x5 field patch and hedgerows between, one `InstancedMesh` of cone plants (about 6000 on desktop, 2000 on phones) coloured per crop, and a pin (sphere, needle, pulsing ring) on the centre field. Budget: about 60k triangles and 5 draw calls on desktop, 18k on phones; Lambert materials, no shadows, no textures, no addons.
@@ -60,7 +63,7 @@ The controller turns the rotor with a pointer drag (touch first: `touch-action: 
 
 ## Stimulus controllers
 
-`theme`, `dialog`, `toast`, `dropdown`, `clipboard`, `web_share`, `scroll_reveal`, `scroll_story` (the landing tour: one passive scroll listener, an IntersectionObserver on the viewport centre, `--active`/`--idle` step classes, `aria-current` on the dots, the `landing:progress` event), `landing_nav`, `hero_scene`, `radial_menu` (the menu dial), `passkey`, `web_push`, `bridge/{share,notification_token,push_permission}`. Rules and templates: `.claude/commands/stimulus.md`.
+`theme`, `dialog`, `toast`, `dropdown`, `clipboard`, `web_share`, `scroll_reveal`, `scroll_story` (the landing tour: one passive scroll listener, an IntersectionObserver on the viewport centre, `--active`/`--idle` step classes, `aria-current` on the dots, the `landing:progress` event), `landing_nav`, `hero_scene`, `radial_menu` (the menu dial), `onboarding`, `section_nav`, `chart`, `print`, `passkey`, `web_push`, `bridge/{share,notification_token,push_permission}`. Rules and templates: `.claude/commands/stimulus.md`.
 
 ## PWA
 

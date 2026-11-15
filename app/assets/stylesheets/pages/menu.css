@@ -380,6 +380,15 @@
   border: 1px solid var(--color-border-subtle);
 }
 
+.dial-panel__grid > li { display: grid; }
+
+.dial-option--link {
+  color: inherit;
+  transition: transform var(--transition-base);
+}
+.dial-option--link:hover { color: inherit; }
+.dial-option--link:active { transform: scale(0.98); }
+
 .dial-option--primary {
   border-color: color-mix(in srgb, var(--tint) 50%, var(--color-border-default));
   background: color-mix(in srgb, var(--tint) 12%, var(--color-bg-secondary));

@@ -1,0 +1,58 @@
+en:
+  reports:
+    tabs:
+      season: Season
+      harvest: Harvest
+      export: Export
+    show:
+      title: Season report · %{app_name}
+      crumb: Reports
+      eyebrow: "%{from} to %{to}"
+      headline: Season report
+      lede:
+        one: One field, %{area}.
+        other: "%{count} fields, %{area}."
+      print: Print or save as PDF
+      export: Download the data
+      crops_title: Area by crop
+      weather_title: Weather
+      fields_title: Field by field
+      team_title: Team
+      team_text: "%{people} people, %{open} open tasks and %{done} done."
+      table:
+        field: Field
+        crop: Crop
+        area: Area
+        plan: Next season
+        flags: Rotation checks
+        ready: Data
+        no_plan: Not decided
+        no_flags: None
+    harvest:
+      title: Harvest · %{app_name}
+      headline: Harvest by field
+      lede: Your last yield on each field. Fields are compared only with others growing the same crop.
+      per_ha: "%{value} t/ha"
+      total: "%{value} t in total"
+      missing: No yield yet
+      benchmark:
+        title: Compared with your area
+        body: County yields come from USDA NASS (United States only) and need an API key that is not set up yet. Outside the US there is no source for this yet.
+    export:
+      title: Export · %{app_name}
+      headline: Export your data
+      lede: 'Everything the farm holds, with the source and confidence of each value. Your data is yours: take it to your advisor, your buyer or another tool.'
+      download: Download
+      open_report: Open the report
+      formats:
+        csv:
+          title: Spreadsheet
+          text: 'One row per value: field, datum, state, value, source and confidence.'
+        json:
+          title: Full data
+          text: The same values plus your plans, team and tasks, for another tool.
+        print:
+          badge: PDF
+          title: Printable report
+          text: The season report, ready to print or save as PDF.
+    aluni: Exports are generated from what you see here, in this browser session.

@@ -1,0 +1,44 @@
+<%# The input for one datum, in the onboarding and in a card's edit form.
+    Locals: datum, name (the param name: "value" or "answers[key]"), current (the value now, or nil),
+    preview (onboarding only: a crop choice redraws the preview plot). %>
+<% if datum.key == "crop_history" %>
+  <div class="history-form">
+    <% 3.times.map { |n| (Date.current.year - 1 - n).to_s }.each do |year| %>
+      <label class="input-group history-form__year">
+        <span class="input-group__label text-mono"><%= year %></span>
+        <select class="input select" name="<%= name %>[<%= year %>]">
+          <option value=""><%= t("fields.new.pick_crop") %></option>
+          <% @profile.fetch("current_crop").options.each do |crop| %>
+            <option value="<%= crop %>"<%= " selected" if current.to_h[year].to_s.parameterize(separator: "_") == crop %>><%= crop_name(crop) %></option>
+          <% end %>
+        </select>
+      </label>
+    <% end %>
+  </div>
+<% elsif datum.months %>
+  <select class="input select" name="<%= name %>" aria-label="<%= datum_label(datum) %>">
+    <option value=""><%= t("fields.new.pick_month") %></option>
+    <% datum.options.each do |month| %>
+      <option value="<%= month %>"<%= " selected" if current.to_s == month %>><%= option_label(datum, month) %></option>
+    <% end %>
+  </select>
+<% elsif datum.options.any? %>
+  <div class="choice">
+    <% datum.options.each do |option| %>
+      <label class="choice__chip">
+        <input type="<%= datum.multiple ? "checkbox" : "radio" %>" name="<%= name %><%= "[]" if datum.multiple %>" value="<%= option %>"
+               <%= "checked" if Array(current).map(&:to_s).include?(option) %>
+               <% if datum.key == "current_crop" && local_assigns[:preview] %>data-shape="<%= crop_shape(option) %>" data-action="onboarding#preview"<% end %>>
+        <span><%= option_label(datum, option) %></span>
+      </label>
+    <% end %>
+  </div>
+<% elsif datum.number %>
+  <span class="unit-field">
+    <input class="input" type="number" inputmode="decimal" min="0.1" step="0.1" name="<%= name %>" value="<%= current %>" aria-label="<%= datum_label(datum) %>">
+    <span class="unit-field__unit"><%= t("fields.data.#{datum.key}.unit") %></span>
+  </span>
+<% else %>
+  <input class="input" type="text" maxlength="<%= Fields::AnswerService::MAX_TEXT %>" name="<%= name %>" value="<%= current unless current.is_a?(Hash) %>"
+         aria-label="<%= datum_label(datum) %>" placeholder="<%= t("fields.placeholders.#{datum.key}", default: t("fields.placeholders.default")) %>">
+<% end %>

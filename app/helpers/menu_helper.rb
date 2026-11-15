@@ -8,11 +8,20 @@
 # all work in one local frame where "outwards" is straight up.
 module MenuHelper
   SECTIONS = {
-    fields:  %i[add map soil history],
+    fields:  %i[add list sources],
     crops:   %i[current rotation calendar tips],
     weather: %i[forecast moisture alerts],
     staff:   %i[team tasks roles],
     reports: %i[season yield export]
+  }.freeze
+
+  # Where each option leads (route helper names); an option missing here shows "Coming soon".
+  OPTION_PATHS = {
+    fields:  { add: :new_menu_field_path, list: :menu_fields_path, sources: :sources_menu_fields_path },
+    crops:   { current: :menu_crops_path, rotation: :rotation_menu_crops_path, calendar: :calendar_menu_crops_path, tips: :menu_crops_path },
+    weather: { forecast: :menu_weather_path, moisture: :menu_weather_path, alerts: :alerts_menu_weather_path },
+    staff:   { team: :menu_staff_path, tasks: :tasks_menu_staff_path, roles: :roles_menu_staff_path },
+    reports: { season: :menu_reports_path, yield: :harvest_menu_reports_path, export: :export_menu_reports_path }
   }.freeze
 
   INNER = 60
@@ -20,6 +29,12 @@ module MenuHelper
   GAP = 3.5 # degrees between wedges
 
   def menu_sections = SECTIONS
+
+  def menu_option_path(section, option)
+    name = OPTION_PATHS.dig(section, option)
+    public_send(name) if name
+  end
+
   def dial_step = 360.0 / SECTIONS.size
 
   # "01 / 05" for the section at index i.

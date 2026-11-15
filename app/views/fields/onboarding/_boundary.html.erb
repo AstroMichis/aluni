@@ -1,0 +1,14 @@
+<%# Step: the field's name, its outline (or just the pin) and its area. %>
+<div class="map-stub">
+  <svg class="map-stub__art" viewBox="0 0 240 140" aria-hidden="true" focusable="false">
+    <path class="map-stub__grid" d="M0 35h240M0 70h240M0 105h240M60 0v140M120 0v140M180 0v140"/>
+    <path class="map-stub__shape" d="M62 38 L176 30 L190 104 L74 116 Z"/>
+    <path class="map-stub__vertex" d="M62 38h.01M176 30h.01M190 104h.01M74 116h.01"/>
+  </svg>
+</div>
+<% step.data.each do |datum| %>
+  <div class="choice-set">
+    <p class="choice-set__legend"><%= datum_label(datum) %></p>
+    <%= render "fields/input", datum: datum, name: "answers[#{datum.key}]", current: nil %>
+  </div>
+<% end %>

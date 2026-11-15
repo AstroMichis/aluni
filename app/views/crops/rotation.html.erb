@@ -1,0 +1,79 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% crops = Crops::Catalog.all.keys %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: menu_path, back_label: t("fields.back_to_menu"), title: t("crops.show.crumb"), section: :crops %>
+
+  <main id="main" class="screen__body">
+    <header class="screen__header">
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <p class="screen__lede"><%= t(".lede") %></p>
+    </header>
+
+    <%= render "shared/preview_note" %>
+
+    <% @farm.fields.each do |field| %>
+      <% plan = @farm.plans[field.key] %>
+      <% seasons = field.seasons(plan) %>
+      <% findings = Crops::RotationCheck.new(seasons).findings %>
+      <% done, total = field.progress %>
+      <section class="screen__section rotation" aria-labelledby="rotation-<%= field.key %>">
+        <h2 class="screen__section-title" id="rotation-<%= field.key %>"><%= link_to field_name(field), menu_field_path(field.key) %></h2>
+
+        <% if seasons.any? %>
+          <ol class="seasons" role="list">
+            <%# The last four seasons fit a phone; the checks read them all. %>
+            <% seasons.last(4).each do |label, crop| %>
+              <li class="season season--<%= season_kind(label) %><%= " season--flag" if findings.any? { |f| f.years.include?(label) } %>">
+                <span class="season__label text-mono"><%= season_label(label) %></span>
+                <span class="season__crop"><%= crop_name(crop) %></span>
+                <% if (family = Crops::Catalog.family(crop)) %><span class="season__family"><%= t("crops.families.#{family}") %></span><% end %>
+              </li>
+            <% end %>
+          </ol>
+        <% else %>
+          <p class="screen__lede"><%= t(".no_history") %></p>
+        <% end %>
+
+        <%= form_with url: plan_menu_crops_path, method: :patch, class: "plan-form" do %>
+          <input type="hidden" name="field" value="<%= field.key %>">
+          <label class="input-group">
+            <span class="input-group__label"><%= t(".plan_label") %></span>
+            <select class="input select" name="crop">
+              <option value=""><%= t(".plan_none") %></option>
+              <% crops.each do |crop| %><option value="<%= crop %>"<%= " selected" if plan == crop %>><%= crop_name(crop) %></option><% end %>
+            </select>
+          </label>
+          <button type="submit" class="btn btn--secondary btn--sm"><%= t(".plan_save") %></button>
+        <% end %>
+
+        <ul class="findings" role="list">
+          <% if findings.empty? && seasons.size > 1 %>
+            <li class="finding finding--ok"><%= t(".findings.ok") %></li>
+          <% end %>
+          <% findings.each do |finding| %>
+            <li class="finding finding--<%= finding.kind %>">
+              <span class="finding__kind"><%= t(".findings.#{finding.kind}.label") %></span>
+              <%= t(".findings.#{finding.kind}.text", crop: finding.crop ? crop_name(finding.crop) : nil,
+                    years: finding.years.map { |y| season_label(y) }.to_sentence) %>
+            </li>
+          <% end %>
+        </ul>
+
+        <div class="compare-card">
+          <div class="compare-card__head">
+            <h3 class="compare-card__title"><%= t(".compare.title") %></h3>
+            <span class="todo__progress"><%= progress_label(field) %></span>
+          </div>
+          <span class="meter" style="--share: <%= progress_share(field) %>" aria-hidden="true"><span class="meter__fill"></span></span>
+          <p class="compare-card__text"><%= t(".compare.text") %></p>
+          <ul class="compare-card__parts" role="list">
+            <% %w[why evidence benefits gaps risks].each do |part| %><li><%= t(".compare.parts.#{part}") %></li><% end %>
+          </ul>
+          <p class="compare-card__status"><%= done < total ? t(".compare.missing", count: total - done) : t(".compare.ready") %></p>
+          <% if done < total %><%= link_to t(".compare.complete"), menu_field_path(field.key), class: "btn btn--ghost btn--sm" %><% end %>
+        </div>
+      </section>
+    <% end %>
+  </main>
+</div>

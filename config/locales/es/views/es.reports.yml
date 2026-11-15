@@ -1,0 +1,58 @@
+es:
+  reports:
+    tabs:
+      season: Temporada
+      harvest: Cosecha
+      export: Exportar
+    show:
+      title: Reporte de temporada · %{app_name}
+      crumb: Reportes
+      eyebrow: "%{from} a %{to}"
+      headline: Reporte de temporada
+      lede:
+        one: Un terreno, %{area}.
+        other: "%{count} terrenos, %{area}."
+      print: Imprimir o guardar como PDF
+      export: Descargar los datos
+      crops_title: Área por cultivo
+      weather_title: Clima
+      fields_title: Terreno por terreno
+      team_title: Equipo
+      team_text: "%{people} personas, %{open} tareas pendientes y %{done} hechas."
+      table:
+        field: Terreno
+        crop: Cultivo
+        area: Área
+        plan: Próxima temporada
+        flags: Revisiones de rotación
+        ready: Datos
+        no_plan: Sin decidir
+        no_flags: Ninguna
+    harvest:
+      title: Cosecha · %{app_name}
+      headline: Cosecha por terreno
+      lede: Tu último rendimiento en cada terreno. Cada terreno se compara solo con otros del mismo cultivo.
+      per_ha: "%{value} t/ha"
+      total: "%{value} t en total"
+      missing: Sin rendimiento todavía
+      benchmark:
+        title: Comparado con tu zona
+        body: Los rendimientos por condado vienen de USDA NASS (solo Estados Unidos) y necesitan una clave de API que todavía no está configurada. Fuera de EE. UU. aún no hay fuente para esto.
+    export:
+      title: Exportar · %{app_name}
+      headline: Exporta tus datos
+      lede: 'Todo lo que tiene la finca, con la fuente y la confianza de cada valor. Tus datos son tuyos: llévalos a tu asesor, a tu comprador o a otra herramienta.'
+      download: Descargar
+      open_report: Abrir el reporte
+      formats:
+        csv:
+          title: Hoja de cálculo
+          text: 'Una fila por valor: terreno, dato, estado, valor, fuente y confianza.'
+        json:
+          title: Datos completos
+          text: Los mismos valores más tus planes, equipo y tareas, para otra herramienta.
+        print:
+          badge: PDF
+          title: Reporte para imprimir
+          text: El reporte de temporada, listo para imprimir o guardar como PDF.
+    aluni: Las exportaciones salen de lo que ves aquí, en esta sesión del navegador.

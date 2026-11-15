@@ -1,0 +1,76 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% open, done = @farm.tasks.partition { |task| !task["done"] } %>
+<% open = open.sort_by { |task| task["due"].to_s.presence || "9999" } %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: menu_path, back_label: t("fields.back_to_menu"), title: t("staff.show.crumb"), section: :staff %>
+
+  <main id="main" class="screen__body">
+    <header class="screen__header">
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <p class="screen__lede"><%= t(".lede", open: open.size, done: done.size) %></p>
+    </header>
+
+    <%= render "shared/preview_note" %>
+
+    <details class="add-card add-card--collapsible"<%= " open" if @farm.tasks.empty? %>>
+      <summary class="btn btn--primary btn--sm"><%= t(".add") %></summary>
+      <%= form_with url: tasks_menu_staff_path, method: :post, class: "reading__form" do %>
+        <label class="input-group">
+          <span class="input-group__label"><%= t(".task_title") %></span>
+          <input class="input" type="text" name="task[title]" maxlength="120" required autocomplete="off" placeholder="<%= t(".task_placeholder") %>">
+        </label>
+        <div class="form-row">
+          <label class="input-group">
+            <span class="input-group__label"><%= t(".field") %></span>
+            <select class="input select" name="task[field]">
+              <option value=""><%= t(".any_field") %></option>
+              <% @farm.fields.each do |field| %><option value="<%= field.key %>"><%= field_name(field) %></option><% end %>
+            </select>
+          </label>
+          <label class="input-group">
+            <span class="input-group__label"><%= t(".member") %></span>
+            <select class="input select" name="task[member]">
+              <option value=""><%= t(".nobody") %></option>
+              <% @farm.team.each do |member| %><option value="<%= member["id"] %>"><%= member["name"] %></option><% end %>
+            </select>
+          </label>
+          <label class="input-group">
+            <span class="input-group__label"><%= t(".due") %></span>
+            <input class="input" type="date" name="task[due]">
+          </label>
+        </div>
+        <button type="submit" class="btn btn--primary btn--sm"><%= t(".save") %></button>
+      <% end %>
+    </details>
+
+    <% [ [ "open", open ], [ "done", done ] ].each do |state, list| %>
+      <section class="screen__section" aria-labelledby="tasks-<%= state %>">
+        <h2 class="screen__section-title" id="tasks-<%= state %>"><%= t(".groups.#{state}", count: list.size) %></h2>
+        <% if list.empty? %>
+          <p class="screen__lede"><%= t(".empty.#{state}") %></p>
+        <% end %>
+        <ul class="tasks" role="list">
+          <% list.each do |task| %>
+            <% field = @farm.field(task["field"]) %>
+            <% member = @farm.member(task["member"]) %>
+            <% due = task["due"].presence && Date.iso8601(task["due"]) %>
+            <li class="task<%= " task--done" if task["done"] %><%= " task--overdue" if !task["done"] && due && due < Date.current %>">
+              <%= button_to task_menu_staff_path(task["id"]), method: :patch, params: { done: !task["done"] }, class: "task__check",
+                            aria: { label: t(task["done"] ? ".reopen" : ".complete", title: task_title(task)) } do %>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12l4.5 4.5L19 7"/></svg>
+              <% end %>
+              <span class="task__body">
+                <span class="task__title"><%= task_title(task) %></span>
+                <span class="task__meta">
+                  <%= [ field && field_name(field), member ? member["name"] : t(".nobody"), due && t(".due_on", date: l(due, format: :long)) ].compact.join(" · ") %>
+                </span>
+              </span>
+              <%= button_to t(".remove"), task_menu_staff_path(task["id"]), method: :delete, class: "btn btn--ghost btn--sm task__remove" %>
+            </li>
+          <% end %>
+        </ul>
+      </section>
+    <% end %>
+  </main>
+</div>
