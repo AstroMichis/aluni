@@ -15,7 +15,7 @@ One app, one bundle id (`us.aluni.app`), two shells around this Rails app: `ios/
 
 ## iOS (`ios/`)
 
-`project.yml` (XcodeGen; `xcodegen generate` recreates the git-ignored `Aluni.xcodeproj`): iOS 16, Swift 5.9, SPM `hotwire-native-ios` 1.2, `Config/{Development,Production}.xcconfig` carry `BASE_URL`. Sources: `AppDelegate` (push token, tapped push opens its path), `SceneDelegate`, `Configuration/HotwireConfig.swift` (UA prefix `Aluni`, bundled + server path configuration, bridge components, route decision handlers), `Configuration/ServerURL.swift`, `Navigation/AppNavigator.swift` (one Navigator per tab, lazy start) and `NavigatorDelegateHandler.swift` (sign-out clears web data, 401 routes to sign-in, native error screen), `Bridge/*Component.swift`, `Screens/ErrorViewController.swift`, `Supporting/` (Info.plist with Debug-only local networking, `PrivacyInfo.xcprivacy`, Release-only `Aluni.Release.entitlements` with `applinks:aluni.us`, `webcredentials:aluni.us`, `aps-environment`).
+`project.yml` (XcodeGen; `xcodegen generate` recreates the git-ignored `Aluni.xcodeproj`): iOS 16, Swift 5.9, SPM `hotwire-native-ios` from 1.2.0 (resolves to 1.3.x, whose delegate receives a typed `HotwireNativeError`), `Config/{Development,Production}.xcconfig` carry `BASE_URL` and `Development.xcconfig` includes the git-ignored `Local.xcconfig` last for per-machine overrides. Sources: `AppDelegate` (push token, tapped push opens its path), `SceneDelegate`, `Configuration/HotwireConfig.swift` (UA prefix `Aluni`, bundled + server path configuration, bridge components, route decision handlers), `Configuration/ServerURL.swift`, `Navigation/AppNavigator.swift` (one Navigator per tab, lazy start) and `NavigatorDelegateHandler.swift` (sign-out clears web data, 401 routes to sign-in, native error screen), `Bridge/*Component.swift`, `Screens/ErrorViewController.swift`, `Supporting/` (Info.plist with Debug-only local networking, `PrivacyInfo.xcprivacy`, Release-only `Aluni.Release.entitlements` with `applinks:aluni.us`, `webcredentials:aluni.us`, `aps-environment`).
 
 ## Android (`android/`)
 
@@ -27,7 +27,18 @@ Both shells sign in through the same Rails pages. iOS needs the `webcredentials`
 
 ## Building
 
-Not possible on this machine (XcodeGen is installed, full Xcode and Java are not). Requirements: Xcode 16 for `ios/` (`cd ios && xcodegen generate && open Aluni.xcodeproj`), JDK 17 and Android Studio or the command-line SDK for `android/` (`./gradlew assembleDebug`). The Rails server for a simulator: `mise exec -- bin/rails server -b 0.0.0.0 -p 3000`; the iOS simulator reaches `localhost` directly, the Android emulator through `adb reverse`.
+Requirements: Xcode 26 or newer for `ios/` (`cd ios && xcodegen generate && open Aluni.xcodeproj`), JDK 17 and Android Studio or the command-line SDK for `android/` (`./gradlew assembleDebug`). `xcodebuild` from a shell needs the active developer directory to be Xcode, not the Command Line Tools: `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`.
+
+Rails for either shell: `mise exec -- bin/dev` runs `Procfile.dev` (web on `0.0.0.0:3000` plus the Sidekiq worker). The iOS simulator reaches `localhost` directly; the Android emulator through `adb reverse`; a phone on the same network through the Mac's address or Bonjour name, which development hosts already allow.
+
+iOS signing and the phone: Debug builds carry no entitlements, so a free Personal Team signs them. The Release configuration (associated domains, push) needs the paid team and shows red signing errors until then; they do not block a Debug run. The team and the phone's server address live in the git-ignored `ios/Aluni/Config/Local.xcconfig`, which `Development.xcconfig` includes last:
+
+```
+BASE_URL = http:/$()/192.168.1.20:3000    // the Mac: `ipconfig getifaddr en0`, or `<LocalHostName>.local`
+DEVELOPMENT_TEAM = ABCDE12345             // Xcode > Settings > Accounts
+```
+
+Passkeys need a secure context and, on iOS, the `webcredentials` association that only a paid Apple team can provision (`docs/AUTH.md`), so sign-in inside the shell waits for that team; everything else runs in Debug, and the phone's own browser can sign in through an https tunnel started with `APP_DOMAIN`. Bundle identifiers are unique across Apple teams: a Personal Team that registers `us.aluni.app` through automatic signing keeps it, so use the account that will own the app (or a `.dev` suffix for Debug) on a phone.
 
 ## Store notes
 

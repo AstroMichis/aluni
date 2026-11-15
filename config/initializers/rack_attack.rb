@@ -5,7 +5,7 @@ unless Rails.env.test?
   Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(
     # Same resolution as config/initializers/redis.rb (which loads after this file).
     url: ENV["REDIS_URL"].presence ||
-         (Rails.env.production? ? Rails.application.credentials.dig(:redis, :url) : "redis://localhost:6379/1"),
+         (Rails.env.production? ? Rails.application.credentials.dig(:redis, :url) : Rails.configuration.x.local_redis_url),
     namespace: "rack_attack"
   )
 end

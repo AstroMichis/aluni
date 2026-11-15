@@ -50,6 +50,11 @@ enum HotwireConfig {
         Hotwire.config.makeCustomWebView = { configuration in
             let webView = WKWebView(frame: .zero, configuration: configuration)
             webView.allowsLinkPreview = false
+            #if DEBUG
+            // Safari on the Mac (Develop menu > the device > Aluni) can then
+            // inspect the page and show the real WebAuthn error.
+            if #available(iOS 16.4, *) { webView.isInspectable = true }
+            #endif
             return webView
         }
     }

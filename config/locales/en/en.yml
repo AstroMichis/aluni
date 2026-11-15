@@ -37,6 +37,7 @@ en:
     default_nickname: "This device"
     errors:
       unsupported: "This device cannot use passkeys. Try the latest version of your browser or system."
+      insecure: "Passkeys only work over a secure connection (https, or localhost while developing). Open the page there and try again."
       cancelled: "No problem. Tap the button whenever you are ready."
       failed: "That did not work. Please try again."
       already_registered: "This device already has a passkey for Aluni."

@@ -42,6 +42,13 @@ module Aluni
     # in config/sidekiq.yml or its jobs are enqueued and never run.
     config.active_job.queue_adapter = :sidekiq
 
+    # Local Redis for development and test. Every app on this machine that
+    # started from the same template defaults to database 1, so a shared number
+    # makes Sidekiq pick up another project's jobs; aluni keeps its own (7 in
+    # development, 8 in test). REDIS_URL and the production credentials are
+    # resolved in config/initializers/redis.rb, rack_attack.rb and cable.yml.
+    config.x.local_redis_url = "redis://localhost:6379/#{Rails.env.test? ? 8 : 7}"
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end

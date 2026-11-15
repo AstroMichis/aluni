@@ -2,3 +2,8 @@
 // localhost, not a LAN name: passkeys need a secure context and the iOS
 // simulator shares the Mac's localhost.
 BASE_URL = http:/$()/localhost:3000
+
+// Machine-local overrides, included last so they win (git-ignored, optional).
+// A phone on the same network needs the Mac's address instead of localhost,
+// and a device build needs an Apple team; see docs/NATIVE.md "Building".
+#include? "Local.xcconfig"
