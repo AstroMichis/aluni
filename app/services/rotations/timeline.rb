@@ -8,12 +8,21 @@ module Rotations
   #   POWER frost days), heat months (the month can reach HEAT_C), dry months
   #   (rain under half the FAO-56 reference evapotranspiration) and stormy
   #   months (heavy-rain days from GPM IMERG, Weather::RainExtremes).
-  # - Each crop grows from its planting month for the length of its FAO-56
-  #   stages, the field's own months for its current crop, all year for a
-  #   perennial stand; a season that crosses the new year carries on into the
-  #   next one. A crop without a known season leaves its months unknown.
-  # - A vulnerable month is a bare month under storms, drought or frost: the
-  #   windows the challenge asks to show, and where a cover crop would help.
+  # - Each crop grows from its planting month (the field's own record, else the
+  #   region's calendar from USDA NASS crop progress, else the FAO-56 row) for
+  #   the length of its FAO-56 stages, all year for a perennial stand; a season
+  #   that crosses the new year carries on into the next one. A crop without a
+  #   known season leaves its months unknown.
+  # - A crop is "establishing" until FAO-56's effective full cover (the end of
+  #   its development stage): it is in the ground but the soil between the rows
+  #   is still open. Satellite NDVI at an Iowa field showed the canopy closing
+  #   about two months after planting, with the soil as exposed as a bare field
+  #   until then (docs/proposal/validation, study V8).
+  # - A vulnerable month is a bare or establishing month under storms, drought
+  #   or frost: the windows the challenge asks to show. Cover crops only fit the
+  #   bare windows, so establishing months stay exposed with or without them.
+  # - Dry months compare the rain (NASA GPM IMERG's 20-year monthly mean where
+  #   the field has it, else the POWER normal) with the reference ET.
   #
   # Months are counted on one line from January of the first season
   # (index 0) to December of the third (index 35).
@@ -33,10 +42,12 @@ module Rotations
     COOL_C = 12.0
     COVERS = { "frost" => "secale-cereale", "cool" => "avena-sativa", "warm" => "vigna-unguiculata" }.freeze
 
-    Month = Struct.new(:index, :year, :month, :state, :crop, :risks, keyword_init: true) do
+    Month = Struct.new(:index, :year, :month, :state, :crop, :risks, :establishing, keyword_init: true) do
       def bare? = state == "bare"
       def growing? = state == "crop"
-      def vulnerable? = bare? && risks.intersect?(EXPOSING)
+      def establishing? = growing? && establishing == true
+      def open_soil? = bare? || establishing?
+      def vulnerable? = open_soil? && risks.intersect?(EXPOSING)
     end
     # A run of bare months a cover crop could fill: what to sow, and whether
     # the window is so dry that the cover needs irrigation to establish.
@@ -53,6 +64,7 @@ module Rotations
       def bare = months.count(&:bare?)
       def vulnerable = months.select(&:vulnerable?)
       def stormy_bare = months.count { |m| m.bare? && m.risks.include?("storm") }
+      def establishing = months.count(&:establishing?)
       def known? = months.any? { |m| m.state != "unknown" }
       # Exposed months left once every cover window is sown (each window's first month still counts).
       def exposed_with_cover = vulnerable.size - windows.sum(&:protected)
@@ -64,6 +76,7 @@ module Rotations
       @record = field.record
       @first_year = first_year
       @rain = Weather::RainExtremes.new(field.observation("gpm_imerg"))
+      @scenario = scenario
       power = scenario.apply(field.observation("nasa_power"))
       @climatology = power&.ok? ? power.payload["climatology"].to_h : {}
       @elevation = power&.ok? ? power.payload["elevation"] : nil
@@ -79,7 +92,8 @@ module Rotations
     def for(crops)
       states = Array.new(MONTHS * HORIZON) { [ "bare", nil ] }
       known = Array.new(MONTHS * HORIZON, true)
-      carry_current(states)
+      young = Array.new(MONTHS * HORIZON, false)
+      carry_current(states, young)
       crops.each_with_index do |crop, season|
         window = window(crop, season)
         if window.nil?
@@ -87,12 +101,14 @@ module Rotations
           next
         end
         window.each { |i| states[i] = [ "crop", crop ] if i < states.size }
+        mark_establishing(young, window, crop) unless Comparator::PERENNIALS.include?(key_of(crop))
       end
       add_second_crops(crops, states)
       months = states.each_with_index.map do |(state, crop), i|
         month = (i % MONTHS) + 1
         Month.new(index: i, year: @first_year + (i / MONTHS), month: month,
-                  state: known[i] || state == "crop" ? state : "unknown", crop: crop, risks: weather[month])
+                  state: known[i] || state == "crop" ? state : "unknown", crop: crop, risks: weather[month],
+                  establishing: state == "crop" && young[i])
       end
       Line.new(crops: crops, months: months, windows: cover_windows(months))
     end
@@ -150,7 +166,7 @@ module Rotations
 
     # The current crop's months that run into the first season (a southern
     # summer crop planted in October is still growing in January).
-    def carry_current(states)
+    def carry_current(states, young)
       current = @field.current_crop
       return unless current
 
@@ -161,10 +177,24 @@ module Rotations
       (start...(start + length)).each do |i|
         states[i] = [ "crop", key_of(current) ] if i >= 0
       end
+      mark_establishing(young, (start...(start + length)).to_a, key_of(current))
+    end
+
+    # Months of a crop's window whose middle falls before FAO-56 effective full
+    # cover (initial + development stage days after planting on the 1st).
+    def mark_establishing(young, window, crop)
+      stages = Crops::Agronomy.find(crop)&.fao56&.dig("stages")
+      return unless stages
+
+      full_cover = stages[0] + stages[1]
+      window.each_with_index do |i, k|
+        young[i] = true if i >= 0 && i < young.size && (k * DAYS_PER_MONTH) + (DAYS_PER_MONTH / 2) < full_cover
+      end
     end
 
     # [planting month, months in the ground] from the field's own record for
-    # its current crop, else FAO-56 (planting month shifted south of the tropics).
+    # its current crop, else the region's calendar (Crops::PlantingCalendar)
+    # with FAO-56's season length, else FAO-56 (shifted south of the tropics).
     def season_of(crop)
       own = @field.current_crop
       if own && key_of(own) == key_of(crop) && own.planting_month && own.harvest_month
@@ -174,7 +204,8 @@ module Rotations
       fao = Crops::Agronomy.find(crop)&.fao56
       return unless fao
 
-      planting = Crops::WaterNeed.default_month(fao["planting_month"], @record.latitude)
+      planting = Crops::PlantingCalendar.month(crop, **Crops::PlantingCalendar.place_of(@record)) ||
+                 Crops::WaterNeed.default_month(fao["planting_month"], @record.latitude)
       [ planting, (fao["stages"].sum / DAYS_PER_MONTH).ceil ]
     end
 
@@ -183,10 +214,13 @@ module Rotations
     def heat?(month) = normal("T2M_MAX", month).to_f >= HEAT_C
 
     def dry?(month)
-      rain = normal("PRECTOTCORR", month)
+      rain = rain_normals[Weather::Season::MONTHS[month - 1]]
       demand = et0&.dig(month)
       rain && demand&.positive? ? rain < demand * DRY_SHARE : false
     end
+
+    # mm/day by month name: IMERG with the scenario's rain change, or the (already shifted) POWER normal.
+    def rain_normals = (@rain_normals ||= Crops::WaterNeed.rain_normals(@climatology, @field.observation("gpm_imerg"), @scenario).first)
 
     def et0
       return @et0 if defined?(@et0)

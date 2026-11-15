@@ -1,0 +1,31 @@
+<%# A proposal table from locale rows (arrays of strings): the first row is the header,
+    the first cell of every other row heads its row. The wrapper scrolls sideways on phones. %>
+<% header, *body = rows %>
+<figure class="plan__table-block">
+  <div class="plan__table-wrap" role="region" tabindex="0" aria-label="<%= caption %>">
+    <table class="plan__table">
+      <caption class="plan__caption"><%= caption %></caption>
+      <thead>
+        <tr>
+          <% header.each do |cell| %>
+            <th scope="col"><%= plan_text(cell) %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% body.each do |row| %>
+          <tr>
+            <% row.each_with_index do |cell, index| %>
+              <% if index.zero? %>
+                <th scope="row"><%= plan_text(cell) %></th>
+              <% else %>
+                <td><%= plan_text(cell) %></td>
+              <% end %>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <figcaption class="plan__table-hint"><%= hint %></figcaption>
+</figure>

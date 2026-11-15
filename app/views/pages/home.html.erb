@@ -2,7 +2,8 @@
 <% content_for :description, t(".lede", app_name: t("app_name")) %>
 
 <div class="landing">
-  <nav class="landing__nav" data-controller="landing-nav" aria-label="<%= t(".nav_label") %>">
+  <nav class="landing__nav landing__nav--with-bar" data-controller="landing-nav" aria-label="<%= t(".nav_label") %>">
+    <%= render "shared/judges_bar" %>
     <div class="container landing__nav-inner">
       <%= link_to root_path, class: "landing__brand" do %>
         <span class="landing__wordmark"><%= t("app_name") %></span>

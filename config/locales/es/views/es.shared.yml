@@ -10,6 +10,15 @@ es:
       meta: "%{app_name} %{year}"
       devices: "%{app_name} Sonda"
       glossary: Qué significan los números
+    judges_bar:
+      label: "Para evaluadores"
+      kicker: "Para el jurado"
+      evidence:
+        title: "La evidencia"
+        detail: "8 pruebas contra 25 años de registros"
+      plan:
+        title: "El plan de acción"
+        detail: "Propuesta, presupuesto y hoja de ruta"
     devices_link:
       short: "Sonda"
       label: "%{app_name} Sonda: estación de campo"

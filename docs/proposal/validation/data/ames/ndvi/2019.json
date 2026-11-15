@@ -1,0 +1,83 @@
+[
+  {
+    "month": "2019-01",
+    "ndvi": 0.104,
+    "date": "2019-01-04",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_027031_20190104_02_T1"
+  },
+  {
+    "month": "2019-02",
+    "ndvi": null
+  },
+  {
+    "month": "2019-03",
+    "ndvi": 0.204,
+    "date": "2019-03-31",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20190331T170901_R112_T15TVG_20201007T124538"
+  },
+  {
+    "month": "2019-04",
+    "ndvi": 0.212,
+    "date": "2019-04-20",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20190420T170851_R112_T15TVG_20201105T122556"
+  },
+  {
+    "month": "2019-05",
+    "ndvi": 0.216,
+    "date": "2019-05-22",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20190522T165859_R069_T15TVG_20201006T171224"
+  },
+  {
+    "month": "2019-06",
+    "ndvi": 0.226,
+    "date": "2019-06-01",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20190601T165859_R069_T15TVG_20201005T205745"
+  },
+  {
+    "month": "2019-07",
+    "ndvi": 0.912,
+    "date": "2019-07-29",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20190729T170901_R112_T15TVG_20201106T050408"
+  },
+  {
+    "month": "2019-08",
+    "ndvi": 0.868,
+    "date": "2019-08-28",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20190828T170851_R112_T15TVG_20201005T055647"
+  },
+  {
+    "month": "2019-09",
+    "ndvi": 0.757,
+    "date": "2019-09-04",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20190904T165851_R069_T15TVG_20201004T091057"
+  },
+  {
+    "month": "2019-10",
+    "ndvi": 0.227,
+    "date": "2019-10-17",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20191017T171321_R112_T15TVG_20201004T031738"
+  },
+  {
+    "month": "2019-11",
+    "ndvi": 0.231,
+    "date": "2019-11-23",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20191123T170631_R069_T15TVG_20201003T191334"
+  },
+  {
+    "month": "2019-12",
+    "ndvi": 0.128,
+    "date": "2019-12-03",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20191203T170701_R069_T15TVG_20201003T001012"
+  }
+]

@@ -1,0 +1,29 @@
+<%# One section's blocks from plan.show.sections.<key>.blocks: each block is a one-key hash
+    whose key names its kind (the list is at the top of config/locales/en/views/en.plan.yml). %>
+<% blocks.each do |block| %>
+  <% kind, value = block.first %>
+  <% kind = kind.to_s %>
+  <% if kind == "p" %>
+    <p class="plan__p"><%= plan_text(value) %></p>
+  <% elsif kind == "lead" %>
+    <p class="plan__p"><strong class="plan__lead"><%= plan_text(value[:b]) %></strong> <%= plan_text(value[:t]) %></p>
+  <% elsif kind == "h3" %>
+    <h3 class="plan__subtitle"><%= plan_text(value) %></h3>
+  <% elsif kind == "ul" || kind == "checklist" %>
+    <ul class="plan__list<%= " plan__list--check" if kind == "checklist" %>">
+      <% value.each do |item| %>
+        <li><%= plan_text(item) %></li>
+      <% end %>
+    </ul>
+  <% elsif kind == "table" %>
+    <%= render "plan/table", caption: value[:caption], rows: value[:rows], hint: t("plan.show.table_hint") %>
+  <% elsif kind == "formula" %>
+    <p class="plan__formula"><code><%= value %></code></p>
+  <% elsif kind == "figure" %>
+    <p class="plan__figure"><%= plan_text(value) %></p>
+  <% elsif kind == "note" %>
+    <p class="badge badge--warning plan__note" role="note"><%= t("plan.show.notes.#{value}") %></p>
+  <% elsif kind == "evidence" %>
+    <p class="plan__evidence"><%= link_to value, evidence_path, class: "btn btn--secondary btn--sm" %></p>
+  <% end %>
+<% end %>

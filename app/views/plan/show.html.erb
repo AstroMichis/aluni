@@ -1,0 +1,57 @@
+<% app_name = t("app_name") %>
+<% content_for :title, t(".title", app_name: app_name) %>
+<% content_for :description, t(".description", app_name: app_name) %>
+<% sections = t(".sections", app_name: app_name, deep_interpolation: true) %>
+
+<div class="landing plan">
+  <nav class="landing__nav" data-controller="landing-nav" aria-label="<%= t(".nav_label") %>">
+    <div class="container landing__nav-inner">
+      <%= link_to root_path, class: "landing__brand", aria: { label: t(".back_home") } do %>
+        <span class="landing__wordmark"><%= app_name %></span>
+      <% end %>
+      <div class="cluster cluster--sm">
+        <%= render "shared/devices_link" %>
+        <%= render "shared/language_toggle" %>
+        <%= render "shared/access_buttons" %>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main">
+    <header class="plan__hero container" aria-labelledby="plan-title">
+      <div class="stack stack--md">
+        <span class="badge badge--accent plan__eyebrow"><%= t(".eyebrow") %></span>
+        <h1 id="plan-title" class="text-display plan__title"><%= t(".headline", app_name: app_name) %></h1>
+        <p class="plan__version"><%= t(".version") %></p>
+        <p class="plan__lede"><%= t(".lede", app_name: app_name) %></p>
+      </div>
+      <div class="plan__legend">
+        <%= render "plan/table", caption: t(".legend_title"), rows: t(".legend"), hint: t(".table_hint") %>
+      </div>
+    </header>
+
+    <div class="plan__layout container">
+      <nav id="plan-toc" class="plan__toc" aria-labelledby="plan-toc-title">
+        <h2 id="plan-toc-title" class="plan__toc-title"><%= t(".toc_label") %></h2>
+        <ol class="plan__toc-list">
+          <% PlanController::SECTIONS.each do |key| %>
+            <li><a class="plan__toc-link" data-turbo="false" href="#plan-<%= key %>"><%= sections.dig(key.to_sym, :title) %></a></li>
+          <% end %>
+        </ol>
+      </nav>
+
+      <div class="plan__body">
+        <% PlanController::SECTIONS.each do |key| %>
+          <% section = sections.fetch(key.to_sym) %>
+          <section id="plan-<%= key %>" class="plan__section" aria-labelledby="plan-<%= key %>-title">
+            <h2 id="plan-<%= key %>-title" class="text-heading plan__section-title"><%= section[:title] %></h2>
+            <%= render "plan/blocks", blocks: section[:blocks] %>
+            <p class="plan__top"><a data-turbo="false" href="#plan-toc"><%= t(".back_to_top") %></a></p>
+          </section>
+        <% end %>
+      </div>
+    </div>
+  </main>
+
+  <%= render "shared/public_footer" %>
+</div>

@@ -1,0 +1,23 @@
+
+== What the land grew (CDL at the pin, 2008-2025) ==
+Soybeans 9 years, Corn 9 years
+
+== GAEZ v4 at the pin (rainfed, 1981-2010) ==
+Maize      suitability high 10000 / low 6472; attainable high 11056 / low 3550 kg DW/ha
+Soybean    suitability high 10000 / low 6880; attainable high 5615 / low 1357 kg DW/ha
+Wheat      suitability high 10000 / low 6472; attainable high 9610 / low 2666 kg DW/ha
+Sunflower  suitability high 10000 / low 6472; attainable high 4452 / low 1896 kg DW/ha
+Also suitable here (high input): Sorghum 10000, Oat 10000, Barley 10000, Alfalfa 7778
+GAEZ high-input suitability is the same for every crop here: it cannot rank them; the low-input layer is the only one that does.
+
+== Water model, 2001-2025 (mean modelled yield factor, POWER inputs as the app reads them) ==
+Maize      mean yield factor 0.602
+Soybean    mean yield factor 0.628
+Wheat      mean yield factor 0.757
+Sunflower  mean yield factor 0.694
+
+== GAEZ attainable yield vs NASS (dry weight, 2001-2010 mean) ==
+Maize    NASS Story County 9182 kg DW/ha (10 yrs) vs GAEZ 11056 -> 20%
+Soybean  NASS Story County 2825 kg DW/ha (10 yrs) vs GAEZ 5615 -> 99%
+
+V3: FAIL  GAEZ does not separate the crops (all 10000 at high input); water model ranks Wheat and Sunflower first; attainable vs NASS: Maize 20%, Soybean 99%

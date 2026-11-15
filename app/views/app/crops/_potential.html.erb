@@ -15,7 +15,8 @@
   <% end %>
 
   <% need = Crops::WaterNeed.for(crop, observation: field.observation("nasa_power"), latitude: field.record.latitude,
-                                planting_month: crop.respond_to?(:planting_month) ? crop.planting_month : nil) %>
+                                planting_month: crop.respond_to?(:planting_month) ? crop.planting_month : nil,
+                                imerg: field.observation("gpm_imerg"), place: Crops::PlantingCalendar.place_of(field.record)) %>
   <% if need %>
     <p class="potential__water"><%= t("app.crops.water.need", need: need.crop_mm, effective: need.effective_mm, deficit: need.deficit_mm) %></p>
     <p class="choice-set__hint"><%= t("app.crops.water.note") %></p>

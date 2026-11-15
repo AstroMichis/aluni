@@ -1,0 +1,34 @@
+# Fields the hindcast runs on. Run any script for one site with SITE=<key> (default ames);
+# its data live in data/<key>/ and its results in validation_out.json (ames) or validation_out_<key>.json.
+#
+# yield_desc: NASS QuickStats short_desc per crop, in order of preference; the first with 15+ years is used.
+#   York takes the non-irrigated (rainfed) series first: the water model is a rainfed model.
+# district: counties (RMA spelling) pooled for the pest study (V5), because one county has too few claims.
+ames:
+  name: Ames, Story County, Iowa
+  lat: 42.0
+  lon: -93.75
+  state_alpha: IA
+  state_name: Iowa
+  state_fips: "19"
+  county_fips: "169"
+  county_name: Story
+  district_name: NASS Central Iowa district
+  district: [Boone, Dallas, Grundy, Hamilton, Hardin, Jasper, Marshall, Polk, Poweshiek, Story, Tama, Webster]
+  yield_desc:
+    zea-mays: ["CORN, GRAIN - YIELD, MEASURED IN BU / ACRE"]
+    glycine-max: ["SOYBEANS - YIELD, MEASURED IN BU / ACRE"]
+york:
+  name: York, York County, Nebraska
+  lat: 40.95
+  lon: -97.5
+  state_alpha: NE
+  state_name: Nebraska
+  state_fips: "31"
+  county_fips: "185"
+  county_name: York
+  district_name: York County and its neighbours
+  district: [York, Hamilton, Polk, Seward, Fillmore, Butler, Saline, Clay]
+  yield_desc:
+    zea-mays: ["CORN, GRAIN, NON-IRRIGATED - YIELD, MEASURED IN BU / ACRE", "CORN, GRAIN - YIELD, MEASURED IN BU / ACRE"]
+    glycine-max: ["SOYBEANS, NON-IRRIGATED - YIELD, MEASURED IN BU / ACRE", "SOYBEANS - YIELD, MEASURED IN BU / ACRE"]

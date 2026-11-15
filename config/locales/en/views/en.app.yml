@@ -563,7 +563,7 @@ en:
           unknown: not known yet
       water:
         need: Needs about %{need} mm over its season; the usual rain covers about %{effective} mm (%{deficit} mm short).
-        note: NASA POWER normals with FAO-56 coefficients. It does not count the water the soil keeps from before, so in humid areas the shortfall reads high.
+        note: A drought-risk guide, not a harvest forecast. Rain from NASA GPM IMERG (NASA POWER where it is missing), crop water use from FAO-56 with NASA POWER weather. It does not count the water the soil keeps from before, so in humid areas the shortfall reads high. Tested on 25 seasons in Iowa, it marked the drought years but not the size of the harvests.
     weather:
       tabs:
         season: This season
@@ -821,7 +821,7 @@ en:
           benefit: It needs less nitrogen fertilizer.
         water:
           short: Water
-          how: How much of the crops' water need the usual rain covers (FAO-56, NASA POWER).
+          how: "How much of the crops' water need the usual rain covers (FAO-56, NASA GPM IMERG rain): a drought-risk guide, not a harvest forecast."
           benefit: It fits the rain you get better.
         erosion:
           short: Erosion

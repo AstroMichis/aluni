@@ -563,7 +563,7 @@ es:
           unknown: sin saber todavía
       water:
         need: Necesita unos %{need} mm en su temporada; la lluvia usual cubre unos %{effective} mm (faltan %{deficit} mm).
-        note: Normales de NASA POWER con coeficientes FAO-56. No cuenta el agua que el suelo guarda de antes, así que en zonas húmedas el faltante sale alto.
+        note: Una guía del riesgo de sequía, no un pronóstico de cosecha. Lluvia de NASA GPM IMERG (NASA POWER donde falta), consumo de agua del cultivo según FAO-56 con el clima de NASA POWER. No cuenta el agua que el suelo guarda de antes, así que en zonas húmedas el faltante sale alto. Probada en 25 temporadas en Iowa, marcó los años de sequía pero no el tamaño de las cosechas.
     weather:
       tabs:
         season: Esta temporada
@@ -821,7 +821,7 @@ es:
           benefit: Necesita menos fertilizante nitrogenado.
         water:
           short: Agua
-          how: Cuánto de lo que piden los cultivos cubre la lluvia usual (FAO-56, NASA POWER).
+          how: "Cuánto de lo que piden los cultivos cubre la lluvia usual (FAO-56, lluvia de NASA GPM IMERG): una guía del riesgo de sequía, no un pronóstico de cosecha."
           benefit: Se ajusta mejor a la lluvia que recibes.
         erosion:
           short: Erosión

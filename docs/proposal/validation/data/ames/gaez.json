@@ -1,0 +1,86 @@
+{
+  "High": {
+    "Wheat": {
+      "suitability": 10000.0,
+      "attainable_yield": 9610.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Sunflower": {
+      "suitability": 10000.0,
+      "attainable_yield": 4452.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Soybean": {
+      "suitability": 10000.0,
+      "attainable_yield": 5615.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Sorghum": {
+      "suitability": 10000.0,
+      "attainable_yield": 6926.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Oat": {
+      "suitability": 10000.0,
+      "attainable_yield": 4682.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Maize": {
+      "suitability": 10000.0,
+      "attainable_yield": 11056.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Barley": {
+      "suitability": 10000.0,
+      "attainable_yield": 9635.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Alfalfa": {
+      "suitability": 7778.0,
+      "attainable_yield": 1868.0,
+      "yield_units": "10kg DW/ha"
+    }
+  },
+  "Low": {
+    "Wheat": {
+      "suitability": 6472.0,
+      "attainable_yield": 2666.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Sunflower": {
+      "suitability": 6472.0,
+      "attainable_yield": 1896.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Soybean": {
+      "suitability": 6880.0,
+      "attainable_yield": 1357.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Sorghum": {
+      "suitability": 5079.0,
+      "attainable_yield": 2188.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Oat": {
+      "suitability": 6472.0,
+      "attainable_yield": 1397.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Maize": {
+      "suitability": 6472.0,
+      "attainable_yield": 3550.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Barley": {
+      "suitability": 6472.0,
+      "attainable_yield": 2584.0,
+      "yield_units": "kg DW/ha"
+    },
+    "Alfalfa": {
+      "suitability": 5079.0,
+      "attainable_yield": 556.0,
+      "yield_units": "10kg DW/ha"
+    }
+  }
+}

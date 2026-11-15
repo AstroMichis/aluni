@@ -1,0 +1,13 @@
+
+== Maize yield after soybean vs after a non-legume (Zhao et al. 2022) ==
+all maize after soybean                          n=2112 (121 sites): +15.3% [95% CI 11.2 to 19.9%]; corn after corn = 0.867 x corn after soybean
+USA                                              n=1504 (78 sites): +16.0% [95% CI 12.7 to 19.8%]; corn after corn = 0.862 x corn after soybean
+Ames-like climate (MAT 6-12 C, MAP 700-1100 mm)  n=1159 (47 sites): +16.1% [95% CI 12.9 to 20.0%]; corn after corn = 0.861 x corn after soybean
+Ames-like, maize N 0 kg/ha                       n=118 (20 sites): +45.8% [95% CI 27.8 to 61.3%]; corn after corn = 0.686 x corn after soybean
+Ames-like, maize N >= 120 kg/ha                  n=670 (39 sites): +9.9% [95% CI 7.2 to 13.2%]; corn after corn = 0.91 x corn after soybean
+USA, maize N >= 150 kg/ha                        n=695 (53 sites): +10.6% [95% CI 7.6 to 14.3%]; corn after corn = 0.904 x corn after soybean
+
+== The comparator's rules on the field's real history (CDL 2008-2025) ==
+Same-family pairs 0, monoculture runs 0, 4-season windows without a legume 0: the farmer's strict corn-soybean alternation already satisfies every rule, so pest_break = 100 for the current rotation.
+
+V4: PASS  maize after soybean yields 9.9% more than after a non-legume at farm N rates [7.2 to 13.2%], 670 obs; so continuous corn yields 0.91 x rotated corn

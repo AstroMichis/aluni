@@ -2,7 +2,7 @@ en:
   app:
     timeline:
       title: Your next three seasons, month by month
-      lede: When the soil carries a crop and when it is bare, against your usual weather. Bare months under storms, drought or frost are the vulnerable ones.
+      lede: When the soil carries a crop and when it is open, against your usual weather. Open soil under storms, drought or frost is vulnerable, and that includes the first weeks of a crop, before its leaves cover the ground.
       weather_label: Usual weather at your pin
       risks:
         storm: Storms
@@ -11,7 +11,7 @@ en:
         heat: Heat
       risk_notes:
         storm: at least one day of 25 mm or more in a typical year (NASA GPM IMERG)
-        dry: rain under half of what the air takes up (NASA POWER, FAO-56)
+        dry: rain under half of what the air takes up (NASA GPM IMERG rain, NASA POWER weather, FAO-56)
         frost: two frost days or more in a typical month (NASA POWER)
         heat: the month has reached 35 °C (NASA POWER)
       states:
@@ -19,9 +19,12 @@ en:
         bare: bare soil
         unknown: season not known
         vulnerable: bare soil under %{risks}
+        establishing: "%{crop}, young: the soil is still open"
+        vulnerable_establishing: "%{crop}, young: open soil under %{risks}"
       cell: "%{month} %{year}: %{state}"
       legend:
         crop: Crop in the ground
+        establishing: Young crop, soil still open
         bare: Bare soil
         vulnerable: Bare and exposed
         unknown: Not known
@@ -35,8 +38,11 @@ en:
           frost: hardy through frost
           cool: a cool-season cover
           warm: a warm-season legume that adds nitrogen
-      summary: "Bare %{bare} of %{total} months; %{vulnerable} of them exposed (%{stormy} under storms)."
+      summary: "Bare %{bare} of %{total} months. Exposed: %{vulnerable} months of open soil under storms, drought or frost (%{stormy} bare months under storms)."
       summary_covered: Soil covered all %{total} months.
+      establishing_note:
+        one: " One month counts as open soil although a crop is in it: the canopy has not closed yet."
+        other: " %{count} months count as open soil although a crop is in them: the canopy has not closed yet."
       unknown_note: "The growing season of %{crops} is not known yet, so those months stay blank."
       about_title: How this is drawn
-      about: Each crop grows from its usual planting month for the length of its FAO-56 stages (your own months for the current crop; six months later south of the tropics); alfalfa covers the whole year. The weather strip is the same every year, from long-term normals. Check the dates with your local experience.
+      about: Each crop grows from its planting month for the length of its FAO-56 stages. The month is your own for the current crop, else the month most farmers in your state plant it (USDA NASS crop progress, where it exists), else the FAO-56 table (six months later south of the tropics); alfalfa covers the whole year. A crop counts as young until FAO-56 effective full cover; satellite images of an Iowa field showed the soil open that long. The weather strip is the same every year, from long-term normals; rain from NASA GPM IMERG. Check the dates with your local experience.
