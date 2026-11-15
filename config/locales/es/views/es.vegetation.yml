@@ -1,0 +1,19 @@
+es:
+  app:
+    vegetation:
+      eyebrow: Landsat y Sentinel-2
+      title: Tu campo desde el espacio
+      lede: Cuánta vegetación tuvo el punto de tu campo cada mes del último año (NDVI), medido por satélite.
+      chart_label: Vegetación mensual de los últimos 12 meses
+      month: "%{month}: NDVI %{ndvi}, %{cover}"
+      month_unknown: "%{month}: sin imagen despejada"
+      covers:
+        green: Verde
+        sparse: Escasa
+        bare: Suelo descubierto
+        unknown: Sin imagen
+      bare_window: "Tu suelo estuvo descubierto %{months} meses seguidos, de %{from} a %{to}. Esa es la ventana para un cultivo de cobertura: protege el suelo de la erosión, retiene agua y suma materia orgánica."
+      covered: Tu campo tuvo cobertura casi todo el año, sin períodos largos de suelo descubierto.
+      about_title: "¿Qué es el NDVI?"
+      about: "El NDVI compara la luz roja y la infrarroja que refleja la superficie. Las plantas sanas reflejan mucho infrarrojo: por encima de 0,45 hay un cultivo cerrado y creciendo; por debajo de 0,25 se ve sobre todo suelo o rastrojo. Es un pixel de 10 a 30 m en tu pin: describe ese punto, no todo el campo, y las nubes pueden dejar meses sin dato."
+      source: "Fuente: %{missions}, mediante Microsoft Planetary Computer."

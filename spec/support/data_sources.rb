@@ -34,10 +34,21 @@ module DataSourceStubs
     stub_request(:get, %r{nassgeodata\.gmu\.edu/.+/GetCDLValue}).to_return(status: 200, body: data_source_fixture("cdl_get_value.xml"))
   end
 
+  # The monthly NDVI series without HTTP: Planetary Computer requests are only
+  # allowed in specs tagged :planetary_computer_api (spec/support/external_apis.rb).
+  def stub_vegetation(ndvi = [ 0.1, 0.12, 0.3, 0.6, 0.7, 0.2 ])
+    start = Date.current.beginning_of_month << (ndvi.size - 1)
+    rows = ndvi.each_with_index.map do |value, i|
+      { "month" => (start >> i).strftime("%Y-%m"), "ndvi" => value, "mission" => (value ? "landsat" : nil) }.compact
+    end
+    allow_any_instance_of(PlanetaryComputer::Client).to receive(:monthly_ndvi).and_return(rows)
+  end
+
   def stub_all_data_sources(us: true)
     stub_fcc(us: us)
     stub_power
     stub_gaez
+    stub_vegetation
     stub_us_layer
   end
 end

@@ -36,6 +36,8 @@
       </figure>
     <% end %>
 
+    <%= render "app/fields/vegetation", field: @field %>
+
     <% if suggestions.positive? %>
       <section class="suggestions" aria-labelledby="suggestions-title">
         <h2 class="todo__title" id="suggestions-title"><%= t(".suggestions.title", count: suggestions) %></h2>

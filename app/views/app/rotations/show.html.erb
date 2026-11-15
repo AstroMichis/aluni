@@ -20,6 +20,8 @@
       <% current = @comparator.strategies.first %>
       <%= render "shared/aluni", message: best && best.total.to_i > current.total.to_i ? t(".summary_better", strategy: strategy_title(best), best: best.total, current: current.total) : t(".summary_current") %>
 
+      <%= render "app/fields/vegetation", field: @field %>
+
       <details class="weights">
         <summary><%= t(".weights_title") %></summary>
         <ul class="weights__list" role="list">

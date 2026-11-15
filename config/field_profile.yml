@@ -43,7 +43,7 @@ sources:
   gibs:             { name: "NASA Worldview / GIBS", layer: global, scale: zone, resolution: "250 m", doc: gibs_worldview.md, status: connected }
   fao56:            { name: "FAO-56", layer: global, scale: species, resolution: "-", doc: fao56_crop_coefficients.md, status: planned }
   srtm:             { name: "SRTM / NASADEM", layer: global, scale: parcel, resolution: "30 m", doc: terrain.md, status: planned }
-  hls:              { name: "HLS (Landsat + Sentinel-2)", layer: global, scale: parcel, resolution: "30 m", doc: vegetation_indices.md, status: planned }
+  hls:              { name: "HLS (Landsat + Sentinel-2)", layer: global, scale: parcel, resolution: "30 m", doc: vegetation_indices.md, status: connected }
   modis_phenology:  { name: "MODIS MCD12Q2", layer: global, scale: zone, resolution: "500 m", doc: vegetation_indices.md, status: planned }
   smap:             { name: "SMAP L4", layer: global, scale: zone, resolution: "9 km", doc: smap.md, status: planned }
   gpm_imerg:        { name: "GPM IMERG", layer: global, scale: zone, resolution: "0.1°", doc: gpm_imerg.md, status: planned }
@@ -62,6 +62,7 @@ observations:
   ssurgo: ssurgo
   usgs_elevation: usgs_3dep
   cdl: cropland_cdl
+  vegetation: hls
 
 data:
   farm:
