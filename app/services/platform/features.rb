@@ -19,8 +19,9 @@ module Platform
       Rails.configuration.x.sidekiq_web.username.present? && Rails.configuration.x.sidekiq_web.password.present?
     end
 
-    # Gemini is callable once an API key exists (credentials gemini.api_key).
-    def gemini? = Rails.application.credentials.dig(:gemini, :api_key).present?
+    # Gemini is callable once its backend is configured: an API key (credentials
+    # gemini.api_key) or, with GEMINI_BACKEND=vertex, a Google Cloud project.
+    def gemini? = Gemini::Client.configured?
 
     # Native push is configured when either APNs or FCM credentials exist (config/push.yml).
     def push?
