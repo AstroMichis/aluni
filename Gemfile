@@ -31,6 +31,10 @@ gem "image_processing", "~> 1.12"
 gem "faraday", "~> 2.9"
 gem "faraday-retry", "~> 2.2"
 
+# The season report as a PDF (Reports::Pdf): pure Ruby, no system packages or browser.
+gem "prawn", "~> 2.5"
+gem "prawn-table", "~> 0.2"
+
 # Authorization.
 gem "pundit", "~> 2.4"
 

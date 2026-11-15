@@ -14,7 +14,7 @@ Every Ruby command runs through mise: `mise exec -- bin/rails ...`.
 
 ## Gemfile (what each gem is for)
 
-rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), webauthn (passkeys), turbo-rails + stimulus-rails + propshaft + importmap-rails (frontend), aws-sdk-s3 + image_processing (R2 storage, libvips variants), faraday + faraday-retry (outside APIs), pundit (authorization seam in `App::BaseController`), rack-attack, rails-i18n, action_push_native + web-push, rb_sys + aluni_core (Rust extension), bootsnap. Development/test: debug, dotenv-rails, rspec-rails, factory_bot_rails, faker, bundler-audit, brakeman, rubocop-rails-omakase; test: shoulda-matchers, webmock, vcr, capybara, cuprite; development: web-console, kamal.
+rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), webauthn (passkeys), turbo-rails + stimulus-rails + propshaft + importmap-rails (frontend), aws-sdk-s3 + image_processing (R2 storage, libvips variants), faraday + faraday-retry (outside APIs), prawn + prawn-table (the season report as PDF, `Reports::Pdf`), pundit (authorization seam in `App::BaseController`), rack-attack, rails-i18n, action_push_native + web-push, rb_sys + aluni_core (Rust extension), bootsnap. Development/test: debug, dotenv-rails, rspec-rails, factory_bot_rails, faker, bundler-audit, brakeman, rubocop-rails-omakase; test: shoulda-matchers, webmock, vcr, capybara, cuprite; development: web-console, kamal.
 
 ## Routes skeleton (`config/routes.rb`)
 

@@ -1,8 +1,6 @@
 <% content_for :title, t(".title", app_name: t("app_name")) %>
-<% totals = @season.totals %>
-<% by_crop = @farm.fields.reject(&:empty?).group_by(&:crop).transform_values { |list| list.sum(&:area_hectares) }.sort_by { |_, area| -area } %>
+<% by_crop = report_area_by_crop(@farm) %>
 <% max_area = [ by_crop.map(&:last).max.to_f, 0.001 ].max %>
-<% profile = Current.user.farmer_profile %>
 
 <div class="screen">
   <%= render "shared/screen_bar", back_path: back_to_menu_path, back_label: t("app.fields.back_to_menu"), title: t(".crumb"), section: :reports %>
@@ -14,9 +12,9 @@
       <% end %>
       <h1 class="text-display screen__title"><%= t(".headline") %></h1>
       <p class="screen__lede"><%= t(".lede", count: @farm.fields.size, area: hectares(@farm.total_area)) %></p>
-      <div class="cluster cluster--sm report__actions" data-controller="print">
-        <button type="button" class="btn btn--secondary btn--sm" data-action="print#print"><%= t(".print") %></button>
-        <%= link_to t(".export"), export_app_reports_path, class: "btn btn--ghost btn--sm" %>
+      <div class="cluster cluster--sm report__actions">
+        <span class="report__download-label"><%= t(".download") %></span>
+        <%= report_download_links(class: "btn btn--secondary btn--sm") %>
       </div>
     </header>
 
@@ -37,14 +35,13 @@
       <% end %>
     </section>
 
-    <% if @season.any? %>
+    <% if (weather = report_weather(@season)).any? %>
       <section class="screen__section" aria-labelledby="report-weather">
         <h2 class="screen__section-title" id="report-weather"><%= t(".weather_title") %></h2>
         <ul class="kpis" role="list">
-          <li class="kpi"><span class="kpi__label"><%= t("app.weather.show.kpis.rain") %></span><span class="kpi__value"><%= chart_number(totals[:rain], 0) %> <small>mm</small></span></li>
-          <li class="kpi"><span class="kpi__label"><%= t("app.weather.show.kpis.temp") %></span><span class="kpi__value"><%= chart_number(totals[:temp]) %> <small>°C</small></span></li>
-          <li class="kpi"><span class="kpi__label"><%= t("app.weather.show.kpis.frost_days") %></span><span class="kpi__value"><%= totals[:frost_days] %></span></li>
-          <li class="kpi"><span class="kpi__label"><%= t("app.weather.show.kpis.heat_days") %></span><span class="kpi__value"><%= totals[:heat_days] %></span></li>
+          <% weather.each do |label, value, unit| %>
+            <li class="kpi"><span class="kpi__label"><%= label %></span><span class="kpi__value"><%= value %><% if unit %> <small><%= unit %></small><% end %></span></li>
+          <% end %>
         </ul>
         <p class="choice-set__hint"><%= t("app.weather.show.regional") %></p>
       </section>
@@ -55,21 +52,13 @@
       <div class="data-table__scroll">
         <table class="report-table">
           <thead>
-            <tr>
-              <th scope="col"><%= t(".table.field") %></th><th scope="col"><%= t(".table.crop") %></th><th scope="col"><%= t(".table.area") %></th>
-              <th scope="col"><%= t(".table.plan") %></th><th scope="col"><%= t(".table.flags") %></th><th scope="col"><%= t(".table.ready") %></th>
-            </tr>
+            <tr><% report_field_header.each do |label| %><th scope="col"><%= label %></th><% end %></tr>
           </thead>
           <tbody>
-            <% @farm.fields.each do |field| %>
-              <% findings = Crops::RotationCheck.new(field.seasons).findings %>
+            <% @farm.fields.zip(report_field_rows(@farm)).each do |field, (name, *cells)| %>
               <tr>
-                <th scope="row"><%= link_to plot_name(field), app_field_path(field.key) %></th>
-                <td><%= crop_mix(field) %></td>
-                <td><%= field_area(field) %></td>
-                <td><%= field.plan_crops.any? ? crop_mix(field, field.plan_crops) : t(".table.no_plan") %></td>
-                <td><%= findings.any? ? findings.map { |f| t("app.crops.rotation.findings.#{f.kind}.label") }.uniq.to_sentence : t(".table.no_flags") %></td>
-                <td><%= progress_label(field) %></td>
+                <th scope="row"><%= link_to name, app_field_path(field.key) %></th>
+                <% cells.each do |cell| %><td><%= cell %></td><% end %>
               </tr>
             <% end %>
           </tbody>
@@ -79,9 +68,7 @@
 
     <section class="screen__section" aria-labelledby="report-team">
       <h2 class="screen__section-title" id="report-team"><%= t(".team_title") %></h2>
-      <p class="screen__lede">
-        <%= profile && !profile.team_unknown? ? value_label("team", profile.team) : t("app.fields.states.unanswered") %><%= " · #{t(".team_size", count: profile.team_size)}" if profile&.team_size %>
-      </p>
+      <p class="screen__lede"><%= report_team(Current.user.farmer_profile) %></p>
     </section>
   </main>
 </div>
