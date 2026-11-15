@@ -10,7 +10,7 @@ es:
           title: Tu plan de rotación
           body: "Tu rotación de %{crop} frente a las alternativas, con la evidencia de cada una."
         dial_label: Secciones del menú
-        hint: Gira la rueda con el dedo, el mouse o las flechas del teclado y toca a dónde quieres ir.
+        hint: Desliza la rueda hacia los lados o usa las flechas y toca el centro para entrar.
         kicker: "%{number} / %{total}"
         open: Abrir
         open_section: Abrir %{title}
@@ -21,15 +21,15 @@ es:
             title: Mis terrenos
             description: Tus parcelas, su suelo y su historial.
             options:
+              planting:
+                title: Distribuir siembra
+                body: "Reparte tu terreno entre cultivos: dale su área a cada uno o pinta el mapa."
               add:
                 title: Agregar un terreno
                 body: Marca un punto y responde unas preguntas. Lo demás sale de la ubicación.
               list:
                 title: Mis terrenos
                 body: Cada terreno con su cultivo, su suelo y lo que todavía falta.
-              sources:
-                title: De dónde salen tus datos
-                body: Cada valor con su fuente y qué tanto puedes confiar en él.
           crops:
             short: Cultivos
             title: Mis cultivos
@@ -82,6 +82,13 @@ es:
                 body: Descarga un reporte para compartir con tu asesor o comprador.
         menu_title: Menú · %{app_name}
         account: Cuenta
+        previous: Sección anterior
+        next: Sección siguiente
+        go_to: Ir a %{title}
+        pending:
+          one: 1 cosa por revisar
+          other: "%{count} cosas por revisar"
+        ask: Pregúntale a %{app_name}
     fields:
       back_to_menu: Volver al menú
       back_to_fields: Volver a mis terrenos
@@ -271,7 +278,6 @@ es:
         no_pin: Sin punto todavía
       show:
         title: "%{name} · %{app_name}"
-        empty_message: Este terreno está listo. Cuéntame qué siembras aquí y lo verás crecer.
         add_crop: Agregar tu cultivo
         repeat: Se repite
         tips:
@@ -280,7 +286,6 @@ es:
           grain: Los cereales pequeños cubren pronto el suelo y cortan el ciclo de plagas del maíz y la soya. Su paja suma materia orgánica.
           leafy: 'Este cultivo fija nitrógeno: lo que siembres después lo aprovecha. Evita repetirlo dos años seguidos para que no se acumulen enfermedades.'
           bush: Estos cultivos remueven mucho el suelo. Rotarlos con un cereal o un cultivo de cobertura ayuda a que recupere su estructura.
-        plant: Sembrar
         image_alt: Vista satelital alrededor de %{name}
         image_caption: NASA GIBS, unos 40 km alrededor del punto
         cdl: El mapa de cultivos de EE. UU. muestra %{years}. ¿Guardar estas temporadas como tuyas?

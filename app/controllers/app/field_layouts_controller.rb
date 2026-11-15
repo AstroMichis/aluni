@@ -13,7 +13,9 @@ module App
     def update
       case Fields::SeasonLayoutService.call(user: Current.user, field: @field.key, year: @year, crops: crop_params)
       in Result::Success
-        redirect_to app_field_path(@field.key), notice: t(".saved", year: @year), status: :see_other
+        # This season's planner lives on the field's page; another season stays on its own.
+        back = @year == (@field.current_season || Date.current.year) ? app_field_path(@field.key) : edit_app_field_layout_path(@field.key, year: @year)
+        redirect_to back, notice: t(".saved", year: @year), status: :see_other
       in Result::Failure(code: :not_found)
         head :not_found
       in Result::Failure(code:)

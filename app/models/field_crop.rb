@@ -28,8 +28,6 @@ class FieldCrop < ApplicationRecord
   validates :share, numericality: { greater_than: 0, less_than_or_equal_to: 1 }, allow_nil: true
   validate :cells_on_the_map
 
-  scope :whole_field, -> { where(share: nil) }
-
   def self.key_for(crop_name, scientific_name = nil) = (scientific_name.presence || crop_name).to_s.parameterize.presence
 
   def whole_field? = share.nil?

@@ -3,11 +3,7 @@
     every row so Rails groups crops[][...] per crop. %>
 <% months = t("date.month_names") %>
 <li class="planner-row" data-crop-layout-target="row" data-slot="<%= slot %>">
-  <label class="planner-row__brush">
-    <input type="radio" name="brush" value="<%= slot %>" data-action="crop-layout#pick"<%= " checked" if slot.zero? %>>
-    <span class="crop-swatch" data-slot="<%= slot %>" aria-hidden="true"></span>
-    <span class="sr-only"><%= t("app.field_layouts.row.paint") %></span>
-  </label>
+  <span class="planner-row__swatch crop-swatch" data-slot="<%= slot %>" aria-hidden="true"></span>
 
   <label class="planner-row__crop">
     <span class="sr-only"><%= t("app.field_layouts.row.crop") %></span>

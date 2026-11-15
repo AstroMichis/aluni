@@ -58,6 +58,11 @@ export default class extends Controller {
     this.listTarget.append(row)
     this.cells.push([])
     this.brush = this.rowTargets.length - 1
+    // The new crop takes what is left of the field, or the field splits in equal parts.
+    const left = 1 - this.rowTargets.reduce((sum, _, i) => sum + this.share(i), 0)
+    if (left >= 0.01) this.setAmount(this.brush, left)
+    else this.rowTargets.forEach((_, i) => this.setAmount(i, 1 / this.rowTargets.length))
+    this.place()
     this.refresh()
     row.querySelector("input[type=text]").focus()
     if (!reducedMotion()) row.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 240, easing: "ease-out" })
@@ -81,7 +86,7 @@ export default class extends Controller {
 
   equal() {
     const n = this.rowTargets.length
-    this.amountTargets.forEach((input) => { input.value = this.round(this.totalValue / n) })
+    this.rowTargets.forEach((_, i) => this.setAmount(i, 1 / n))
     this.cells = this.cells.map(() => [])
     this.place()
     this.refresh()
@@ -116,7 +121,7 @@ export default class extends Controller {
   // The map: the brush is a crop's index, or -1 for the eraser.
 
   pick(event) {
-    this.brush = Number(event.currentTarget.dataset.brush ?? event.currentTarget.value)
+    this.brush = Number(event.currentTarget.dataset.brush)
     this.refresh()
   }
 
@@ -171,6 +176,12 @@ export default class extends Controller {
     this.refresh()
   }
 
+  setAmount(i, share) {
+    const value = this.round(share * this.totalValue)
+    this.amountTargets[i].value = value
+    this.sliderTargets[i].value = value
+  }
+
   // A painted crop's area is its cells.
   followCells(i) {
     const value = this.round((this.cells[i].length / GRID) * this.totalValue)
@@ -192,9 +203,6 @@ export default class extends Controller {
     this.rowTargets.forEach((row, i) => {
       row.dataset.slot = i
       row.querySelector(".crop-swatch").dataset.slot = i
-      const radio = row.querySelector("input[name=brush]")
-      radio.value = i
-      radio.checked = i === this.brush
       this.cellsTargets[i].value = this.cells[i].join(",")
       const share = this.share(i)
       this.percentTargets[i].textContent = share > 0 ? `${Math.round(share * 100)}%` : ""

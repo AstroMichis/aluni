@@ -437,6 +437,23 @@ h3.reading-group__title { margin-top: var(--space-6); }
   .section-switch__glyph { width: 18px; height: 18px; }
 }
 
+/* Wide screens: the switcher rides in the bar itself, centred between the
+   crumb and the tools (the bar is sticky at the top, so a fixed row lines up
+   with it), and the page gives back the row it took. */
+@media (min-width: 1280px) {
+  .section-switch {
+    position: fixed;
+    top: max(var(--space-3), env(safe-area-inset-top));
+    left: 50%;
+    z-index: calc(var(--z-sticky) + 1);
+    height: 48px;
+    padding: 0;
+    align-items: center;
+    border-bottom: 0;
+    transform: translateX(-50%);
+  }
+}
+
 @media (forced-colors: active) {
   .section-switch__link[aria-current="page"] { outline: 2px solid Highlight; }
   .choice__chip input:checked + span { border: 2px solid Highlight; }

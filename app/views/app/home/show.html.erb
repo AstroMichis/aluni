@@ -3,6 +3,7 @@
 <% selected = dial_index(params[:section]) %>
 <% current = menu_sections.keys[selected] %>
 <% current_title = t("app.home.show.sections.#{current}.title") %>
+<% badges = menu_badges(@farm) %>
 
 <div class="dial-page"
      data-controller="radial-menu"
@@ -11,18 +12,19 @@
      data-tone="<%= current %>">
   <header class="dial-page__bar">
     <%= link_to t("app_name"), app_root_path, class: "dial-page__brand" %>
-    <details class="dial-page__account">
-      <summary class="btn btn--ghost btn--sm"><%= t(".account") %></summary>
-      <div class="dial-page__account-menu">
-        <%= render "shared/language_toggle" %>
-        <button type="button" class="btn btn--ghost btn--sm" data-action="preferences#toggleTheme" aria-label="<%= t("theme.toggle") %>">
-          <%= t("theme.toggle_short") %>
-        </button>
-        <%= link_to t(".talk_to", app_name: t("app_name")), app_onboarding_path, class: "btn btn--ghost btn--sm" %>
-        <%= link_to t("layouts.passkeys"), passkeys_path, class: "btn btn--ghost btn--sm" %>
-        <%= button_to t("layouts.sign_out"), sign_out_path, method: :delete, class: "btn btn--ghost btn--sm" %>
-      </div>
-    </details>
+    <%# Everything in plain sight, no folded menu: language, theme, passkeys, sign out. %>
+    <nav class="dial-page__tools" aria-label="<%= t(".account") %>">
+      <%= render "shared/language_toggle" %>
+      <button type="button" class="dial-tool" data-action="preferences#toggleTheme" aria-label="<%= t("theme.toggle") %>" title="<%= t("theme.toggle") %>">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><%= render "shared/glyph", name: "theme" %></svg>
+      </button>
+      <%= link_to passkeys_path, class: "dial-tool", aria: { label: t("layouts.passkeys") }, title: t("layouts.passkeys") do %>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><%= render "shared/glyph", name: "key" %></svg>
+      <% end %>
+      <%= button_to sign_out_path, method: :delete, class: "dial-tool", form_class: "dial-page__sign-out", aria: { label: t("layouts.sign_out") }, title: t("layouts.sign_out") do %>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><%= render "shared/glyph", name: "sign_out" %></svg>
+      <% end %>
+    </nav>
   </header>
 
   <main id="main" class="dial-page__main">
@@ -35,18 +37,6 @@
             <span class="dial-page__plan-title"><%= t(".plan.title") %></span>
             <span class="dial-page__plan-body"><%= t(".plan.body", crop: @plan_field.crop) %></span>
           <% end %>
-        <% end %>
-        <% if (shortcuts = home_shortcuts(@farm)).any? %>
-          <nav class="dial-page__shortcuts" aria-label="<%= t(".shortcuts.title") %>">
-            <% shortcuts.each do |kind, label, path| %>
-              <%= link_to path, class: "dial-page__shortcut dial-page__shortcut--#{kind}" do %>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                  <%= render "shared/glyph", name: { add: "add", suggestions: "tips", todo: "tasks", plan: "calendar" }.fetch(kind) %>
-                </svg>
-                <span><%= label %></span>
-              <% end %>
-            <% end %>
-          </nav>
         <% end %>
       </div>
 
@@ -110,6 +100,14 @@
                           <%= render "shared/glyph", name: key %>
                         </g>
                         <text class="dial__label-text" y="10.5" text-anchor="middle"><%= t("app.home.show.sections.#{key}.short") %></text>
+                        <% if (count = badges[key]) %>
+                          <g class="dial__badge" transform="translate(11.5 -8)">
+                            <title><%= t(".pending", count: count) %></title>
+                            <circle class="dial__badge-pulse" r="5.5"/>
+                            <circle class="dial__badge-dot" r="5.5"/>
+                            <text class="dial__badge-text" y="2.1" text-anchor="middle"><%= count > 9 ? "9+" : count %></text>
+                          </g>
+                        <% end %>
                       </g>
                     </g>
                   </g>
@@ -137,15 +135,34 @@
         </a>
       </div>
 
+      <%# Step through the sections without turning the wheel: arrows either side, a dot per section. %>
+      <div class="dial-steps">
+        <button type="button" class="dial-steps__arrow" data-action="radial-menu#previous" aria-label="<%= t(".previous") %>" title="<%= t(".previous") %>">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <div class="dial-steps__dots">
+          <% menu_sections.each_key.with_index do |key, i| %>
+            <% title = t("app.home.show.sections.#{key}.title") %>
+            <button type="button" class="dial-steps__dot" data-tone="<%= key %>"
+                    data-radial-menu-target="dot" data-action="radial-menu#jump" data-radial-menu-index-param="<%= i %>"
+                    aria-label="<%= t(".go_to", title: title) %>" title="<%= t(".go_to", title: title) %>"
+                    <%= "aria-current=true" if i == selected %>></button>
+          <% end %>
+        </div>
+        <button type="button" class="dial-steps__arrow" data-action="radial-menu#next" aria-label="<%= t(".next") %>" title="<%= t(".next") %>">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+
       <%# The selected section's options, one tap from the wheel. %>
-      <div class="dial-options" aria-live="polite">
+      <div class="dial-options" aria-live="polite" data-radial-menu-target="optionsBox">
         <% menu_sections.each.with_index do |(key, options), i| %>
           <ul class="dial-options__list" role="list" data-radial-menu-target="options" data-tone="<%= key %>"
               aria-label="<%= t("app.home.show.sections.#{key}.title") %>"<%= " hidden" unless i == selected %>>
             <% options.each do |option| %>
               <% path = menu_option_path(key, option) %>
               <li>
-                <%= content_tag(path ? :a : :div, href: path, class: ["dial-option", ("dial-option--primary" if option == :add), ("dial-option--link" if path)],
+                <%= content_tag(path ? :a : :div, href: path, class: ["dial-option", ("dial-option--primary" if option == options.first), ("dial-option--link" if path)],
                                 data: (path ? { action: "radial-menu#go" } : {})) do %>
                   <span class="dial-option__glyph" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
@@ -164,9 +181,29 @@
         <% end %>
       </div>
 
+      <%# Next up: after the options on phones, beside the wheel from 1024 px. %>
+      <% if (shortcuts = home_shortcuts(@farm)).any? %>
+        <nav class="dial-page__shortcuts" aria-label="<%= t(".shortcuts.title") %>">
+          <% shortcuts.each do |kind, label, path| %>
+            <%= link_to path, class: "dial-page__shortcut dial-page__shortcut--#{kind}" do %>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <%= render "shared/glyph", name: { add: "add", suggestions: "tips", todo: "tasks", plan: "calendar" }.fetch(kind) %>
+              </svg>
+              <span><%= label %></span>
+            <% end %>
+          <% end %>
+        </nav>
+      <% end %>
+
       <p class="dial-page__hint" id="dial-hint"><%= t(".hint") %></p>
     </div>
   </main>
+
+  <%# Aluni is always one tap away, waving from the corner. %>
+  <%= link_to app_onboarding_path, class: "dial-ask", data: { action: "radial-menu#go" } do %>
+    <%= render "shared/mascot_avatar", size: "md" %>
+    <span class="dial-ask__label"><%= t(".ask", app_name: t("app_name")) %></span>
+  <% end %>
 
   <div class="dial-page__bloom" data-radial-menu-target="bloom" aria-hidden="true"></div>
 </div>

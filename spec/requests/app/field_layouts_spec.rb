@@ -29,7 +29,7 @@ RSpec.describe "Plan the planting", type: :request do
     expect(field.field_crops.where(season_year: year).pluck(:crop_name, :share).sort).to eq([ [ "Beans", 0.5 ], [ "Corn", 0.5 ] ])
 
     get app_field_path(field, locale: "en"), headers: native_headers
-    expect(response.body).to include("Corn 1 ha · Beans 1 ha").and include('class="crop-map crop-map--sm"')
+    expect(response.body).to include("Corn 1 ha · Beans 1 ha").and include("crop-map--editable")
 
     get app_crops_path(locale: "en"), headers: native_headers
     expect(response.body).to include(I18n.t("app.crops.show.part", area: "1 ha", total: "2 ha")).and include("Beans")

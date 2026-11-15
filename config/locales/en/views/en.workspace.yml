@@ -4,8 +4,7 @@ en:
       workspace:
         label: "%{name}: sections"
         tabs:
-          summary: "Summary"
-          planting: "Planting"
+          summary: "Field"
           rotation: "Rotation"
           data: "Data"
       show:

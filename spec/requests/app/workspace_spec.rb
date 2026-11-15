@@ -7,7 +7,7 @@ RSpec.describe "Field workspace and next-up shortcuts", type: :request do
   before { sign_in_as(user) }
 
   it "serves every tab as a whole page and, inside the frame, only the frame" do
-    { app_field_path(field, locale: "en") => "summary", edit_app_field_layout_path(field, locale: "en") => "planting",
+    { app_field_path(field, locale: "en") => "summary", edit_app_field_layout_path(field, locale: "en", year: Date.current.year - 1) => "summary",
       app_field_rotation_path(field, locale: "en") => "rotation", app_field_path(field, locale: "en", tab: "data") => "data" }.each do |path, tab|
       get path, headers: native_headers
       expect(response.body).to include("data-turbo-track").and include(I18n.t("app.fields.workspace.tabs.#{tab}"))
@@ -18,6 +18,12 @@ RSpec.describe "Field workspace and next-up shortcuts", type: :request do
       expect(response.body).not_to include("data-turbo-track")
       expect(response.body).to include('id="workspace"')
     end
+  end
+
+  it "opens a field with its planner ready to edit, no tap needed" do
+    get app_field_path(field, locale: "en"), headers: native_headers
+    expect(response.body).to include('data-controller="crop-layout"').and include('name="crops[][crop]"').and include("crop-map--editable")
+    expect(response.body).to include(%(action="/en/app/fields/#{field.id}/layout?year=#{Date.current.year}"))
   end
 
   it "keeps the save message inside the frame after a save made in it" do

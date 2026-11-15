@@ -2,11 +2,10 @@
    A season's crops on a 10x10 grid of the field, drawn like the tour's field
    finder: rounded cells with a hairline of ground between them. Each crop
    takes a slot (0 to 5, largest first) with its own colour AND texture, so
-   the map never relies on colour alone; the legend and the numbers name them. */
+   the map never relies on colour alone; the brush chips and the rows name them. */
 
 .crop-map,
-.planner,
-.crop-legend {
+.planner {
   --crop-0: var(--color-success);
   --crop-1: var(--color-warning);
   --crop-2: var(--color-info);
@@ -68,13 +67,6 @@
 }
 .crop-map--editable .crop-map__cell:focus-visible { outline: 2px solid var(--color-text-primary); outline-offset: 1px; position: relative; z-index: 1; }
 
-/* Legend */
-.crop-legend { display: grid; gap: var(--space-2); }
-.crop-legend__item { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); }
-.crop-legend__name { font-weight: 600; }
-.crop-legend__area { margin-left: auto; font-family: var(--font-mono); color: var(--color-text-secondary); }
-.crop-legend__item--empty .crop-legend__name { font-weight: 400; color: var(--color-text-secondary); }
-
 /* Zone picker (app/rotations/show): each piece of the field with its map. */
 .zone-picker { display: flex; gap: var(--space-3); margin-bottom: var(--space-6); overflow-x: auto; scrollbar-width: none; }
 .zone-picker__link {
@@ -97,10 +89,9 @@
 .rotation__zone-title { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); font-size: var(--text-base); }
 .rotation__zone-title .crop-map--sm { width: 48px; }
 
-/* Planting summary on a field (app/fields/show) */
-.planting { display: grid; grid-template-columns: auto 1fr; gap: var(--space-4); align-items: center; }
-.planting .crop-map--sm { width: 104px; }
-.planting__actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+/* The field's page (app/fields/show): a compact head, then the planner in reach. */
+.field-head { display: grid; gap: var(--space-2); margin-bottom: var(--space-2); }
+.field-planner { margin-top: var(--space-6); }
 
 /* Planner */
 .planner-seasons {
@@ -137,12 +128,7 @@
   border: 1px solid var(--color-border-subtle);
   border-left: 4px solid var(--crop, var(--color-border-default));
 }
-.planner-row__brush { grid-area: brush; align-self: start; display: grid; place-items: center; width: 48px; height: 48px; border-radius: var(--radius-md); cursor: pointer; }
-.planner-row__brush input { position: absolute; opacity: 0; pointer-events: none; }
-.planner-row__brush .crop-swatch { width: 28px; height: 28px; transition: transform var(--transition-fast); }
-.planner-row__brush:has(input:checked) { background: color-mix(in srgb, var(--crop) 16%, transparent); outline: 2px solid var(--crop); }
-.planner-row__brush:has(input:checked) .crop-swatch { transform: scale(1.1); }
-.planner-row__brush:has(input:focus-visible) { outline: 2px solid var(--color-text-primary); outline-offset: 2px; }
+.planner-row__swatch { grid-area: brush; align-self: center; justify-self: center; width: 28px; height: 28px; }
 .planner-row__crop { grid-area: crop; }
 .planner-row__remove {
   grid-area: remove;
@@ -214,10 +200,15 @@
 @media (min-width: 1025px) {
   .planner__layout { grid-template-columns: minmax(0, 1fr) minmax(320px, 420px); align-items: start; }
   .planner__crops { grid-column: 1; grid-row: 1; }
-  .planner__map { grid-column: 2; grid-row: 1; position: sticky; top: calc(72px + var(--space-4)); }
+  .planner__map { grid-column: 2; grid-row: 1; }
+}
+
+/* The map follows the scroll only where all of it fits beside the list. */
+@media (min-width: 1025px) and (min-height: 900px) {
+  .planner__map { position: sticky; top: calc(72px + var(--space-4)); }
 }
 
 @media (forced-colors: active) {
   .crop-map__cell, .crop-swatch { forced-color-adjust: none; border: 1px solid CanvasText; }
-  .planner-row__brush:has(input:checked) { outline: 2px solid Highlight; }
+  .planner__chip[aria-pressed="true"] { outline: 2px solid Highlight; }
 }

@@ -24,7 +24,7 @@
 
     <% if !@comparator.ready? %>
       <%= render "shared/aluni", message: t(".not_ready") %>
-      <%= link_to t(".add_crop"), edit_app_field_layout_path(@field.key), class: "btn btn--primary", data: in_workspace %>
+      <%= link_to t(".add_crop"), app_field_path(@field.key, anchor: "planting"), class: "btn btn--primary", data: in_workspace %>
     <% else %>
       <% best = @comparator.best %>
       <% current = @comparator.strategies.first %>

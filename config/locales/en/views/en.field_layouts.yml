@@ -11,10 +11,8 @@ en:
       show:
         planting:
           title: "Planting %{year}"
-          map_label: "Map of the field: %{mix}"
           empty: "Nothing planted this season yet. Split the field between as many crops as you like."
           edit: "Plan the planting"
-          plan: "Plan %{year}"
     field_layouts:
       units:
         hectares: "ha"
@@ -24,7 +22,6 @@ en:
         empty: "not planted"
         empty_label: "Not planted"
       row:
-        paint: "Paint the map with this crop"
         crop: "Crop"
         amount: "Area (%{unit})"
         slider: "Area"

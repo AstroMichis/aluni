@@ -15,6 +15,11 @@ import { reducedMotion } from "preferences/motion"
 // sector the server (or Turbo's cached snapshot) marked selected, so coming
 // back lands on the section you left.
 //
+// For anyone who would rather not spin: the arrows under the wheel step one
+// section, each dot jumps to its section, and a deliberate pick on a phone
+// scrolls the options into view when they sit below the fold. The hint fades
+// once the wheel has been used.
+//
 // Angles are degrees. Section i sits at i * step in the rotor's frame, so it
 // is under the marker when angle = -i * step. Option lists follow sector order.
 
@@ -33,7 +38,7 @@ const rise = (from) => [{ opacity: 0, transform: from }, { opacity: 1, transform
 
 export default class extends Controller {
   static targets = ["wheel", "dial", "rotor", "sector", "label", "hub", "kicker", "title", "description",
-                    "stage", "options", "bloom"]
+                    "stage", "options", "optionsBox", "bloom", "dot"]
   static classes = ["selected", "dragging"]
 
   connect() {
@@ -60,6 +65,13 @@ export default class extends Controller {
   }
 
   // Pointer: a press becomes a drag past a few pixels, so taps still click.
+  //
+  // A finger has to share the wheel with the page's scroll (touch-action:
+  // pan-y). Past the threshold, a mostly vertical swipe is a scroll: the
+  // press is dropped and the browser scrolls. A sideways swipe turns the
+  // wheel like dragging its rim: rightwards turns the top edge right (or the
+  // bottom edge, when the swipe started below the centre). A mouse keeps the
+  // angular drag, where any direction turns.
 
   press(event) {
     if (event.button > 0 || this.leaving) return
@@ -69,7 +81,9 @@ export default class extends Controller {
     const centre = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
     this.pointer = {
       id: event.pointerId, x: event.clientX, y: event.clientY, centre, deadZone: rect.width * 0.08,
-      angle: this.angleAt(event, centre), time: event.timeStamp, dragging: false
+      angle: this.angleAt(event, centre), time: event.timeStamp, dragging: false,
+      touch: event.pointerType !== "mouse", lastX: event.clientX,
+      rim: rect.width * 0.42, side: event.clientY <= centre.y ? 1 : -1
     }
   }
 
@@ -78,22 +92,39 @@ export default class extends Controller {
     if (pointer?.id !== event.pointerId) return
 
     if (!pointer.dragging) {
-      if (Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) < DRAG_THRESHOLD) return
+      const dx = event.clientX - pointer.x
+      const dy = event.clientY - pointer.y
+      if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return
+      if (pointer.touch && Math.abs(dy) > Math.abs(dx)) {
+        // A scroll: let the page have it and leave the wheel where it was.
+        this.pointer = null
+        this.settleTo(this.snap(this.angle))
+        return
+      }
       pointer.dragging = true
+      pointer.lastX = event.clientX
       this.velocity = 0
       this.wheelTarget.setPointerCapture(pointer.id)
       this.element.classList.add(this.draggingClass)
     }
 
-    const angle = this.angleAt(event, pointer.centre)
-    const delta = wrap(angle - pointer.angle)
     const dt = Math.max(event.timeStamp - pointer.time, 1) / 1000
-    pointer.angle = angle
     pointer.time = event.timeStamp
+    let delta
 
-    // Near the centre the angle swings wildly; follow it without turning.
-    const { x, y } = pointer.centre
-    if (Math.hypot(event.clientX - x, event.clientY - y) < pointer.deadZone) return
+    if (pointer.touch) {
+      // Sideways travel along the rim, as degrees.
+      delta = (pointer.side * (event.clientX - pointer.lastX) * 180) / (Math.PI * pointer.rim)
+      pointer.lastX = event.clientX
+    } else {
+      const angle = this.angleAt(event, pointer.centre)
+      delta = wrap(angle - pointer.angle)
+      pointer.angle = angle
+
+      // Near the centre the angle swings wildly; follow it without turning.
+      const { x, y } = pointer.centre
+      if (Math.hypot(event.clientX - x, event.clientY - y) < pointer.deadZone) return
+    }
 
     this.angle += delta
     this.velocity = 0.7 * clamp(delta / dt, MAX_SPEED) + 0.3 * this.velocity
@@ -158,7 +189,7 @@ export default class extends Controller {
     if (this.suppressClick || this.leaving) return
     this.interacted()
     if (index === this.index && Math.abs(this.angle - this.target) < this.step / 2) this.leave(this.hubTarget)
-    else this.rotateTo(index)
+    else { this.rotateTo(index); this.revealOptions() }
   }
 
   // The hub and every option: a plain click blooms out; a modified click
@@ -169,6 +200,35 @@ export default class extends Controller {
     event.preventDefault()
     this.interacted()
     this.leave(event.currentTarget)
+  }
+
+  // The arrows and the dots: the same turn as a tap on a wedge.
+
+  previous() { this.advance(-1) }
+
+  next() { this.advance(1) }
+
+  jump({ params: { index } }) {
+    if (this.leaving) return
+    this.interacted()
+    this.rotateTo(index)
+    this.revealOptions()
+  }
+
+  advance(direction) {
+    if (this.leaving) return
+    this.interacted()
+    this.shift(direction)
+    this.revealOptions()
+  }
+
+  // On a short screen the options can sit under the fold: bring them up, so
+  // a pick always shows where it can take you.
+  revealOptions() {
+    if (!this.hasOptionsBoxTarget) return
+    const box = this.optionsBoxTarget.getBoundingClientRect()
+    if (box.top < window.innerHeight - 96) return
+    this.optionsBoxTarget.scrollIntoView({ block: "end", behavior: this.reduced ? "auto" : "smooth" })
   }
 
   // Motion
@@ -218,6 +278,7 @@ export default class extends Controller {
 
   interacted() {
     clearTimeout(this.nudgeTimer)
+    this.element.classList.add("dial-page--used")
   }
 
   // Drawing: SVG transform attributes, so CSS transforms stay free for the
@@ -241,6 +302,10 @@ export default class extends Controller {
     const { tone, kicker, title, description, openLabel, href } = sector.dataset
 
     this.sectorTargets.forEach((s) => s.classList.toggle(this.selectedClass, s === sector))
+    this.dotTargets.forEach((dot, i) => {
+      if (i === index) dot.setAttribute("aria-current", "true")
+      else dot.removeAttribute("aria-current")
+    })
     this.element.dataset.tone = tone
     this.dialTarget.setAttribute("aria-valuenow", index + 1)
     this.dialTarget.setAttribute("aria-valuetext", title)

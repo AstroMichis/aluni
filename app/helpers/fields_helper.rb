@@ -32,8 +32,8 @@ module FieldsHelper
 
   # The field workspace's tabs (app/fields/_workspace), each an existing page.
   def workspace_tabs(field)
-    { "summary" => app_field_path(field.key), "planting" => edit_app_field_layout_path(field.key),
-      "rotation" => app_field_rotation_path(field.key), "data" => app_field_path(field.key, tab: "data") }
+    { "summary" => app_field_path(field.key), "rotation" => app_field_rotation_path(field.key),
+      "data" => app_field_path(field.key, tab: "data") }
   end
 
   # Data for a link or form that stays inside the field workspace.

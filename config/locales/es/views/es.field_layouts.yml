@@ -11,10 +11,8 @@ es:
       show:
         planting:
           title: "Siembra %{year}"
-          map_label: "Mapa del terreno: %{mix}"
           empty: "Todavía no hay nada sembrado esta temporada. Reparte el terreno entre los cultivos que quieras."
           edit: "Distribuir siembra"
-          plan: "Planear %{year}"
     field_layouts:
       units:
         hectares: "ha"
@@ -24,7 +22,6 @@ es:
         empty: "sin sembrar"
         empty_label: "Sin sembrar"
       row:
-        paint: "Pintar el mapa con este cultivo"
         crop: "Cultivo"
         amount: "Área (%{unit})"
         slider: "Área"

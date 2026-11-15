@@ -5,7 +5,7 @@
   </head>
 
   <%# Full-screen app screens (the menu dial and its sections): each brings its own bar. %>
-  <body data-controller="preferences speech" class="app-screen" <%= tag.attributes(preferences.stimulus_values) %>>
+  <body data-controller="preferences speech swipe-tabs" class="app-screen" <%= tag.attributes(preferences.stimulus_values) %>>
     <a class="skip-link" href="#main"><%= t("layouts.skip_to_content") %></a>
     <div id="flash"><%= render "shared/flash" %></div>
     <%= render "shared/preferences_form" %>

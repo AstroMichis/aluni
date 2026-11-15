@@ -41,7 +41,7 @@
                 <%= render "app/crops/potential", field: field, crop: crop, season: season %>
                 <%= render "shared/aluni", message: t("app.fields.show.tips.#{crop_shape(crop)}") unless split %>
               <% else %>
-                <%= link_to t(".plant"), edit_app_field_layout_path(field.key), class: "btn btn--primary btn--sm" %>
+                <%= link_to t(".plant"), app_field_path(field.key, anchor: "planting"), class: "btn btn--primary btn--sm" %>
               <% end %>
             </div>
           </li>

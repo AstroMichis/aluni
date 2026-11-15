@@ -42,7 +42,7 @@
               </span>
             <% else %>
               <span class="calendar__track calendar__track--missing" role="cell">
-                <%= link_to t(".missing"), crop ? edit_app_field_layout_path(field.key, year: crop.season_year) : edit_app_field_layout_path(field.key) %>
+                <%= link_to t(".missing"), crop ? edit_app_field_layout_path(field.key, year: crop.season_year) : app_field_path(field.key, anchor: "planting") %>
               </span>
             <% end %>
           </div>

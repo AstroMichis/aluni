@@ -15,7 +15,8 @@ module Fields
 
     attr_reader :field, :cells, :index
 
-    delegate :record, :observation, :observations, :layer, :located?, :key, :name, :cover_crops, :cdl_proposal, to: :field
+    # What Rotations::Comparator and Rotations::Timeline read besides the crops.
+    delegate :record, :observation, :cover_crops, to: :field
 
     # The field's zones, the largest first; cells with no crop this season
     # come last as a fallow zone.
@@ -48,7 +49,6 @@ module Fields
       @index = index
     end
 
-    def main_crops = @crops_by_year.sort.map(&:last)
     def current_crop = (now = field.current_season) && @crops_by_year[now]
     def plan = @crops_by_year[Date.current.year + 1]
     def fallow? = current_crop.nil? && field.main_crops.any?
@@ -74,7 +74,5 @@ module Fields
 
       cells.size / GRID.to_f
     end
-
-    def area_hectares = field.area_hectares * share
   end
 end
