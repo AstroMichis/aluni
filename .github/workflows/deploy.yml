@@ -46,6 +46,9 @@ jobs:
       KAMAL_TUNNEL: "1"
       KAMAL_BACKUP: "0"
       ACTIVE_STORAGE_SERVICE: local
+      GEMINI_BACKEND: vertex
+      GOOGLE_CLOUD_PROJECT: astromichis-aluni
+      GOOGLE_CLOUD_LOCATION: global
       SIGNUPS_ENABLED: ${{ vars.SIGNUPS_ENABLED || '1' }}
       PLATFORM_PAUSE_ALL: ${{ vars.PLATFORM_PAUSE_ALL || '0' }}
       RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}

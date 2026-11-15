@@ -81,6 +81,11 @@ env:
     RAILS_MAX_THREADS: 3
     # cloudflare_r2 (default) or local (the aluni_storage volume, no R2 account needed).
     ACTIVE_STORAGE_SERVICE: <%= ENV.fetch("ACTIVE_STORAGE_SERVICE", "cloudflare_r2") %>
+    # Gemini: api_key (default, credentials gemini.api_key) or vertex (the VM's
+    # service account, no key; needs GOOGLE_CLOUD_PROJECT).
+    GEMINI_BACKEND: <%= ENV.fetch("GEMINI_BACKEND", "api_key") %>
+    GOOGLE_CLOUD_PROJECT: <%= ENV.fetch("GOOGLE_CLOUD_PROJECT", "") %>
+    GOOGLE_CLOUD_LOCATION: <%= ENV.fetch("GOOGLE_CLOUD_LOCATION", "global") %>
     # Less memory fragmentation per thread (jemalloc is already preloaded).
     MALLOC_ARENA_MAX: 2
     # Emergency brake: set to 1 and `bin/kamal deploy` (or `bin/kamal app boot`)
