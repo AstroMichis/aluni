@@ -1,0 +1,32 @@
+en:
+  app:
+    timeline:
+      title: Your next three seasons, month by month
+      lede: When the soil carries a crop and when it is bare, against your usual weather. Bare months under storms, drought or frost are the vulnerable ones.
+      weather_label: Usual weather at your pin
+      risks:
+        storm: Storms
+        dry: Dry
+        frost: Frost
+        heat: Heat
+      risk_notes:
+        storm: at least one day of 25 mm or more in a typical year (NASA GPM IMERG)
+        dry: rain under half of what the air takes up (NASA POWER, FAO-56)
+        frost: two frost days or more in a typical month (NASA POWER)
+        heat: the month has reached 35 °C (NASA POWER)
+      states:
+        crop: "%{crop}"
+        bare: bare soil
+        unknown: season not known
+        vulnerable: bare soil under %{risks}
+      cell: "%{month} %{year}: %{state}"
+      legend:
+        crop: Crop in the ground
+        bare: Bare soil
+        vulnerable: Bare and exposed
+        unknown: Not known
+      summary: "Bare %{bare} of %{total} months; %{vulnerable} of them exposed (%{stormy} under storms)."
+      summary_covered: Soil covered all %{total} months.
+      unknown_note: "The growing season of %{crops} is not known yet, so those months stay blank."
+      about_title: How this is drawn
+      about: Each crop grows from its usual planting month for the length of its FAO-56 stages (your own months for the current crop; six months later south of the tropics); alfalfa covers the whole year. The weather strip is the same every year, from long-term normals. Check the dates with your local experience.

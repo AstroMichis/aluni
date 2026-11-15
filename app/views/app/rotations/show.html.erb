@@ -21,6 +21,8 @@
       <%= render "shared/aluni", message: best && best.total.to_i > current.total.to_i ? t(".summary_better", strategy: strategy_title(best), best: best.total, current: current.total) : t(".summary_current") %>
 
       <%= render "app/fields/vegetation", field: @field %>
+      <% timeline = Rotations::Timeline.new(@field) %>
+      <%= render "app/rotations/timeline_weather", timeline: timeline %>
 
       <details class="weights">
         <summary><%= t(".weights_title") %></summary>
@@ -55,6 +57,7 @@
                 </li>
               <% end %>
             </ol>
+            <%= render "app/rotations/timeline", line: timeline.for(strategy.crops) %>
 
             <%= turbo_frame_tag "why-#{strategy.key}", src: why_app_field_rotation_path(@field.key, strategy: strategy.key), loading: :lazy do %>
               <p class="strategy__why"><%= strategy_why(strategy) %></p>

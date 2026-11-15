@@ -1,0 +1,25 @@
+<%# One strategy's three seasons month by month (Rotations::Timeline#for): crop, bare or
+    unknown, with bare months under storms, drought or frost marked as exposed.
+    Locals: line (a Rotations::Timeline::Line). %>
+<% total = line.months.size %>
+<div class="timeline__grid timeline__grid--strategy" role="table" aria-label="<%= t("app.timeline.title") %>">
+  <% line.seasons.each do |months| %>
+    <div class="timeline__row" role="row">
+      <span class="timeline__name text-mono" role="rowheader"><%= months.first.year %></span>
+      <% months.each do |m| %>
+        <% state = m.vulnerable? ? t("app.timeline.states.vulnerable", risks: (m.risks & Rotations::Timeline::EXPOSING).map { |r| t("app.timeline.risks.#{r}").downcase }.to_sentence) : (m.growing? ? crop_name(m.crop) : t("app.timeline.states.#{m.state}")) %>
+        <span class="timeline__cell timeline__cell--<%= m.state %><%= " timeline__cell--vulnerable" if m.vulnerable? %>" role="cell" title="<%= t("app.timeline.cell", month: t("date.month_names")[m.month], year: m.year, state: state) %>">
+          <span class="sr-only"><%= t("app.timeline.cell", month: t("date.month_names")[m.month], year: m.year, state: state) %></span>
+        </span>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+<ul class="timeline__legend cluster cluster--sm" role="list" aria-hidden="true">
+  <% %w[crop bare vulnerable unknown].each do |key| %><li class="timeline__key timeline__key--<%= key %>"><%= t("app.timeline.legend.#{key}") %></li><% end %>
+</ul>
+<p class="timeline__summary">
+  <%= line.bare.zero? ? t("app.timeline.summary_covered", total: total) : t("app.timeline.summary", bare: line.bare, total: total, vulnerable: line.vulnerable.size, stormy: line.stormy_bare) %>
+</p>
+<% unknown = line.months.select { |m| m.state == "unknown" }.map { |m| line.crops[(m.index / 12)] }.compact.uniq %>
+<% if unknown.any? %><p class="timeline__note"><%= t("app.timeline.unknown_note", crops: unknown.map { |c| crop_name(c) }.to_sentence) %></p><% end %>
