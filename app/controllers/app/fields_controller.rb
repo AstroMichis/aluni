@@ -80,7 +80,7 @@ module App
       {
         attributes: field.permit(:name, :latitude, :longitude, :location_source, :area, :area_unit, :irrigation, :water_source).to_h,
         crop: field[:crop], planting_month: field[:planting_month], harvest_month: field[:harvest_month],
-        history: field.fetch(:history, {}).permit!.to_h
+        history: field.fetch(:history, {}).permit(*Fields::Profile.history_years).to_h
       }
     end
   end

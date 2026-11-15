@@ -5,7 +5,7 @@ require "rails_helper"
 # landing mounts it in preloader mode: centred while the page loads, then the
 # move to the corner, the wave and the bubble.
 RSpec.describe "Mascot", type: :system do
-  before { driven_by(:cuprite) }
+  before { driven_by_cuprite }
 
   let(:greeting) { I18n.t("mascot.greeting", app_name: I18n.t("app_name")) }
 

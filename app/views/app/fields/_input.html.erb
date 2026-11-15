@@ -22,7 +22,7 @@
   </div>
 <% elsif datum.column == "crops.history" %>
   <div class="history-form">
-    <% 3.times.map { |n| (Date.current.year - 1 - n).to_s }.each do |year| %>
+    <% Fields::Profile.history_years.each do |year| %>
       <label class="input-group history-form__year">
         <span class="input-group__label text-mono"><%= year %></span>
         <input class="input" type="text" name="<%= name %>[<%= year %>]" value="<%= current.to_h[year] %>" list="crop-names" maxlength="100" autocomplete="off">

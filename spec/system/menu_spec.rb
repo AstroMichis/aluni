@@ -5,7 +5,7 @@ RSpec.describe "Main menu dial and its sections", type: :system do
   let!(:field) { create_farm_for(user) }
 
   before do
-    driven_by(:cuprite)
+    driven_by_cuprite
     browser_sign_in(user)
   end
 

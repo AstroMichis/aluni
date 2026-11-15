@@ -51,7 +51,12 @@ module Fields
 
     Step = Struct.new(:key, :input, :data, keyword_init: true)
 
+    HISTORY_YEARS = 3
+
     class << self
+      # The past seasons the history inputs ask about, latest first ("2025", "2024", "2023").
+      def history_years = (1..HISTORY_YEARS).map { |n| (Date.current.year - n).to_s }
+
       def current
         return load_file(PATH) if Rails.env.test?
 

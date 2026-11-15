@@ -22,7 +22,7 @@ module App
       data = @profile.data(level).select(&:column)
       lists, others = data.partition(&:multiple)
       scalars = others.map { |d| d.key.to_sym } - %i[location crop_history]
-      params.fetch(:values, {}).permit(*scalars, location: %i[latitude longitude], crop_history: {},
+      params.fetch(:values, {}).permit(*scalars, location: %i[latitude longitude], crop_history: Fields::Profile.history_years,
                                        **lists.to_h { |d| [ d.key.to_sym, [] ] }).to_h
     end
 
