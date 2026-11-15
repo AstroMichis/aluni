@@ -15,7 +15,7 @@ module CupriteHelpers
     process_timeout: 60,
     js_errors:       true,
     # Map tiles are never fetched from the real servers by headless Chrome.
-    url_blacklist:   [ "*tile.openstreetmap.org*", "*arcgisonline.com*" ],
+    url_blacklist:   [ /tile\.openstreetmap\.org/, /arcgisonline\.com/ ],
     browser_options: { "no-sandbox" => nil }
   }.freeze
 

@@ -88,7 +88,6 @@ en:
         pending:
           one: 1 thing to review
           other: "%{count} things to review"
-        ask: Ask %{app_name}
     fields:
       back_to_menu: Back to the menu
       back_to_fields: Back to my fields

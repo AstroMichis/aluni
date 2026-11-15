@@ -12,7 +12,12 @@ module App
       @turns = @onboarding_session.transcript
       @topic = @onboarding_session.topic
       @index, @total = progress_for(@topic)
-      @snapshot = snapshot
+      # The profile preview and the mascot sit beside the chat on its own page; the
+      # Ask Aluni panel (a frame request) only takes the chat.
+      unless turbo_frame_request?
+        @snapshot = snapshot
+        @mascot_stage = Current.user.farms.exists? ? 3 : 0.5
+      end
     end
 
     def message

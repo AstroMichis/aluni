@@ -2,12 +2,12 @@
 
 ## What is this
 
-Aluni is your smart crop cultivation assistant: an open source decision-support tool that helps farmers compare crop rotations with their field's soil, weather and satellite data, built for people, not for passwords. The web app at aluni.us is the product: the landing page (a Three.js field scene, Aluni the seedling mascot, a guided tour with sample data), then the onboarding chat and the authenticated area, all in the browser; the iOS and Android apps are Hotwire Native shells around the same Rails app. People sign in with a passkey (face, fingerprint or device code) and never see a username or a password. Bilingual English/Spanish, English first. Dark-first design. The product domain is defined separately from this infrastructure; nothing here assumes it.
+Aluni is your smart crop cultivation assistant: an open source decision-support tool that helps farmers compare crop rotations with their field's soil, weather and satellite data, built for people, not for passwords. The web app at aluni.us is the product: the landing page (a Three.js field scene, Aluni the seedling mascot, a guided tour with sample data), then the onboarding chat and the authenticated area, all in the browser; the iOS and Android apps are Hotwire Native shells around the same Rails app. People sign in with a passkey (face, fingerprint or device PIN) or a one-time code sent to their email, and never see a username or a password. Bilingual English/Spanish, English first. Dark-first design. The product domain is defined separately from this infrastructure; nothing here assumes it.
 
 ## Critical rules
 
 - **Ruby only through mise.** `mise exec -- bin/rails ...`, `mise exec -- bundle exec rspec`. Never bare `ruby`, `rails` or `bundle`.
-- **Passkeys only.** No passwords, no Devise, no JWT. Sign-in is a WebAuthn ceremony (`docs/AUTH.md`); sessions are rows (`Session`) behind a permanent signed cookie.
+- **Passwordless only.** No passwords, no Devise, no JWT. Sign-in is a passkey (WebAuthn) ceremony or a one-time code sent by email (`docs/AUTH.md`); sessions are rows (`Session`, with `sign_in_method`) behind a permanent signed cookie.
 - **Web and native are both first-class clients.** Sign-in, sign-up, passkeys and `/app` answer to browsers and to the shells; `NativeOnly` is the operator kill switch (`NATIVE_WEB_ACCESS=0` sends browsers back to the landing page).
 - **Pure CSS only.** No Tailwind, no Bootstrap, no bundler, no node. CSS custom properties + BEM; one `stylesheet_link_tag` per file.
 - **Hotwire, not SPA.** Turbo + Stimulus. Heavy libraries (Three.js) are vendored and loaded lazily with `await import()`.
@@ -16,7 +16,7 @@ Aluni is your smart crop cultivation assistant: an open source decision-support 
 - **Every UI string through `t()`.** Default locale `:en`, `:es` available, parity enforced by specs. No em dashes in copy.
 - **Mobile-first, dark-first.** `min-width` media queries; `:root` is the dark theme.
 - **Outside services go through the switchboard.** Clients call `Platform::Switchboard.guard!(:service)`; the operator pauses with `platform:*` rake tasks.
-- **Messages go through `NotificationRouter`**, never a mailer or a push sender directly.
+- **Messages go through `NotificationRouter`**, never a mailer or a push sender directly. One documented exception: `SignInMailer#code`, sent inline by `Auth::RequestCodeService`, because the recipient may not be a user yet and a code cannot wait for a queue; it still respects the `mail` switch and `Platform::Features.mail?`.
 - **Never read `.env*`, `config/master.key`, `config/credentials*` or `.kamal/secrets`.** Never start servers, install packages or spawn browsers unprompted. The operator runs git.
 - **Specs render pages** (assert on body content), and the suite runs before anything is called done.
 
@@ -27,7 +27,7 @@ Aluni is your smart crop cultivation assistant: an open source decision-support 
 | Backend | Ruby on Rails 8.1, Ruby 4.0.8 (mise.toml + .ruby-version) |
 | Database | PostgreSQL 16, Active Record encryption with a boot guard |
 | Cache/Queue | Redis 7 + Sidekiq 8 + sidekiq-cron (queues in config/sidekiq.yml) |
-| Auth | Rails 8 built-in sessions + webauthn gem (passkeys) |
+| Auth | Rails 8 built-in sessions + webauthn gem (passkeys) + emailed one-time codes (`app/services/auth/`, `SignInMailer`) |
 | Frontend | Hotwire (Turbo + Stimulus), pure CSS, importmap-rails, vendored Three.js r169 |
 | Native | Hotwire Native iOS 1.2 (ios/, XcodeGen) and Android 1.2 (android/, Gradle KTS) |
 | Rust | vendor/gems/aluni_core (magnus 0.9 on rb-sys 0.9, Rust 1.92 via rust-toolchain.toml) |
@@ -44,7 +44,7 @@ Read the relevant doc before working on that area:
 
 | File | When to read |
 |------|-------------|
-| `docs/AUTH.md` | Sign-in, sign-up, passkeys, sessions, the native gate, dev setup for WebAuthn |
+| `docs/AUTH.md` | Sign-in and sign-up by passkey or emailed code, sessions, the web kill switch, dev setup for WebAuthn |
 | `docs/NATIVE.md` | The iOS and Android shells, path configuration, app links, bridge components, building them |
 | `docs/DESIGN_SYSTEM.md` | Any UI work: tokens, typography, CSS components, layouts, the Three.js hero |
 | `docs/DATA_MODEL.md` | Tables, migrations, associations, conventions |
@@ -53,7 +53,7 @@ Read the relevant doc before working on that area:
 | `docs/I18N.md` | Locale files, switching, formats, the copy specs |
 | `docs/INTEGRATIONS.md` | Gemini, push, web push, mail, R2, outbound client and inbound webhook shapes |
 | `docs/FIELDS.md` | The menu sections in `/app` on the onboarding models: the data registry `config/field_profile.yml`, the data-source clients and `Fields::FetchObservationsJob`, reading and writing |
-| `docs/DATA_SOURCES.md` | Index of external data resources (weather, soil moisture and water, imagery and land cover, soil and terrain, crop characteristics, ag statistics and markets): one file per resource in `docs/data_sources/` with requests, parameters, sample responses, fields and documentation links |
+| `docs/DATA_SOURCES.md` | Index of external data resources (weather, soil moisture and water, imagery and land cover, soil and terrain, crop characteristics, ag statistics and markets, global prices and trade, rotation and nutrients, pests and diseases): one file per resource in `docs/data_sources/` with requests, parameters, sample responses, fields, licence verdicts, overlap with NASA sources and documentation links; a "NASA first" map says which NASA source serves each need before any complement |
 | `docs/RUST.md` | The extension gem: rules, dev loop, CI and Docker steps |
 | `docs/INFRASTRUCTURE.md` | Gemfile, routes, ENV and credentials inventory, testing, CI |
 | `docs/deploy/DEPLOY.md` | Setting up and running production for $0 |
@@ -71,6 +71,7 @@ app/
     concerns/                # Authentication, NativeOnly, PasskeyCeremony
     sessions_controller.rb   # Passkey sign-in
     registrations_controller.rb  # Passkey sign-up
+    sign_in_codes_controller.rb  # Sign-in or sign-up with an emailed code (one unified flow, the "auth" Turbo Frame)
     passkeys_controller.rb   # Add/remove passkeys
     pages_controller.rb      # Landing page + locale switch
     preferences_controller.rb  # Comfort choices (cookie + account); places_controller.rb: Turbo Frames for the finder
@@ -79,13 +80,14 @@ app/
   javascript/preferences/    # reducedMotion() helper read by every animated controller
   javascript/mascot/         # Aluni's character, animator and palette (plain modules behind the mascot controller)
   jobs/                      # ApplicationJob (switchboard aware), sessions/, notifications/
-  mailers/                   # ApplicationMailer, NotificationMailer
+  mailers/                   # ApplicationMailer, NotificationMailer, SignInMailer (the code mail)
   models/                    # User, Session, Passkey, Preferences (value object), FarmerProfile, Farm, Field, FieldCrop, OnboardingSession, PlatformSwitch, DeviceToken, WebPushSubscription, NotificationDelivery, Result
   services/
     application_service.rb   # Result + step + try_external
     core/                    # Ruby wrappers around the Rust extension
     gemini/                  # Gemini client + language lock
     notifications/           # Router channels, purposes registry, push devices
+    auth/                    # Sign-in codes: RequestCode (mail inline), VerifyCode (lock + attempts), CreateAccount, Codes, LinkToken
     onboarding/              # Ask Aluni's engine: topics, reply (two Gemini calls), auto-apply + undo, snapshot, segment
     geocoding/               # Nominatim client (search, reverse) behind the geocoding switch
     crops/                   # Catalog (config/crops/common.yml) + NormalizeService (one Gemini call for free text)

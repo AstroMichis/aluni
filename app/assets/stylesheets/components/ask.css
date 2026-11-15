@@ -1,0 +1,102 @@
+/* Ask Aluni on every app screen (shared/_ask_aluni): the mascot waving from
+   the corner, and the chat in a native <dialog>: a sheet from the bottom on
+   phones, a panel in the corner from 641 px. The chat inside is the Ask
+   Aluni page's own markup (components/chat.css); here it fills the panel. */
+
+.ask__launcher {
+  position: fixed;
+  right: var(--space-3);
+  /* Lifted over whatever sits at the bottom: the section switcher, a form's actions. */
+  bottom: calc(max(var(--space-3), env(safe-area-inset-bottom)) + var(--ask-over-switch, 0px) + var(--ask-over-actions, 0px));
+  z-index: var(--z-sticky);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  padding: var(--space-1);
+  border-radius: var(--radius-full);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 45%, var(--color-border-default));
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  animation: ask-in 600ms 900ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+.ask__launcher:hover { box-shadow: var(--shadow-glow); transform: translateY(-2px); }
+.ask__launcher:active { transform: scale(0.96); }
+.ask__launcher .mascot-avatar { animation: ask-wave 4s 2s ease-in-out infinite; transform-origin: 50% 90%; }
+.ask__label { display: none; padding-right: var(--space-2); }
+
+body:has(.section-switch) { --ask-over-switch: 64px; }
+body:has(.edit-form__actions, .planner__actions) { --ask-over-actions: 72px; }
+
+.ask__panel {
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: none;
+  height: 88dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-lg);
+}
+.ask__panel[open] { display: flex; flex-direction: column; animation: ask-up 260ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.ask__panel::backdrop { background: color-mix(in srgb, var(--color-bg-primary) 55%, transparent); }
+
+.ask__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.ask__title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-base); font-weight: 600; }
+.ask__close {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+.ask__close svg { width: 18px; height: 18px; }
+.ask__close:hover { background: var(--color-bg-hover); color: var(--color-text-primary); }
+
+.ask__frame { display: flex; flex: 1; min-height: 0; flex-direction: column; }
+.ask__frame .chat { flex: 1; min-height: 0; height: auto; border: 0; border-radius: 0; }
+.ask__frame .chat__heading { display: none; }
+.ask__loading { margin: auto; color: var(--color-text-secondary); }
+
+@keyframes ask-in { from { opacity: 0; transform: translateY(12px); } }
+@keyframes ask-up { from { transform: translateY(24px); opacity: 0; } }
+@keyframes ask-wave { 0%, 80%, 100% { transform: rotate(0); } 85% { transform: rotate(-8deg); } 90% { transform: rotate(6deg); } 95% { transform: rotate(-3deg); } }
+
+@media (min-width: 641px) {
+  .ask__label { display: inline; }
+  .ask__panel {
+    inset: auto var(--space-6) var(--space-6) auto;
+    width: 420px;
+    height: min(640px, 85dvh);
+    border-radius: var(--radius-xl);
+  }
+}
+
+@media (min-width: 1025px) {
+  body:has(.section-switch) { --ask-over-switch: 0px; }
+  .ask__launcher { right: var(--space-6); padding: var(--space-2); }
+}
+
+@media (forced-colors: active) {
+  .ask__launcher, .ask__panel { border: 1px solid CanvasText; }
+}

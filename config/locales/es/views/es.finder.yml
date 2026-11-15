@@ -7,7 +7,7 @@ es:
     steps:
       locate:
         title: "¿Dónde está tu campo?"
-        line: "Encontremos tu campo. Usa tu ubicación, busca un pueblo, o toca el mapa y arrastra el marcador hasta tu campo."
+        line: "Encontremos tu campo. Si tu dispositivo pide compartir tu ubicación, permítelo. O busca un pueblo, o toca el mapa y arrastra el marcador hasta tu campo."
         use_my_location: "Usar mi ubicación"
         search_label: "Pueblo o dirección"
         search_placeholder: "Pueblo, vereda o dirección"
@@ -28,12 +28,13 @@ es:
         skip: "Saltar por ahora"
       save:
         title: "Guarda tu campo"
-        line_signed_out: "Último paso. Dime tu nombre y tu dispositivo creará una llave de acceso. Sin contraseña que recordar."
+        line_signed_out: "Último paso. Elige cómo quieres volver la próxima vez: con tu cara o tu huella, o con un código por correo."
+        line_passkey_only: "Último paso. Dime tu nombre y tu dispositivo te mantendrá dentro con tu cara o tu huella."
+        line_code: "Escríbelo aquí y tu campo queda guardado."
         line_signed_in: "Todo está listo. Guarda el campo en tu cuenta."
         name: "Tu nombre"
         name_hint: "Con tu primer nombre o un apodo basta."
-        create_passkey: "Crear mi llave de acceso"
-        passkey_hint: "Tu dispositivo pide tu cara, tu huella o tu código. Nada que recordar."
+        create_passkey: "Guardar mi campo"
         have_account: "Ya tengo una cuenta"
         save_field: "Guardar mi campo"
         signups_closed: "Las cuentas nuevas aún no están abiertas. Inicia sesión para guardar tu campo."
@@ -48,7 +49,7 @@ es:
       esri_attribution: "Teselas © Esri"
       pin: "Tu campo"
     status:
-      locating: "Buscando tu ubicación"
+      locating: "Buscando tu ubicación. Si tu dispositivo pregunta, permítelo."
       located: "Te encontramos. Arrastra el marcador si no está justo en tu campo."
       denied: "No pudimos obtener tu ubicación. Busca un pueblo o toca el mapa."
       unsupported: "Este navegador no puede compartir tu ubicación. Busca un pueblo o toca el mapa."

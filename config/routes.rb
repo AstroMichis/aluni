@@ -60,6 +60,14 @@ scope "(:locale)", locale: /en|es/ do
     post   "sign_in/options", to: "sessions#options",      as: :sign_in_options
     post   "sign_in",         to: "sessions#create"
     delete "sign_out",        to: "sessions#destroy",      as: :sign_out
+    # Sign-in or sign-up with a code sent by email (SignInCodesController): one
+    # unified flow; the link in the mail carries its token in the query so logs filter it.
+    get    "sign_in/code",          to: "sign_in_codes#show",     as: :sign_in_code
+    post   "sign_in/code",          to: "sign_in_codes#create"
+    post   "sign_in/code/verify",   to: "sign_in_codes#verify",   as: :verify_sign_in_code
+    post   "sign_in/code/resend",   to: "sign_in_codes#resend",   as: :resend_sign_in_code
+    post   "sign_in/code/complete", to: "sign_in_codes#complete", as: :complete_sign_in_code
+    get    "sign_in/link",          to: "sign_in_codes#link",     as: :sign_in_link
     get    "sign_up",         to: "registrations#new",     as: :sign_up
     post   "sign_up/options", to: "registrations#options", as: :sign_up_options
     post   "sign_up",         to: "registrations#create"

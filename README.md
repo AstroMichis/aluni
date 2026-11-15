@@ -1,10 +1,10 @@
 # Aluni
 
-An open source tool for people, not for passwords. The site at aluni.us explains it; the iOS and Android apps are where it is used, with passkeys instead of accounts to remember.
+An open source tool for people, not for passwords. The web app at aluni.us is the product (the iOS and Android shells wrap it): people sign in with a passkey (face, fingerprint or device PIN) or with a six-digit code sent to their email, never a password.
 
 ## Stack
 
-Rails 8.1 on Ruby 4.0.8, PostgreSQL 16, Redis 7 + Sidekiq 8, Hotwire with pure CSS over importmap (no node), Rails built-in sessions with the webauthn gem (passkeys), Hotwire Native shells (`ios/`, `android/`), a Rust extension for heavy service steps (`vendor/gems/aluni_core`), Kamal 2 deploys to a Google Compute Engine VM behind a Cloudflare Tunnel, on every push to `main` (`docs/deploy/DEPLOY.md`).
+Rails 8.1 on Ruby 4.0.8, PostgreSQL 16, Redis 7 + Sidekiq 8, Hotwire with pure CSS over importmap (no node), Rails built-in sessions with the webauthn gem (passkeys) and emailed one-time codes, Hotwire Native shells (`ios/`, `android/`), a Rust extension for heavy service steps (`vendor/gems/aluni_core`), Kamal 2 deploys to a Google Compute Engine VM behind a Cloudflare Tunnel, on every push to `main` (`docs/deploy/DEPLOY.md`).
 
 ## Getting started
 

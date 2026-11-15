@@ -38,7 +38,7 @@ class PasskeysController < ApplicationController
   def destroy
     passkey = Current.user.passkeys.find(params[:id])
 
-    if Current.user.passkeys.count <= 1
+    if Current.user.passkeys.count <= 1 && Current.user.email_verified_at.nil?
       redirect_to passkeys_path, alert: t(".last_passkey"), status: :see_other
     else
       passkey.destroy

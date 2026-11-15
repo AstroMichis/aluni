@@ -17,4 +17,13 @@ module ApplicationHelper
   def passkey_messages
     I18n.t("passkeys.errors").to_json
   end
+
+  # "ada@example.com" shown back as "a***@example.com": enough to recognise the
+  # address a code went to, not enough to read it off someone's screen.
+  def masked_email(email)
+    local, domain = email.to_s.split("@", 2)
+    return email.to_s if local.blank? || domain.blank?
+
+    "#{local[0]}***@#{domain}"
+  end
 end

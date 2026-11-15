@@ -33,7 +33,17 @@ module Platform
         Rails.application.credentials.dig(:action_push_native, :fcm, :project_id).present?
     end
 
+    # Outgoing mail is configured in production once SMTP credentials exist; development
+    # writes mail to tmp/mails and test keeps it in memory, so both count as configured.
+    def mail? = !Rails.env.production? || Rails.application.credentials.dig(:smtp, :address).present?
+
     # Web Push needs VAPID keys (credentials web_push.*; `bin/rails web_push:vapid_keys`).
     def web_push? = Rails.application.credentials.dig(:web_push, :public_key).present?
+
+    # Social sign-in providers registered with OmniAuth (config/initializers/omniauth.rb):
+    # each one appears once its credentials exist (oauth.google.*, oauth.apple.*, oauth.microsoft.*).
+    def oauth_providers = Array(Rails.configuration.x.oauth.providers)
+
+    def oauth?(provider) = oauth_providers.include?(provider.to_s)
   end
 end

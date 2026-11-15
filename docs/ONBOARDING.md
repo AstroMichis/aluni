@@ -19,8 +19,9 @@ GET /   (locale from the cookie, else Accept-Language)
                 "Make it comfortable" [Larger text] [Read aloud] [Less motion] [High contrast]   [Looks good]
   afterwards    "Let's find your field."  [Find my field] [Show me around]
 Field finder (panel: bottom sheet on phones, side panel from 1025 px; Aluni docks into its header)
-  1 Locate   [Use my location]  or  town / address -> Search (Turbo Frame #place-results)
-             Leaflet map (OpenStreetMap tiles, satellite toggle), draggable pin  ->  [This is my field]
+  1 Locate   the device position is asked for as the step opens (allow the prompt and the pin lands)
+             or  town / address -> Search (Turbo Frame #place-results)
+             Leaflet map (OpenStreetMap tiles, satellite toggle, [Use my location] to ask again), draggable pin  ->  [This is my field]
              -> reverse geocoding (Turbo Frame #place-summary): place, region, country, coordinates
   2 Basics   crop now (type-ahead over config/crops/common.yml, free text normalised later)
              [Rainfed] [Irrigated]   area (optional) [ha | acres]   [Continue] [Skip for now]
@@ -57,12 +58,23 @@ button and the tour's last step fire it through `emit_controller.js`) and docks 
 mascot into `#finder-companion`. It is a `.panel` with three steps, one visible at a
 time, each announced (`aria-live`) and spoken (`data-speak`).
 
-1. **Locate.** `geolocate_controller.js` asks the device for a position; the search
+1. **Locate.** The step asks the device for its position the moment it opens without
+   a pin (the finder dispatches `finder:locate`, `geolocate_controller.js#request`):
+   the person has just said "Find my field", so the browser's permission prompt is
+   the only thing to answer, the status line says so ("Finding your location. If your
+   device asks, allow it.") and the pin lands when the device answers. A refusal, a
+   timeout or an unsupported browser shows a calm line pointing at the search and the
+   map; "Use my location" (a small control over the map, next to the satellite
+   toggle, disabled and `aria-busy` while a request is pending) asks again. An
+   automatic answer never replaces a pin placed while it was pending. The search
    form submits to `GET /places?q=` and renders `places/_results` into the
    `place-results` frame (a listbox of up to five results from
    `Geocoding::Client#search`); picking one, or the device position, moves the
    Leaflet pin (`vendor/javascript/leaflet.js`, OpenStreetMap tiles with a satellite
-   toggle on Esri World Imagery, tap to move, arrow keys nudge). "This is my field"
+   toggle on Esri World Imagery, tap to move, arrow keys nudge). The native shells
+   do not yet grant web geolocation (no location usage key on iOS, no
+   `onGeolocationPermissionsShowPrompt` on Android), so inside the apps the
+   automatic attempt fails and the search and the map carry the step. "This is my field"
    loads `GET /places/reverse?lat&lon` into the `place-summary` frame: place label,
    region, country code and the coordinates. Both frames answer 200 with a calm
    line when the geocoder fails or the `geocoding` switch is paused. Nothing is
@@ -73,7 +85,7 @@ time, each announced (`aria-live`) and spoken (`data-speak`).
    `Crops::NormalizeService`: the catalog first (about 60 crops with English and
    Spanish names and aliases, accent-insensitive), otherwise one structured Gemini
    call (`crop_name`, `scientific_name`, `confidence`), falling back to the raw text.
-3. **Save.** Signed out: a name and the passkey ceremony (`passkey_controller.js`);
+3. **Save.** Signed out: two equal cards, "Use your face or fingerprint" (the passkey ceremony, `passkey_controller.js`) and "Email me a code" (`SignInCodesController`, `docs/AUTH.md`; the card expands by default where passkeys are unsupported); with the passkey card, a name and the ceremony;
    the form's flat hidden inputs (`latitude, longitude, place_label, country_code,
    admin_area, location_source, crop_name, irrigation, area, area_unit, locale`) are
    posted as a flat JSON map, parked in `session[:registration]["field"]` by
@@ -334,7 +346,7 @@ Run: `mise exec -- bundle exec rspec spec/services/onboarding spec/services/gemi
 - Comfort choices (text size, read aloud, less motion, high contrast) are one tap each, apply instantly, persist for every visit (cookie, then the account) and are repeated by the small nav buttons from 641 px.
 - Read aloud is the browser voice (`speech:read`); every new Aluni line and every finder step is spoken when it is on; nothing ever waits on speech.
 - Less motion by choice behaves like the OS setting: the mascot skips the centre and the walk, the hero shows its CSS backdrop, nothing animates in (`reducedMotion()` everywhere).
-- Keyboard: every control is a real button, link or form field with a visible focus ring; the finder moves focus to each step heading, Escape closes it, arrow keys nudge the map pin, and the search box and "Use my location" are the keyboard paths around the map.
+- Keyboard: every control is a real button, link or form field with a visible focus ring; the finder moves focus to each step heading, Escape closes it, arrow keys nudge the map pin, and the search box and "Use my location" (over the map) are the keyboard paths around the map; the automatic location request announces its progress and its outcome through the status line.
 - Screen readers: the bubble is a labelled dialog, the finder steps announce through `aria-live`, map tiles are decorative and the place summary is text.
 - 48 px targets, `min-width` queries, both themes and high contrast checked at 390, 768, 1024 and 1400 px.
 
@@ -343,7 +355,7 @@ Run: `mise exec -- bundle exec rspec spec/services/onboarding spec/services/gemi
 1. A configured Gemini backend (development: `gemini.api_key` in the credentials; production: `GEMINI_BACKEND=vertex` with `GOOGLE_CLOUD_PROJECT`) and `mise exec -- bin/rails 'platform:resume[gemini]'`; without it the crop normaliser falls back to the typed text and Ask Aluni answers with continuation lines.
 2. `mise exec -- bin/dev`, open `http://localhost:3000` (a secure context: passkeys and the share-location button need one; a phone needs an https tunnel with `APP_DOMAIN`, `docs/AUTH.md`). A browser set to Spanish lands on `/es` with the Spanish bubble.
 3. Watch Aluni sprout in the centre and settle in the corner; pick a language, switch on read aloud and larger text, press "Looks good".
-4. "Find my field": allow the location prompt or search "Ames, Iowa", drag the pin, confirm, type "papa criolla" as the crop (it becomes Solanum tuberosum at save), choose irrigated, enter 12 hectares, give a name and create the passkey; land on `/app`.
+4. "Find my field": the location prompt appears on its own; allow it (or search "Ames, Iowa"), drag the pin, confirm, type "papa criolla" as the crop (it becomes Solanum tuberosum at save), choose irrigated, enter 12 hectares, give a name and create the passkey; land on `/app`.
 5. Reload the landing: no intro, Aluni goes straight to "Let's find your field". Open Ask Aluni from the home page, say "I rotate with beans every other year", see the toast and press Undo.
 6. `platform:pause[geocoding]` shows the calm fallback in the finder; `platform:pause[gemini]` shows the continuation lines.
 

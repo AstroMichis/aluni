@@ -16,7 +16,7 @@ You are writing RSpec tests for Aluni. The target is: $ARGUMENTS
 ## Helpers
 
 - `native_headers` (a Hotwire Native user agent), `sign_in_as(user)` (opens a Session and sets the signed cookie), `with_native_web_access(true) { }`
-- `fake_authenticator` (`WebAuthn::FakeClient` at `http://www.example.com`) for passkey ceremonies
+- `fake_authenticator` (`WebAuthn::FakeClient` at `http://www.example.com`) for passkey ceremonies; a sign-in code is read back from `ActionMailer::Base.deliveries.last.text_part.decoded` (clear `deliveries` in a `before`)
 - `Result::Mixin` is included in service, job and request specs: `Success(...)`, `Failure(...)`
 - `ActiveJob::TestHelper` everywhere (`have_enqueued_job`, `have_enqueued_mail`, `perform_enqueued_jobs`)
 - `travel_to` / `freeze_time` (reset after every example)
@@ -66,7 +66,7 @@ JSON endpoints: `post path, params: {...}, headers: native_headers, as: :json` a
 `perform_now` with ids; a missing record does not raise; `have_enqueued_job(...).with(...)` for enqueuing; the switchboard hold (`create(:platform_switch, service: "jobs", paused: true)`).
 
 ### System specs (Cuprite)
-`before { driven_by(:cuprite) }`, `visit root_path(locale: "en")`, `expect(page).to have_css(...)`, `expect_no_server_errors!`. `js_errors: true` makes any JavaScript exception fail the example.
+`before { driven_by(:aluni_cuprite) }`, `visit root_path(locale: "en")`, `expect(page).to have_css(...)`, `expect_no_server_errors!`. `js_errors: true` makes any JavaScript exception fail the example.
 
 ### i18n and copy
 `spec/i18n/` already enforces parity, string keys and the copy rules; new strings need both locales or the suite fails.

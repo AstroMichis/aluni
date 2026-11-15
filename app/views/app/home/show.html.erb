@@ -199,11 +199,5 @@
     </div>
   </main>
 
-  <%# Aluni is always one tap away, waving from the corner. %>
-  <%= link_to app_onboarding_path, class: "dial-ask", data: { action: "radial-menu#go" } do %>
-    <%= render "shared/mascot_avatar", size: "md" %>
-    <span class="dial-ask__label"><%= t(".ask", app_name: t("app_name")) %></span>
-  <% end %>
-
   <div class="dial-page__bloom" data-radial-menu-target="bloom" aria-hidden="true"></div>
 </div>
