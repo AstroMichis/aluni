@@ -50,7 +50,8 @@ module Meteomatics
       start = Time.now.utc.beginning_of_hour
       window = "#{iso(start)}--#{iso(start + hours.to_i.hours)}:#{step}"
       point = "#{lat.to_f.round(4)},#{lon.to_f.round(4)}"
-      path = "#{window}/#{parameters.join(",")}/#{point}/json"
+      # Leading slash: a relative path starting "2026-...T12:" would parse as a URI scheme.
+      path = "/#{window}/#{parameters.join(",")}/#{point}/json"
 
       cached(cache_key(lat, lon, hours, step, parameters, start)) { fetch(path) }
     end
