@@ -8,6 +8,8 @@
   align-items: start;
 }
 
+.onboarding__chat-frame { display: block; min-width: 0; }
+
 .onboarding__chat {
   height: calc(100dvh - var(--space-20) - var(--space-16));
   min-height: 420px;

@@ -13,10 +13,15 @@ export default class extends Controller {
   }
 
   connect() {
+    // Turbo keeps a copy of the page for Back; an open dialog would come back
+    // open but no longer modal, so it closes before the copy is taken.
+    this.closeForCache = () => { if (this.dialogTarget.open) this.close() }
+    document.addEventListener("turbo:before-cache", this.closeForCache)
     if (this.openValue) this.open()
   }
 
   disconnect() {
+    document.removeEventListener("turbo:before-cache", this.closeForCache)
     this.setInert(false)
     this.lastActiveElement = null
   }

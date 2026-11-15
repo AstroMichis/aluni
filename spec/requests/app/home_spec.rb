@@ -13,7 +13,7 @@ RSpec.describe "The main menu's ways around", type: :request do
     expect(response.body).to include('class="dial-page__tools"')
     expect(response.body).to include(%(aria-label="#{I18n.t('layouts.passkeys', locale: :es)}")).and include(%(href="/es/passkeys"))
     expect(response.body).to include(%(aria-label="#{I18n.t('layouts.sign_out', locale: :es)}"))
-    expect(response.body).to include(I18n.t("app.home.show.ask", app_name: I18n.t("app_name"), locale: :es)).and include(%(href="/es/app/onboarding"))
+    expect(response.body).to include(I18n.t("shared.ask_aluni.open", app_name: I18n.t("app_name"), locale: :es)).and include(%(src="/es/app/onboarding"))
   end
 
   it "steps through the sections with arrows and a dot each, the selected one marked" do
