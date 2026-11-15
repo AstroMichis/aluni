@@ -94,6 +94,7 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
   end
 
   it "compares rotations and turns a strategy into next season's plan" do
+    allow(Gemini::Client).to receive(:configured?).and_return(false)
     get app_field_rotation_path(field, locale: "en"), headers: native_headers
     expect(response).to have_http_status(:ok)
     expect(response.body).to include(I18n.t("app.rotations.strategies.current.title")).and include(I18n.t("app.rotations.strategies.small_grain.title"))

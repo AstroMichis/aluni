@@ -37,6 +37,7 @@ class ConfigurationsController < ApplicationController
     [
       { patterns: [ ".*" ], properties: { context: "default", pull_to_refresh_enabled: true, animated: true } },
       { patterns: [ "#{lp}/(sign_in|sign_up)$" ], properties: { context: "default", presentation: "replace", pull_to_refresh_enabled: false } },
+      { patterns: [ "#{lp}/sign_in/(code|link)(/.*)?$" ], properties: { context: "default", pull_to_refresh_enabled: false } },
       { patterns: [ "#{lp}/sign_out$" ], properties: { presentation: "clear_all" } },
       { patterns: [ "/new$", "/edit$" ], properties: { context: "modal", modal_style: "large", modal_dismiss_gesture_enabled: false, pull_to_refresh_enabled: false } },
       { patterns: [ "#{lp}/passkeys$" ], properties: { pull_to_refresh_enabled: false } }

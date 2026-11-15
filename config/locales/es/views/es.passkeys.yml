@@ -3,6 +3,7 @@ es:
     index:
       title: "Tus llaves de acceso"
       lede: "Cada dispositivo desde el que entras tiene su propia llave. Agrega una antes de cambiar de teléfono."
+      lede_empty: "Agrega una llave de acceso para entrar con tu cara o tu huella la próxima vez."
       added_on: "Agregada el %{date}"
       last_used: "último uso %{date}"
       never_used: "sin usar todavía"

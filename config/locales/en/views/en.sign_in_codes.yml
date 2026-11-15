@@ -1,0 +1,48 @@
+en:
+  sign_in_codes:
+    choice:
+      passkey_title: "Use your face or fingerprint"
+      passkey_line: "Your device checks it is you. Nothing about you is sent to us."
+      what_is_passkey_question: "What is a passkey?"
+      what_is_passkey: "A passkey is a key your device keeps for this site and unlocks with your face, fingerprint or device PIN. It never leaves your device, so there is nothing to remember and nothing to steal."
+      email_title: "Email me a code"
+      email_line: "We send a 6-digit code to your email. Type it here. Nothing to remember."
+      email_label: "Your email"
+      name_label: "Your name"
+      send_button: "Send the code"
+      errors:
+        invalid_email: "That does not look like an email address. Check it and try again."
+        unavailable: "Email is not available right now. Use your face or fingerprint instead."
+        expired: "That code is no longer valid. Ask for a new one."
+        signups_closed: "New accounts are not open yet. Sign in with the email you already use, or come back soon."
+    code:
+      sent: "I sent a code to %{destination}."
+      valid_for: "It works for 10 minutes."
+      label: "Your 6-digit code"
+      placeholder: "000 000"
+      continue: "Continue"
+      resend: "Send a new code"
+      resend_in: "Resend in %{seconds} s"
+      attempts_left:
+        one: "1 try left."
+        other: "%{count} tries left."
+      wrong: "That code doesn't match."
+      use_passkey: "Use your face or fingerprint instead"
+      check_spam: "Nothing yet? Give it a minute and check your spam folder."
+    name:
+      title: "What should I call you?"
+      confirmed: "%{destination} is confirmed."
+      label: "Your name"
+      hint: "A first name or a nickname is enough."
+      continue: "Continue"
+      errors:
+        name_required: "Tell me what to call you first."
+    link:
+      title: "Your code"
+      line: "Type this code where you asked for it:"
+      hint: "It is for %{destination} and works for 10 minutes. You can close this page afterwards."
+    show:
+      titles:
+        sign_in: "Sign in"
+        sign_up: "Create an account"
+        finder: "Save your field"

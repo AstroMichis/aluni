@@ -1,0 +1,54 @@
+<%# The code is on its way: the masked address, one input for the six digits (typed or pasted as "123 456"),
+    Continue, Resend with its cooldown and the way back to the passkey card. Locals: destination (the email),
+    resend_after (seconds until a new code may be asked, 0 when it may), attempts_left (Integer or nil),
+    error (nil | :wrong | :unavailable), mode ("sign_in" | "sign_up" | "finder"). The verify form targets
+    _top: success is a redirect into the app, a failure a Turbo Stream that swaps this frame. The resend
+    form stays in the frame. sign_in_code_controller.js groups the digits, enables Continue at six, counts
+    the cooldown down and hands Aluni's line to read aloud and to the mascot. %>
+<% mode = local_assigns.fetch(:mode, "sign_in") %>
+<% error = local_assigns[:error] %>
+<% attempts_left = local_assigns[:attempts_left] %>
+<% resend_after = local_assigns[:resend_after].to_i %>
+<% finder = mode == "finder" %>
+<% prefix = finder ? "finder" : "auth" %>
+<% back_path = { "sign_up" => sign_up_path, "finder" => root_path }.fetch(mode, sign_in_path) %>
+<div class="code-entry" data-controller="sign-in-code"
+     data-sign-in-code-resend-after-value="<%= resend_after %>"
+     data-sign-in-code-resend-template-value="<%= t("sign_in_codes.code.resend_in", seconds: "{n}") %>"
+     data-sign-in-code-lang-value="<%= I18n.locale %>">
+  <p class="code-entry__line" data-speak data-sign-in-code-target="line">
+    <%= t("sign_in_codes.code.sent", destination: masked_email(local_assigns[:destination])) %>
+    <%= t("sign_in_codes.code.valid_for") %>
+    <%= t("finder.steps.save.line_code") if finder %>
+  </p>
+
+  <%= form_with url: verify_sign_in_code_path, id: "#{prefix}-verify", class: "code-entry__form", data: { turbo_frame: "_top" } do %>
+    <label class="input-group__label" for="<%= prefix %>-code-input"><%= t("sign_in_codes.code.label") %></label>
+    <input id="<%= prefix %>-code-input" class="input code-input" type="text" name="code" inputmode="numeric" autocomplete="one-time-code"
+           pattern="[0-9 ]*" maxlength="7" required autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go"
+           placeholder="<%= t("sign_in_codes.code.placeholder") %>" aria-describedby="<%= prefix %>-code-status"
+           <% if error == :wrong %>aria-invalid="true"<% end %>
+           data-sign-in-code-target="input" data-action="input->sign-in-code#format">
+    <p id="<%= prefix %>-code-status" class="code-entry__status<%= " code-entry__status--error" if error %>" role="status" aria-live="polite">
+      <% if error == :wrong %>
+        <%= t("sign_in_codes.code.wrong") %>
+        <%= t("sign_in_codes.code.attempts_left", count: attempts_left) if attempts_left %>
+      <% elsif error == :unavailable %>
+        <%= t("sign_in_codes.choice.errors.unavailable") %>
+      <% end %>
+    </p>
+    <input type="hidden" name="mode" value="<%= mode %>">
+    <button type="submit" class="btn btn--primary btn--lg btn--full" disabled data-sign-in-code-target="continue"><%= t("sign_in_codes.code.continue") %></button>
+  <% end %>
+
+  <div class="code-entry__actions">
+    <%= form_with url: resend_sign_in_code_path, id: "#{prefix}-resend", class: "code-entry__resend" do %>
+      <input type="hidden" name="mode" value="<%= mode %>">
+      <button type="submit" class="btn btn--ghost" <% if resend_after.positive? %>disabled<% end %> data-sign-in-code-target="resend"><%= t("sign_in_codes.code.resend") %></button>
+      <span class="code-entry__countdown" role="timer" data-sign-in-code-target="countdown"></span>
+    <% end %>
+    <%= link_to t("sign_in_codes.code.use_passkey"), back_path, class: "code-entry__alt", data: { turbo_frame: "auth" } %>
+  </div>
+
+  <p class="code-entry__hint"><%= t("sign_in_codes.code.check_spam") %></p>
+</div>

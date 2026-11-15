@@ -1,0 +1,12 @@
+<%# The "auth" Turbo Frame: every answer of SignInCodesController replaces it. The stage partials
+    (sign_in_codes/_choice, _code_entry, _name) belong to the UI; the locals come from the controller. %>
+<%= turbo_frame_tag "auth" do %>
+  <% case @stage %>
+  <% when :code %>
+    <%= render "sign_in_codes/code_entry", destination: @destination, resend_after: @resend_after.to_i, attempts_left: @attempts_left, error: @error, mode: @mode %>
+  <% when :name %>
+    <%= render "sign_in_codes/name", destination: @destination, error: @error, mode: @mode %>
+  <% else %>
+    <%= render "sign_in_codes/choice", mode: @mode, error: @error %>
+  <% end %>
+<% end %>

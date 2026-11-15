@@ -1,0 +1,30 @@
+<%# A new address proved its code and no name was parked: ask for one. Locals: destination (the proven
+    email), error (nil | :name_required | :signups_closed), mode ("sign_in" | "sign_up" | "finder"). Posts to
+    complete with _top: success is a redirect into the app, a failure a Turbo Stream that swaps the frame.
+    sign_in_code_controller.js only reads the line aloud and focuses the field here. %>
+<% mode = local_assigns.fetch(:mode, "sign_in") %>
+<% error = local_assigns[:error] %>
+<% prefix = mode == "finder" ? "finder" : "auth" %>
+<div class="code-entry" data-controller="sign-in-code" data-sign-in-code-lang-value="<%= I18n.locale %>">
+  <p class="code-entry__line" data-speak data-sign-in-code-target="line"><%= t("sign_in_codes.name.title") %></p>
+  <p class="code-entry__hint"><%= t("sign_in_codes.name.confirmed", destination: masked_email(local_assigns[:destination])) %></p>
+
+  <%= form_with url: complete_sign_in_code_path, id: "#{prefix}-complete", class: "code-entry__form", data: { turbo_frame: "_top" } do %>
+    <div class="input-group">
+      <label class="input-group__label" for="<%= prefix %>-complete-name"><%= t("sign_in_codes.name.label") %></label>
+      <input id="<%= prefix %>-complete-name" class="input" type="text" name="display_name" required maxlength="<%= User::NAME_MAX %>"
+             autocomplete="name" autocapitalize="words" enterkeyhint="done" aria-describedby="<%= prefix %>-complete-status"
+             <% if error %>aria-invalid="true"<% end %> data-sign-in-code-target="focus">
+      <p class="input-group__hint"><%= t("sign_in_codes.name.hint") %></p>
+    </div>
+    <p id="<%= prefix %>-complete-status" class="code-entry__status<%= " code-entry__status--error" if error %>" role="status" aria-live="polite">
+      <% if error == :name_required %>
+        <%= t("sign_in_codes.name.errors.name_required") %>
+      <% elsif error %>
+        <%= t("sign_in_codes.choice.errors.#{error}") %>
+      <% end %>
+    </p>
+    <input type="hidden" name="mode" value="<%= mode %>">
+    <button type="submit" class="btn btn--primary btn--lg btn--full"><%= t("sign_in_codes.name.continue") %></button>
+  <% end %>
+</div>

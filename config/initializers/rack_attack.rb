@@ -23,7 +23,13 @@ end
 
 # Passkey ceremonies and passkey management, with or without a locale prefix:
 # /sign_in, /es/sign_in/options, /en/sign_up, /passkeys, /passkeys/options.
-RACK_ATTACK_AUTH_PATH = %r{\A(?:/(?:en|es))?/(?:sign_in|sign_up|passkeys)(?:/options)?\z}
+RACK_ATTACK_CEREMONY_PATH = %r{\A(?:/(?:en|es))?/(?:sign_in|sign_up|passkeys)(?:/options)?\z}
+# Every authentication page and endpoint: the ceremonies plus the emailed-code flow
+# (/sign_in/code, /sign_in/code/verify, /sign_in/code/resend, /sign_in/code/complete, /sign_in/link).
+RACK_ATTACK_AUTH_PATH = %r{\A(?:/(?:en|es))?/(?:sign_in(?:/code(?:/verify|/resend|/complete)?|/link)?|sign_up|passkeys)(?:/options)?\z}
+# Asking for a code (the mail goes out) and typing one.
+RACK_ATTACK_CODE_REQUEST_PATH = %r{\A(?:/(?:en|es))?/sign_in/code(?:/resend)?\z}
+RACK_ATTACK_CODE_VERIFY_PATH = %r{\A(?:/(?:en|es))?/sign_in/code/(?:verify|complete)\z}
 
 # The onboarding chat actions (each one may cost a Gemini call), with or
 # without a locale prefix: /app/onboarding/message, /es/app/onboarding/skip.
@@ -52,7 +58,27 @@ end
 
 # Passkey ceremonies (options + verification POSTs): stricter than page views.
 Rack::Attack.throttle("passkey-ceremony/ip", limit: 8, period: 60) do |req|
-  req.remote_ip if req.post? && req.path.match?(RACK_ATTACK_AUTH_PATH)
+  req.remote_ip if req.post? && req.path.match?(RACK_ATTACK_CEREMONY_PATH)
+end
+
+# Sign-in codes: a few per address and per IP every quarter hour (each one is a mail),
+# and a cap on typed attempts per IP on top of the five per code.
+Rack::Attack.throttle("codes/email", limit: 5, period: 15.minutes) do |req|
+  next unless req.post? && req.path.match?(RACK_ATTACK_CODE_REQUEST_PATH) && req.form_data?
+
+  begin
+    req.params["email"].to_s.strip.downcase.presence
+  rescue StandardError
+    nil
+  end
+end
+
+Rack::Attack.throttle("codes/ip", limit: 10, period: 15.minutes) do |req|
+  req.remote_ip if req.post? && req.path.match?(RACK_ATTACK_CODE_REQUEST_PATH)
+end
+
+Rack::Attack.throttle("verify/ip", limit: 20, period: 15.minutes) do |req|
+  req.remote_ip if req.post? && req.path.match?(RACK_ATTACK_CODE_VERIFY_PATH)
 end
 
 # Assistant turns (POST and DELETE): a burst limit and an hourly budget per IP.

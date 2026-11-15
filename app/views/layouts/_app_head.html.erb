@@ -23,6 +23,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+<%# Shared files are tracked "reload" in the same order as layouts/public; files only this layout links are
+    "dynamic", so a visit across layouts swaps them without a full reload that would drop the flash. %>
 <%= stylesheet_link_tag "base/variables", "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "base/reset", "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "base/typography", "data-turbo-track": "reload" %>
@@ -32,32 +34,34 @@
 <%= stylesheet_link_tag "components/card", "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "components/badge", "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "components/input", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "components/nav", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "components/modal", "data-turbo-track": "reload" %>
+<%= stylesheet_link_tag "components/nav", "data-turbo-track": "dynamic" %>
 <%= stylesheet_link_tag "components/toast", "data-turbo-track": "reload" %>
+<%= stylesheet_link_tag "components/auth-choice", "data-turbo-track": "reload" %>
+<%= stylesheet_link_tag "components/code-input", "data-turbo-track": "reload" %>
+<%= stylesheet_link_tag "components/modal", "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "components/mascot", "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "components/chat", "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "components/progress", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "components/dropdown", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "components/avatar", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "components/skeleton", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "components/tab-bar", "data-turbo-track": "reload" %>
+<%= stylesheet_link_tag "components/dropdown", "data-turbo-track": "dynamic" %>
+<%= stylesheet_link_tag "components/avatar", "data-turbo-track": "dynamic" %>
+<%= stylesheet_link_tag "components/skeleton", "data-turbo-track": "dynamic" %>
+<%= stylesheet_link_tag "components/tab-bar", "data-turbo-track": "dynamic" %>
 <%= stylesheet_link_tag "components/language-toggle", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "components/screen", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "components/chart", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "components/crop-layout", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "components/vegetation", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "vendor/leaflet", "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "components/timeline", "data-turbo-track": "reload" %>
+<%= stylesheet_link_tag "components/screen", "data-turbo-track": "dynamic" %>
+<%= stylesheet_link_tag "components/chart", "data-turbo-track": "dynamic" %>
+<%= stylesheet_link_tag "components/crop-layout", "data-turbo-track": "dynamic" %>
+<%= stylesheet_link_tag "components/vegetation", "data-turbo-track": "dynamic" %>
+<%= stylesheet_link_tag "vendor/leaflet", "data-turbo-track": "dynamic" %>
+<%= stylesheet_link_tag "components/timeline", "data-turbo-track": "dynamic" %>
 <%= stylesheet_link_tag "layouts/container", "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "layouts/grid", "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "layouts/stack", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "pages/app", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "pages/onboarding", "data-turbo-track": "reload" %>
+<%= stylesheet_link_tag "pages/app", "data-turbo-track": "dynamic" %>
+<%= stylesheet_link_tag "pages/onboarding", "data-turbo-track": "dynamic" %>
+<%= stylesheet_link_tag "pages/menu", "data-turbo-track": "dynamic" %>
+<%= stylesheet_link_tag "pages/fields", "data-turbo-track": "dynamic" %>
+<%= stylesheet_link_tag "pages/sections", "data-turbo-track": "dynamic" %>
 <%= stylesheet_link_tag "pages/auth", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "pages/menu", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "pages/fields", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "pages/sections", "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "utilities/spacing", "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "utilities/visibility", "data-turbo-track": "reload" %>
 <%= stylesheet_link_tag "native", "data-turbo-track": "reload" if hotwire_native_app? %>

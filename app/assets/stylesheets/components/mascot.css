@@ -1,11 +1,11 @@
-/* Aluni, the seedling mascot (mascot_controller.js): the stage, its CSS ground
-   shadow, the speech bubble and the SVG twin. The stage is a small fixed box
-   bottom-left on the landing (the resting corner); the preloader's centred
-   pose, the walk-in, the slide away and the dock are all transforms of this
-   box, so the WebGL canvas never resizes mid-flight. The companion variant
-   sits inside a chat column instead. Mobile first. */
+/* Aluni, the seedling mascot (mascot_controller.js): the stage, the speech
+   bubble and the SVG twin. The stage is a small fixed box bottom-left on the
+   landing (the resting corner); the preloader's centred pose, the walk-in, the
+   slide away and the dock are all transforms of this box, so the WebGL canvas
+   never resizes mid-flight. The specimen carries its own soil disc, so there
+   is no CSS ground shadow. The companion variant sits inside a chat column
+   instead. Mobile first. */
 .mascot {
-  --mascot-shadow: rgba(0, 0, 0, 0.45);
   --mascot-left: max(var(--space-3), env(safe-area-inset-left));
   --mascot-bottom: max(var(--space-3), env(safe-area-inset-bottom));
   --mascot-center-scale: 1.2;
@@ -20,8 +20,6 @@
   transition: transform 1.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity var(--transition-slow);
   will-change: transform;
 }
-
-[data-theme="light"] .mascot { --mascot-shadow: rgba(23, 61, 45, 0.28); }
 
 /* States set by the controller. Offstage is below the viewport on phones and
    left of it on wider screens; onstage is the resting spot. Away and docked
@@ -113,19 +111,6 @@ html[data-motion="reduce"] .mascot.mascot--centered {
 }
 
 .mascot__canvas[hidden] { display: none; }
-
-/* The ground shadow: zero draw calls. It scales with the stage. */
-.mascot__shadow {
-  position: absolute;
-  left: 50%;
-  bottom: 6%;
-  width: 48%;
-  height: 7%;
-  border-radius: var(--radius-full);
-  background: radial-gradient(ellipse at center, var(--mascot-shadow) 0%, transparent 70%);
-  transform: translateX(-50%);
-  opacity: 0.9;
-}
 
 /* The SVG twin, standing where the character would: the loading indicator
    while the scene builds, the stand-in when it cannot run. */

@@ -1,0 +1,122 @@
+/* The emailed code's screens (sign_in_codes/_code_entry, _name and link): Aluni's line, one wide
+   input for six digits shown as "123 456" in the mono face, Continue, Resend with its countdown
+   (a role="timer"), the way back to the passkey card, and the code shown back on the link page. */
+.code-entry {
+  display: grid;
+  gap: var(--space-4);
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+@starting-style {
+  .code-entry { opacity: 0; transform: translateY(8px); }
+}
+
+/* Aluni's line, as in the panel: one short sentence beside an accent rule. */
+.code-entry__line {
+  margin: 0;
+  padding-left: var(--space-3);
+  border-left: 3px solid var(--color-accent);
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-text-primary);
+}
+
+.code-entry__form {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.code-entry .btn--full {
+  white-space: normal;
+  line-height: var(--leading-snug);
+}
+
+/* Six digits, large and spaced; the controller inserts the space after the third. */
+.code-input {
+  min-height: 64px;
+  padding-inline: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-3xl);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+  text-align: center;
+}
+
+.code-input::placeholder { letter-spacing: 0.16em; }
+.code-input[aria-invalid="true"] { border-color: var(--color-danger); }
+
+.code-entry__status {
+  margin: 0;
+  min-height: 1.5em;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.code-entry__status--error { color: var(--color-danger); }
+
+.code-entry__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.code-entry__resend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.code-entry__resend .btn { min-height: 48px; }
+
+.code-entry__countdown {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-tertiary);
+}
+
+.code-entry__countdown:empty { display: none; }
+
+.code-entry__alt {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding-inline: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-accent-text);
+}
+
+.code-entry__hint {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* The link page: the code to type back, large enough to read from the other screen. */
+.code-entry__code {
+  margin: 0;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-4xl);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+  text-align: center;
+  user-select: all;
+}
+
+@media (min-width: 641px) {
+  .code-input { font-size: var(--text-4xl); }
+  .code-entry__code { font-size: var(--text-5xl); }
+}
+
+@media (forced-colors: active) {
+  .code-entry__line { border-left-color: CanvasText; }
+  .code-input[aria-invalid="true"] { outline: 2px solid Highlight; }
+}

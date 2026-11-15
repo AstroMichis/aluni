@@ -8,6 +8,12 @@ sessions_purge_stale:
   queue: maintenance
   description: "Delete sign-in sessions that have not been used for a year"
 
+sign_in_codes_purge:
+  cron: "30 3 * * *"   # 03:30 UTC daily
+  class: "SignInCodes::PurgeJob"
+  queue: maintenance
+  description: "Delete sign-in codes and native hand-off tokens older than a day"
+
 weather_daily_alerts:
   cron: "0 10 * * *"  # 10:00 UTC: early morning across the Americas
   class: "Weather::DailyAlertsJob"
