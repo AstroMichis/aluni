@@ -23,7 +23,7 @@ RSpec.describe "Public site", type: :request do
     expect(response.body).to include('data-controller="scroll-story"').and include('id="tour-step-1"').and include('id="tour-step-5"')
     expect(response.body).to include(I18n.t("pages.home.steps.location.title")).and include(I18n.t("pages.home.steps.alerts.title"))
     expect(response.body).to include(I18n.t("pages.home.capabilities.title")).and include('id="get-the-app"')
-    expect(response.body.scan(I18n.t("shared.store_buttons.coming_soon")).size).to eq(2)
+    expect(response.body.scan("store-button__badge").size).to eq(2)
     expect(response.body).not_to include("apps.apple.com")
   end
 
@@ -37,7 +37,7 @@ RSpec.describe "Public site", type: :request do
 
     expect(response.body).to include('href="https://apps.apple.com/app/id1"').and include('rel="noopener"')
     expect(response.body).to include('href="https://play.google.com/store/apps/details?id=us.aluni.app"')
-    expect(response.body).not_to include(I18n.t("shared.store_buttons.coming_soon"))
+    expect(response.body).not_to include("store-button__badge")
   end
 
   it "offers the field finder and sign-in to browsers" do
@@ -83,7 +83,7 @@ RSpec.describe "Public site", type: :request do
 
     expect(response.body).to include(I18n.t("pages.home.sign_in")).and include("sign_in")
     expect(response.body).not_to include('data-controller="scroll-story"')
-    expect(response.body).not_to include(I18n.t("shared.store_buttons.coming_soon"))
+    expect(response.body).not_to include("store-button__badge")
   end
 
   it "switches the locale and goes back where the person was" do
