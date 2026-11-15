@@ -7,7 +7,7 @@
 #   bin/rails platform:bootstrap                # first deploy: pause what costs money
 namespace :platform do
   # Services paused on first deploy; resumed one by one as each is set up.
-  bootstrap_paused = %w[cron gemini mail push].freeze
+  bootstrap_paused = %w[cron gemini mail push meteomatics].freeze
 
   toggle = lambda do |service, paused, reason|
     result = Platform::ToggleService.call(service: service, paused: paused, reason: reason.presence || "rake")

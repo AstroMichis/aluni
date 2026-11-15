@@ -55,6 +55,7 @@ rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), weba
 | `GEMINI_FLASH_MODEL`, `GEMINI_PRO_MODEL`, `GEMINI_TRANSCRIBE_MODEL`, `GEMINI_CHAT_MAX_OUTPUT_TOKENS` | gemini.rb |
 | `GEMINI_BACKEND` (`api_key` default, `vertex` in production), `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION` (`global`) | gemini.rb, `Gemini::Client.backend`, `Gemini::VertexToken` |
 | `ACTIVE_STORAGE_SERVICE` (`cloudflare_r2` or `local`), `KAMAL_BACKUP` (`0` leaves the R2 backup accessory out) | production.rb, deploy.yml |
+| `METEOMATICS_USERNAME`, `METEOMATICS_PASSWORD`, `METEOMATICS_CACHE_TTL_SECONDS` | meteomatics.rb, `Meteomatics::Client` (off while unset) |
 | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET` | storage.yml fallbacks, backup accessory |
 | `APNS_DEVELOPMENT` | push.yml |
 | `MAILER_FROM` | ApplicationMailer fallback |
@@ -67,7 +68,7 @@ rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), weba
 
 ## Credentials keys (`bin/rails credentials:edit`)
 
-`secret_key_base`, `active_record_encryption.{primary_key,deterministic_key,key_derivation_salt}` (or the three `ACTIVE_RECORD_ENCRYPTION_*` Kamal secrets), `gemini.api_key` (only with `GEMINI_BACKEND=api_key`; the Vertex backend needs no key), `redis.url`, `production.database_url`, `r2.{account_id,access_key_id,secret_access_key}`, `mailer.from`, `smtp.{address,port,user_name,password,domain}`, `web_push.{public_key,private_key,subject}`, `action_push_native.apns.{key_id,encryption_key,team_id,topic}`, `action_push_native.fcm.{encryption_key,project_id}`, `native_app.{apple_team_id,android_cert_sha256}`.
+`secret_key_base`, `active_record_encryption.{primary_key,deterministic_key,key_derivation_salt}` (or the three `ACTIVE_RECORD_ENCRYPTION_*` Kamal secrets), `gemini.api_key` (only with `GEMINI_BACKEND=api_key`; the Vertex backend needs no key), `meteomatics.{username,password}` (or the `METEOMATICS_*` Kamal secrets), `redis.url`, `production.database_url`, `r2.{account_id,access_key_id,secret_access_key}`, `mailer.from`, `smtp.{address,port,user_name,password,domain}`, `web_push.{public_key,private_key,subject}`, `action_push_native.apns.{key_id,encryption_key,team_id,topic}`, `action_push_native.fcm.{encryption_key,project_id}`, `native_app.{apple_team_id,android_cert_sha256}`.
 
 Every flag an initializer derives from ENV or credentials is exposed on `Rails.configuration.x.*` and read through `Platform::Features`, never from ENV in app code.
 
