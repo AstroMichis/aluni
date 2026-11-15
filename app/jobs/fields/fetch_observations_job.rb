@@ -3,7 +3,7 @@
 module Fields
   # Asks the public data sources about a field's pin and keeps one
   # FieldObservation per source. Global first (NASA POWER, FAO GAEZ, the
-  # monthly Landsat/Sentinel-2 NDVI and NASADEM slope from Planetary Computer); the US
+  # monthly Landsat/Sentinel-2 NDVI and NASADEM slope from Planetary Computer, GPM IMERG rain extremes); the US
   # layer (SSURGO, USGS 3DEP, Cropland Data Layer) only when FCC places the pin
   # in a US state. A source that fails is recorded as failed and the others
   # still run; a paused `data` switch holds the whole job (ApplicationJob).
@@ -34,6 +34,7 @@ module Fields
       record("gaez") { gaez }
       record("vegetation") { vegetation }
       record("nasadem") { nasadem }
+      record("gpm_imerg") { gpm_imerg }
       US_SOURCES.each do |source|
         us ? record(source) { send(source) } : mark(source, :out_of_coverage)
       end
@@ -96,6 +97,12 @@ module Fields
       raise DataSources::Client::Error, "NASADEM: #{client.last_error&.dig(:message)}" if terrain.nil?
 
       terrain
+    end
+
+    # How often it pours here: 20 years of GPM IMERG daily rain, summed up (Weather::RainExtremes).
+    def gpm_imerg
+      from, to = Weather::RainExtremes.window
+      Weather::RainExtremes.summarize(NasaPower::Client.new.imerg_daily(**@point, from: from, to: to))
     end
 
     def ssurgo = Ssurgo::Client.new.soil(**@point)

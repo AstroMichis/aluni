@@ -13,6 +13,12 @@ module DataSourceStubs
       status: 200, headers: { "Content-Type" => "application/json" }, body: data_source_fixture("power_climatology.json"))
   end
 
+  # GPM IMERG daily rain (mm) as NASA POWER serves it; a wet day and a dry one by default.
+  def stub_imerg(daily = { "20250705" => 62.0, "20250706" => 0.0 })
+    stub_request(:get, %r{power\.larc\.nasa\.gov/api/temporal/daily/point}).with(query: hash_including("parameters" => "IMERG_PRECTOT")).to_return(
+      status: 200, headers: { "Content-Type" => "application/json" }, body: { properties: { parameter: { "IMERG_PRECTOT" => daily } } }.to_json)
+  end
+
   def stub_gaez
     stub_request(:get, %r{gaez-services\.fao\.org/.+/query}).to_return(
       status: 200, headers: { "Content-Type" => "application/json" }, body: data_source_fixture("gaez_query.json"))
@@ -51,6 +57,7 @@ module DataSourceStubs
   def stub_all_data_sources(us: true)
     stub_fcc(us: us)
     stub_power
+    stub_imerg
     stub_gaez
     stub_vegetation
     stub_terrain

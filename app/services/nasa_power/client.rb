@@ -10,6 +10,7 @@ module NasaPower
     # RH2M, WS2M and ALLSKY_SFC_SW_DWN feed the FAO-56 reference
     # evapotranspiration (Weather::Et0).
     CLIMATOLOGY = %w[T2M T2M_MIN T2M_MAX PRECTOTCORR FROST_DAYS RH2M WS2M ALLSKY_SFC_SW_DWN].freeze
+    IMERG = "IMERG_PRECTOT"
     FILL = -999
 
     # The grid cell's mean elevation (m) from the last answer (geometry.coordinates[2]).
@@ -20,6 +21,15 @@ module NasaPower
       body = remember_elevation get("daily/point", **point(latitude, longitude), parameters: DAILY.join(","),
                                 start: from.strftime("%Y%m%d"), end: to.strftime("%Y%m%d"))
       clean(body.dig("properties", "parameter"))
+    end
+
+    # Daily rain from NASA GPM IMERG (Final Run, 0.1°, from June 2000, about
+    # two months behind), which POWER serves in UTC days only:
+    # { "20060101" => 3.2, ... } in mm/day, nil where there is no value.
+    def imerg_daily(latitude:, longitude:, from:, to:)
+      body = get("daily/point", **point(latitude, longitude), parameters: IMERG, "time-standard": "UTC",
+                 start: from.strftime("%Y%m%d"), end: to.strftime("%Y%m%d"))
+      clean(body.dig("properties", "parameter")).fetch(IMERG, {})
     end
 
     # { "T2M" => { "JAN" => -3.95, ..., "ANN" => 10.86 }, "FROST_DAYS" => {...}, ... }

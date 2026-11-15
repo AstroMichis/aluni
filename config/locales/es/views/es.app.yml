@@ -250,6 +250,9 @@ es:
         frost_normal:
           label: Días con helada
           value: "%{value} días en un año típico"
+        heavy_rain:
+          label: Lluvia fuerte
+          value: "%{value} días al año con 25 mm o más"
       index:
         title: Mis terrenos · %{app_name}
         lede: Tus terrenos con su cultivo, su suelo y lo que todavía falta.
@@ -781,7 +784,7 @@ es:
           benefit: Se ajusta mejor a la lluvia que recibes.
         erosion:
           short: Erosión
-          how: Los cultivos en hilera en tu pendiente dejan el suelo expuesto.
+          how: Los cultivos en hilera en tu pendiente, y con lluvia fuerte, dejan el suelo expuesto.
           benefit: Mantiene el suelo en su lugar.
         workload:
           short: Carga de trabajo
@@ -791,6 +794,8 @@ es:
         suitability: "%{crop}: %{class} en tu punto."
         water: "%{crop} necesita unos %{need} mm; la lluvia usual cubre unos %{effective} mm."
         slope: Pendiente de %{value} %.
+        heavy_rain: "Unos %{days} días al año llueven 25 mm o más, sobre todo en %{months} (%{years} años de lluvia por satélite)."
+        heavy_rain_rare: "Aquí la lluvia fuerte es rara: unos %{days} días al año con 25 mm o más (%{years} años de lluvia por satélite)."
         same_family: "%{crop} seguiría a su propia familia."
         monoculture: "%{crop} tres temporadas o más seguidas."
         no_legume: Ninguna leguminosa en cuatro temporadas.
@@ -799,6 +804,7 @@ es:
         low_suitability: Un cultivo tiene aptitud baja en tu punto según FAO GAEZ.
         harvester: Los cereales pequeños necesitan cosechadora; tu equipo no la incluye.
         same_family: Las plagas de una misma familia podrían mantenerse.
+        heavy_rain: Aquí hay días de 50 mm o más todos los años. Los cultivos en hilera dejan el suelo descubierto entre temporadas; deja rastrojo o un cultivo de cobertura en los meses de tormenta.
         establishment: La alfalfa tarda una temporada en establecerse y necesita mercado o animales.
         new_crop: Trae un cultivo que tu campo no ha tenido, y prefieres cambiar con cuidado. Pruébalo primero en una parte del campo.
         contract: Vendes por contrato o para exportar. Consulta con tu comprador antes de cambiar el cultivo.

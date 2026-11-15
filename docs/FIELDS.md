@@ -42,9 +42,12 @@ Five answers drive the comparison and are the only ones the to-do list and progr
 | `gaez` | `Gaez::Client` | global, ~9 km | suitability and attainable yield, rainfed, input level from the profile (budget high or mechanized segment = High) |
 | `ssurgo` | `Ssurgo::Client` | US | map unit, drainage, topsoil sand, clay, organic matter, water capacity, pH |
 | `usgs_elevation` | `Usgs::ElevationClient` | US | elevation, slope |
+| `vegetation` | `PlanetaryComputer::Client#monthly_ndvi` | global, 10 to 30 m | one clear-sky NDVI per month over the last year (Landsat, Sentinel-2); bare periods (`Fields::Vegetation`) |
+| `nasadem` | `PlanetaryComputer::Client#terrain` | 56°S to 60°N, 30 m | elevation, slope (90 m neighbours); the slope where 3DEP has none |
+| `gpm_imerg` | `NasaPower::Client#imerg_daily` + `Weather::RainExtremes` | global, ~10 km | 20 years of daily rain: 25 and 50 mm days per year and month, wettest day, dry spells; erosion and risks |
 | `cdl` | `Cdl::Client` | US | crop per year for the last five years |
 
-All clients share `DataSources::Client` (Faraday, retries, timeouts, `Platform::Switchboard.guard!(:data)`). The GIBS picture is a URL (`Onboarding::AreaImage`), loaded by the browser. Not connected yet (next phase, `status: planned` in the registry): AppEEARS products (SRTM, MODIS phenology, HLS, SMAP), GPM IMERG, OpenET, FAO-56. Gaps: SoilGrids and a global reverse geocoder.
+All clients share `DataSources::Client` (Faraday, retries, timeouts, `Platform::Switchboard.guard!(:data)`). The GIBS picture is a URL (`Onboarding::AreaImage`), loaded by the browser. Not connected yet (next phase, `status: planned` in the registry): AppEEARS products (MODIS phenology, SMAP), OpenET, FAO-56. Gaps: SoilGrids and a global reverse geocoder.
 
 ECOCROP requirements live in `config/ecocrop.yml`, extracted once from the OpenCLIM CSV with `bin/rails ecocrop:extract CSV=path` (`lib/tasks/ecocrop.rake`); until it exists the fit shows as pending. `config/crops/agronomy.yml` maps each crop (keyed like `FieldCrop#crop_key`) to aliases, family, plant shape and its GAEZ name.
 

@@ -17,6 +17,7 @@ module RotationsHelper
   def fact_text(fact)
     values = fact.values.transform_values { |v| v.is_a?(String) && Crops::Agronomy.find(v) ? crop_name(v) : v }
     values[:class] = t("app.crops.suitability.#{values[:class]}") if values[:class]
+    values[:months] = values[:months].map { |m| t("date.month_names")[m] }.to_sentence if values[:months].is_a?(Array)
     t("app.rotations.evidence.#{fact.key}", **values)
   end
 
