@@ -44,6 +44,9 @@ Rails.application.routes.draw do
   scope "(:locale)", locale: /en|es/ do
     root "pages#home"
 
+    # The main menu dial: a web preview for now, the app's first screen later.
+    get "menu", to: "pages#menu", as: :menu
+
     # Passkey sign-in and sign-up (native shells; NATIVE_WEB_ACCESS opens them to browsers).
     get    "sign_in",         to: "sessions#new",          as: :sign_in
     post   "sign_in/options", to: "sessions#options",      as: :sign_in_options

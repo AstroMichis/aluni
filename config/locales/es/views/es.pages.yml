@@ -101,3 +101,98 @@ es:
         footnote: "%{app_name} apoya tu criterio y a tus expertos locales. Nunca los reemplaza."
       get_the_app_title: "Descargar la app"
       get_the_app_body: "Llegará a iPhone y Android. Código abierto, así que cualquiera puede leer cómo funciona."
+    menu:
+      title: "Menú · %{app_name}"
+      lede: "Gira la rueda para elegir a dónde ir: tus terrenos, cultivos, clima, equipo o reportes."
+      eyebrow: "Menú principal"
+      headline: "¿Por dónde empezamos hoy?"
+      dial_label: "Secciones del menú"
+      hint: "Gira la rueda con el dedo, el mouse o las flechas del teclado. Toca el centro para abrir."
+      kicker: "%{number} / %{total}"
+      open: "Abrir"
+      open_section: "Abrir %{title}"
+      add_field: "Agregar un terreno nuevo"
+      back: "Volver al menú"
+      soon: "Próximamente"
+      sections:
+        fields:
+          short: "Terrenos"
+          title: "Mis terrenos"
+          description: "Tus parcelas, su suelo y su historial."
+          lede: "Cada terreno que trabajas, con su ubicación, su perfil de suelo y los cultivos que ha tenido."
+          options:
+            add:
+              title: "Agregar un terreno"
+              body: "Marca un punto o dibuja el contorno. El suelo se completa solo."
+            map:
+              title: "Mapa de terrenos"
+              body: "Todas tus parcelas en un mapa, coloreadas por su cultivo actual."
+            soil:
+              title: "Perfiles de suelo"
+              body: "Textura, materia orgánica, drenaje y pendiente de cada terreno."
+            history:
+              title: "Historial del terreno"
+              body: "Cultivos y temporadas pasadas, año por año."
+        crops:
+          short: "Cultivos"
+          title: "Mis cultivos"
+          description: "Lo que está creciendo, la rotación y consejos para producir más."
+          lede: "Lo que hay en la tierra hoy, lo que viene después y consejos para mejorar cada cosecha."
+          options:
+            current:
+              title: "Creciendo ahora"
+              body: "Cada cultivo con su etapa y los días desde la siembra."
+            rotation:
+              title: "Planificador de rotación"
+              body: "Compara rotaciones lado a lado antes de decidir."
+            calendar:
+              title: "Calendario de cultivo"
+              body: "Ventanas de siembra, cuidado y cosecha para tu zona."
+            tips:
+              title: "Consejos para tu cultivo"
+              body: "Formas prácticas de cuidar el suelo y mejorar la producción."
+        weather:
+          short: "Clima"
+          title: "Clima"
+          description: "Pronóstico, lluvia y humedad del suelo en tus terrenos."
+          lede: "El pronóstico donde cultivas, con lluvia, heladas y qué tan húmeda está la raíz."
+          options:
+            forecast:
+              title: "Pronóstico"
+              body: "Siete días de temperatura, lluvia y viento."
+            moisture:
+              title: "Lluvia y humedad del suelo"
+              body: "Lo que llovió esta semana y cuánta agua guarda el suelo."
+            alerts:
+              title: "Alertas de clima"
+              body: "Heladas, calor y tormentas, antes de que lleguen a tus terrenos."
+        staff:
+          short: "Equipo"
+          title: "Mi equipo"
+          description: "Las personas que trabajan contigo y sus tareas."
+          lede: "Quién trabaja en cada terreno, qué está haciendo y qué puede ver."
+          options:
+            team:
+              title: "Integrantes"
+              body: "Invita a las personas que trabajan contigo."
+            tasks:
+              title: "Tareas"
+              body: "Asigna trabajo por terreno y sigue su avance."
+            roles:
+              title: "Roles y acceso"
+              body: "Decide quién puede ver y cambiar cada terreno."
+        reports:
+          short: "Reportes"
+          title: "Reportes"
+          description: "Temporadas, rendimientos y costos en un solo lugar."
+          lede: "Un resumen claro de cada temporada para planear la siguiente y compartirlo."
+          options:
+            season:
+              title: "Resumen de temporada"
+              body: "Cultivos, clima y resultados de la temporada."
+            yield:
+              title: "Rendimiento y costos"
+              body: "Compara producción y gastos entre terrenos."
+            export:
+              title: "Exportar"
+              body: "Descarga un reporte para compartir con tu asesor o comprador."

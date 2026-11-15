@@ -22,7 +22,7 @@ Fonts (placeholders, swap in one place): Inter (UI, `--font-sans`), Fraunces (di
 base/        variables, reset, typography, global (focus ring, forced-colors, the one global reduced-motion rule, print)
 components/  button, card, badge, input, nav, modal, toast, dropdown, avatar, skeleton, language-toggle, tab-bar, public-footer, phone-frame, store-button
 layouts/     container, grid, stack (.stack, .cluster)
-pages/       landing, auth, app
+pages/       landing, auth, menu, app
 utilities/   spacing (mt-*, mb-*, p-*), visibility (.sr-only, .hidden, .hidden-mobile, .hidden-desktop)
 native.css   loaded only when hotwire_native_app?: hides web chrome the shells replace
 application.css  empty on purpose
@@ -52,9 +52,15 @@ The tour drives it. `scroll_story_controller` dispatches `window` `landing:progr
 
 Lifecycle: reduced motion shows the backdrop and reveals the copy, never importing Three; a 1.5 s safety timer reveals the copy even if the 1.3 MB import is slow; otherwise `await import("three")` (vendored r169, `preload: false`), bail if disconnected meanwhile; `initScene` and every animation frame run in try/catch (no WebGL or a crash: warn, tear down, backdrop); renderer capped at 2560x1440 with CSS at 100%, pixel ratio 1.5 on mobile, 1.75 on coarse pointers, 2 otherwise; resize and orientation debounced through rAF; clock paused on `visibilitychange`; palette follows `html[data-theme]` through a `MutationObserver` and recolours fog, lights, ground and plants; `disconnect()` removes every listener, disposes every geometry and material, disposes the renderer and removes the canvas. The fields are the site's one signature; every visual element has a purpose, no glow for its own sake.
 
+## The menu dial (`/menu`, `radial_menu_controller.js`)
+
+The main menu: a web preview now, the app's first screen later. `MenuHelper::SECTIONS` maps each section key (fields, crops, weather, staff, reports) to its panel options; copy lives in `pages.menu.*` and panels follow the sectors' order. The SVG (`viewBox -102..102`, centre 0,0) is drawn on the server: one wedge path in `<defs>`, reused through `<use>` at 12 o'clock and rotated into place, with a `<pattern>` texture in its tint, an icon and a short label. The key doubles as `data-tone`, which sets `--tint` from a status token: fields `--color-warning`, crops `--color-success`, weather `--color-info`, staff `--color-secondary-hover`, reports `--color-accent`.
+
+The controller turns the rotor with a pointer drag (touch first: `touch-action: none`, capture after 6 px so taps still click, flick momentum, a spring that snaps to the nearest section), the wheel or trackpad (one section per 60 px), and the arrow keys on the `role="slider"` SVG. The section under the gold marker is the selection; the hub button in the centre swaps its kicker, title and description while the wheel moves, and labels counter-rotate to stay upright. Tapping the selected wedge, the hub or Enter opens a modal `<dialog>`: a circle placed over the hub scales past the screen's diagonal (Web Animations, transform and opacity only), the stage zooms out behind it and the panel's cards rise in a stagger. Close (button or Escape) plays it backwards and returns focus to the hub. Reduced motion snaps and cuts with zero durations.
+
 ## Stimulus controllers
 
-`theme`, `dialog`, `toast`, `dropdown`, `clipboard`, `web_share`, `scroll_reveal`, `scroll_story` (the landing tour: one passive scroll listener, an IntersectionObserver on the viewport centre, `--active`/`--idle` step classes, `aria-current` on the dots, the `landing:progress` event), `landing_nav`, `hero_scene`, `passkey`, `web_push`, `bridge/{share,notification_token,push_permission}`. Rules and templates: `.claude/commands/stimulus.md`.
+`theme`, `dialog`, `toast`, `dropdown`, `clipboard`, `web_share`, `scroll_reveal`, `scroll_story` (the landing tour: one passive scroll listener, an IntersectionObserver on the viewport centre, `--active`/`--idle` step classes, `aria-current` on the dots, the `landing:progress` event), `landing_nav`, `hero_scene`, `radial_menu` (the menu dial), `passkey`, `web_push`, `bridge/{share,notification_token,push_permission}`. Rules and templates: `.claude/commands/stimulus.md`.
 
 ## PWA
 

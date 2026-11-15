@@ -1,0 +1,39 @@
+<%# Line glyphs for the menu dial and its panels, paths only (24 grid). %>
+<% case name.to_s %>
+<% when "fields", "map" %>
+  <path d="M3 6.5l6-2.5 6 2.5 6-2.5v13.5l-6 2.5-6-2.5-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/>
+<% when "crops", "current" %>
+  <path d="M12 21v-9"/><path d="M12 12c0-4 3-7 7-7 0 4-3 7-7 7z"/><path d="M12 14.5c0-3-2.5-5.5-6-5.5 0 3 2.5 5.5 6 5.5z"/>
+<% when "weather", "forecast" %>
+  <path d="M7 15a4 4 0 0 1 .4-8 5 5 0 0 1 9.6 1.5 3.5 3.5 0 0 1 0 6.5z"/><path d="M8.5 18.5l-1 2M12.5 18.5l-1 2M16.5 18.5l-1 2"/>
+<% when "staff", "team" %>
+  <path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M15.5 5.3a3 3 0 0 1 0 5.4"/><path d="M17.5 14.5A5.5 5.5 0 0 1 20.5 19"/>
+<% when "reports", "season" %>
+  <path d="M4 4v16h16"/><path d="M8.5 16v-4M12.5 16V8M16.5 16v-6"/>
+<% when "add" %>
+  <path d="M12 5v14M5 12h14"/>
+<% when "soil" %>
+  <path d="M3 8h18M3 13h18M3 18h18"/><path d="M7 10.5h.01M14 10.5h.01M10 15.5h.01M17 15.5h.01"/>
+<% when "history" %>
+  <path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.5"/><path d="M4 4v4.5h4.5"/><path d="M12 8v4l3 2"/>
+<% when "rotation" %>
+  <path d="M20 12a8 8 0 0 1-14 5.3M4 12a8 8 0 0 1 14-5.3"/><path d="M18 3v3.7h-3.7M6 21v-3.7h3.7"/>
+<% when "calendar" %>
+  <path d="M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M4 10h16M8 3v4M16 3v4"/>
+<% when "tips" %>
+  <path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.9V16h5v-.2c0-.8.4-1.5 1-1.9A6 6 0 0 0 12 3z"/>
+<% when "moisture" %>
+  <path d="M12 3.5s6 6.4 6 10.5a6 6 0 0 1-12 0c0-4.1 6-10.5 6-10.5z"/><path d="M9 14.5a3 3 0 0 0 3 3"/>
+<% when "alerts" %>
+  <path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>
+<% when "tasks" %>
+  <path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 6l1.2 1.2L7.5 5M4 12l1.2 1.2 2.3-2.2M4 18l1.2 1.2 2.3-2.2"/>
+<% when "roles" %>
+  <path d="M12 3l7 3v5.5c0 4.3-3 7.8-7 9.5-4-1.7-7-5.2-7-9.5V6z"/><path d="M9 12l2 2 4-4"/>
+<% when "yield" %>
+  <path d="M4 18l5-5 4 3 7-8"/><path d="M15 8h5v5"/>
+<% when "export" %>
+  <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19h14"/>
+<% else %>
+  <path d="M12 12h.01"/>
+<% end %>

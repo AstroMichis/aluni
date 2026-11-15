@@ -101,3 +101,98 @@ en:
         footnote: "%{app_name} supports your judgment and your local experts. It never replaces them."
       get_the_app_title: "Get the app"
       get_the_app_body: "Coming to iPhone and Android. Open source, so anyone can read how it works."
+    menu:
+      title: "Menu · %{app_name}"
+      lede: "Turn the wheel to choose where to go: your fields, crops, weather, team or reports."
+      eyebrow: "Main menu"
+      headline: "Where do we start today?"
+      dial_label: "Menu sections"
+      hint: "Turn the wheel with your finger, the mouse or the arrow keys. Tap the center to open."
+      kicker: "%{number} / %{total}"
+      open: "Open"
+      open_section: "Open %{title}"
+      add_field: "Add a new field"
+      back: "Back to the menu"
+      soon: "Coming soon"
+      sections:
+        fields:
+          short: "Fields"
+          title: "My fields"
+          description: "Your plots, their soil and their history."
+          lede: "Every field you farm, with its location, soil profile and the crops it has carried."
+          options:
+            add:
+              title: "Add a field"
+              body: "Drop a pin or draw the outline. Soil fills in by itself."
+            map:
+              title: "Field map"
+              body: "All your plots on one map, colored by their current crop."
+            soil:
+              title: "Soil profiles"
+              body: "Texture, organic matter, drainage and slope for each field."
+            history:
+              title: "Field history"
+              body: "Past crops and seasons, year by year."
+        crops:
+          short: "Crops"
+          title: "My crops"
+          description: "What is growing, the rotation and tips to yield more."
+          lede: "What is in the ground now, what comes next and advice to improve each harvest."
+          options:
+            current:
+              title: "Growing now"
+              body: "Each crop with its stage and the days since planting."
+            rotation:
+              title: "Rotation planner"
+              body: "Compare rotations side by side before you decide."
+            calendar:
+              title: "Crop calendar"
+              body: "Planting, care and harvest windows for your area."
+            tips:
+              title: "Tips for your crop"
+              body: "Practical ways to protect the soil and improve production."
+        weather:
+          short: "Weather"
+          title: "Weather"
+          description: "Forecast, rain and soil moisture for your fields."
+          lede: "The forecast where you farm, with rain, frost and how wet the root zone is."
+          options:
+            forecast:
+              title: "Forecast"
+              body: "Seven days of temperature, rain and wind."
+            moisture:
+              title: "Rain and soil moisture"
+              body: "What fell this week and how much water the soil holds."
+            alerts:
+              title: "Weather alerts"
+              body: "Frost, heat and storms, before they reach your fields."
+        staff:
+          short: "Team"
+          title: "My team"
+          description: "The people who work with you and their tasks."
+          lede: "Who works on each field, what they are doing and what they can see."
+          options:
+            team:
+              title: "Team members"
+              body: "Invite the people who work with you."
+            tasks:
+              title: "Tasks"
+              body: "Assign work by field and follow its progress."
+            roles:
+              title: "Roles and access"
+              body: "Decide who can see and change each field."
+        reports:
+          short: "Reports"
+          title: "Reports"
+          description: "Seasons, yields and costs in one place."
+          lede: "A clear summary of each season to plan the next one and share it."
+          options:
+            season:
+              title: "Season summary"
+              body: "Crops, weather and results for the season."
+            yield:
+              title: "Yield and costs"
+              body: "Compare production and spending between fields."
+            export:
+              title: "Export"
+              body: "Download a report to share with your advisor or buyer."
