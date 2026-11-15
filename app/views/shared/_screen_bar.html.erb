@@ -1,6 +1,8 @@
 <%# The top bar of every menu section screen: back, title, language and theme,
-    and the section's tabs (ScreenHelper::SECTION_TABS).
-    Locals: back_path, back_label, title, section (optional: shows its tabs).
+    the section's tabs (ScreenHelper::SECTION_TABS) and the switcher that jumps
+    to any other section in one tap (a bottom bar on phones, MenuHelper).
+    Locals: back_path, back_label, title, section (optional: shows its tabs),
+    switcher (default true; false on forms, where a stray tap would lose work).
     Every form in these screens redirects back to its page; Turbo morphs it
     and keeps the scroll. %>
 <% content_for :head, turbo_refreshes_with(method: :morph, scroll: :preserve) %>
@@ -16,6 +18,19 @@
     </button>
   </div>
 </header>
+<% if local_assigns.fetch(:switcher, true) %>
+  <nav class="section-switch" aria-label="<%= t("app.home.show.dial_label") %>">
+    <% menu_sections.each_key do |key| %>
+      <% current = key == current_menu_section %>
+      <%= link_to menu_section_path(key), class: "section-switch__link", data: { tone: key }, aria: { current: ("page" if current) } do %>
+        <svg class="section-switch__glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <%= render "shared/glyph", name: key %>
+        </svg>
+        <span class="section-switch__label"><%= t("app.home.show.sections.#{key}.short") %></span>
+      <% end %>
+    <% end %>
+  </nav>
+<% end %>
 <% if local_assigns[:section] %>
   <nav class="screen__tabs" aria-label="<%= title %>">
     <% section_tabs(section).each do |label, path| %>

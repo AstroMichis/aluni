@@ -1,13 +1,14 @@
 <% content_for :title, t(".menu_title", app_name: t("app_name")) %>
 <% content_for :description, t(".lede") %>
-<% first = menu_sections.keys.first %>
-<% first_title = t("app.home.show.sections.#{first}.title") %>
+<% selected = dial_index(params[:section]) %>
+<% current = menu_sections.keys[selected] %>
+<% current_title = t("app.home.show.sections.#{current}.title") %>
 
 <div class="dial-page"
      data-controller="radial-menu"
      data-radial-menu-selected-class="dial__sector--selected"
      data-radial-menu-dragging-class="dial-page--dragging"
-     data-tone="<%= first %>">
+     data-tone="<%= current %>">
   <header class="dial-page__bar">
     <%= link_to t("app_name"), app_root_path, class: "dial-page__brand" %>
     <details class="dial-page__account">
@@ -43,8 +44,8 @@
         <svg class="dial__svg" viewBox="-102 -102 204 204"
              role="slider" tabindex="0"
              aria-label="<%= t(".dial_label") %>"
-             aria-valuemin="1" aria-valuemax="<%= menu_sections.size %>" aria-valuenow="1"
-             aria-valuetext="<%= first_title %>"
+             aria-valuemin="1" aria-valuemax="<%= menu_sections.size %>" aria-valuenow="<%= selected + 1 %>"
+             aria-valuetext="<%= current_title %>"
              aria-describedby="dial-hint"
              data-radial-menu-target="dial"
              data-action="keydown->radial-menu#key">
@@ -69,13 +70,13 @@
 
           <circle class="dial__track" r="58"/>
 
-          <g data-radial-menu-target="rotor">
+          <g data-radial-menu-target="rotor" transform="rotate(<%= (-selected * dial_step).round(2) %>)">
             <path class="dial__tick" d="<%= dial_ticks_path(long: false) %>"/>
             <path class="dial__tick dial__tick--long" d="<%= dial_ticks_path(long: true) %>"/>
 
             <% menu_sections.each_key.with_index do |key, i| %>
               <% title = t("app.home.show.sections.#{key}.title") %>
-              <g class="dial__sector<%= " dial__sector--selected" if i.zero? %>"
+              <g class="dial__sector<%= " dial__sector--selected" if i == selected %>"
                  transform="rotate(<%= (i * dial_step).round(2) %>)"
                  data-radial-menu-target="sector"
                  data-action="click->radial-menu#pick"
@@ -84,6 +85,7 @@
                  data-kicker="<%= dial_kicker(i) %>"
                  data-title="<%= title %>"
                  data-description="<%= t("app.home.show.sections.#{key}.description") %>"
+                 data-href="<%= menu_section_path(key) %>"
                  data-open-label="<%= t(".open_section", title: title) %>">
                 <g class="dial__sector-enter" style="--i: <%= i %>">
                   <g class="dial__sector-body">
@@ -107,77 +109,52 @@
           <path class="dial__marker" d="M-3.2 -102 L3.2 -102 L0 -96.6 Z" aria-hidden="true"/>
         </svg>
 
-        <button type="button" class="dial__hub"
-                data-radial-menu-target="hub"
-                data-action="radial-menu#activate"
-                aria-label="<%= t(".open_section", title: first_title) %>">
+        <a class="dial__hub" href="<%= menu_section_path(current) %>"
+           data-radial-menu-target="hub"
+           data-action="radial-menu#go"
+           aria-label="<%= t(".open_section", title: current_title) %>">
           <span class="dial__hub-inner" aria-hidden="true">
-            <span class="dial__kicker" data-radial-menu-target="kicker"><%= dial_kicker(0) %></span>
-            <span class="dial__hub-title" data-radial-menu-target="title"><%= first_title %></span>
-            <span class="dial__hub-description" data-radial-menu-target="description"><%= t("app.home.show.sections.#{first}.description") %></span>
+            <span class="dial__kicker" data-radial-menu-target="kicker"><%= dial_kicker(selected) %></span>
+            <span class="dial__hub-title" data-radial-menu-target="title"><%= current_title %></span>
+            <span class="dial__hub-description" data-radial-menu-target="description"><%= t("app.home.show.sections.#{current}.description") %></span>
             <span class="dial__hub-open">
               <%= t(".open") %>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </span>
           </span>
-        </button>
+        </a>
+      </div>
+
+      <%# The selected section's options, one tap from the wheel. %>
+      <div class="dial-options" aria-live="polite">
+        <% menu_sections.each.with_index do |(key, options), i| %>
+          <ul class="dial-options__list" role="list" data-radial-menu-target="options" data-tone="<%= key %>"
+              aria-label="<%= t("app.home.show.sections.#{key}.title") %>"<%= " hidden" unless i == selected %>>
+            <% options.each do |option| %>
+              <% path = menu_option_path(key, option) %>
+              <li>
+                <%= content_tag(path ? :a : :div, href: path, class: ["dial-option", ("dial-option--primary" if option == :add), ("dial-option--link" if path)],
+                                data: (path ? { action: "radial-menu#go" } : {})) do %>
+                  <span class="dial-option__glyph" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                      <%= render "shared/glyph", name: option %>
+                    </svg>
+                  </span>
+                  <span class="dial-option__copy">
+                    <span class="dial-option__title"><%= t("app.home.show.sections.#{key}.options.#{option}.title") %></span>
+                    <span class="dial-option__body"><%= t("app.home.show.sections.#{key}.options.#{option}.body") %></span>
+                  </span>
+                  <% unless path %><span class="badge badge--secondary dial-option__badge"><%= t(".soon") %></span><% end %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
       </div>
 
       <p class="dial-page__hint" id="dial-hint"><%= t(".hint") %></p>
-
-      <button type="button" class="btn btn--secondary dial-page__add" data-action="radial-menu#openSection" data-radial-menu-tone-param="fields">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
-        <%= t(".add_field") %>
-      </button>
     </div>
   </main>
 
-  <dialog class="dial-panel" data-tone="<%= first %>"
-          aria-labelledby="dial-panel-title-<%= first %>"
-          data-radial-menu-target="dialog"
-          data-action="cancel->radial-menu#cancel close->radial-menu#closed">
-    <div class="dial-panel__bloom" data-radial-menu-target="bloom" aria-hidden="true"></div>
-
-    <div class="dial-panel__bar" data-radial-menu-target="panelBar">
-      <button type="button" class="dial-panel__close" data-action="radial-menu#close" aria-label="<%= t(".back") %>">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
-      </button>
-      <span class="dial-panel__crumb"><%= t(".eyebrow") %></span>
-    </div>
-
-    <% menu_sections.each.with_index do |(key, options), i| %>
-      <section class="dial-panel__section" data-radial-menu-target="panel" aria-labelledby="dial-panel-title-<%= key %>" hidden>
-        <header class="dial-panel__header">
-          <span class="dial-panel__glyph" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">
-              <%= render "shared/glyph", name: key %>
-            </svg>
-          </span>
-          <p class="dial__kicker"><%= dial_kicker(i) %></p>
-          <h2 class="text-display dial-panel__title" id="dial-panel-title-<%= key %>"><%= t("app.home.show.sections.#{key}.title") %></h2>
-          <p class="dial-panel__lede"><%= t("app.home.show.sections.#{key}.lede") %></p>
-        </header>
-
-        <ul class="dial-panel__grid" role="list">
-          <% options.each do |option| %>
-            <% path = menu_option_path(key, option) %>
-            <li data-radial-menu-target="item">
-              <%= content_tag(path ? :a : :div, href: path, class: ["dial-option", ("dial-option--primary" if option == :add), ("dial-option--link" if path)]) do %>
-                <span class="dial-option__glyph" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
-                    <%= render "shared/glyph", name: option %>
-                  </svg>
-                </span>
-                <span class="dial-option__copy">
-                  <span class="dial-option__title"><%= t("app.home.show.sections.#{key}.options.#{option}.title") %></span>
-                  <span class="dial-option__body"><%= t("app.home.show.sections.#{key}.options.#{option}.body") %></span>
-                </span>
-                <% unless path %><span class="badge badge--secondary dial-option__badge"><%= t(".soon") %></span><% end %>
-              <% end %>
-            </li>
-          <% end %>
-        </ul>
-      </section>
-    <% end %>
-  </dialog>
+  <div class="dial-page__bloom" data-radial-menu-target="bloom" aria-hidden="true"></div>
 </div>

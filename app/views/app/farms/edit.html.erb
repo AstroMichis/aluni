@@ -2,7 +2,7 @@
 <% back = params[:return_to] == "team" ? app_team_path : app_farm_path %>
 
 <div class="screen">
-  <%= render "shared/screen_bar", back_path: back, back_label: t("app.fields.edit.cancel"), title: t(".crumb") %>
+  <%= render "shared/screen_bar", back_path: back, back_label: t("app.fields.edit.cancel"), title: t(".crumb"), switcher: false %>
 
   <main id="main" class="screen__body">
     <header class="screen__header">

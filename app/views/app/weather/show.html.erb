@@ -4,7 +4,7 @@
 <% months = days.each_with_index.select { |d, _| d.date.day == 1 } %>
 
 <div class="screen">
-  <%= render "shared/screen_bar", back_path: app_root_path, back_label: t("app.fields.back_to_menu"), title: t(".crumb"), section: :weather %>
+  <%= render "shared/screen_bar", back_path: back_to_menu_path, back_label: t("app.fields.back_to_menu"), title: t(".crumb"), section: :weather %>
 
   <main id="main" class="screen__body">
     <header class="screen__header">

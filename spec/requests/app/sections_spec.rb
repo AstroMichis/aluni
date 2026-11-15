@@ -30,6 +30,19 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
     end
   end
 
+  it "opens the dial on the section a screen came back from, and every screen can jump to any section" do
+    get app_root_path(locale: "en", section: "weather"), headers: native_headers
+    expect(response.body).to include(%(aria-valuetext="#{I18n.t('app.home.show.sections.weather.title')}"))
+    expect(response.body).to include(%(class="dial__hub" href="/en/app/weather"))
+
+    get app_weather_path(locale: "en"), headers: native_headers
+    expect(response.body).to include(%(href="/en/app?section=weather"))
+    expect(response.body).to include('class="section-switch"').and include(%(href="/en/app/team"))
+
+    get edit_app_field_path(field, locale: "en"), headers: native_headers
+    expect(response.body).not_to include('class="section-switch"')
+  end
+
   it "lists the fields and opens one with the farmer's answers and the sources' values" do
     get app_fields_path(locale: "en"), headers: native_headers
     expect(response.body).to include("North field").and include("Corn")
