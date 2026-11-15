@@ -36,7 +36,26 @@ RSpec.describe "Crop services" do
 
     season = Weather::Season.for(field.observation("nasa_power"))
     checks = Crops::Fit.new("zea-mays", season: season, soil: { "ph" => 6.1, "texture" => "heavy" }).checks.to_h { |c| [ c.factor, c.status ] }
-    expect(checks).to eq("temperature" => :possible, "rain" => :optimal, "ph" => :optimal, "texture" => :outside, "drainage" => :unknown)
+    expect(checks).to eq("temperature" => :possible, "rain" => :optimal, "ph" => :optimal, "texture" => :outside, "drainage" => :unknown,
+                         "depth" => :unknown, "salinity" => :unknown)
+  end
+
+  it "reads ECOCROP's tolerated soil classes, depth floors and salinity ceilings" do
+    allow(Crops::Agronomy).to receive(:find).and_call_original
+    entry = Crops::Agronomy.find("zea-mays").dup
+    entry.requirements = { "text" => "medium", "textr" => "heavy, medium, light", "dra" => "well (dry spells)",
+                           "drar" => "poorly (saturated >50% of year), well (dry spells)",
+                           "dep" => "medium (50-150 cm)", "depr" => "shallow (20-50 cm)", "sal" => "low (<4 dS/m)", "salr" => "medium (4-10 dS/m)" }
+    allow(Crops::Agronomy).to receive(:find).with("zea-mays").and_return(entry)
+    season = Weather::Season.for(field.observation("nasa_power"))
+    status = ->(soil) { Crops::Fit.new("zea-mays", season: season, soil: soil).checks.to_h { |c| [ c.factor, c.status ] }.slice("texture", "drainage", "depth", "salinity") }
+
+    expect(status.call("texture" => "medium", "drainage" => "well", "depth" => "deep", "salinity" => "low"))
+      .to eq("texture" => :optimal, "drainage" => :optimal, "depth" => :optimal, "salinity" => :optimal)
+    expect(status.call("texture" => "heavy", "drainage" => "poor", "depth" => "shallow", "salinity" => "medium"))
+      .to eq("texture" => :possible, "drainage" => :possible, "depth" => :possible, "salinity" => :possible)
+    expect(status.call("texture" => "organic", "drainage" => "excessive", "salinity" => "high"))
+      .to eq("texture" => :outside, "drainage" => :outside, "depth" => :unknown, "salinity" => :outside)
   end
 
   it "keeps the weather alerts the farmer wants in the profile" do

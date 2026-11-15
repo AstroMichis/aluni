@@ -544,6 +544,8 @@ en:
           ph: pH
           texture: Texture
           drainage: Drainage
+          depth: Soil depth
+          salinity: Salinity
         statuses:
           optimal: optimal
           possible: possible
