@@ -1,64 +1,151 @@
-# Deploying Aluni for $0
+# Deploying Aluni (GCP)
 
-One Oracle Cloud Always Free Ampere A1 VM (4 OCPU / 24 GB available; the config budgets for 2 OCPU / 12 GB), images in GitHub Container Registry, secrets in the GitHub `production` environment, ingress through a Cloudflare Tunnel (no open inbound port), SSH only over Tailscale. Falls back to any 4 GB+ amd64 VPS by changing `KAMAL_HOST` and `KAMAL_ARCH`.
+One Google Compute Engine VM running everything through Kamal 2: web (Puma), worker (Sidekiq), Postgres 16, Redis 7, kamal-proxy and a Cloudflare Tunnel. Images live in Artifact Registry. Every push to `main` deploys from GitHub Actions without any stored Google key. Nothing on the VM is reachable from the internet except through Cloudflare (HTTP) and Google IAP (SSH).
 
-Steps marked **You** need accounts or secrets Claude Code must never see. Steps marked **Claude Code** can be pasted as prompts.
+The hackathon project currently runs on GCP Free Trial credits, with a USD 50 budget alert. Cloudflare is on the Free plan.
 
-## What you get
-
-web (Puma, 3 threads) + worker (Sidekiq, 3 threads) + Postgres 16 (1 GB shared buffers, least-privilege app role) + Redis 7 (256 MB, noeviction, password) + nightly GPG-encrypted pg_dump to R2 (14 days) + cloudflared. Migrations run once per deploy. Everything that costs money starts paused (`platform:bootstrap`).
-
-## Setup
-
-1. **Accounts and two-factor (You).** GitHub (private repo, 2FA), Oracle Cloud (Always Free), Cloudflare (the aluni.us zone, R2), Tailscale, Apple Developer and Google Play when the shells ship. Turn on 2FA everywhere.
-2. **Keys and secrets (You).** Generate and store offline: `RAILS_MASTER_KEY` (from `config/master.key`), `POSTGRES_PASSWORD`, `APP_DB_PASSWORD`, `REDIS_PASSWORD`, `BACKUP_PASSPHRASE` (without it backups cannot be restored), `SIDEKIQ_WEB_USERNAME` / `SIDEKIQ_WEB_PASSWORD` (long random), an SSH key pair for the `deploy` user (`KAMAL_SSH_KEY`), R2 API tokens (`S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY`, `R2_ACCOUNT_ID`).
-3. **Create the VM (You).** Ubuntu 24.04 arm64 (Ampere A1). Note its Tailscale IP as `KAMAL_HOST`.
-4. **Harden the server (You, with Claude Code's script).** Create the `deploy` user with the SSH key, disable password SSH, `ufw` default deny inbound, install Docker, let `deploy` use Docker. Prompt: "Write the server hardening script for docs/deploy/DEPLOY.md step 4 for Ubuntu 24.04 arm64."
-5. **Tailscale lock-down (You).** Install Tailscale on the VM; SSH only over the tailnet (`ufw` allows 22 on `tailscale0` only). Optional: an OAuth client with workload identity for GitHub Actions (`TS_OAUTH_CLIENT_ID`, `TS_AUDIENCE`, tag `tag:ci`); until then the deploy workflow skips the tailnet step and `KAMAL_HOST` must be reachable from the runner.
-6. **Cloudflare (You).** Zero Trust > Networks > Tunnels: create a tunnel, copy its token (`TUNNEL_TOKEN`), map `aluni.us` and `www.aluni.us` to `http://kamal-proxy:80`. Create the R2 buckets `aluni` (uploads) and `aluni-backups`. Boot kamal-proxy bound to localhost once: `bin/kamal proxy boot_config set --publish-host-ip=127.0.0.1 && bin/kamal proxy reboot`.
-7. **Production credentials (You).** `mise exec -- bin/rails credentials:edit --environment production` (or the shared file): `secret_key_base`, `active_record_encryption.*` (`bin/rails db:encryption:init`), `redis.url`, `r2.*`, `mailer.from`, `smtp.*` (Resend or Brevo free tier), `gemini.api_key` only when `GEMINI_BACKEND=api_key` (the GCP VM uses `GEMINI_BACKEND=vertex` with its attached service account and `GOOGLE_CLOUD_PROJECT`; no key), `web_push.*` (`bin/rails web_push:vapid_keys`), `action_push_native.*` and `native_app.*` when the stores exist.
-8. **GitHub (You).** Create the `production` environment limited to `main` and `v*` tags; add the secrets from steps 2, 5, 6 plus `KAMAL_KNOWN_HOSTS` (`ssh-keyscan <host>` output) and the variables `KAMAL_SSH_USER`, `KAMAL_ARCH`, `KAMAL_TUNNEL`, `SIGNUPS_ENABLED`, `PLATFORM_PAUSE_ALL`. Allow Actions to write packages.
-9. **Validate the config (Claude Code).** `bin/kamal config` with placeholder ENV exported; `docker build .` locally (arm64) to prove the Rust toolchain and the gem layer build.
-10. **First deploy (You).** Run the Deploy workflow (or `git tag v2026.11.1 && git push --tags`). The first remote build compiles crates and takes several minutes; later builds hit the layer cache. Then `bin/kamal app exec --reuse "bin/rails platform:bootstrap"` pauses cron, gemini, mail and push.
-11. **Check (You).** `https://aluni.us` renders the site; `https://aluni.us/up` is 200; `bin/kamal logs`; Sidekiq Web at `https://aluni.us/sidekiq` with the basic-auth pair (only if `SIDEKIQ_WEB_*` are set).
-12. **Restore drill (You).** After the first nightly backup: `bin/kamal accessory exec backup "sh restore.sh"` into a scratch database, confirm tables and counts. Do it once before trusting the backups.
-
-## Security model
-
-No inbound port but Tailscale SSH; TLS at Cloudflare; the app connects to Postgres as `aluni_app` (no superuser, owns only its database); Redis needs a password; secrets live only in GitHub environment secrets and the deploy shell; the image has no master key (assets precompile with `SECRET_KEY_BASE_DUMMY`); `force_ssl`, CSP with nonces, Rack::Attack, Active Record encryption with a boot guard, `Vips.block_untrusted`; passkeys only, so there is no password database to leak.
-
-## Turning services on, one by one
+## What runs where
 
 ```
-bin/kamal app exec --reuse "bin/rails platform:status"
-bin/kamal app exec --reuse "bin/rails 'platform:resume[mail]'"      # after SMTP credentials (Resend free tier) and the SPF, DKIM and DMARC records; this is also what turns emailed sign-in codes on
-bin/kamal app exec --reuse "bin/rails 'platform:resume[cron]'"      # after the first deploy is stable
-bin/kamal app exec --reuse "bin/rails 'platform:resume[gemini]'"    # after the Gemini backend is configured (Vertex: GOOGLE_CLOUD_PROJECT + roles/aiplatform.user on the VM's service account; api_key: credentials gemini.api_key) and a budget alert; the onboarding chat answers with continuation lines until then
-bin/kamal app exec --reuse "bin/rails 'platform:resume[push]'"      # after APNs/FCM credentials
+visitor ──HTTPS──▶ Cloudflare (DNS + TLS, aluni.us)
+                        │ Cloudflare Tunnel (outbound from the VM)
+                        ▼
+GCE VM aluni-vm (us-central1-a, e2-medium, Ubuntu 24.04 amd64, 30 GB disk, 4 GB swap)
+  ├─ aluni-tunnel    cloudflared → http://kamal-proxy:80
+  ├─ kamal-proxy     bound to 127.0.0.1 on the host
+  ├─ aluni-web       Puma
+  ├─ aluni-worker    Sidekiq
+  ├─ aluni-db        Postgres 16 (127.0.0.1:5432; app connects as aluni_app, not a superuser)
+  └─ aluni-redis     Redis 7 (password, noeviction)
+
+GitHub Actions ──OIDC──▶ Workload Identity Federation ──▶ SA github-deployer
+               ──SSH over IAP──▶ deploy@aluni-vm
+               ──push──▶ us-central1-docker.pkg.dev/astromichis-aluni/aluni/aluni
 ```
 
-Or the Platform switch GitHub workflow (works from the phone). `PLATFORM_PAUSE_ALL=1` in `config/deploy.yml` env plus a deploy pauses everything even with the database down.
-
-## Before a demo
-
-1. A configured Gemini backend (`Platform::Features.gemini?`: in production `GEMINI_BACKEND=vertex` with `GOOGLE_CLOUD_PROJECT`, in development `gemini.api_key` in the credentials) and `platform:resume[gemini]` (above); without it Aluni only says her continuation lines.
-2. `NATIVE_WEB_ACCESS` defaults to on, so sign-in, the onboarding chat and `/app` work in any current browser; set it to `0` only to close the web and keep the shells.
-3. Passkeys and the share-location button need a secure context: the production domain, or `localhost` in development.
-4. Open the landing page, wait for Aluni to walk in, run the sign-up and a full onboarding in English and in Spanish, refresh once mid-way to see the transcript resume.
-
-## Keeping it running
-
-| When | What |
+| Piece | Setting |
 |---|---|
-| Weekly | Dependabot PRs (bundler, cargo, actions); the security workflow (brakeman, bundler-audit, cargo audit) |
-| Monthly | `bin/kamal app exec --reuse "bin/rails platform:status"`, disk usage, backup listing in R2, `docker system prune` on the VM |
-| Quarterly | Restore drill; rotate `REDIS_PASSWORD` and `SIDEKIQ_WEB_PASSWORD`; review Cloudflare IP ranges in `TRUSTED_PROXIES`; bump base images (`postgres:16`, `redis:7`, `cloudflared`) |
-| Always | Keep used memory above ~2.4 GB on Oracle so the VM is not reclaimed as idle; never use a free hosted Redis with Sidekiq (polling exhausts the quota) |
+| GCP project | `astromichis-aluni` |
+| VM service account | `aluni-runtime`, which has only `roles/aiplatform.user` (Gemini on Vertex AI) with the `cloud-platform` scope. The default Compute service account is disabled. |
+| Firewall | Only `allow-ssh-from-iap` (tcp:22 from `35.235.240.0/20`). There are no 80/443 rules: ingress is the tunnel. |
+| SSH user | `deploy` (Docker group, key-only). It has one key per person and one for CI. |
+| Registry | Artifact Registry repo `aluni` (us-central1). The cleanup policy keeps the last 5 images and deletes images older than 7 days. |
+| DNS | `aluni.us` is registered at Porkbun with Cloudflare nameservers. Tunnel routes: `aluni.us`, `www.aluni.us` → `http://kamal-proxy:80`. |
+| Uploads | Volume `aluni_storage` on the VM (`ACTIVE_STORAGE_SERVICE=local`). |
+| Backups | **None off the VM** (`KAMAL_BACKUP=0`, no R2). Take a disk snapshot before anything important (see below). |
+| Gemini | Vertex AI (`GEMINI_BACKEND=vertex`). It uses the VM's service account and needs no API key. It is paused until resumed with the Platform switch. |
+
+`config/deploy.yml` still defaults to the original Oracle + R2 setup (`KAMAL_BACKUP=1`, `ACTIVE_STORAGE_SERVICE=cloudflare_r2`, `GEMINI_BACKEND=api_key`). The GCP values come from the environment: the deploy workflow sets them, and so does a local `.env.gcp` for manual deploys.
+
+## Deploying
+
+### Automatic (normal path)
+
+Every push to `main` (except docs-only changes) runs **Actions → Deploy** (`.github/workflows/deploy.yml`):
+
+1. GitHub issues an OIDC token. GCP's Workload Identity Federation (pool `github`, provider `aluni-repo`) accepts it **only for this repository (matched by numeric id, so it survives a transfer) on `refs/heads/main`**. The runner then acts as `github-deployer`, which can only push to Artifact Registry, open IAP tunnels and read the VM.
+2. The runner SSHes to the VM through IAP with the CI key, and the VM's host key is pinned.
+3. It mints a one-hour registry token and runs `kamal deploy`. The image is built **on the VM**, which keeps the Rust build cache warm. The `pre-deploy` hook runs `db:prepare`.
+
+The deploy runs in parallel with CI and does not wait for tests. Kamal only switches traffic once the new container passes `/up`, so a version that does not boot never replaces the running one. A typical deploy takes about 3 minutes.
+
+### Manual (from a laptop)
+
+You need gcloud logged in to an account with access to the project, a personal key added to `deploy@aluni-vm`, Ruby from `mise`, and `gem install kamal` (the version in `Gemfile.lock`). The app's own gems are not needed: the image is built on the VM.
+
+Add an SSH host entry so Kamal and the remote Docker builder go through IAP:
+
+```
+Host aluni-vm
+  User deploy
+  IdentityFile ~/.ssh/<your key>
+  ProxyCommand gcloud compute start-iap-tunnel aluni-vm 22 --listen-on-stdin --zone=us-central1-a --project=astromichis-aluni
+```
+
+Export the same non-secret values the workflow sets (see `env:` in `.github/workflows/deploy.yml`), the secrets below, and `KAMAL_REGISTRY_PASSWORD=$(gcloud auth print-access-token)`, then run:
+
+```sh
+kamal deploy
+```
+
+Keep these in a git-ignored file (any `/.env*` is ignored) and source it before running Kamal.
+
+## Secrets
+
+Secret values are never stored in the repo. `.kamal/secrets` only maps names. The values live in the GitHub `production` environment (restricted to `main`) and, for manual deploys, in each operator's local secret store.
+
+| Secret | What it is |
+|---|---|
+| `RAILS_MASTER_KEY` | Decrypts `config/credentials.yml.enc` (`secret_key_base`, data source logins) |
+| `POSTGRES_PASSWORD`, `APP_DB_PASSWORD` | Postgres superuser (accessory only) and the app role |
+| `REDIS_PASSWORD` | Redis `requirepass` |
+| `SIDEKIQ_WEB_USERNAME`, `SIDEKIQ_WEB_PASSWORD` | Basic auth for `/sidekiq` |
+| `TUNNEL_TOKEN` | Cloudflare Tunnel connector token (about 180 characters) |
+| `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`, `..._DETERMINISTIC_KEY`, `..._KEY_DERIVATION_SALT` | Active Record encryption. The production credentials do not have them. **If these are lost, encrypted columns cannot be read.** Keep an offline copy. |
+| `KAMAL_SSH_KEY` (CI only) | Private key of the CI entry on `deploy@aluni-vm` |
+| `KAMAL_KNOWN_HOSTS` (CI only) | Pinned host key line for `aluni-vm` |
+
+To rotate one, update the value in GitHub (Settings → Environments → production) and in the local store, then deploy. For the tunnel token: in Cloudflare, Tunnels → aluni → Rotate token, save it, then deploy.
+
+## Operating
+
+Run these after loading the environment:
+
+```sh
+ssh aluni-vm                                          # shell on the VM (over IAP)
+kamal logs                                            # follow app logs
+kamal console                                         # rails console
+kamal app exec --reuse "bin/rails platform:status"    # which services are paused
+```
+
+**Platform switch (emergency brake).** **Actions → Platform switch → Run workflow** works from the GitHub phone app. Use `status` to check, `pause_all` if anything starts spending, and `resume` + a service only after its credentials and a budget limit are in place. `platform:bootstrap` paused cron, gemini, mail and push on the first deploy.
+
+**Snapshot before a demo.** This is the only backup of the database and uploads:
+
+```sh
+gcloud compute disks snapshot aluni-vm --zone=us-central1-a --project=astromichis-aluni --snapshot-names=aluni-$(date +%Y%m%d-%H%M)
+```
+
+## First deploy to a new server
+
+The `pre-deploy` hook runs migrations before Kamal has booted the accessories or written the env files, so it fails on an empty server. Run the first deploy by hand, once:
+
+```sh
+kamal proxy boot_config set --publish-host-ip=127.0.0.1   # once per server
+kamal accessory boot all
+kamal deploy --skip-hooks
+kamal app exec --primary --reuse "bin/rails db:prepare"
+kamal app exec --primary --reuse --roles=web "bin/rails platform:bootstrap"
+```
+
+After that, `kamal deploy` (and the workflow) work normally.
+
+**Preparing the VM** (Ubuntu 24.04):
+
+- The `deploy` user comes from the instance `ssh-keys` metadata (`deploy:<public key>`).
+- `apt install docker.io docker-buildx` and `usermod -aG docker deploy`.
+- Add a 4 GB swapfile; the Rust build needs it on 4 GB of RAM.
+- Delete the default `default-allow-ssh` / `default-allow-rdp` firewall rules and add only the IAP range.
 
 ## If the VM is lost
 
-Create a new VM (steps 3 to 6), set the new `KAMAL_HOST`, deploy, then `bin/kamal accessory exec backup "sh restore.sh"` with the `BACKUP_PASSPHRASE`. Uploads live in R2 and survive. DNS does not change (the tunnel moves with the token).
+1. Create a VM with the same name and zone, attached to the `aluni-runtime` service account with the `cloud-platform` scope.
+2. Repeat the VM preparation and the first deploy.
+3. Restore from the latest disk snapshot if there is one. Otherwise the database starts empty.
 
-## Fallback: a cheap VPS
+DNS and the tunnel do not change, because the tunnel token moves with the deploy.
 
-Any 4 GB+ amd64 VPS: set `KAMAL_ARCH=amd64`, `KAMAL_HOST`, and either keep the tunnel (`KAMAL_TUNNEL=1`) or set `KAMAL_TUNNEL=0` with a Cloudflare Origin certificate in `CERTIFICATE_PEM` / `PRIVATE_KEY_PEM` and firewall 80/443 to Cloudflare's ranges.
+## Before a demo
+
+1. A configured Gemini backend (`Platform::Features.gemini?`). Production uses `GEMINI_BACKEND=vertex` with `GOOGLE_CLOUD_PROJECT`. In development, either `gemini.api_key` in the credentials, or `GEMINI_BACKEND=vertex` plus `GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)`. Then `platform:resume[gemini]`, or the Platform switch with `resume` + `gemini`. Without it, Aluni only says her continuation lines.
+2. `NATIVE_WEB_ACCESS` defaults to on, so sign-in, the onboarding chat and `/app` work in any current browser. Set it to `0` only to close the web and keep the shells.
+3. Passkeys and the share-location button need a secure context: the production domain, or `localhost` in development.
+4. Open the landing page and wait for Aluni to walk in. Run the sign-up and a full onboarding in English and in Spanish, and refresh once midway to see the transcript resume.
+5. Take a disk snapshot (see Operating).
+
+## Gemini on Vertex AI
+
+`GEMINI_BACKEND=vertex` makes `Gemini::Client` call Vertex AI with a token from the GCE metadata server (`Gemini::VertexToken`), so production holds no Gemini key and usage bills to the GCP project. Before turning it on with the Platform switch:
+
+1. Set a requests-per-minute quota cap on Vertex AI for the project.
+2. After the first real use, check Billing → Reports that Vertex AI usage is drawn from credits.

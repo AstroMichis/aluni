@@ -1,0 +1,7 @@
+{"objectIdFieldName":"objectid","features":[
+ {"attributes":{"objectid":258632,"name":"yxHr_mze","crop":"Maize","units":"kg DW/ha"}},
+ {"attributes":{"objectid":258192,"name":"ycHr_mze","crop":"Maize","units":"kg DW/ha"}},
+ {"attributes":{"objectid":257854,"name":"sxHr_mze","crop":"Maize","units":"Index"}},
+ {"attributes":{"objectid":258649,"name":"yxHr_soy","crop":"Soybean","units":"kg DW/ha"}},
+ {"attributes":{"objectid":258611,"name":"yxHr_alf","crop":"Alfalfa","units":"10kg DW/ha"}}
+]}

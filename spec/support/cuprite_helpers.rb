@@ -1,24 +1,25 @@
 # frozen_string_literal: true
 
 # Cuprite (headless Chrome) for system specs. js_errors: true makes any
-# uncaught JavaScript exception fail the example. Each system spec calls
-# `driven_by(:aluni_cuprite)`.
+# uncaught JavaScript exception fail the example. Rails' driven_by(:cuprite)
+# re-registers the :cuprite driver with only what it is given, so every
+# system spec calls `driven_by_cuprite`, which passes these options through
+# (a bare driven_by(:cuprite) falls back to Ferrum's 10 second start timeout,
+# too short for a cold CI runner).
 require "capybara/cuprite"
 
-# Registered under a project name on purpose: Rails' `driven_by(:cuprite)` would re-register
-# the :cuprite driver with its own defaults and drop every option below.
-Capybara.register_driver(:aluni_cuprite) do |app|
-  Capybara::Cuprite::Driver.new(
-    app,
-    window_size:     [ 1280, 800 ],
-    headless:        true,
+module CupriteHelpers
+  WINDOW_SIZE = [ 1280, 800 ].freeze
+  OPTIONS = {
     timeout:         15,
-    process_timeout: 30,
+    process_timeout: 60,
     js_errors:       true,
     # Map tiles are never fetched from the real servers by headless Chrome.
     url_blacklist:   [ /tile\.openstreetmap\.org/, /arcgisonline\.com/ ],
     browser_options: { "no-sandbox" => nil }
-  )
+  }.freeze
+
+  def driven_by_cuprite = driven_by(:cuprite, screen_size: WINDOW_SIZE, options: OPTIONS.dup)
 end
 
 module WelcomeHelpers
@@ -65,6 +66,7 @@ module ServerLogHelpers
 end
 
 RSpec.configure do |config|
+  config.include CupriteHelpers, type: :system
   config.include ServerLogHelpers, type: :system
   config.include WelcomeHelpers, type: :system
 end

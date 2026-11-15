@@ -24,4 +24,13 @@
 #     channels: [push, email]
 #     mailer: NotificationMailer#generic
 #     push_key: welcome
-purposes: {}
+purposes:
+  # Weather::DailyAlertsJob: frost, heat, heavy rain or a dry spell in the next
+  # two days at a field's pin, for the kinds the farmer chose on the alerts screen.
+  weather_alert:
+    audience: user
+    category: transactional
+    group_key: "weather-%{field}"
+    channels: [push, web_push, email]
+    mailer: NotificationMailer#generic
+    push_key: weather_alert

@@ -73,7 +73,7 @@ module App
     def complete
       case Onboarding::CompleteService.call(user: Current.user)
       in Result::Success
-        redirect_to app_root_path, notice: t(".done"), status: :see_other
+        redirect_to plan_path_after_profile, notice: t(".done"), status: :see_other
       in Result::Failure(error)
         redirect_to app_onboarding_path, alert: extract_error_message(error), status: :see_other
       end
@@ -129,6 +129,14 @@ module App
       return nil unless latitude && longitude
 
       { latitude: latitude.to_f, longitude: longitude.to_f }
+    end
+
+    # The profile is done: the payoff is the rotation plan for the main field
+    # (current rotation against the alternatives). Without a crop to compare
+    # yet, the home menu.
+    def plan_path_after_profile
+      field = Fields::Farm.for(Current.user).main_field
+      field && !field.empty? ? app_field_rotation_path(field.key) : app_root_path
     end
   end
 end

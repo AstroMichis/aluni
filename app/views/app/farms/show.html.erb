@@ -1,0 +1,33 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% groups = @profile.groups(:farm) %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: back_to_menu_path, back_label: t("app.fields.back_to_menu"), title: t("app.fields.index.crumb"), section: :fields %>
+
+  <main id="main" class="screen__body" data-controller="section-nav" data-section-nav-current-class="section-nav__link--current">
+    <header class="screen__header">
+      <h1 class="text-display screen__title"><%= @farm.farm&.name.presence || t(".headline") %></h1>
+      <p class="screen__lede"><%= t(".lede") %></p>
+      <p class="layer-note layer-note--<%= @farm.layer %>"><%= t("app.fields.layers.#{@farm.layer}") %></p>
+    </header>
+
+    <% if @farm.classification.any? %>
+      <ul class="profile-chips" role="list" aria-label="<%= t(".profile_label") %>">
+        <% @farm.classification.each do |axis, value| %>
+          <li class="profile-chips__chip">
+            <span class="profile-chips__axis"><%= t("app.fields.classification.#{axis}") %></span>
+            <span class="profile-chips__value"><%= value_label(axis, value) %></span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <div class="cluster cluster--sm screen__actions">
+      <%= link_to t(".edit"), edit_app_farm_path, class: "btn btn--primary btn--sm" %>
+      <%= link_to t(".talk", app_name: t("app_name")), app_onboarding_path, class: "btn btn--ghost btn--sm" %>
+    </div>
+    <%= render "app/fields/todo", subject: @farm, edit_path: edit_app_farm_path %>
+    <%= render "app/fields/section_nav", groups: groups.keys %>
+    <%= render "app/fields/groups", subject: @farm, groups: groups %>
+  </main>
+</div>

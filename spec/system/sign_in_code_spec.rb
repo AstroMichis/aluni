@@ -15,7 +15,7 @@ RSpec.describe "Sign-in codes", type: :system do
   let(:geocoder) { instance_double(Geocoding::Client, reverse: ames, search: [ ames ], last_error: nil) }
 
   before do
-    driven_by(:aluni_cuprite)
+    driven_by_cuprite
     allow(Geocoding::Client).to receive(:new).and_return(geocoder)
     ActionMailer::Base.deliveries.clear
     skip_welcome!

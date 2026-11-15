@@ -44,6 +44,10 @@ Rails.application.routes.draw do
 scope "(:locale)", locale: /en|es/ do
   root "pages#home"
 
+  # The field station catalogue (public, informational).
+  get "devices", to: "devices#show", as: :devices
+  get "glossary", to: "glossary#show", as: :glossary
+
   # The welcome screen and the accessibility controls (cookie, plus the account when signed in).
   post "preferences", to: "preferences#update", as: :preferences
 
@@ -75,6 +79,37 @@ scope "(:locale)", locale: /en|es/ do
     # Authenticated area.
     namespace :app do
       root "home#show"
+
+      # The menu sections, on the person's own farm (Fields::Farm) and what the
+      # public data sources say about each field's pin (FieldObservation).
+      resources :fields, only: %i[index show new create edit update] do
+        get :sources, on: :collection
+        member do
+          post :refresh
+          post :confirm
+        end
+        # The rotation comparison and each strategy's "why" (loaded lazily).
+        resource :rotation, only: :show, controller: "rotations" do
+          get "why/:strategy", action: :why, as: :why
+        end
+      end
+      resource :farm, only: %i[show edit update]
+      resource :crops, only: :show do
+        get :rotation
+        get :calendar
+        patch :plan
+      end
+      resource :weather, only: :show, controller: "weather" do
+        get :forecast
+        get :alerts
+        patch :alerts, action: :update_alerts
+      end
+      resource :team, only: :show, controller: "team"
+      resource :reports, only: :show do
+        get :harvest
+        get :export
+        get :download, constraints: { format: /json|csv/ }
+      end
       # The onboarding chat: one page, Turbo Stream actions for every turn.
       resource :onboarding, only: :show, controller: "onboarding" do
         post :message
@@ -83,8 +118,6 @@ scope "(:locale)", locale: /en|es/ do
         post :complete
         delete :reset
       end
-      # The main field's pin and basics, for a signed-in farmer using the finder.
-      resources :fields, only: :update
       resources :device_tokens, only: :create
       delete "device_tokens", to: "device_tokens#destroy"
       resources :web_push_subscriptions, only: :create

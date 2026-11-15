@@ -1,0 +1,18 @@
+en:
+  notifications:
+    push:
+      weather_alert:
+        title: "%{field}: %{kind}"
+        body: "%{day}: %{text}"
+    weather_alert:
+      subject: "%{field}: %{kind} on %{day}"
+      kinds:
+        frost: Frost
+        heat: Extreme heat
+        heavy_rain: Heavy rain
+        dry_spell: Dry spell
+      text:
+        frost: "low of %{tmin} °C (soil %{soil} °C). Cover seedlings and hold irrigation until it warms."
+        heat: "high of %{tmax} °C. Water early and avoid spraying in the heat of the day."
+        heavy_rain: "%{rain} mm of rain. Keep machinery off wet soil and check drains."
+        dry_spell: "%{days} days ahead with almost no rain. Plan irrigation and keep residue on the soil."

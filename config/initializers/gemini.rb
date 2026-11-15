@@ -16,3 +16,10 @@ Rails.application.config.x.gemini.chat_max_output_tokens =
 Rails.application.config.x.gemini.backend = ENV["GEMINI_BACKEND"].presence || "api_key"
 Rails.application.config.x.gemini.vertex_project = ENV["GOOGLE_CLOUD_PROJECT"].presence
 Rails.application.config.x.gemini.vertex_location = ENV["GOOGLE_CLOUD_LOCATION"].presence || "global"
+
+# Daily ceiling on Gemini requests for the whole app (Gemini::DailyCap). Vertex
+# has no per-project cap for the Gemini 3 models (dynamic shared quota), so the
+# app enforces one: past it, the gemini switch pauses itself until an operator
+# resumes it. 0 turns the cap off; tests default to off.
+Rails.application.config.x.gemini.daily_cap =
+  Integer(ENV["GEMINI_DAILY_CAP"].presence || (Rails.env.test? ? "0" : "2000"))

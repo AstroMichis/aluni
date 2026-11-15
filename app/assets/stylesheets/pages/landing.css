@@ -392,3 +392,11 @@ html:has(.landing) { scroll-behavior: smooth; }
 @media print {
   .tour-nav, .landing__scroll-cue { display: none !important; }
 }
+
+/* Nav entry to the field station catalogue (shared/_devices_link). Icon only on phones. */
+.nav-devices-link { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 48px; }
+.nav-devices-link[aria-current="page"] { color: var(--color-accent-text); }
+.nav-devices-link__text { display: none; }
+@media (min-width: 641px) {
+  .nav-devices-link__text { display: inline; }
+}

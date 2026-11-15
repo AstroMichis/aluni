@@ -1,0 +1,60 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% frost_free = @season.frost_free %>
+<% spring = frost_free[:last_spring] %>
+<% fall = frost_free[:first_fall] %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: back_to_menu_path, back_label: t("app.fields.back_to_menu"), title: t("app.crops.show.crumb"), section: :crops %>
+
+  <main id="main" class="screen__body">
+    <header class="screen__header">
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <p class="screen__lede"><%= t(".lede") %></p>
+    </header>
+
+    <div class="calendar" role="table" aria-label="<%= t(".headline") %>">
+      <div class="calendar__row calendar__row--head" role="row">
+        <span class="calendar__name" role="columnheader"></span>
+        <% (1..12).each do |m| %><span class="calendar__month" role="columnheader"><%= t("date.abbr_month_names")[m] %></span><% end %>
+      </div>
+
+      <% if @season.any? %>
+        <div class="calendar__row" role="row">
+          <span class="calendar__name" role="rowheader"><%= t(".frost_free") %></span>
+          <span class="calendar__track" role="cell" style="--from: <%= spring ? spring.month + (spring.day / 31.0) : 1 %>; --to: <%= fall ? fall.month + (fall.day / 31.0) : @season.to.month + 1 %>">
+            <span class="calendar__bar calendar__bar--frost-free"></span>
+          </span>
+        </div>
+      <% end %>
+
+      <% @farm.fields.each do |field| %>
+        <% crop = field.current_crop %>
+        <div class="calendar__row" role="row">
+          <span class="calendar__name" role="rowheader">
+            <%= plot_name(field) %>
+            <small><%= crop ? crop_name(crop) : t("app.fields.index.no_crop") %></small>
+          </span>
+          <% if crop&.planting_month && crop.harvest_month %>
+            <% to = crop.harvest_month >= crop.planting_month ? crop.harvest_month + 1 : 13 %>
+            <span class="calendar__track" role="cell" style="--from: <%= crop.planting_month %>; --to: <%= to %>">
+              <span class="calendar__bar calendar__bar--crop"></span>
+            </span>
+          <% else %>
+            <span class="calendar__track calendar__track--missing" role="cell">
+              <%= link_to t(".missing"), app_field_path(field.key, anchor: "group-crop") %>
+            </span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <p class="choice-set__hint">
+      <% if @season.any? %>
+        <%= t(".note", last: spring ? l(spring, format: :long) : t("app.weather.alerts.frost_free.none"),
+              first: fall ? l(fall, format: :long) : t("app.weather.alerts.frost_free.not_yet", date: l(@season.to, format: :long))) %>
+      <% else %>
+        <%= t(".no_weather") %>
+      <% end %>
+    </p>
+  </main>
+</div>

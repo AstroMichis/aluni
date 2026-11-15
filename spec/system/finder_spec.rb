@@ -4,9 +4,8 @@ require "rails_helper"
 # doubled at the Ruby level and the map's tile hosts are blocked in the browser, so
 # nothing leaves the machine; an uncaught exception in finder_controller.js,
 # field_map_controller.js or Leaflet fails the example (js_errors).
-#
-# The driver (`:aluni_cuprite`, spec/support/cuprite_helpers.rb) blocks the tile hosts;
-# the after hook proves no tile was received.
+# The tile block comes from spec/support/cuprite_helpers.rb (url_blacklist); the
+# after hook proves no tile was received.
 RSpec.describe "Field finder", type: :system do
   let(:ames) do
     { label: "Ames, Story County, Iowa, United States", display: "Ames, Iowa", latitude: 42.030781, longitude: -93.631913,
@@ -15,7 +14,7 @@ RSpec.describe "Field finder", type: :system do
   let(:geocoder) { instance_double(Geocoding::Client, reverse: ames, search: [ ames ], last_error: nil) }
 
   before do
-    driven_by(:aluni_cuprite)
+    driven_by_cuprite
     allow(Geocoding::Client).to receive(:new).and_return(geocoder)
     skip_welcome!
   end

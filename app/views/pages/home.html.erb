@@ -9,6 +9,7 @@
         <span class="landing__tagline"><%= t(".tagline") %></span>
       <% end %>
       <div class="cluster cluster--sm">
+        <%= render "shared/devices_link" %>
         <%= render "shared/language_toggle" %>
         <%= render "shared/access_buttons" %>
       </div>
@@ -93,6 +94,19 @@
                 <% end %>
               </ul>
               <p class="text-muted landing__footnote"><%= t(".capabilities.footnote", app_name: t("app_name")) %></p>
+            </div>
+          </div>
+        </section>
+
+<section class="landing__section container container--md landing__reveal" data-controller="scroll-reveal" aria-labelledby="devices-teaser-title">
+          <div class="card landing__banner-card">
+            <div class="card__body stack stack--md">
+              <span class="badge badge--accent"><%= t(".devices_teaser.kicker") %></span>
+              <h2 id="devices-teaser-title" class="text-heading landing__section-title"><%= t(".devices_teaser.title", app_name: t("app_name")) %></h2>
+              <p><%= t(".devices_teaser.body") %></p>
+              <div class="cluster cluster--sm">
+                <%= link_to t(".devices_teaser.cta"), devices_path, class: "btn btn--secondary" %>
+              </div>
             </div>
           </div>
         </section>

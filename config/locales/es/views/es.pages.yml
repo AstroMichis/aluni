@@ -10,6 +10,11 @@ es:
       sign_up: "Crear una cuenta"
       get_the_app: "Descargar la app"
       open_app: "Continuar con %{app_name}"
+      devices_teaser:
+        kicker: "Nuevo hardware"
+        title: "%{app_name} Sonda: tu campo, medido de verdad"
+        body: "Una estación solar que mide suelo, aire y lluvia, guarda todo sin señal y lo compara con los satélites de la NASA."
+        cta: "Conocer la Sonda"
       find_my_field: "Encontrar mi campo"
       take_the_tour: "Mira cómo funciona"
       scroll_cue: "Desplázate para ver cómo funciona"

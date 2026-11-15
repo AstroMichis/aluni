@@ -4,11 +4,11 @@ Every outside service has one client class, a switchboard guard, structured erro
 
 ## Gemini (`app/services/gemini/client.rb`)
 
-- Two backends, same request and response bodies (`Gemini::Client.backend`, ENV `GEMINI_BACKEND`): `api_key` (default; `BASE_URL = https://generativelanguage.googleapis.com/v1beta`, key from credentials `gemini.api_key` as `x-goog-api-key`) or `vertex` (Vertex AI on the GCP VM: no key on disk, `Gemini::VertexToken` fetches an OAuth token for the VM's attached service account from the GCE metadata server and caches it per process; host from `GOOGLE_CLOUD_PROJECT` and `GOOGLE_CLOUD_LOCATION`, `global` by default). `Gemini::Client.configured?` (behind `Platform::Features.gemini?`) means a key for `api_key` or a project for `vertex`. Production deploys with `GEMINI_BACKEND=vertex` (`.github/workflows/deploy.yml`). A token failure surfaces as `last_error[:type] == :api_error`, so callers see the same `nil` as any other failure.
+- Two backends, same request and response bodies (`Gemini::Client.backend`, ENV `GEMINI_BACKEND`): `api_key` (default; `BASE_URL = https://generativelanguage.googleapis.com/v1beta`, key from credentials `gemini.api_key` as `x-goog-api-key`) or `vertex` (Vertex AI on the GCP VM: no key on disk, `Gemini::VertexToken` fetches an OAuth token for the VM's attached service account from the GCE metadata server and caches it per process (outside production, `GOOGLE_OAUTH_ACCESS_TOKEN`, e.g. from `gcloud auth print-access-token`, replaces the metadata server so a laptop can use Vertex with no key); host from `GOOGLE_CLOUD_PROJECT` and `GOOGLE_CLOUD_LOCATION`, `global` by default). `Gemini::Client.configured?` (behind `Platform::Features.gemini?`) means a key for `api_key` or a project for `vertex`. Production deploys with `GEMINI_BACKEND=vertex` (`.github/workflows/deploy.yml`). A token failure surfaces as `last_error[:type] == :api_error`, so callers see the same `nil` as any other failure.
 - Model tiers from `config.x.gemini` (`GEMINI_FLASH_MODEL`, `GEMINI_PRO_MODEL`, `GEMINI_TRANSCRIBE_MODEL`, default `gemini-3.8-flash`) and `GEMINI_CHAT_MAX_OUTPUT_TOKENS` (2048). `thinking_config_for` keeps thinking minimal per model family.
 - `generate(prompt, system_instruction:, images:, response_schema:, max_tokens:)` single turn, temperature 0.3, inline base64 images, structured JSON via `responseMimeType` + `responseSchema`; `chat(messages:, system_instruction:, response_schema:, max_tokens:)` multi turn, temperature 0.4, the same structured JSON when a schema is given. `Gemini::Client.new(model:, timeout:)` overrides the 30 s read timeout per caller (the chat uses 20 s).
 - Retries: backoffs `[0.5, 1.5, 3.0]` s plus jitter within a 6 s budget, `Retry-After` parsed from the 429 message (capped at 5 s); retryable types `rate_limited`, `service_unavailable`, `network_error`, `empty_response`. On exhaustion returns `nil` and exposes `last_error` (`{ type:, status:, message:, retry_after: }`). Faraday: JSON in and out, `retry max: 2`, timeout 30 s, open timeout 10 s.
-- `Platform::Switchboard.guard!(:gemini)` right before the request; `fix_unicode_escapes` repairs a known structured-output bug.
+- `Platform::Switchboard.guard!(:gemini)` right before the request, then `Gemini::DailyCap.count!`: a global ceiling per UTC day in Redis (`GEMINI_DAILY_CAP`, default 2000, 0 off, off in tests). The request one over the limit pauses the gemini switch with reason `daily_cap` and raises `Platform::ServicePaused`; resuming gemini clears the day's count. Redis down fails open. Vertex offers no per-project cap for the Gemini 3 models (dynamic shared quota), so this is the cost and availability brake; `fix_unicode_escapes` repairs a known structured-output bug.
 - Callers handle `nil`, rescue `JSON::ParserError`, and never show a raw processing error to a person: `try_external(Faraday::Error, JSON::ParserError)` in services.
 - `Gemini::LanguagePrompt.lock(locale)` forces the answer language.
 - The onboarding chat (`docs/ONBOARDING.md`, `app/services/onboarding/`) is the first assistant: the encrypted transcript lives on `onboarding_sessions` (Postgres, so a refresh resumes), `Onboarding::Redactor` scrubs emails and phone numbers before storage, `Onboarding::ClassifyIntentService` runs beside every reply with a 3-strike 24 h block, and Rack::Attack throttles `/app/onboarding/*` at 20/min and 150/hour per IP (`RACK_ATTACK_ASSISTANT_PATH`).
@@ -19,9 +19,50 @@ Every outside service has one client class, a switchboard guard, structured erro
 
 OpenStreetMap's Nominatim, through the server only (the browser never calls it): `search(query, locale:)` for the field finder's town or address box and `reverse(latitude:, longitude:, locale:)` for the confirmed pin, both returning normalised rows `{ label:, latitude:, longitude:, country_code:, admin_area: }` or `nil` with `last_error`. Rules of the service, which allows about one request per second in total and no autocomplete: search only on submit, an identifying `User-Agent` (`Aluni/1.0 (+https://aluni.us)`), `Rails.cache` for a day (search by locale and normalised query, reverse by coordinates rounded to three decimals), no retry on a 429, and the `places/ip` throttle (20 per minute) in Rack::Attack. `Platform::Switchboard.guard!(:geocoding)` runs before each request and `Platform::ServicePaused` is rescued inside the client (a Turbo Frame cannot follow a redirect), so `PlacesController` renders a calm line in the frame either way. The provider sits behind this one class: Photon or a paid geocoder can replace it without touching the finder. Map tiles are plain images (`img-src https:`): OpenStreetMap's standard tiles and Esri World Imagery for the satellite toggle, both attributed in the map; check Esri's terms before real traffic.
 
+## Meteomatics (`app/services/meteomatics/client.rb`)
+
+- Weather API, current conditions and forecast at 1 km (`docs/data_sources/meteomatics.md`). The hackathon offer gives 1,000 queries a day.
+- Off until configured: credentials `meteomatics.{username,password}` or ENV `METEOMATICS_USERNAME` / `METEOMATICS_PASSWORD` into `config.x.meteomatics` (`config/initializers/meteomatics.rb`). `Platform::Features.meteomatics?` is false while either is missing, and the client returns `nil` with `last_error[:type] == :not_configured` without calling out.
+- `forecast(lat:, lon:, hours: 72, step: "PT1H", parameters: FORECAST_PARAMETERS)` returns `{ "t_2m:C" => [[Time, value], ...] }`, at most 10 parameters per query. HTTP Basic auth, timeout 20 s, retries on 502/503/504.
+- Successful answers are cached in `Rails.cache` per point rounded to 0.01° and per hour (`METEOMATICS_CACHE_TTL_SECONDS`, default 3600). Failures are not cached.
+- `Platform::Switchboard.guard!(:meteomatics)` before each request. `platform:bootstrap` pauses it on a new server.
+- Errors: `last_error` `{ type:, status:, message: }`, with types `unauthorized`, `rate_limited`, `service_unavailable`, `api_error`, `network_error`, `empty_response`, `invalid_request` and `not_configured`.
+- On screen: `Weather::Forecast.for(field)` asks 168 hours at the pin and sums them into local solar days (UTC shifted by longitude / 15) with alerts (`Weather::Season` lines plus gusts of 15 m/s). `App::WeatherController#forecast` renders it into the weather screen's lazy `forecast` frame, so a slow or failing forecast never holds the page; a cached answer serves the rest of the hour.
+- Specs: `spec/services/meteomatics/client_spec.rb` (WebMock), `spec/services/weather/forecast_spec.rb`.
+
+## Planetary Computer (`app/services/planetary_computer/client.rb`)
+
+- Landsat Collection 2 L2 (NASA/USGS, `landsat-c2-l2`) and Sentinel-2 L2A (ESA) from Microsoft Planetary Computer, with no account or key (`docs/data_sources/sentinel2_stac.md`, `docs/data_sources/landsat.md`).
+- `monthly_ndvi(lat:, lon:, months: 12)` is what the app stores: one clear-sky NDVI per calendar month from both missions together (one STAC search per month, the least cloudy scene whose pixel passes its quality band: Sentinel-2 `SCL` 4/5/6, Landsat `QA_PIXEL` clear bit with no cloud or shadow bits), surface reflectance via `unscale=true`. Months run 4 at a time on their own threads (the point API is slow per request), about 30 s per field. `Fields::FetchObservationsJob` keeps it as the `vegetation` observation; `Fields::Vegetation` reads it as bare (< 0.25), sparse or green months and finds bare periods; `app/fields/_vegetation` shows it on the field and on the rotation plan.
+- `terrain(lat:, lon:)` returns `{ "elevation" =>, "slope" => }` (metres, percent) from NASADEM (`nasadem`, asset `elevation`), `{}` outside 56°S to 60°N or over open sea (the tile is missing: 404). Five point calls, no STAC search: the item id is the 1° tile's south-west corner (`NASADEM_HGT_s42w073`). The slope uses neighbours 90 m out, because a one-pixel step on whole-metre heights swings by several percent. Cached 30 days. Stored as the `nasadem` observation; the profile and the comparator read 3DEP first and fall back to it.
+- `scenes(lat:, lon:, from:, to:, max_cloud: 30)` runs a STAC search over the point, least cloudy first. `point_value(lat:, lon:, item:, expression:)` calls the data API's (TiTiler) `item/point`, which computes band math server side, so no imagery is downloaded.
+- `ndvi(lat:, lon:, from:, to:)` returns `[{ date:, ndvi:, scene:, cloud_cover: }, ...]` newest first. It keeps only scenes whose pixel is clear in the scene classification (`SCL` 4, 5 or 6), costs two point calls per scene (at most 8 scenes), and is cached for 6 h.
+- Free, so it ships unpaused, but it has a switch: `Platform::Switchboard.guard!(:planetary_computer)`. Timeout 20 s. Retries on 429/502/503/504 with exponential backoff and jitter (`RETRY`: 4 retries from 2 s, capped at 30 s, honouring `Retry-After`); `monthly_ndvi` asks 2 months at a time and stops at the first failure, and `rate_limited?` tells `Fields::FetchObservationsJob` to rerun only the vegetation later.
+- Specs: `spec/services/planetary_computer/client_spec.rb` (WebMock).
+
+## AppEEARS (`app/services/appeears/client.rb`)
+
+- NASA's point-extraction service for SMAP, MODIS, ECOSTRESS and more (`docs/data_sources/appeears.md`). Asynchronous: `submit_point` returns a task id, `status` polls it, `results_csv(task_id, product:)` reads one product's CSV from the bundle (following the redirect to the file).
+- Auth: `EARTHDATA_USERNAME` and `EARTHDATA_PASSWORD` in the credentials (the team's Earthdata account, which must have signed in to AppEEARS once to authorise it; an account that never did gets a 504 from `/login` after 60 s). The 48 h bearer token is cached in `Rails.cache` until an hour before it expires; a 401 logs in again once.
+- `Platform::Switchboard.guard!(:data)` before each call; failures raise `DataSources::Client::Error`. Only `Fields::FetchAppeearsJob` calls it, one task per source (`smap`, `modis`, `ecostress`; product, layers, window and summary in `FetchAppeearsJob.sources`): submit, then poll every 5 minutes for up to 3 hours, keeping the source's observation `pending` meanwhile. `Fields::FetchSoilMoistureJob` only forwards SMAP polls queued before the rename.
+- **AppEEARS runs one task at a time per account** (seen 2026-11-15: five tasks queued behind one processing). A year of SMAP L4 takes about 45 minutes; a field's three sources arrive over an hour or two.
+- CSVs are read by `Appeears::Csv` (no csv gem; columns found by suffix).
+- Specs: `spec/services/appeears/client_spec.rb` (WebMock, tag `:appeears_api`), `spec/jobs/fields/fetch_soil_moisture_job_spec.rb`.
+
+## GRACE (`app/services/grace/client.rb`)
+
+- The JPL GRACE/GRACE-FO mascon series (`docs/data_sources/grace.md`) is one 44 MB netCDF behind Earthdata Login, and PO.DAAC's OPeNDAP cannot subset it (it has no DMR++ for the file: 404). `Grace::Client#series(latitude:, longitude:)` reads PO.DAAC's open kerchunk reference file (cached a day) and fetches only the four zlib chunks of `lwe_thickness` that hold the cell plus one `scale_factor` chunk, with HTTP Range requests that follow the redirect to a signed S3 URL: under 1 MB and about 15 s a field.
+- Auth: `Earthdata::Token.fetch`, the account's bearer token from `find_or_create_token` with the same EARTHDATA credentials, cached until a day before it expires.
+- `Weather::WaterStorage.summarize` keeps the last 12 months against 2004-2009, the 10-year trend, each year's mean and the lowest year; stored as the `grace` observation by `Fields::FetchObservationsJob`.
+- Specs: `spec/services/grace/client_spec.rb` (a small stand-in file built in the spec), `spec/services/weather/water_storage_spec.rb`.
+
 ## Outbound client pattern
 
 One class per provider under `app/services/<provider>/client.rb`: Faraday with JSON middleware and `faraday-retry`, explicit timeouts, structured error classes, `Platform::Switchboard.guard!(:service)` before each call (or `Platform::FaradayPauseGuard` as middleware for clients with several connections), a `PlatformSwitch::SERVICES` entry and a `Platform::Features` flag when the integration ships off by default.
+
+## Public data sources
+
+`DataSources::Client` is the base of the no-account data clients (`NasaPower::Client`, `Gaez::Client`, `Ssurgo::Client`, `Usgs::ElevationClient`, `Cdl::Client`, `Fcc::Client`): Faraday with retries and timeouts, one error class, and `Platform::Switchboard.guard!(:data)` before each request (`PlatformSwitch::SERVICES` includes `data`, on by default). Only `Fields::FetchObservationsJob` calls them; see `docs/FIELDS.md`.
 
 ## Inbound webhooks (shape, not built)
 
@@ -46,6 +87,8 @@ The one mail that goes to someone who may not have an account yet, so it bypasse
 ## Notification router
 
 `NotificationRouter.deliver(recipient:, purpose:, payload:, idempotency_key:)` reads `config/notification_purposes.yml` (validated at boot by `Notifications::Purposes`), tries the purpose's channels in order (`push`, `web_push`, `email`) and records every attempt on a `NotificationDelivery`. Same key twice: once sent, nothing is sent again. The shell ships with no purposes and one generic mailer action (`NotificationMailer#generic(user, subject, body)`).
+
+The first purpose is `weather_alert` (`Weather::DailyAlertsJob`): channels push, web push, then email; text in `config/locales/*/<locale>.notifications.yml`; idempotency key `weather:<field>:<date>:<kind>`, which the alerts screen parses back to list recent alerts.
 
 ## Mail
 

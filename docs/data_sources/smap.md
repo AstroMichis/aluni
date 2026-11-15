@@ -9,6 +9,17 @@ NASA's Soil Moisture Active Passive satellite measures the water in the top ~5 c
 
 L3 is a retrieval from the satellite measurement with gaps between swaths; L4 is a model analysis that assimilates SMAP data and has no gaps.
 
+## What the app uses
+
+`Fields::FetchSoilMoistureJob` asks AppEEARS for `SPL4SMGP.008` `Geophysical_Data_sm_rootzone` and `Geophysical_Data_sm_rootzone_pctl` at the pin over the last 12 full months, and `Weather::SoilMoisture` keeps one row per month (mean moisture and mean percentile), the latest reading, and the dry (percentile under 20) and wet (over 80) months.
+
+Measured on 2026-11-15 (Buin, Chile, -33.60, -70.70; fixture `spec/fixtures/data_sources/smap_l4_buin.csv`, one reading a day of the real file):
+
+- **Time:** about 45 minutes from submit to the CSV. A year of the 3-hourly L4 is about 2,900 granules, and AppEEARS spends most of the time downloading them ("Downloading" step). The job therefore polls every 5 minutes for up to 3 hours, and the field shows "Requested from NASA" meanwhile.
+- **Real CSV header:** `Category,ID,Latitude,Longitude,Date,SMAP_Tile,SPL4SMGP_008_Line_Y_9.00805km,SPL4SMGP_008_Sample_X_9.00805km,SPL4SMGP_008_Geophysical_Data_sm_rootzone,SPL4SMGP_008_Geophysical_Data_sm_rootzone_pctl` (2,921 rows); dates read `2025-11-01 01:30:00 UTC`. The parser finds the columns by suffix.
+- **Values:** root zone 0.17 m³/m³ at the end of summer (March) to 0.35 in October after the winter rains; June in the driest fifth of its usual range (percentile 12); August to October in the wettest.
+- **Fill in the percentile:** January to March every `sm_rootzone_pctl` is `-9999` while `sm_rootzone` has values. In the driest months the product leaves the percentile undefined; the app shows those months as unknown, never as dry.
+
 ## Layers to request (Captured from `GET /api/product/{id}`)
 
 ### `SPL3SMP_E.006`

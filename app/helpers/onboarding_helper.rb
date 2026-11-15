@@ -122,19 +122,6 @@ module OnboardingHelper
     ]
   end
 
-  # The short recap on the home screen: farm, pin, area, segment, goals.
-  def snapshot_recap_rows(snapshot)
-    profile = snapshot[:profile] || {}
-    field = snapshot[:field] || {}
-    [
-      { label: t("app.home.show.recap.farm"), value: (snapshot[:farm] || {})[:name].presence || preview_unknown },
-      { label: t("app.home.show.recap.pin"), value: preview_pin(field) || preview_unknown },
-      { label: t("app.home.show.recap.area"), value: preview_area(field) || preview_unknown },
-      { label: t("app.home.show.recap.segment"), value: profile[:segment] ? value_label("segment", profile[:segment]) : preview_unknown },
-      { label: t("app.home.show.recap.goals"), value: profile[:goals].presence ? value_label("goals", profile[:goals]) : preview_unknown }
-    ]
-  end
-
   def preview_pin(field)
     return nil unless field && field[:latitude] && field[:longitude]
 

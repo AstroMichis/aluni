@@ -1,0 +1,32 @@
+en:
+  app:
+    vegetation:
+      eyebrow: Landsat and Sentinel-2
+      title: Your field from space
+      map:
+        label: "Your field from above, coloured by how green it was on %{date}"
+        caption: "NDVI on %{date} (%{mission}), over satellite imagery. One scene, 10 to 30 m pixels."
+        toggle: Show or hide the NDVI
+        attribution: "NDVI: %{mission} via Microsoft Planetary Computer"
+        failed: The map could not load. The chart above has the same months.
+      missions:
+        sentinel-2: Sentinel-2
+        landsat: Landsat
+      normal_key: "Usual for the month (%{years} years, MODIS)"
+      normal_point: "Usually %{ndvi} in this month."
+      normal_below: "Against its usual green (NASA MODIS, since 2001), your spot was well below it in %{months}. If you did not plan that, it is worth a look."
+      normal_usual: Against its usual green (NASA MODIS, since 2001), your spot followed its normal rhythm this year.
+      lede: How much vegetation your field's spot had each month of the last year (NDVI), measured by satellite.
+      chart_label: Monthly vegetation over the last 12 months
+      month: "%{month}: NDVI %{ndvi}, %{cover}"
+      month_unknown: "%{month}: no clear image"
+      covers:
+        green: Green
+        sparse: Sparse
+        bare: Bare soil
+        unknown: No image
+      bare_window: "Your soil was bare for %{months} months in a row, from %{from} to %{to}. That is the window for a cover crop: it protects the soil from erosion, holds water and adds organic matter."
+      covered: Your field had cover most of the year, with no long bare-soil periods.
+      about_title: What is NDVI?
+      about: "NDVI compares the red and the infrared light the ground reflects. Healthy plants reflect a lot of infrared: above 0.45 there is a closed, growing crop; below 0.25 it is mostly soil or stubble. It is one 10 to 30 m pixel at your pin: it describes that spot, not the whole field, and clouds can leave months without data."
+      source: "Source: %{missions}, through Microsoft Planetary Computer."

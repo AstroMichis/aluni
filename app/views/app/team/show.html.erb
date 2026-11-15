@@ -1,0 +1,20 @@
+<% content_for :title, t(".title", app_name: t("app_name")) %>
+<% groups = @profile.groups(:farm).slice("profile", "resources") %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: back_to_menu_path, back_label: t("app.fields.back_to_menu"), title: t(".crumb") %>
+
+  <main id="main" class="screen__body">
+    <header class="screen__header">
+      <h1 class="text-display screen__title"><%= t(".headline") %></h1>
+      <p class="screen__lede"><%= t(".lede") %></p>
+    </header>
+
+    <%= render "shared/aluni", message: t(".aluni") %>
+    <%= render "app/fields/groups", subject: @farm, groups: groups %>
+    <div class="cluster cluster--sm screen__actions">
+      <%= link_to t(".edit"), edit_app_farm_path(return_to: "team", anchor: "group-profile"), class: "btn btn--primary btn--sm" %>
+      <%= link_to t(".talk", app_name: t("app_name")), app_onboarding_path, class: "btn btn--ghost btn--sm" %>
+    </div>
+  </main>
+</div>

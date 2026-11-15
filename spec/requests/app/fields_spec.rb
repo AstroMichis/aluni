@@ -11,15 +11,16 @@ RSpec.describe "App fields", type: :request do
 
   before { sign_in_as(user) }
 
-  it "saves the finder's pin and basics on the main field and lands on the home recap" do
+  it "saves the finder's pin and basics on the main field and lands on the menu dial" do
     patch app_field_path(field, locale: "en"), params: setup, headers: native_headers
 
     expect(response).to redirect_to(app_root_path(locale: "en"))
     expect(response).to have_http_status(:see_other)
     follow_redirect!(headers: native_headers)
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include(I18n.t("app.fields.update.saved")).and include(I18n.t("app.home.show.recap_title"))
-    expect(response.body).to include("4.6000").and include("-74.0800")
+    expect(response.body).to include(I18n.t("app.fields.update.saved")).and include(I18n.t("app.home.show.eyebrow"))
+    get app_field_path(field, locale: "en"), headers: native_headers
+    expect(response.body).to include("4.6000, -74.0800")
 
     expect(field.reload).to have_attributes(latitude: 4.6, longitude: -74.08, location_confidence: "confirmed", location_source: "typed",
                                             place_label: "Bogotá", irrigation: "rainfed", area: 2.5, area_unit: "hectares")

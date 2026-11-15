@@ -1,0 +1,31 @@
+<%# The portable station staked in a field, matching the 3D model (device_viewer_controller.js):
+    capsule body with a solar cap, carry loop, antenna, curved screen, accent band, status LED,
+    QR plate, and the steel stake in the soil with its two sensor bands. Shapes only (no text);
+    the label is the accessible name. Colours come from tokens through classes in pages/devices.css. %>
+<svg class="device-art" viewBox="0 0 320 380" role="img" aria-label="<%= t("devices.show.illustration_label", app_name: t("app_name")) %>" focusable="false">
+  <rect class="device-art__soil" x="0" y="250" width="320" height="130"/>
+  <rect class="device-art__soil-deep" x="0" y="318" width="320" height="62"/>
+  <path class="device-art__crop" d="M28 250c4-18 10-26 18-30M46 250c-2-16 2-24 10-30M240 250c4-16 10-24 18-28M258 250c-2-14 2-22 10-28M292 250c2-16 8-22 16-26"/>
+  <ellipse class="device-art__shadow" cx="160" cy="252" rx="54" ry="7"/>
+  <path class="device-art__stake" d="M152 236h16l-1 106-4 22h-6l-4-22z"/>
+  <path class="device-art__shine" d="M157 240v100"/>
+  <rect class="device-art__depth" x="151" y="276" width="18" height="10" rx="2"/>
+  <rect class="device-art__depth" x="151" y="318" width="18" height="10" rx="2"/>
+  <path class="device-art__collar" d="M138 226h44l-4 14h-36z"/>
+  <path d="M112 92c0-10 6-16 16-16h64c10 0 16 6 16 16v118c0 12-8 18-18 18h-60c-10 0-18-6-18-18z" class="device-art__body"/>
+  <path class="device-art__shine" d="M122 92v116"/>
+  <rect class="device-art__band" x="110" y="168" width="100" height="5" rx="2.5"/>
+  <rect class="device-art__screen" x="126" y="104" width="68" height="48" rx="6"/>
+  <path class="device-art__screen-line" d="M134 140c6-6 10-2 16-8s10 4 16-2 10-2 18-6"/>
+  <rect class="device-art__screen-dot" x="134" y="112" width="18" height="4" rx="2"/>
+  <rect class="device-art__screen-dot" x="134" y="120" width="12" height="9" rx="2"/>
+  <rect class="device-art__screen-dot" x="162" y="120" width="12" height="9" rx="2"/>
+  <circle class="device-art__led" cx="160" cy="190" r="4"/>
+  <rect class="device-art__qr" x="178" y="196" width="14" height="14" rx="2"/>
+  <ellipse class="device-art__solar" cx="160" cy="78" rx="44" ry="9"/>
+  <ellipse class="device-art__solar-rim" cx="160" cy="78" rx="45" ry="9.5"/>
+  <path class="device-art__loop" d="M138 74c0-22 22-22 22-22s22 0 22 22"/>
+  <path class="device-art__antenna" d="M194 74V36"/>
+  <circle class="device-art__antenna-tip" cx="194" cy="34" r="4"/>
+  <path class="device-art__signal" d="M204 30a12 12 0 0 1 0 16M212 24a22 22 0 0 1 0 28"/>
+</svg>

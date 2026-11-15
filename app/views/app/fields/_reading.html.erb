@@ -1,0 +1,13 @@
+<%# One datum of the farm or a field, read only: its value or what is
+    missing, where it comes from, and what a source suggests. Locals: reading. %>
+<li class="reading reading--<%= reading.state %>" id="<%= reading.dom_id %>">
+  <span class="reading__label"><%= datum_label(reading.datum) %></span>
+  <span class="reading__value"><%= reading_text(reading) %></span>
+  <span class="reading__meta">
+    <span class="reading__state"><%= t("app.fields.state_labels.#{reading.state}") %></span>
+    <% if (origin = reading_origin(reading)).present? %><span class="reading__origin"><%= origin %></span><% end %>
+  </span>
+  <% if reading.state == :to_confirm %>
+    <span class="reading__hint"><%= t("app.fields.actions.proposal", value: proposal_text(reading)) %></span>
+  <% end %>
+</li>

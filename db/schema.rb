@@ -98,6 +98,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_190316) do
     t.index ["field_id"], name: "index_field_crops_on_field_id"
   end
 
+  create_table "field_observations", force: :cascade do |t|
+    t.bigint "field_id", null: false
+    t.string "source", null: false
+    t.integer "status", default: 0, null: false
+    t.jsonb "payload", default: {}, null: false
+    t.string "error"
+    t.datetime "fetched_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["field_id", "source"], name: "index_field_observations_on_field_id_and_source", unique: true
+    t.index ["field_id"], name: "index_field_observations_on_field_id"
+  end
+
   create_table "fields", force: :cascade do |t|
     t.bigint "farm_id", null: false
     t.string "name", default: "", null: false
@@ -254,6 +267,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_190316) do
   add_foreign_key "farmer_profiles", "users"
   add_foreign_key "farms", "users"
   add_foreign_key "field_crops", "fields"
+  add_foreign_key "field_observations", "fields"
   add_foreign_key "fields", "farms"
   add_foreign_key "identities", "users"
   add_foreign_key "onboarding_sessions", "users"

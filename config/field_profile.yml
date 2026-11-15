@@ -1,0 +1,356 @@
+# Every datum the menu sections show about a farm and its fields: where the
+# person's answer is kept (the onboarding models), which public source can
+# fill or propose it, at what scale, and what it feeds. Loaded and validated
+# by Fields::Profile.
+#
+# Principle: ask only what the pin cannot tell; show what it can and let the
+# person confirm it into their own record.
+#
+# sources   id => name, layer (global | us), scale, resolution, doc, status
+#           scale: parcel (<= 30 m), zone (250 m to 9 km), region (>= 25 km),
+#           species (not spatial). Confidence follows: high, medium, low.
+#           status: connected (Fields::FetchObservationsJob fetches it),
+#           reference (a dataset in the repo), planned (needs an account or an
+#           async job, next phase), gap (no documented source yet).
+#
+# observations  FieldObservation#source => the registry source it is
+#
+# data      level (farm | field) => key => attributes
+#   group        the screen section
+#   origin       ask | auto | confirm, or { global:, us: } when layers differ
+#   column       where the answer lives: profile.<attr>, farm.<attr>,
+#                field.<attr>, field.soil.<key>, field.location,
+#                crops.current, crops.current.<attr>, crops.history
+#   values       the onboarding.values.<attribute> list that labels it
+#                (defaults to the column's last part)
+#   options      `months` for 1..12 (enums come from the models)
+#   essential    true for the few answers the rotation comparison needs
+#                (the to-do list and progress count only these; the rest
+#                sits under "More details" and stays optional)
+#   multiple / number
+#   observation  name => "<observation source>.<path>", or several joined by
+#                " | ": the first that has a value wins (3DEP, then NASADEM)
+#   propose      how an observation becomes the column's value on confirm
+#                (texture_class, drainage_class, number, cdl_history)
+#   scale        multiply the observed number (mm/day to mm/year)
+#   sources      { global: [ids], us: [ids] }; us adds in front of global
+#   precision    decimals for numbers (default 1)
+#   feeds        what it is used for (fields.feeds.*)
+
+sources:
+  nasa_power:       { name: "NASA POWER", layer: global, scale: region, resolution: "0.5° x 0.625°", doc: nasa_power.md, status: connected }
+  gaez:             { name: "FAO GAEZ v4", layer: global, scale: zone, resolution: "9 km", doc: gaez.md, status: connected }
+  ecocrop:          { name: "FAO ECOCROP", layer: global, scale: species, resolution: "-", doc: ecocrop.md, status: reference }
+  gibs:             { name: "NASA Worldview / GIBS", layer: global, scale: zone, resolution: "250 m", doc: gibs_worldview.md, status: connected }
+  fao56:            { name: "FAO-56", layer: global, scale: species, resolution: "-", doc: fao56_crop_coefficients.md, status: planned }
+  srtm:             { name: "NASADEM (SRTM)", layer: global, scale: parcel, resolution: "30 m", doc: terrain.md, status: connected }
+  hls:              { name: "HLS (Landsat + Sentinel-2)", layer: global, scale: parcel, resolution: "30 m", doc: vegetation_indices.md, status: connected }
+  grace:            { name: "NASA GRACE / GRACE-FO", layer: global, scale: region, resolution: "3° mascons (0.5° grid)", doc: grace.md, status: connected }
+  modis:            { name: "NASA MODIS NDVI", layer: global, scale: zone, resolution: "250 m", doc: vegetation_indices.md, status: connected }
+  ecostress:        { name: "NASA ECOSTRESS", layer: global, scale: parcel, resolution: "70 m", doc: ecostress.md, status: connected }
+  modis_phenology:  { name: "MODIS MCD12Q2", layer: global, scale: zone, resolution: "500 m", doc: vegetation_indices.md, status: planned }
+  smap:             { name: "NASA SMAP L4", layer: global, scale: zone, resolution: "9 km", doc: smap.md, status: connected }
+  gpm_imerg:        { name: "NASA GPM IMERG", layer: global, scale: zone, resolution: "0.1°", doc: gpm_imerg.md, status: connected }
+  soilgrids:        { name: "SoilGrids (ISRIC)", layer: global, scale: zone, resolution: "250 m", doc: null, status: gap }
+  reverse_geocoder: { name: "Global reverse geocoder", layer: global, scale: region, resolution: "-", doc: null, status: gap }
+  fcc_census_block: { name: "FCC Census Block", layer: us, scale: region, resolution: "county", doc: fcc_census_block.md, status: connected }
+  ssurgo:           { name: "SSURGO", layer: us, scale: parcel, resolution: "map unit", doc: ssurgo.md, status: connected }
+  usgs_3dep:        { name: "USGS 3DEP", layer: us, scale: parcel, resolution: "1-10 m", doc: terrain.md, status: connected }
+  cropland_cdl:     { name: "USDA Cropland Data Layer", layer: us, scale: parcel, resolution: "30 m", doc: cropland_cdl.md, status: connected }
+  openet:           { name: "OpenET", layer: us, scale: parcel, resolution: "30 m", doc: openet.md, status: planned }
+
+observations:
+  fcc: fcc_census_block
+  nasa_power: nasa_power
+  gaez: gaez
+  ssurgo: ssurgo
+  usgs_elevation: usgs_3dep
+  cdl: cropland_cdl
+  vegetation: hls
+  nasadem: srtm
+  gpm_imerg: gpm_imerg
+  smap: smap
+  modis: modis
+  grace: grace
+  ecostress: ecostress
+
+data:
+  farm:
+    region:
+      group: place
+      origin: auto
+      column: farm.admin_area
+      sources: { global: [reverse_geocoder], us: [fcc_census_block] }
+      feeds: [confidence, interface]
+    role:
+      group: profile
+      origin: ask
+      column: profile.role
+      feeds: [interface]
+    experience:
+      group: profile
+      origin: ask
+      column: profile.experience
+      feeds: [interface]
+    team:
+      group: profile
+      origin: ask
+      column: profile.team
+      feeds: [feasibility]
+    team_size:
+      group: profile
+      origin: ask
+      column: profile.team_size
+      number: true
+      precision: 0
+      feeds: [feasibility]
+    land_tenure:
+      group: profile
+      origin: ask
+      column: profile.land_tenure
+      feeds: [scoring]
+    units:
+      group: profile
+      origin: ask
+      column: profile.units
+      feeds: [interface]
+    budget_level:
+      group: resources
+      origin: ask
+      column: profile.budget_level
+      feeds: [scoring, suitability]
+    equipment:
+      group: resources
+      origin: ask
+      column: profile.equipment
+      multiple: true
+      feeds: [feasibility]
+    livestock:
+      group: resources
+      origin: ask
+      column: profile.livestock
+      multiple: true
+      feeds: [scoring]
+    practices:
+      group: resources
+      origin: ask
+      column: profile.practices
+      multiple: true
+      feeds: [scoring]
+    market_channels:
+      group: market
+      origin: ask
+      column: profile.market_channels
+      multiple: true
+      feeds: [scoring, feasibility]
+    goals:
+      group: goals
+      essential: true
+      origin: ask
+      column: profile.goals
+      multiple: true
+      feeds: [scoring]
+    risk_tolerance:
+      group: goals
+      origin: ask
+      column: profile.risk_tolerance
+      feeds: [scoring]
+
+  field:
+    name:
+      group: plot
+      origin: ask
+      column: field.name
+      feeds: [interface]
+    location:
+      group: plot
+      essential: true
+      origin: ask
+      column: field.location
+      feeds: [all]
+    area:
+      group: plot
+      origin: ask
+      column: field.area
+      number: true
+      feeds: [scoring, classification]
+    irrigation:
+      group: plot
+      essential: true
+      origin: ask
+      column: field.irrigation
+      feeds: [water, suitability]
+    water_source:
+      group: plot
+      origin: ask
+      column: field.water_source
+      feeds: [water]
+    cropping_intensity:
+      group: plot
+      origin: ask
+      column: field.cropping_intensity
+      feeds: [calendar, rotation_rules]
+    current_crop:
+      group: crop
+      essential: true
+      origin: ask
+      column: crops.current
+      feeds: [baseline]
+    planting_month:
+      group: crop
+      origin: ask
+      column: crops.current.planting_month
+      options: months
+      feeds: [baseline, calendar]
+    harvest_month:
+      group: crop
+      origin: ask
+      column: crops.current.harvest_month
+      options: months
+      feeds: [baseline, calendar]
+    crop_history:
+      group: crop
+      essential: true
+      origin: { global: ask, us: confirm }
+      column: crops.history
+      observation: { years: cdl.years }
+      propose: cdl_history
+      sources: { us: [cropland_cdl] }
+      feeds: [baseline, rotation_rules]
+    soil_texture:
+      group: soil
+      origin: { global: ask, us: confirm }
+      column: field.soil.texture
+      values: texture
+      observation: { sand: ssurgo.sandtotal_r, clay: ssurgo.claytotal_r }
+      propose: texture_class
+      sources: { global: [soilgrids], us: [ssurgo] }
+      precision: 0
+      feeds: [suitability, water]
+    soil_drainage:
+      group: soil
+      origin: { global: ask, us: confirm }
+      column: field.soil.drainage
+      values: drainage
+      observation: { value: ssurgo.drainagecl }
+      propose: drainage_class
+      sources: { us: [ssurgo] }
+      feeds: [suitability, risk]
+    soil_ph:
+      group: soil
+      origin: { global: ask, us: confirm }
+      column: field.soil.ph
+      number: true
+      observation: { value: ssurgo.ph1to1h2o_r }
+      propose: number
+      sources: { global: [soilgrids], us: [ssurgo] }
+      feeds: [suitability]
+    soil_depth:
+      group: soil
+      origin: ask
+      column: field.soil.depth
+      feeds: [suitability, water]
+    soil_fertility:
+      group: soil
+      origin: ask
+      column: field.soil.fertility
+      feeds: [scoring]
+    soil_salinity:
+      group: soil
+      origin: ask
+      column: field.soil.salinity
+      feeds: [suitability]
+    soil_problems:
+      group: soil
+      origin: ask
+      column: field.soil.problems
+      multiple: true
+      feeds: [risk, confidence]
+    soil_series:
+      group: soil
+      origin: auto
+      observation: { value: ssurgo.muname }
+      sources: { global: [soilgrids], us: [ssurgo] }
+      feeds: [suitability]
+    organic_matter:
+      group: soil
+      origin: auto
+      observation: { value: ssurgo.om_r }
+      sources: { global: [soilgrids], us: [ssurgo] }
+      feeds: [scoring]
+    water_capacity:
+      group: soil
+      origin: auto
+      observation: { value: ssurgo.awc_r }
+      sources: { global: [soilgrids], us: [ssurgo] }
+      precision: 2
+      feeds: [water]
+    elevation:
+      group: terrain
+      origin: auto
+      observation: { value: "usgs_elevation.elevation | nasadem.elevation" }
+      sources: { global: [srtm], us: [usgs_3dep] }
+      precision: 0
+      feeds: [suitability]
+    slope:
+      group: terrain
+      origin: auto
+      observation: { value: "usgs_elevation.slope | nasadem.slope" }
+      sources: { global: [srtm], us: [usgs_3dep] }
+      feeds: [erosion]
+    temp_normal:
+      group: climate
+      origin: auto
+      observation: { value: nasa_power.climatology.T2M.ANN }
+      sources: { global: [nasa_power] }
+      feeds: [suitability, calendar]
+    rain_normal:
+      group: climate
+      origin: auto
+      observation: { value: nasa_power.climatology.PRECTOTCORR.ANN }
+      scale: 365
+      precision: 0
+      sources: { global: [nasa_power] }
+      feeds: [water, suitability]
+    frost_normal:
+      group: climate
+      origin: auto
+      observation: { value: nasa_power.climatology.FROST_DAYS.ANN }
+      precision: 0
+      sources: { global: [nasa_power] }
+      feeds: [calendar, risk]
+    heavy_rain:
+      group: climate
+      origin: auto
+      observation: { value: gpm_imerg.heavy_days_per_year }
+      sources: { global: [gpm_imerg] }
+      feeds: [erosion, risk]
+    soil_moisture:
+      group: climate
+      origin: auto
+      observation: { value: smap.latest.pctl }
+      precision: 0
+      sources: { global: [smap] }
+      feeds: [water, risk]
+    water_storage:
+      group: climate
+      origin: auto
+      observation: { value: grace.recent_cm }
+      sources: { global: [grace] }
+      feeds: [water, risk]
+    water_stress:
+      group: climate
+      origin: auto
+      observation: { value: ecostress.latest.esi }
+      precision: 2
+      sources: { global: [ecostress] }
+      feeds: [water, risk]
+
+# The add-a-field form: one question per screen, in this order. The profile
+# questions belong to the onboarding chat. input: pin | details | crop | history | review
+onboarding:
+  - { step: location, input: pin, data: [location] }
+  - { step: details, input: details, data: [name, area, irrigation, water_source] }
+  - { step: crop, input: crop, data: [current_crop, planting_month, harvest_month] }
+  - { step: history, input: history, data: [crop_history] }
+  - { step: done, input: review, data: [] }

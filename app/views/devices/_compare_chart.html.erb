@@ -1,0 +1,18 @@
+<%# Illustrative soil moisture: the station's 15-minute line (jagged, reacts to a rain and an
+    irrigation) against the satellite's daily points. Fixed sample shapes, no data; the note says so. %>
+<figure class="device-compare__figure">
+  <svg class="device-chart" viewBox="0 0 400 180" role="img" aria-label="<%= t("devices.show.compare.chart_label") %>" focusable="false">
+    <path class="device-chart__grid" d="M20 30h370M20 75h370M20 120h370M20 165h370"/>
+    <polyline class="device-chart__sensor" points="20,120 40,118 60,121 75,117 90,70 105,66 120,72 140,80 160,88 180,95 200,101 215,106 230,110 245,62 260,58 280,66 300,74 320,82 340,90 360,97 390,104"/>
+    <polyline class="device-chart__satellite" points="20,116 75,113 130,86 185,96 240,104 295,80 350,92 390,98"/>
+    <g class="device-chart__dots">
+      <circle cx="20" cy="116" r="4"/><circle cx="75" cy="113" r="4"/><circle cx="130" cy="86" r="4"/><circle cx="185" cy="96" r="4"/>
+      <circle cx="240" cy="104" r="4"/><circle cx="295" cy="80" r="4"/><circle cx="350" cy="92" r="4"/><circle cx="390" cy="98" r="4"/>
+    </g>
+  </svg>
+  <figcaption class="device-compare__legend cluster cluster--sm">
+    <span class="device-compare__key device-compare__key--sensor"><%= t("devices.show.compare.legend_sensor") %></span>
+    <span class="device-compare__key device-compare__key--satellite"><%= t("devices.show.compare.legend_satellite") %></span>
+    <span class="device-compare__note"><%= t("devices.show.compare.note") %></span>
+  </figcaption>
+</figure>

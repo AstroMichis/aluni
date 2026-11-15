@@ -38,6 +38,26 @@ aspect  = atan2(dz/dx, dz/dy)    # direction the slope faces
 
 For many points or whole fields, download a 3DEP tile once (The National Map, GeoTIFF); GeoTIFF tiles cover whole areas in one download.
 
+## NASADEM through Planetary Computer (what the app uses outside the US)
+
+The app does not go through AppEEARS for the DEM: Planetary Computer serves NASADEM as 1°×1° cloud-optimized tiles (collection `nasadem`, asset `elevation`, metres as whole numbers), with no account. The item id is the tile's south-west corner, so no STAC search is needed:
+
+```
+GET https://planetarycomputer.microsoft.com/api/data/v1/item/point/-72.98,-41.32?collection=nasadem&item=NASADEM_HGT_s42w073&expression=elevation_b1&asset_as_band=false
+{"coordinates":[-72.98,-41.32],"values":[74.0],"band_names":["elevation_b1"]}
+```
+
+A missing tile (open sea) answers 404. Coverage is the shuttle's swath, 56°S to 60°N.
+
+**Neighbour distance.** On whole-metre heights with radar noise, the 30 m four-neighbour slope is unstable. Measured on 2026-11-15 against 3DEP:
+
+| Point | NASADEM 30 m | 60 m | **90 m** | 150 m | 3DEP 30 m |
+|---|---|---|---|---|---|
+| Nebraska 40.95, −97.50 | 6.0 % | 3.5 % | **1.7 %** | 1.1 % | 1.1 % |
+| Nebraska 41.20, −96.80 | 4.7 % | 10.0 % | **9.4 %** | 6.8 % | 8.2 % |
+
+`PlanetaryComputer::Client#terrain` uses 90 m (three pixels). That is a field-scale slope, good for the erosion score but not for a single row or terrace.
+
 SSURGO also carries a representative slope per component (`slope_r`, `ssurgo.md`): 1% for Hastings here.
 
 ## Documentation

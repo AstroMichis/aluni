@@ -1,0 +1,42 @@
+es:
+  app:
+    timeline:
+      title: Tus próximas tres temporadas, mes a mes
+      lede: Cuándo el suelo tiene cultivo y cuándo queda descubierto, frente al clima habitual. Los meses descubiertos con tormentas, sequía o heladas son los vulnerables.
+      weather_label: Clima habitual en tu punto
+      risks:
+        storm: Tormentas
+        dry: Seco
+        frost: Heladas
+        heat: Calor
+      risk_notes:
+        storm: al menos un día de 25 mm o más en un año típico (NASA GPM IMERG)
+        dry: llueve menos de la mitad de lo que se evapora (NASA POWER, FAO-56)
+        frost: dos días con helada o más en un mes típico (NASA POWER)
+        heat: el mes ha llegado a 35 °C (NASA POWER)
+      states:
+        crop: "%{crop}"
+        bare: suelo descubierto
+        unknown: temporada desconocida
+        vulnerable: suelo descubierto con %{risks}
+      cell: "%{month} %{year}: %{state}"
+      legend:
+        crop: Cultivo en el suelo
+        bare: Suelo descubierto
+        vulnerable: Descubierto y expuesto
+        unknown: Sin dato
+        window: Espacio para un cultivo de cobertura
+      covers:
+        title: Ventanas para un cultivo de cobertura.
+        effect: "Con una cobertura en cada una, los meses expuestos bajan de %{before} a %{after}."
+        window: "%{from} a %{to}: %{crop} (%{why}; %{exposed} meses expuestos)."
+        dry: La ventana es seca; la cobertura necesita riego para establecerse, o deja rastrojo en su lugar.
+        kinds:
+          frost: resiste las heladas
+          cool: una cobertura de estación fría
+          warm: una leguminosa de verano que aporta nitrógeno
+      summary: "Descubierto %{bare} de %{total} meses; %{vulnerable} de ellos expuestos (%{stormy} con tormentas)."
+      summary_covered: Suelo cubierto los %{total} meses.
+      unknown_note: "Todavía no se conoce la temporada de %{crops}, así que esos meses quedan en blanco."
+      about_title: Cómo se dibuja
+      about: Cada cultivo crece desde su mes de siembra habitual durante sus etapas FAO-56 (tus propios meses para el cultivo actual; seis meses después al sur de los trópicos); la alfalfa cubre todo el año. La franja del clima es la misma cada año, con promedios de largo plazo. Revisa las fechas con tu experiencia local.

@@ -52,14 +52,15 @@ rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), weba
 | `SIDEKIQ_WEB_USERNAME`, `SIDEKIQ_WEB_PASSWORD` | sidekiq_web.rb |
 | `PLATFORM_PAUSE_ALL`, `PLATFORM_ACTOR` | switchboard brake, toggle actor; services: jobs, cron, gemini, mail, push, geocoding (Nominatim, free, not paused at bootstrap) |
 | `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`, `..._DETERMINISTIC_KEY`, `..._KEY_DERIVATION_SALT`, `AR_ENCRYPTION_SUPPORT_UNENCRYPTED_DATA` | encryption (alternative to credentials) |
-| `GEMINI_FLASH_MODEL`, `GEMINI_PRO_MODEL`, `GEMINI_TRANSCRIBE_MODEL`, `GEMINI_CHAT_MAX_OUTPUT_TOKENS` | gemini.rb |
-| `GEMINI_BACKEND` (`api_key` default, `vertex` in production), `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION` (`global`) | gemini.rb, `Gemini::Client.backend`, `Gemini::VertexToken` |
+| `GEMINI_FLASH_MODEL`, `GEMINI_PRO_MODEL`, `GEMINI_TRANSCRIBE_MODEL`, `GEMINI_CHAT_MAX_OUTPUT_TOKENS`, `GEMINI_DAILY_CAP` (requests per UTC day, default 2000, 0 off) | gemini.rb, `Gemini::DailyCap` |
+| `GEMINI_BACKEND` (`api_key` default, `vertex` in production), `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION` (`global`), `GOOGLE_OAUTH_ACCESS_TOKEN` (development only: a `gcloud auth print-access-token` token so a laptop can use Vertex) | gemini.rb, `Gemini::Client.backend`, `Gemini::VertexToken` |
 | `ACTIVE_STORAGE_SERVICE` (`cloudflare_r2` or `local`), `KAMAL_BACKUP` (`0` leaves the R2 backup accessory out) | production.rb, deploy.yml |
+| `METEOMATICS_USERNAME`, `METEOMATICS_PASSWORD`, `METEOMATICS_CACHE_TTL_SECONDS` | meteomatics.rb, `Meteomatics::Client` (off while unset) |
 | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET` | storage.yml fallbacks, backup accessory |
 | `APNS_DEVELOPMENT` | push.yml |
 | `MAILER_FROM` | ApplicationMailer fallback |
-| `KAMAL_HOST`, `KAMAL_SSH_USER`, `KAMAL_ARCH`, `KAMAL_TUNNEL`, `KAMAL_BUILDER_REMOTE`, `KAMAL_IMAGE`, `KAMAL_REGISTRY_SERVER`, `KAMAL_REGISTRY_USERNAME`, `KAMAL_REGISTRY_PASSWORD`, `KAMAL_KNOWN_HOSTS`, `KAMAL_SSH_KEY` | deploy.yml, deploy workflow |
-| `POSTGRES_PASSWORD`, `APP_DB_PASSWORD`, `REDIS_PASSWORD`, `BACKUP_PASSPHRASE`, `TUNNEL_TOKEN`, `CERTIFICATE_PEM`, `PRIVATE_KEY_PEM`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `TS_OAUTH_CLIENT_ID`, `TS_AUDIENCE` | accessories, tunnel, Tailscale |
+| `KAMAL_HOST`, `KAMAL_SSH_USER`, `KAMAL_ARCH`, `KAMAL_TUNNEL`, `KAMAL_BACKUP`, `KAMAL_BUILDER_REMOTE`, `KAMAL_IMAGE`, `KAMAL_REGISTRY_SERVER`, `KAMAL_REGISTRY_USERNAME`, `KAMAL_REGISTRY_PASSWORD`, `KAMAL_KNOWN_HOSTS`, `KAMAL_SSH_KEY` | deploy.yml, deploy workflow |
+| `POSTGRES_PASSWORD`, `APP_DB_PASSWORD`, `REDIS_PASSWORD`, `BACKUP_PASSPHRASE`, `TUNNEL_TOKEN`, `CERTIFICATE_PEM`, `PRIVATE_KEY_PEM`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` | accessories (backup only with `KAMAL_BACKUP=1`), tunnel |
 | `CI` | test.rb eager load |
 | `DB_PREPARE_ON_BOOT` | docker-entrypoint |
 
@@ -67,7 +68,7 @@ rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), weba
 
 ## Credentials keys (`bin/rails credentials:edit`)
 
-`secret_key_base`, `active_record_encryption.{primary_key,deterministic_key,key_derivation_salt}` (or the three `ACTIVE_RECORD_ENCRYPTION_*` Kamal secrets), `gemini.api_key` (only with `GEMINI_BACKEND=api_key`; the Vertex backend needs no key), `redis.url`, `production.database_url`, `r2.{account_id,access_key_id,secret_access_key}`, `mailer.from`, `smtp.{address,port,user_name,password,domain}`, `web_push.{public_key,private_key,subject}`, `action_push_native.apns.{key_id,encryption_key,team_id,topic}`, `action_push_native.fcm.{encryption_key,project_id}`, `native_app.{apple_team_id,android_cert_sha256}`.
+`secret_key_base`, `active_record_encryption.{primary_key,deterministic_key,key_derivation_salt}` (or the three `ACTIVE_RECORD_ENCRYPTION_*` Kamal secrets), `gemini.api_key` (only with `GEMINI_BACKEND=api_key`; the Vertex backend needs no key), `meteomatics.{username,password}` (or the `METEOMATICS_*` Kamal secrets), `redis.url`, `production.database_url`, `r2.{account_id,access_key_id,secret_access_key}`, `mailer.from`, `smtp.{address,port,user_name,password,domain}`, `web_push.{public_key,private_key,subject}`, `action_push_native.apns.{key_id,encryption_key,team_id,topic}`, `action_push_native.fcm.{encryption_key,project_id}`, `native_app.{apple_team_id,android_cert_sha256}`.
 
 Every flag an initializer derives from ENV or credentials is exposed on `Rails.configuration.x.*` and read through `Platform::Features`, never from ENV in app code.
 
@@ -88,4 +89,4 @@ mise exec -- bin/rails core:check
 
 ## Deploy
 
-`config/deploy.yml` (Kamal 2), `.kamal/secrets` (names only), `.kamal/hooks/pre-deploy` (migrations once per deploy), `.github/workflows/deploy.yml` (manual or `v*` tags, builds on the arm64 VM), `.github/workflows/platform-switch.yml` (pause/resume services). Runbook: `docs/deploy/DEPLOY.md`.
+`config/deploy.yml` (Kamal 2), `.kamal/secrets` (names only), `.kamal/hooks/pre-deploy` (migrations once per deploy), `.github/workflows/deploy.yml` (every push to main and manual; keyless Workload Identity Federation, SSH over IAP, builds on the VM), `.github/workflows/platform-switch.yml` (pause/resume services). Runbook: `docs/deploy/DEPLOY.md`.

@@ -1,0 +1,14 @@
+<%# Aluni, the plant-shaped assistant, saying something. Locals: message (HTML-safe or plain text). %>
+<div class="aluni">
+  <svg class="aluni__avatar" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+    <circle class="aluni__disc" cx="24" cy="24" r="23"/>
+    <g class="aluni__sprout">
+      <path class="aluni__stem" d="M24 40V22"/>
+      <path class="aluni__leaf aluni__leaf--left" d="M24 26c-7 0-11-4-11-10 6 0 11 4 11 10z"/>
+      <path class="aluni__leaf aluni__leaf--right" d="M24 23c6 0 10-3.5 10-9-5.5 0-10 3.5-10 9z"/>
+    </g>
+    <path class="aluni__pot" d="M15 36h18l-2 8H17z"/>
+    <circle class="aluni__eye" cx="21" cy="39.5" r="1"/><circle class="aluni__eye" cx="27" cy="39.5" r="1"/>
+  </svg>
+  <p class="aluni__bubble"><%= message %></p>
+</div>

@@ -4,8 +4,9 @@
 #
 #   it "parses the answer", :gemini_api do ... end
 #   it "finds the town", :geocoding_api do ... end
+#   (also :meteomatics_api, :planetary_computer_api and :appeears_api)
 #
-# Files whose subject IS a client (spec/services/gemini/, spec/services/geocoding/)
+# Files whose subject IS a client (spec/services/<client>/ below)
 # are tagged by path. After each example, every HTTP request WebMock saw
 # (stubbed or not) is inspected; the suite fails at the end if any reached a
 # host the example was not tagged for. Declared after webmock/rspec so this
@@ -13,7 +14,10 @@
 module ExternalApiCallCounter
   HOSTS = {
     gemini_api: /(?:\A|\.)googleapis\.com\z/,
-    geocoding_api: /(?:\A|\.)openstreetmap\.org\z/
+    geocoding_api: /(?:\A|\.)openstreetmap\.org\z/,
+    meteomatics_api: /(?:\A|\.)meteomatics\.com\z/,
+    planetary_computer_api: /(?:\A|\.)planetarycomputer\.microsoft\.com\z/,
+    appeears_api: /(?:\A|\.)appeears\.earthdatacloud\.nasa\.gov\z/
   }.freeze
   @calls = []
 
@@ -39,6 +43,18 @@ RSpec.configure do |config|
   end
   config.define_derived_metadata(file_path: %r{spec/services/geocoding/}) do |meta|
     meta[:geocoding_api] = true unless meta.key?(:geocoding_api)
+  end
+
+  config.define_derived_metadata(file_path: %r{spec/services/meteomatics/}) do |meta|
+    meta[:meteomatics_api] = true unless meta.key?(:meteomatics_api)
+  end
+
+  config.define_derived_metadata(file_path: %r{spec/services/planetary_computer/}) do |meta|
+    meta[:planetary_computer_api] = true unless meta.key?(:planetary_computer_api)
+  end
+
+  config.define_derived_metadata(file_path: %r{spec/services/appeears/}) do |meta|
+    meta[:appeears_api] = true unless meta.key?(:appeears_api)
   end
 
   config.after do |example|

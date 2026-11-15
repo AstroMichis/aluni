@@ -39,7 +39,7 @@ RSpec.describe "Passkey sign-up and sign-in", type: :request do
     # The home shows its recap at once, empty or not: nothing forces a chat.
     get app_root_path(locale: "en"), headers: native_headers
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include(I18n.t("app.home.show.recap_title")).and include(I18n.t("app.home.show.greeting", name: "Ada"))
+    expect(response.body).to include(I18n.t("app.home.show.eyebrow")).and include(I18n.t("app.home.show.greeting", name: "Ada"))
 
     get passkeys_path(locale: "en"), headers: native_headers
     expect(response).to have_http_status(:ok)
@@ -73,7 +73,7 @@ RSpec.describe "Passkey sign-up and sign-in", type: :request do
 
     get app_root_path(locale: "en"), headers: native_headers
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include(I18n.t("app.home.show.recap_title"))
+    expect(response.body).to include(I18n.t("app.home.show.eyebrow"))
   end
 
   it "carries the field from the finder into the new account" do
@@ -100,9 +100,9 @@ RSpec.describe "Passkey sign-up and sign-in", type: :request do
     expect(field.field_crops.sole).to have_attributes(crop_name: "Maíz", scientific_name: "Zea mays", season_year: Date.current.year, role: "main", source: "farmer")
     expect(user.farmer_profile.units).to eq("imperial")
 
-    get app_root_path(locale: "es"), headers: native_headers
+    get app_field_path(field, locale: "es"), headers: native_headers
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("42.0000").and include("-93.7500").and include("12,5 acres")
+    expect(response.body).to include("42.0000, -93.7500")
   end
 
   it "creates the account even when the field cannot be saved, and ignores a pinless field" do

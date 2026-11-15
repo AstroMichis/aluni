@@ -1,0 +1,174 @@
+es:
+  devices:
+    show:
+      title: "%{app_name} Sonda"
+      description: "Una estación de campo que mide tu suelo y tu clima, guarda todo sin señal y lo envía seguro a %{app_name}."
+      nav_label: "Sitio"
+      back_home: "Volver al inicio"
+      eyebrow: "Próximamente"
+      headline: "Tu campo, medido de verdad. Comparado con lo que ven los satélites."
+      lede: "%{app_name} Sonda es una estación autónoma que se clava en tu campo, mide humedad y temperatura del suelo, aire y lluvia, y le cuenta a %{app_name} lo que pasa cada 15 minutos. Con WiFi, red celular o sin señal."
+      cta_models: "Ver los modelos"
+      cta_try: "Prueba %{app_name} hoy"
+      cta_open: "Ir a %{app_name}"
+      availability: "Precio y fecha de lanzamiento por anunciar."
+      illustration_label: "Ilustración de la estación %{app_name} Sonda en un campo"
+      viewer:
+        label: "Modelo 3D de la %{app_name} Sonda: estación portátil con tapa solar, pantalla curva, asa y sonda de acero"
+        hint: "Arrastra para girarla, o usa las flechas del teclado."
+        models_label: "Modelo a mostrar"
+        screen_soil: "Suelo"
+        screen_air: "Aire"
+        screen_lite: "WiFi"
+        screen_pro: "LTE · GPS"
+      install:
+        kicker: "Instalación"
+        title: "Así se instala en tu campo"
+        body: "Portátil y sin cables: la llevas del asa, la clavas donde quieras medir y la vinculas desde el teléfono."
+        steps:
+          stake: "Clava la sonda de acero en el suelo, hasta la marca."
+          screw: "Enrosca la Sonda encima: se enciende sola con el sol."
+          scan: "Escanea su código QR en la app y elige el campo."
+      highlights:
+        autonomy: "Energía solar, semanas sin sol"
+        offline: "Meses de mediciones sin señal"
+        secure: "Cada lectura firmada"
+        install: "Lista en 10 minutos, sin herramientas especiales"
+      models:
+        kicker: "Modelos"
+        title: "Elige según dónde está tu campo"
+        lite:
+          name: "Sonda Lite"
+          badge: "WiFi"
+          summary: "Para campos cerca de la casa o de un punto WiFi."
+          features:
+            - "Humedad y temperatura del suelo a 10 y 30 cm"
+            - "Temperatura y humedad del aire"
+            - "WiFi y Bluetooth para configurarla desde el teléfono"
+            - "Panel solar y batería LiFePO4"
+        pro:
+          name: "Sonda Pro"
+          badge: "WiFi + celular + GPS"
+          summary: "Para campos lejanos, sin WiFi, donde llega una red celular."
+          features:
+            - "Todo lo de la Lite"
+            - "Red celular LTE-M / NB-IoT con eSIM incluida"
+            - "GPS: marca sola el punto exacto de tu campo"
+            - "Pluviómetro y sensor de radiación"
+            - "Puerto para sondas profesionales (salinidad, mojado de hoja, viento)"
+      sensors:
+        kicker: "Qué mide"
+        title: "Cada sensor responde una pregunta de tu campo"
+        compare_label: "Se compara con"
+        soil_moisture:
+          title: "Humedad del suelo a dos profundidades"
+          body: "Cuánta agua tienen tus raíces, a 10 y a 30 cm. La base para decidir cuándo y cuánto regar."
+          compare: "SMAP (NASA) y el índice de humedad del suelo de Meteomatics"
+        soil_temperature:
+          title: "Temperatura del suelo"
+          body: "Te dice si el suelo ya está listo para sembrar y cómo avanza la germinación."
+          compare: "NASA POWER"
+        air:
+          title: "Aire: temperatura y humedad"
+          body: "Dentro de un escudo contra el sol. Avisa riesgo de helada, de hongos y de estrés por calor."
+          compare: "NASA POWER y el pronóstico de Meteomatics"
+        rain:
+          title: "Lluvia real en tu campo"
+          body: "Un pluviómetro de 0,2 mm. La lluvia que cayó en tu parcela, no en el pueblo."
+          compare: "GPM IMERG (NASA)"
+        light:
+          title: "Radiación"
+          body: "La luz que recibe tu cultivo para crecer."
+          compare: "NASA POWER"
+        expansion:
+          title: "Puerto de expansión"
+          body: "Conecta sondas profesionales SDI-12 o RS485: salinidad, mojado de hoja, viento."
+          compare: "Lo que necesite tu cultivo"
+      offline:
+        kicker: "Sin señal, sin problema"
+        title: "Nunca pierde una medición"
+        body: "La Sonda guarda primero y envía después. Si el campo se queda sin red por días, sigue midiendo y manda todo cuando vuelve la señal, de la medición más antigua a la más nueva."
+        steps:
+          measure:
+            title: "Mide"
+            body: "Cada 15 minutos, con hora exacta aunque no haya red."
+          store:
+            title: "Guarda"
+            body: "En su memoria interna, con espacio para meses de datos."
+          send:
+            title: "Envía"
+            body: "Cada hora por WiFi, o por red celular si no hay WiFi."
+          confirm:
+            title: "Confirma"
+            body: "%{app_name} confirma lo recibido y la Sonda libera su memoria. Sin duplicados."
+      security:
+        kicker: "Seguridad"
+        title: "Segura de punta a punta"
+        body: "Tus datos del campo son tuyos. La Sonda está diseñada para que nadie pueda hacerse pasar por ella ni alterar lo que mide."
+        items:
+          identity:
+            title: "Identidad en un chip seguro"
+            body: "Cada Sonda tiene una llave privada que nunca sale de su chip. Ni desarmándola se puede copiar."
+          pairing:
+            title: "Vinculación con código QR"
+            body: "Escaneas el código de tu Sonda en la app y eliges el campo. Sin el código físico, nadie la puede reclamar."
+          signed:
+            title: "Cada lectura firmada"
+            body: "Viaja cifrada y firmada, con hora y número de secuencia: no se puede falsificar, alterar ni reenviar."
+          updates:
+            title: "Actualizaciones firmadas"
+            body: "Solo acepta software firmado por %{app_name}, y vuelve a la versión anterior si algo falla."
+          revoke:
+            title: "Tú tienes el control"
+            body: "Desvincula o bloquea una Sonda desde la app en cualquier momento."
+      compare:
+        kicker: "Tu sensor contra el satélite"
+        title: "Lo que mides en tierra, junto a lo que ve la NASA"
+        body: "%{app_name} pone tus mediciones al lado de los datos satelitales del mismo punto. Así sabes cuándo confiar en el satélite y cuándo tu campo se comporta distinto."
+        chart_label: "Gráfico ilustrativo de humedad del suelo: Sonda contra satélite durante dos semanas"
+        legend_sensor: "Tu Sonda (cada 15 minutos)"
+        legend_satellite: "Satélite SMAP (diario)"
+        note: "Datos ilustrativos."
+      specs:
+        kicker: "Ficha técnica"
+        title: "Especificaciones"
+        caption: "Especificaciones de los modelos Lite y Pro"
+        feature: "Característica"
+        lite: "Lite"
+        pro: "Pro"
+        rows:
+          connectivity:
+            label: "Conectividad"
+            lite: "WiFi 2,4 GHz, Bluetooth"
+            pro: "WiFi, Bluetooth, LTE-M / NB-IoT (eSIM)"
+          location:
+            label: "Ubicación"
+            lite: "Desde la app"
+            pro: "GPS integrado"
+          sensors:
+            label: "Sensores"
+            lite: "Suelo (2 profundidades), aire"
+            pro: "Suelo, aire, lluvia, radiación, expansión"
+          interval:
+            label: "Medición / envío"
+            lite: "15 min / 1 h"
+            pro: "15 min / 1 h"
+          storage:
+            label: "Memoria sin señal"
+            lite: "16 MB, meses de datos"
+            pro: "16 MB, meses de datos"
+          power:
+            label: "Energía"
+            lite: "Panel solar 5 W, batería LiFePO4"
+            pro: "Panel solar 5 W, batería LiFePO4"
+          security:
+            label: "Seguridad"
+            lite: "Chip seguro, arranque seguro, lecturas firmadas"
+            pro: "Chip seguro, arranque seguro, lecturas firmadas"
+          enclosure:
+            label: "Carcasa"
+            lite: "IP67, protección UV, montaje en poste"
+            pro: "IP67, protección UV, montaje en poste"
+      closing:
+        title: "Empieza hoy con los datos de los satélites"
+        body: "Mientras la Sonda llega, %{app_name} ya compara rotaciones con datos de la NASA para tu campo. Cuando la conectes, tus mediciones se suman solas."

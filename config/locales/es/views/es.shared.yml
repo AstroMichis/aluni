@@ -3,6 +3,11 @@ es:
     public_footer:
       tagline: "Código abierto, construido a la vista de todos."
       meta: "%{app_name} %{year}"
+      devices: "%{app_name} Sonda"
+      glossary: Qué significan los números
+    devices_link:
+      short: "Sonda"
+      label: "%{app_name} Sonda: estación de campo"
     store_buttons:
       label: "Descargar la app"
       app_store: "App Store"

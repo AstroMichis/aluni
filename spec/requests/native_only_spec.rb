@@ -15,7 +15,7 @@ RSpec.describe "Web access kill switch", type: :request do
 
     # Open: the home answers, instead of sending the browser back to the landing page.
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include(I18n.t("app.home.show.recap_title"))
+    expect(response.body).to include(I18n.t("app.home.show.eyebrow"))
   end
 
   it "always serves the native shells" do
@@ -54,7 +54,7 @@ RSpec.describe "Web access kill switch", type: :request do
 
       get app_root_path(locale: "en"), headers: native_headers
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include(I18n.t("app.home.show.recap_title"))
+      expect(response.body).to include(I18n.t("app.home.show.eyebrow"))
     end
   end
 end

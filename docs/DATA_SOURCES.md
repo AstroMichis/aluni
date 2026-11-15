@@ -31,6 +31,10 @@ These files describe the resources only. They make no product or design decision
 | Prices, demand and trade | none | FAOSTAT, FPMA, WFP, FEWS NET, World Bank, OECD, BACI, Harvard Atlas, USDA FAS, Eurostat, AMS, NASS, ERS |
 | Distance to markets and ports | none | MAP travel-time rasters, World Port Index |
 
+## Connected in the app
+
+NASA POWER, FAO GAEZ, SSURGO, USGS 3DEP (EPQS), the Cropland Data Layer and the FCC Census Block API are fetched for every field pin (`docs/FIELDS.md`); NASA GIBS is shown as a picture URL; FAO ECOCROP is a dataset extracted into `config/ecocrop.yml`.
+
 ## Index
 
 ### Weather and climate
@@ -38,6 +42,7 @@ These files describe the resources only. They make no product or design decision
 | Resource | File | Auth |
 |---|---|---|
 | NASA POWER (daily, monthly, climatology) | [nasa_power.md](data_sources/nasa_power.md) | none |
+| Meteomatics Weather API (current + forecast, 1 km; hackathon offer) | [meteomatics.md](data_sources/meteomatics.md) | Meteomatics account |
 | Daymet (ORNL single-pixel) | [daymet.md](data_sources/daymet.md) | none |
 | PRISM Climate Data (Oregon State) | [prism.md](data_sources/prism.md) | none |
 | GPM IMERG precipitation | [gpm_imerg.md](data_sources/gpm_imerg.md) | Earthdata |
@@ -62,7 +67,7 @@ These files describe the resources only. They make no product or design decision
 |---|---|---|
 | Vegetation indices (MODIS, HLS, phenology) | [vegetation_indices.md](data_sources/vegetation_indices.md) | Earthdata (via AppEEARS) |
 | Landsat (STAC, M2M) | [landsat.md](data_sources/landsat.md) | none for STAC; USGS ERS for M2M |
-| Sentinel-2 open catalogs (CDSE STAC/OData, Earth Search) | [sentinel2_stac.md](data_sources/sentinel2_stac.md) | none for search |
+| Sentinel-2 open catalogs (CDSE STAC/OData, Earth Search, Planetary Computer with point values) | [sentinel2_stac.md](data_sources/sentinel2_stac.md) | none for search; Planetary Computer none at all |
 | NAIP aerial imagery | [naip.md](data_sources/naip.md) | none |
 | NASA Worldview / GIBS map layers | [gibs_worldview.md](data_sources/gibs_worldview.md) | none |
 | NLCD / Annual NLCD land cover | [nlcd.md](data_sources/nlcd.md) | none |
@@ -177,4 +182,5 @@ No files were written for these. Reasons are from the commercial-use inventories
 | WFP DataBridges client id and secret | WFP DataBridges API | not configured; requested from the WFP VAM team |
 | `CDSE_CLIENT_ID`, `CDSE_CLIENT_SECRET` | Copernicus Data Space (Sentinel Hub) | not configured |
 | CDS API key | ERA5 | not configured |
+| `METEOMATICS_USERNAME`, `METEOMATICS_PASSWORD` | Meteomatics Weather API (`Meteomatics::Client`) | not configured (claim the hackathon offer) |
 | USGS ERS login | Landsat M2M | not configured |

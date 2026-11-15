@@ -11,6 +11,11 @@ Satellite vegetation indices (NDVI, EVI and related) and phenology products avai
 | MODIS LAI/FPAR | `MCD15A3H.061` | 500 m | 4 day | 2002 | AppEEARS (Earthdata) | ready |
 
 
+
+## What the app uses: MODIS normal (`Fields::VegetationNormal`)
+
+`Fields::FetchAppeearsJob` (source `modis`) asks AppEEARS for `MOD13Q1.061` `_250m_16_days_NDVI` and `_250m_16_days_pixel_reliability` at the pin since 2001. Measured on 2026-11-15 at Buin, Chile (fixture `spec/fixtures/data_sources/modis_mod13q1_buin.csv`): about 20 minutes once the task left the queue; 596 rows from 2000-12-18 to 2026-09-14; values already scaled (0.2682, not 2682); `pixel_reliability` 0 (good) and 1 (marginal) are kept. The usual NDVI there runs from 0.19 (May) to 0.24 (October), a peri-urban spot; no month of the last year was 0.1 under its normal.
+
 ## Layers (Captured from the AppEEARS catalog)
 
 ### `MOD13Q1.061`
