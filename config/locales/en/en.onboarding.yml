@@ -1,44 +1,29 @@
 en:
   onboarding:
     persona_name: "Aluni"
-    welcome_message: "Hi %{name}, I am Aluni. I will ask a few short questions about your farm so the advice fits your land, and nothing is saved until you say so. Shall we start with who you are?"
+    welcome_message: "Hi %{name}, I am Aluni. I already know your field from setup, so there is nothing you have to answer. Ask me anything about it, or let us fill in the rest: the crops that came before, the soil and what matters most to you."
     topics:
       welcome: "Welcome"
-      location: "Location"
-      land: "Your land"
       crops: "Crops"
       soil: "Soil"
-      operation: "How you work"
       goals: "Goals"
       summary: "Summary"
     transitions:
-      welcome: "Let us start with who you are."
-      location: "Now let us find your main field on the map. You can share your location or tell me the nearest town."
-      land: "Next, tell me about the land itself: how big it is and how it gets water."
-      crops: "Now the crops. What grows there this season?"
+      welcome: "Ask me anything, or let us fill in the rest."
+      crops: "Let us look at the crop history. What grew on the field in the seasons before this one?"
       soil: "Let us talk about the soil, in your own words."
-      operation: "Almost there. A few quick questions about how you work."
       goals: "Last part: what matters most to you this year?"
       summary: "Let me put it all together so you can check it."
     continuations:
       welcome:
         - "Give me a second, I am still catching up. Say that again?"
-        - "I lost my thread for a moment. Could you tell me once more who you are on the farm?"
-      location:
-        - "Hold on, I am still unfolding my leaves. Where is your field again?"
-        - "One moment, that did not reach me. Can you share your location or name the nearest town?"
-      land:
-        - "Give me a second, I am catching up. How big is the field, again?"
-        - "I missed that one. Could you tell me about the land once more?"
+        - "I lost my thread for a moment. Could you tell me once more what you would like to work on?"
       crops:
         - "Hold on, my roots are slow today. Which crops did you say?"
-        - "That slipped past me. What grows on the field this season?"
+        - "That slipped past me. What grew on the field before this season?"
       soil:
         - "One moment, I am still catching up. What did you say about the soil?"
         - "I missed that. Tell me again what the soil is like, in your words."
-      operation:
-        - "Give me a second, I am catching up. What tools and sales did you mention?"
-        - "That did not reach me. Could you say that again?"
       goals:
         - "Hold on, I am still catching up. What matters most to you this year?"
         - "I lost that for a moment. Tell me your goals once more?"

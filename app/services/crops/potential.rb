@@ -22,7 +22,7 @@ module Crops
     def rows
       @rows ||= @payload["crops"].to_h.map do |name, values|
         index = values["suitability"]
-        Row.new(gaez: name, entry: Catalog.entries.values.find { |e| e.gaez == name }, suitability: index,
+        Row.new(gaez: name, entry: Agronomy.entries.values.find { |e| e.gaez == name }, suitability: index,
                 suitability_class: index && CLASSES.find { |limit, _| index >= limit }&.last,
                 yield_t: tonnes(values["yield"], values["yield_units"]))
       end
@@ -30,7 +30,7 @@ module Crops
 
     # The row for a FieldCrop or crop name, through the catalog's GAEZ name.
     def for(crop)
-      name = Catalog.gaez_name(crop)
+      name = Agronomy.gaez_name(crop)
       rows.find { |row| row.gaez == name }
     end
 

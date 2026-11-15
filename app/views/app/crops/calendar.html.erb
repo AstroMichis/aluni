@@ -31,7 +31,7 @@
         <% crop = field.current_crop %>
         <div class="calendar__row" role="row">
           <span class="calendar__name" role="rowheader">
-            <%= field_name(field) %>
+            <%= plot_name(field) %>
             <small><%= crop ? crop_name(crop) : t("app.fields.index.no_crop") %></small>
           </span>
           <% if crop&.planting_month && crop.harvest_month %>

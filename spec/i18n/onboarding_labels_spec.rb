@@ -42,7 +42,7 @@ RSpec.describe "Onboarding labels" do
     expect(missing(keys)).to be_empty
   end
 
-  it "labels every proposal key the confirm card can show" do
+  it "labels every applied key the Saved toast can show" do
     profile = Onboarding::Allowlist::PROFILE_ENUMS.keys + Onboarding::Allowlist::PROFILE_LISTS.keys + Onboarding::Allowlist::PROFILE_SCALARS.keys
     field = Onboarding::Allowlist::FIELD_ENUMS.keys + Onboarding::Allowlist::FIELD_SCALARS.keys + %w[latitude]
     soil = Onboarding::Allowlist::SOIL_ENUMS.keys + Onboarding::Allowlist::SOIL_SCALARS.keys + %w[problems]

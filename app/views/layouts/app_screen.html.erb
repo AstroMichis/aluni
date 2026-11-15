@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="<%= I18n.locale %>" data-theme="dark">
+<html lang="<%= I18n.locale %>" <%= tag.attributes(preferences.html_attributes) %>>
   <head>
     <%= render "layouts/app_head" %>
   </head>
 
   <%# Full-screen app screens (the menu dial and its sections): each brings its own bar. %>
-  <body data-controller="theme" class="app-screen">
+  <body data-controller="preferences speech" class="app-screen" <%= tag.attributes(preferences.stimulus_values) %>>
     <a class="skip-link" href="#main"><%= t("layouts.skip_to_content") %></a>
     <div id="flash"><%= render "shared/flash" %></div>
+    <%= render "shared/preferences_form" %>
 
     <% if hotwire_native_app? && Platform::Features.push? %>
       <div data-controller="bridge--notification-token" data-bridge--notification-token-url-value="<%= app_device_tokens_path %>" hidden></div>

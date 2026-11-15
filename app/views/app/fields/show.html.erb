@@ -1,4 +1,4 @@
-<% name = field_name(@field) %>
+<% name = plot_name(@field) %>
 <% history = @field.history %>
 <% cdl = @field.cdl_proposal %>
 <% groups = @profile.groups(:field) %>
@@ -59,7 +59,7 @@
         <% if history.any? %>
           <ol class="history" role="list">
             <% history.values.each_with_index do |crop, i| %>
-              <% repeat = i.positive? && Crops::Catalog.find(history.values[i - 1])&.key == Crops::Catalog.find(crop)&.key && Crops::Catalog.find(crop) %>
+              <% repeat = i.positive? && Crops::Agronomy.find(history.values[i - 1])&.key == Crops::Agronomy.find(crop)&.key && Crops::Agronomy.find(crop) %>
               <li class="history__year<%= " history__year--repeat" if repeat %>">
                 <span class="history__label text-mono"><%= crop.season_year %></span>
                 <span class="history__crop"><%= crop_name(crop) %></span>

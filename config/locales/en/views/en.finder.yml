@@ -1,0 +1,75 @@
+en:
+  finder:
+    title: "Find your field"
+    close: "Close"
+    kicker: "Step %{index} of %{total}"
+    back: "Back"
+    steps:
+      locate:
+        title: "Where is your field?"
+        line: "Let's find your field. Use your location, search for a town, or tap the map and drag the pin onto your field."
+        use_my_location: "Use my location"
+        search_label: "Town or address"
+        search_placeholder: "Town, village or address"
+        search: "Search"
+        confirm: "This is my field"
+      basics:
+        title: "What grows there now?"
+        line: "Two quick things about the field. You can skip them and add them later."
+        crop: "Crop on the field now"
+        crop_placeholder: "Corn, beans, coffee..."
+        crop_hint: "Type the name you use. Any language works."
+        irrigation: "Water"
+        area: "Area"
+        optional: "optional"
+        area_label: "Area of the field"
+        unit_label: "Unit"
+        continue: "Continue"
+        skip: "Skip for now"
+      save:
+        title: "Save your field"
+        line_signed_out: "Last step. Tell me your name and your device will create a passkey. No password to remember."
+        line_signed_in: "Everything is ready. Save the field to your account."
+        name: "Your name"
+        name_hint: "A first name or a nickname is enough."
+        create_passkey: "Create my passkey"
+        passkey_hint: "Your device asks for your face, fingerprint or code. Nothing to remember."
+        have_account: "I already have an account"
+        save_field: "Save my field"
+        signups_closed: "New accounts are not open yet. Sign in to save your field."
+        sign_in: "Sign in"
+        no_field: "Your account has no field yet. Open the app to add one."
+        open_app: "Open %{app_name}"
+    map:
+      label: "Map of your area. Tap to place the pin, drag it to move it, use the arrow keys to nudge it."
+      hint: "Tap the map or drag the pin onto your field."
+      satellite: "Satellite view"
+      osm_attribution: "© OpenStreetMap contributors"
+      esri_attribution: "Tiles © Esri"
+      pin: "Your field"
+    status:
+      locating: "Finding your location"
+      located: "Found you. Drag the pin if it is not exactly on your field."
+      denied: "We could not get your location. Search for a town or tap the map instead."
+      unsupported: "This browser cannot share your location. Search for a town or tap the map instead."
+      naming: "Looking up the place"
+      map_failed: "The map could not load. You can still use your location or search for a town."
+    errors:
+      pin_required: "Place the pin on your field first."
+  places:
+    index:
+      hint: "Type a town, a village or an address and tap Search."
+      empty: "Nothing found for \"%{query}\". Try the nearest town."
+      results_label: "Places found"
+    reverse:
+      near: "Near %{place}"
+      coordinates: "%{latitude}, %{longitude}"
+      no_name: "We could not name this spot, but the pin is kept."
+      invalid: "That spot is off the map. Tap the map to place the pin again."
+    unavailable: "Place search is taking a break. You can still drop the pin on the map."
+  crops:
+    datalist_label: "Crops"
+  app:
+    fields:
+      update:
+        saved: "Your field is saved."

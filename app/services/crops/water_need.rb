@@ -11,7 +11,7 @@ module Crops
     Need = Struct.new(:crop_mm, :rain_mm, :effective_mm, :deficit_mm, :days, :planting_month, keyword_init: true)
 
     def self.for(crop, observation:, latitude:, planting_month: nil)
-      fao = Catalog.find(crop)&.fao56
+      fao = Agronomy.find(crop)&.fao56
       payload = observation&.ok? ? observation.payload.to_h : {}
       climatology = payload["climatology"].to_h
       return nil unless fao && climatology.any?

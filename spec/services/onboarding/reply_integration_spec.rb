@@ -24,9 +24,9 @@ RSpec.describe Onboarding::ReplyService, "against the Gemini HTTP API", :gemini_
 
   it "classifies and drafts in one turn, sending the schema, the lock, the guidance, the snapshot and both roles" do
     create(:farm, user: user, name: "Finca Ana").then { |farm| create(:field, farm: farm) }
-    Onboarding::EnsureProfileService.call(user: user).value[:session].update!(topic: "land", turns_count: 2, transcript: [
+    Onboarding::EnsureProfileService.call(user: user).value[:session].update!(topic: "crops", turns_count: 2, transcript: [
       { "role" => "user", "text" => "Hola", "at" => "2026-01-01T00:00:00Z" },
-      { "role" => "model", "text" => "Hola Ana, ¿cómo trabajas la tierra?", "at" => "2026-01-01T00:00:01Z" }
+      { "role" => "model", "text" => "Hola Ana, ¿qué sembraste antes?", "at" => "2026-01-01T00:00:01Z" }
     ])
 
     classifier = stub_request(:post, endpoint).with { |req| schema_properties(req).key?("safe") }
@@ -44,7 +44,8 @@ RSpec.describe Onboarding::ReplyService, "against the Gemini HTTP API", :gemini_
     expect(result).to be_success
     expect(result.value).to include(
       assistant_text: "Doce hectáreas, qué bien. ¿Es tuya o la alquilas?",
-      proposal: { "field" => { "area" => 12, "area_unit" => "hectares", "soil" => { "texture" => "medium" } } },
+      proposal: nil,
+      applied: { "field.area" => 12, "field.area_unit" => "hectares", "field.soil.texture" => "medium" },
       degraded: false, refusal: false
     )
     expect(classifier).to have_been_requested.once
@@ -56,8 +57,8 @@ RSpec.describe Onboarding::ReplyService, "against the Gemini HTTP API", :gemini_
     expect(config["responseMimeType"]).to eq("application/json")
     expect(config["responseSchema"]).to eq(JSON.parse(Onboarding::DraftReplyService::RESPONSE_SCHEMA.to_json))
     expect(config["maxOutputTokens"]).to eq(1024)
-    expect(system).to include("ALWAYS respond in Spanish").and include("CURRENT TOPIC: land")
-    expect(system).to include(Onboarding::Topics.guidance("land").lines.first.strip)
+    expect(system).to include("ALWAYS respond in Spanish").and include("CURRENT TOPIC: crops").and include("KNOWN FIELD BASICS")
+    expect(system).to include(Onboarding::Topics.guidance("crops").lines.first.strip)
     expect(system).to include("FARMER: Ana").and include("farm: Finca Ana").and include("12.5 hectares")
     expect(body.fetch("contents").map { |c| c["role"] }).to eq(%w[user model user])
     expect(body.dig("contents", 2, "parts", 0, "text")).to eq("Tengo 12 hectáreas")

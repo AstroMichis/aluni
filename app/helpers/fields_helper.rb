@@ -23,18 +23,18 @@ module FieldsHelper
 
   def group_glyph(group) = GROUP_GLYPHS.fetch(group, "fields")
 
-  # The plant shape of the crop's kind (config/crops.yml); nil draws an empty plot.
-  def crop_shape(crop) = crop.present? ? Crops::Catalog.shape(crop) : nil
+  # The plant shape of the crop's kind (config/crops/agronomy.yml); nil draws an empty plot.
+  def crop_shape(crop) = crop.present? ? Crops::Agronomy.shape(crop) : nil
 
   # A FieldCrop shows the farmer's own words; a catalog key its name in this language.
   def crop_name(crop)
     return crop.crop_name if crop.respond_to?(:crop_name)
 
-    entry = Crops::Catalog.find(crop)
+    entry = Crops::Agronomy.find(crop)
     entry ? t("app.crops.names.#{entry.key}", default: entry.scientific) : crop.to_s
   end
 
-  def field_name(field) = field.name || t("app.fields.untitled", number: field.record.position + 1)
+  def plot_name(field) = field.name || t("app.fields.untitled", number: field.record.position + 1)
 
   def field_area(field)
     return t("app.fields.no_area") if field.record.area.blank?

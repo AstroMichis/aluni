@@ -44,7 +44,7 @@ module Fields
 
     def gaez
       client = Gaez::Client.new
-      own = @field.field_crops.filter_map { |crop| Crops::Catalog.gaez_name(crop) }
+      own = @field.field_crops.filter_map { |crop| Crops::Agronomy.gaez_name(crop) }
       input = high_input? ? "High" : "Low"
       layers = client.layers(crops: (own + GAEZ_CANDIDATES).uniq, input_level: input)
       crops = layers.to_h do |crop, ids|

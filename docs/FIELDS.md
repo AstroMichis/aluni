@@ -29,7 +29,7 @@ Five answers drive the comparison and are the only ones the to-do list and progr
 
 ## Water per crop
 
-`Crops::WaterNeed` sets a crop's season need (FAO-56 single Kc curve) against the usual rain at the pin: `Weather::Et0` computes the monthly FAO-56 Penman-Monteith reference ET from NASA POWER normals (T2M, RH2M, WS2M, ALLSKY_SFC_SW_DWN, the cell elevation), effective rain follows the FAO/CROPWAT formula. Coefficients exist only where `docs/data_sources/fao56_crop_coefficients.md` captured them (corn and soybeans, `fao56` in `config/crops.yml`); other crops show the water need as a gap. It ignores water stored in the soil, so the comparison uses it relatively and the dry risk only fires when season rain is under half the need.
+`Crops::WaterNeed` sets a crop's season need (FAO-56 single Kc curve) against the usual rain at the pin: `Weather::Et0` computes the monthly FAO-56 Penman-Monteith reference ET from NASA POWER normals (T2M, RH2M, WS2M, ALLSKY_SFC_SW_DWN, the cell elevation), effective rain follows the FAO/CROPWAT formula. Coefficients exist only where `docs/data_sources/fao56_crop_coefficients.md` captured them (corn and soybeans, `fao56` in `config/crops/agronomy.yml`); other crops show the water need as a gap. It ignores water stored in the soil, so the comparison uses it relatively and the dry risk only fires when season rain is under half the need.
 
 ## Data from the pin
 
@@ -46,7 +46,7 @@ Five answers drive the comparison and are the only ones the to-do list and progr
 
 All clients share `DataSources::Client` (Faraday, retries, timeouts, `Platform::Switchboard.guard!(:data)`). The GIBS picture is a URL (`Onboarding::AreaImage`), loaded by the browser. Not connected yet (next phase, `status: planned` in the registry): AppEEARS products (SRTM, MODIS phenology, HLS, SMAP), GPM IMERG, OpenET, FAO-56. Gaps: SoilGrids and a global reverse geocoder.
 
-ECOCROP requirements live in `config/ecocrop.yml`, extracted once from the OpenCLIM CSV with `bin/rails ecocrop:extract CSV=path` (`lib/tasks/ecocrop.rake`); until it exists the fit shows as pending. `config/crops.yml` maps each crop (keyed like `FieldCrop#crop_key`) to aliases, family, plant shape and its GAEZ name.
+ECOCROP requirements live in `config/ecocrop.yml`, extracted once from the OpenCLIM CSV with `bin/rails ecocrop:extract CSV=path` (`lib/tasks/ecocrop.rake`); until it exists the fit shows as pending. `config/crops/agronomy.yml` maps each crop (keyed like `FieldCrop#crop_key`) to aliases, family, plant shape and its GAEZ name.
 
 ## The registry: `config/field_profile.yml`
 

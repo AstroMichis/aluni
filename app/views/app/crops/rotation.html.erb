@@ -13,9 +13,9 @@
       <% seasons = field.seasons %>
       <% findings = Crops::RotationCheck.new(seasons).findings %>
       <% potential = Crops::Potential.new(field.observation("gaez")) %>
-      <% current_family = Crops::Catalog.family(field.current_crop) %>
+      <% current_family = Crops::Agronomy.family(field.current_crop) %>
       <section class="screen__section rotation" aria-labelledby="rotation-<%= field.key %>">
-        <h2 class="screen__section-title" id="rotation-<%= field.key %>"><%= link_to field_name(field), app_field_path(field.key) %></h2>
+        <h2 class="screen__section-title" id="rotation-<%= field.key %>"><%= link_to plot_name(field), app_field_path(field.key) %></h2>
 
         <% if seasons.any? %>
           <ol class="seasons" role="list">
@@ -24,7 +24,7 @@
               <li class="season season--<%= season_kind(label) %><%= " season--flag" if findings.any? { |f| f.years.include?(label) } %>">
                 <span class="season__label text-mono"><%= season_label(label) %></span>
                 <span class="season__crop"><%= crop_name(crop) %></span>
-                <% if (family = Crops::Catalog.family(crop)) %><span class="season__family"><%= t("app.crops.families.#{family}") %></span><% end %>
+                <% if (family = Crops::Agronomy.family(crop)) %><span class="season__family"><%= t("app.crops.families.#{family}") %></span><% end %>
               </li>
             <% end %>
           </ol>
@@ -41,8 +41,8 @@
             <span class="input-group__label"><%= t(".plan_label", year: Date.current.year + 1) %></span>
             <select class="input select" name="crop">
               <option value=""><%= t(".plan_none") %></option>
-              <% plan_key = Crops::Catalog.find(field.plan)&.key if field.plan %>
-              <% Crops::Catalog.entries.each_key do |key| %><option value="<%= key %>"<%= " selected" if plan_key == key %>><%= crop_name(key) %></option><% end %>
+              <% plan_key = Crops::Agronomy.find(field.plan)&.key if field.plan %>
+              <% Crops::Agronomy.entries.each_key do |key| %><option value="<%= key %>"<%= " selected" if plan_key == key %>><%= crop_name(key) %></option><% end %>
             </select>
           </label>
           <button type="submit" class="btn btn--secondary btn--sm"><%= t(".plan_save") %></button>

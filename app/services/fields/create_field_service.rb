@@ -42,8 +42,8 @@ module Fields
     end
 
     def crops
-      rows = @history.map { |year, crop| Crops::Catalog.row(crop, year.to_i) }
-      rows << Crops::Catalog.row(@crop, Date.current.year).merge(@months) if @crop
+      rows = @history.map { |year, crop| Crops::Agronomy.row(crop, year.to_i) }
+      rows << Crops::Agronomy.row(@crop, Date.current.year).merge(@months) if @crop
       Onboarding::Allowlist.filter("crops" => rows)["crops"].to_a
     end
   end

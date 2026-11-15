@@ -41,8 +41,15 @@ Rails.application.routes.draw do
   # Locale switcher, outside the scope so :new_locale never clashes with :locale.
   get "locale/:new_locale", to: "pages#set_locale", as: :set_locale, constraints: { new_locale: /en|es/ }
 
-  scope "(:locale)", locale: /en|es/ do
-    root "pages#home"
+scope "(:locale)", locale: /en|es/ do
+  root "pages#home"
+
+  # The welcome screen and the accessibility controls (cookie, plus the account when signed in).
+  post "preferences", to: "preferences#update", as: :preferences
+
+  # Place search and reverse geocoding for the field finder (Turbo Frames, no JSON).
+  get "places",         to: "places#index",   as: :places
+  get "places/reverse", to: "places#reverse", as: :reverse_places
 
     # Passkey sign-in and sign-up (browsers and native shells; NATIVE_WEB_ACCESS=0 closes them to browsers).
     get    "sign_in",         to: "sessions#new",          as: :sign_in
@@ -57,7 +64,7 @@ Rails.application.routes.draw do
       post :options, on: :collection
     end
 
-    # Authenticated area (native shells).
+    # Authenticated area.
     namespace :app do
       root "home#show"
 
@@ -93,8 +100,7 @@ Rails.application.routes.draw do
       # The onboarding chat: one page, Turbo Stream actions for every turn.
       resource :onboarding, only: :show, controller: "onboarding" do
         post :message
-        post :confirm
-        post :discard
+        post :undo
         post :skip
         post :complete
         delete :reset

@@ -1,0 +1,75 @@
+/* Aluni's first bubble: language chips and comfort toggles inside the speech bubble. */
+.intro { display: grid; gap: var(--space-3); }
+
+.intro__line { margin: 0; }
+
+.intro__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* A language chip is a submit button carrying its value (one tap, no extra confirm). */
+.intro__chip,
+.intro__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 40px;
+  padding: var(--space-1) var(--space-4);
+  border: 1.5px solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  line-height: 1.2;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+}
+
+.intro__chip--current,
+.intro__toggle[aria-pressed="true"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+}
+
+.intro__chip:focus-visible,
+.intro__toggle:focus-visible {
+  outline: 3px solid var(--color-accent-text);
+  outline-offset: 2px;
+}
+
+.intro__comfort {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.intro__comfort-label {
+  margin: 0;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.intro__toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.intro__toggle { min-height: 36px; padding-inline: var(--space-3); font-size: var(--text-xs); }
+
+.intro__toggle svg { width: 16px; height: 16px; }
+
+.intro__actions { display: flex; justify-content: flex-end; }
+
+/* The bubble is wider while the intro is in it. */
+.mascot__bubble:has(.intro) { width: min(92vw, 380px); }
+
+@media (forced-colors: active) {
+  .intro__chip--current, .intro__toggle[aria-pressed="true"] { outline: 2px solid CanvasText; }
+}

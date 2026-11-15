@@ -18,9 +18,9 @@ module Crops
       plan = field.field_crops.find_or_initialize_by(season_year: year, role: "main")
       return Success(plan.tap { plan.destroy if plan.persisted? }) if @crop.blank?
 
-      return Failure(code: :invalid) unless Catalog.find(@crop)
+      return Failure(code: :invalid) unless Agronomy.find(@crop)
 
-      plan.update!(Catalog.row(@crop, year).slice("crop_name", "scientific_name").merge(source: "farmer"))
+      plan.update!(Agronomy.row(@crop, year).slice("crop_name", "scientific_name").merge(source: "farmer"))
       Success(plan)
     rescue ActiveRecord::RecordInvalid => e
       Failure(code: :invalid, messages: e.record.errors.full_messages)

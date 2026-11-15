@@ -8,7 +8,7 @@
       <% if row.yield_t %><span class="potential__yield"><%= t("app.crops.attainable", value: chart_number(row.yield_t)) %></span><% end %>
     </p>
     <p class="choice-set__hint"><%= t("app.crops.gaez_note") %></p>
-  <% elsif Crops::Catalog.gaez_name(crop).nil? %>
+  <% elsif Crops::Agronomy.gaez_name(crop).nil? %>
     <p class="choice-set__hint"><%= t("app.crops.no_gaez") %></p>
   <% else %>
     <p class="choice-set__hint"><%= t("app.crops.gaez_pending") %></p>

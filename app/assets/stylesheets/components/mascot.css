@@ -1,13 +1,17 @@
 /* Aluni, the seedling mascot (mascot_controller.js): the stage, its CSS ground
    shadow, the speech bubble and the SVG twin. The stage is a small fixed box
-   bottom-left on the landing; the walk-in, the slide away and the dock are
-   all transforms of this box, so the WebGL canvas never resizes mid-flight.
-   The companion variant sits inside a chat column instead. Mobile first. */
+   bottom-left on the landing (the resting corner); the preloader's centred
+   pose, the walk-in, the slide away and the dock are all transforms of this
+   box, so the WebGL canvas never resizes mid-flight. The companion variant
+   sits inside a chat column instead. Mobile first. */
 .mascot {
   --mascot-shadow: rgba(0, 0, 0, 0.45);
+  --mascot-left: max(var(--space-3), env(safe-area-inset-left));
+  --mascot-bottom: max(var(--space-3), env(safe-area-inset-bottom));
+  --mascot-center-scale: 1.2;
   position: fixed;
-  left: max(var(--space-3), env(safe-area-inset-left));
-  bottom: max(var(--space-3), env(safe-area-inset-bottom));
+  left: var(--mascot-left);
+  bottom: var(--mascot-bottom);
   z-index: var(--z-dropdown);
   width: 170px;
   height: 210px;
@@ -21,9 +25,51 @@
 
 /* States set by the controller. Offstage is below the viewport on phones and
    left of it on wider screens; onstage is the resting spot. Away and docked
-   are doubled in specificity so they win over onstage whatever the order. */
+   are doubled in specificity and come after centered so they win over both
+   whatever the order of the class changes. */
 .mascot--offstage { transform: translateY(130%); }
 .mascot--onstage { transform: none; }
+
+/* The preloader's centred pose: the corner box translated to the viewport
+   centre and enlarged, above the welcome overlay (--z-modal). The fallbacks
+   compute the centre in CSS so the first paint is already centred; the
+   controller refines them (--mascot-pre-x/y/scale, measured, and
+   #welcome-stage's centre when the overlay has one) and on resize. */
+.mascot.mascot--centered {
+  transform:
+    translate(
+      var(--mascot-pre-x, calc(50vw - 50% - var(--mascot-left))),
+      var(--mascot-pre-y, calc(50% + var(--mascot-bottom) - 50dvh))
+    )
+    scale(var(--mascot-pre-scale, var(--mascot-center-scale)));
+  transform-origin: 50% 50%;
+  z-index: calc(var(--z-modal) + 2);
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), opacity var(--transition-slow);
+}
+
+/* Centre to corner: the controller adds this before removing --centered so the
+   0.9 s transition, the origin and the layer carry over until arrival. */
+.mascot.mascot--leaving {
+  transform-origin: 50% 50%;
+  z-index: calc(var(--z-modal) + 2);
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), opacity var(--transition-slow);
+}
+
+/* Reduced motion (the preference on <html> or the system): no centred phase;
+   the stage is in its corner from the first paint. */
+html[data-motion="reduce"] .mascot.mascot--centered {
+  transform: none;
+  z-index: var(--z-dropdown);
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot.mascot--centered {
+    transform: none;
+    z-index: var(--z-dropdown);
+    transition: none;
+  }
+}
 
 /* The tour has the reader: step aside and stop rendering. */
 .mascot.mascot--away {
@@ -34,10 +80,10 @@
 /* No scene (reduced motion, no WebGL, a crash): placed, never walked in. */
 .mascot--static { transition: none; }
 
-/* FLIP toward the chat panel's slot: translate and scale only. */
+/* FLIP toward the finder's slot: translate and scale only. */
 .mascot.mascot--docked {
   transform: translate(var(--mascot-dock-x, 0px), var(--mascot-dock-y, 0px)) scale(var(--mascot-dock-scale, 1));
-  z-index: calc(var(--z-modal) + 1); /* over the landing chat panel the stage docks into */
+  z-index: calc(var(--z-modal) + 1); /* over the panel the stage docks into */
   transform-origin: 50% 50%;
   transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), opacity var(--transition-slow);
 }
@@ -68,7 +114,7 @@
 
 .mascot__canvas[hidden] { display: none; }
 
-/* The ground shadow: zero draw calls. */
+/* The ground shadow: zero draw calls. It scales with the stage. */
 .mascot__shadow {
   position: absolute;
   left: 50%;
@@ -81,7 +127,8 @@
   opacity: 0.9;
 }
 
-/* The SVG twin, standing where the character would. */
+/* The SVG twin, standing where the character would: the loading indicator
+   while the scene builds, the stand-in when it cannot run. */
 .mascot__fallback {
   position: absolute;
   inset: 0;
@@ -190,8 +237,9 @@
 
 @media (min-width: 769px) {
   .mascot {
-    left: max(var(--space-6), env(safe-area-inset-left));
-    bottom: max(var(--space-6), env(safe-area-inset-bottom));
+    --mascot-left: max(var(--space-6), env(safe-area-inset-left));
+    --mascot-bottom: max(var(--space-6), env(safe-area-inset-bottom));
+    --mascot-center-scale: 1.4;
     width: 260px;
     height: 320px;
   }

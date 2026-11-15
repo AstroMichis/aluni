@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="<%= I18n.locale %>" data-theme="dark">
+<html lang="<%= I18n.locale %>" <%= tag.attributes(preferences.html_attributes) %>>
   <head>
     <%= render "layouts/app_head" %>
   </head>
 
-  <body data-controller="theme" class="app-shell">
+  <body data-controller="preferences speech" class="app-shell" <%= tag.attributes(preferences.stimulus_values) %>>
     <a class="skip-link" href="#main"><%= t("layouts.skip_to_content") %></a>
     <div id="flash"><%= render "shared/flash" %></div>
+    <%= render "shared/preferences_form" %>
 
     <header class="app-shell__header">
       <div class="container app-shell__header-inner">

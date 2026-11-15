@@ -1,0 +1,325 @@
+# The built-in crop list for the field finder's type-ahead and for
+# Crops::NormalizeService (a catalog hit never costs a Gemini call). Data, not
+# copy: en/es are the names shown in each language, aliases are the words people
+# type (regional names, spellings without accents). Matching is accent-insensitive
+# (Crops::Catalog), so an alias needs no accentless twin.
+maize:
+  scientific: "Zea mays"
+  en: "Corn"
+  es: "Maíz"
+  aliases: [maize, corn, maiz, elote, choclo, mazorca, field corn, sweet corn, milpa]
+potato:
+  scientific: "Solanum tuberosum"
+  en: "Potato"
+  es: "Papa"
+  aliases: [potato, potatoes, papa, papas, patata, patatas, papa criolla]
+beans:
+  scientific: "Phaseolus vulgaris"
+  en: "Beans"
+  es: "Frijol"
+  aliases: [beans, bean, dry beans, black beans, kidney beans, frijol, frijoles, fríjol, poroto, porotos, habichuela, habichuelas, judía, judías, alubia, alubias, caraota]
+coffee:
+  scientific: "Coffea arabica"
+  en: "Coffee"
+  es: "Café"
+  aliases: [coffee, cafe, cafeto, arabica, arábica]
+rice:
+  scientific: "Oryza sativa"
+  en: "Rice"
+  es: "Arroz"
+  aliases: [rice, paddy, arroz]
+wheat:
+  scientific: "Triticum aestivum"
+  en: "Wheat"
+  es: "Trigo"
+  aliases: [wheat, winter wheat, spring wheat, trigo]
+soybean:
+  scientific: "Glycine max"
+  en: "Soybeans"
+  es: "Soya"
+  aliases: [soybean, soybeans, soy, soya, soja]
+sugarcane:
+  scientific: "Saccharum officinarum"
+  en: "Sugarcane"
+  es: "Caña de azúcar"
+  aliases: [sugarcane, sugar cane, caña, cana, caña de azúcar, cañaveral]
+cassava:
+  scientific: "Manihot esculenta"
+  en: "Cassava"
+  es: "Yuca"
+  aliases: [cassava, manioc, yuca, mandioca, guacamota, tapioca]
+plantain:
+  scientific: "Musa x paradisiaca"
+  en: "Plantain"
+  es: "Plátano"
+  aliases: [plantain, plantains, platano, plátano macho, plátano, guineo]
+banana:
+  scientific: "Musa acuminata"
+  en: "Banana"
+  es: "Banano"
+  aliases: [banana, bananas, banano, bananos, cambur]
+tomato:
+  scientific: "Solanum lycopersicum"
+  en: "Tomato"
+  es: "Tomate"
+  aliases: [tomato, tomatoes, tomate, tomates, jitomate]
+onion:
+  scientific: "Allium cepa"
+  en: "Onion"
+  es: "Cebolla"
+  aliases: [onion, onions, cebolla, cebollas, cebolla cabezona]
+carrot:
+  scientific: "Daucus carota"
+  en: "Carrot"
+  es: "Zanahoria"
+  aliases: [carrot, carrots, zanahoria, zanahorias]
+lettuce:
+  scientific: "Lactuca sativa"
+  en: "Lettuce"
+  es: "Lechuga"
+  aliases: [lettuce, lechuga]
+cabbage:
+  scientific: "Brassica oleracea"
+  en: "Cabbage"
+  es: "Repollo"
+  aliases: [cabbage, repollo, col, kale, coliflor, cauliflower, broccoli, brócoli, brocoli]
+chili:
+  scientific: "Capsicum annuum"
+  en: "Chili pepper"
+  es: "Chile"
+  aliases: [chili, chilli, chile, chiles, ají, aji, hot pepper, jalapeño, jalapeno, habanero]
+pepper:
+  scientific: "Capsicum annuum"
+  en: "Bell pepper"
+  es: "Pimiento"
+  aliases: [pepper, bell pepper, sweet pepper, pimiento, pimentón, pimenton, morrón, morron]
+avocado:
+  scientific: "Persea americana"
+  en: "Avocado"
+  es: "Aguacate"
+  aliases: [avocado, aguacate, palta, hass]
+orange:
+  scientific: "Citrus x sinensis"
+  en: "Orange"
+  es: "Naranja"
+  aliases: [orange, oranges, naranja, naranjas, citrus, cítricos, citricos, mandarina, tangerine]
+lemon:
+  scientific: "Citrus x limon"
+  en: "Lemon"
+  es: "Limón"
+  aliases: [lemon, lemons, lime, limes, limón, limon, limones, lima]
+mango:
+  scientific: "Mangifera indica"
+  en: "Mango"
+  es: "Mango"
+  aliases: [mango, mangos, mangoes]
+pineapple:
+  scientific: "Ananas comosus"
+  en: "Pineapple"
+  es: "Piña"
+  aliases: [pineapple, piña, pina, ananá, anana]
+cocoa:
+  scientific: "Theobroma cacao"
+  en: "Cocoa"
+  es: "Cacao"
+  aliases: [cocoa, cacao, chocolate]
+sorghum:
+  scientific: "Sorghum bicolor"
+  en: "Sorghum"
+  es: "Sorgo"
+  aliases: [sorghum, milo, sorgo, maicillo]
+barley:
+  scientific: "Hordeum vulgare"
+  en: "Barley"
+  es: "Cebada"
+  aliases: [barley, cebada]
+oats:
+  scientific: "Avena sativa"
+  en: "Oats"
+  es: "Avena"
+  aliases: [oats, oat, avena]
+alfalfa:
+  scientific: "Medicago sativa"
+  en: "Alfalfa"
+  es: "Alfalfa"
+  aliases: [alfalfa, lucerne]
+pasture:
+  scientific: "Poaceae"
+  en: "Pasture"
+  es: "Pasto"
+  aliases: [pasture, grass, hay, grassland, pasto, pastos, pastura, potrero, forraje, forage, zacate, brachiaria]
+quinoa:
+  scientific: "Chenopodium quinoa"
+  en: "Quinoa"
+  es: "Quinua"
+  aliases: [quinoa, quinua, kinwa]
+peanut:
+  scientific: "Arachis hypogaea"
+  en: "Peanut"
+  es: "Maní"
+  aliases: [peanut, peanuts, groundnut, maní, mani, cacahuate, cacahuete]
+sunflower:
+  scientific: "Helianthus annuus"
+  en: "Sunflower"
+  es: "Girasol"
+  aliases: [sunflower, sunflowers, girasol, girasoles]
+cotton:
+  scientific: "Gossypium hirsutum"
+  en: "Cotton"
+  es: "Algodón"
+  aliases: [cotton, algodón, algodon]
+squash:
+  scientific: "Cucurbita"
+  en: "Squash"
+  es: "Calabaza"
+  aliases: [squash, pumpkin, pumpkins, zucchini, calabaza, calabazas, zapallo, ayote, auyama, calabacín, calabacin]
+melon:
+  scientific: "Cucumis melo"
+  en: "Melon"
+  es: "Melón"
+  aliases: [melon, melons, cantaloupe, melón, melones]
+watermelon:
+  scientific: "Citrullus lanatus"
+  en: "Watermelon"
+  es: "Sandía"
+  aliases: [watermelon, watermelons, sandía, sandia, sandías, patilla]
+strawberry:
+  scientific: "Fragaria x ananassa"
+  en: "Strawberry"
+  es: "Fresa"
+  aliases: [strawberry, strawberries, fresa, fresas, frutilla, frutillas]
+grape:
+  scientific: "Vitis vinifera"
+  en: "Grapes"
+  es: "Uva"
+  aliases: [grape, grapes, vineyard, uva, uvas, vid, viña, viñedo]
+apple:
+  scientific: "Malus domestica"
+  en: "Apple"
+  es: "Manzana"
+  aliases: [apple, apples, orchard, manzana, manzanas, manzano]
+olive:
+  scientific: "Olea europaea"
+  en: "Olive"
+  es: "Olivo"
+  aliases: [olive, olives, olivo, olivos, aceituna, aceitunas]
+garlic:
+  scientific: "Allium sativum"
+  en: "Garlic"
+  es: "Ajo"
+  aliases: [garlic, ajo, ajos]
+sweet_potato:
+  scientific: "Ipomoea batatas"
+  en: "Sweet potato"
+  es: "Camote"
+  aliases: [sweet potato, sweet potatoes, camote, camotes, batata, batatas, boniato]
+yam:
+  scientific: "Dioscorea"
+  en: "Yam"
+  es: "Ñame"
+  aliases: [yam, yams, ñame, name]
+taro:
+  scientific: "Colocasia esculenta"
+  en: "Taro"
+  es: "Malanga"
+  aliases: [taro, malanga, otoe, dasheen, ocumo]
+rye:
+  scientific: "Secale cereale"
+  en: "Rye"
+  es: "Centeno"
+  aliases: [rye, cereal rye, centeno]
+clover:
+  scientific: "Trifolium"
+  en: "Clover"
+  es: "Trébol"
+  aliases: [clover, red clover, white clover, trébol, trebol]
+vetch:
+  scientific: "Vicia sativa"
+  en: "Vetch"
+  es: "Veza"
+  aliases: [vetch, hairy vetch, veza, arveja forrajera]
+radish:
+  scientific: "Raphanus sativus"
+  en: "Radish"
+  es: "Rábano"
+  aliases: [radish, tillage radish, daikon, rábano, rabano, rábanos]
+chickpea:
+  scientific: "Cicer arietinum"
+  en: "Chickpea"
+  es: "Garbanzo"
+  aliases: [chickpea, chickpeas, garbanzo, garbanzos]
+lentil:
+  scientific: "Lens culinaris"
+  en: "Lentil"
+  es: "Lenteja"
+  aliases: [lentil, lentils, lenteja, lentejas]
+pea:
+  scientific: "Pisum sativum"
+  en: "Peas"
+  es: "Arveja"
+  aliases: [pea, peas, field peas, arveja, arvejas, guisante, guisantes, chícharo, chicharo]
+fava:
+  scientific: "Vicia faba"
+  en: "Fava bean"
+  es: "Haba"
+  aliases: [fava, fava bean, faba, broad bean, haba, habas]
+cucumber:
+  scientific: "Cucumis sativus"
+  en: "Cucumber"
+  es: "Pepino"
+  aliases: [cucumber, cucumbers, pepino, pepinos]
+eggplant:
+  scientific: "Solanum melongena"
+  en: "Eggplant"
+  es: "Berenjena"
+  aliases: [eggplant, aubergine, berenjena]
+spinach:
+  scientific: "Spinacia oleracea"
+  en: "Spinach"
+  es: "Espinaca"
+  aliases: [spinach, espinaca, espinacas]
+beet:
+  scientific: "Beta vulgaris"
+  en: "Beet"
+  es: "Remolacha"
+  aliases: [beet, beets, beetroot, sugar beet, remolacha, betabel, betarraga]
+papaya:
+  scientific: "Carica papaya"
+  en: "Papaya"
+  es: "Papaya"
+  aliases: [papaya, papayas, lechosa, fruta bomba]
+passion_fruit:
+  scientific: "Passiflora edulis"
+  en: "Passion fruit"
+  es: "Maracuyá"
+  aliases: [passion fruit, passionfruit, maracuyá, maracuya, parchita, granadilla]
+coconut:
+  scientific: "Cocos nucifera"
+  en: "Coconut"
+  es: "Coco"
+  aliases: [coconut, coconuts, coco, cocos, cocotero]
+oil_palm:
+  scientific: "Elaeis guineensis"
+  en: "Oil palm"
+  es: "Palma de aceite"
+  aliases: [oil palm, palm oil, palma, palma de aceite, palma africana]
+tobacco:
+  scientific: "Nicotiana tabacum"
+  en: "Tobacco"
+  es: "Tabaco"
+  aliases: [tobacco, tabaco]
+amaranth:
+  scientific: "Amaranthus"
+  en: "Amaranth"
+  es: "Amaranto"
+  aliases: [amaranth, amaranto, kiwicha]
+millet:
+  scientific: "Pennisetum glaucum"
+  en: "Millet"
+  es: "Mijo"
+  aliases: [millet, pearl millet, mijo]
+canola:
+  scientific: "Brassica napus"
+  en: "Canola"
+  es: "Canola"
+  aliases: [canola, rapeseed, colza]

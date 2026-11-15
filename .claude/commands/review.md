@@ -40,6 +40,7 @@ Read every file in scope, then check EVERY item below. Report issues by severity
 - [ ] Turbo Frames and Streams used for partial updates; custom stream actions only when needed
 - [ ] Native `<dialog>` for modals; Stimulus never owns server state; every listener/observer/timer removed in `disconnect()`
 - [ ] Vendored libraries only (`vendor/javascript`), lazy `await import()` for heavy ones; CSP unchanged (no new hosts)
+- [ ] Preferences honoured: new motion checks go through `reducedMotion()` (`preferences/motion`), new Aluni lines carry `data-speak` and dispatch `speech:read`, nothing is read from `localStorage` for a preference, anything that sets `inert` restores it in `disconnect()`
 - [ ] Chat turns: Gemini inline only inside `Onboarding::ReplyService`; a fetch that expects a Turbo Stream renders it whatever the status; `Platform::ServicePaused` rescued in the service, never left to the controller's redirect; nothing from the model saved before the confirm card
 
 ## Security

@@ -12,7 +12,7 @@
 #               kc [initial, mid, end] (Table 12; a blank initial takes the
 #               group row), stages [initial, development, mid, late] days and
 #               the planting month (Table 11, the row named in `row`)
-# Loaded by Crops::Catalog.
+# Loaded by Crops::Agronomy.
 zea-mays:             { scientific: Zea mays, aliases: [corn, maize, maiz, elote], family: poaceae, shape: stalk, gaez: Maize,
                         fao56: { kc: [0.3, 1.20, 0.35], stages: [30, 40, 50, 30], planting_month: 4, row: "Maize (grain), April, Spain and California; Kc ini from the cereals group, Kc end for grain dried in the field" } }
 sorghum-bicolor:      { scientific: Sorghum bicolor, aliases: [sorghum, sorgo], family: poaceae, shape: stalk, gaez: Sorghum }

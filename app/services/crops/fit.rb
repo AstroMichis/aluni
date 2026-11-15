@@ -11,7 +11,7 @@ module Crops
     Check = Struct.new(:factor, :status, :value, :range, keyword_init: true)
 
     def initialize(crop, season:, soil:)
-      @requirements = Catalog.find(crop)&.requirements.to_h
+      @requirements = Agronomy.find(crop)&.requirements.to_h
       @climatology = season.climatology
       @soil = soil.to_h
     end

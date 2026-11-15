@@ -1,0 +1,7 @@
+<%# Hidden form the preferences controller submits (Turbo) when a toggle changes: theme, text size, read aloud. %>
+<%= form_with url: preferences_path, method: :post, hidden: true, "aria-hidden": "true", data: { preferences_target: "form", turbo_frame: "_top" } do |f| %>
+  <% Preferences::OPTIONS.each_key do |key| %>
+    <%= f.hidden_field key, value: preferences[key] %>
+  <% end %>
+  <%= f.hidden_field :read_aloud, value: preferences.read_aloud? %>
+<% end %>

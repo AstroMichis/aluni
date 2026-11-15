@@ -1,59 +1,66 @@
-# frozen_string_literal: true
-
-require "yaml"
-
 module Crops
-  # The crops the screens recognise (config/crops.yml) and, when it has been
-  # extracted, their ECOCROP requirements (config/ecocrop.yml, rake
-  # ecocrop:extract). A FieldCrop matches by its crop_key (the scientific
-  # slug) or, failing that, by its common name in English or Spanish.
-  module Catalog
-    PATH = Rails.root.join("config/crops.yml")
-    ECOCROP_PATH = Rails.root.join("config/ecocrop.yml")
-    LEGUMES = "fabaceae"
+  # The built-in bilingual crop list (config/crops/common.yml), loaded once and
+  # looked up without accents or case: "maíz", "Maiz" and "elote" all find
+  # maize. Feeds the finder's datalist (.all) and NormalizeService (.find and
+  # .search), so a crop the list knows never costs a Gemini call.
+  class Catalog
+    PATH = Rails.root.join("config/crops/common.yml")
+    DEFAULT_LIMIT = 8
 
-    Entry = Struct.new(:key, :scientific, :family, :shape, :gaez, :fao56, :requirements, keyword_init: true) do
-      def legume? = family == LEGUMES
-    end
+    class << self
+      def instance = @instance ||= new(YAML.load_file(PATH))
 
-    module_function
+      def reset! = @instance = nil
 
-    def raw = (@raw ||= YAML.safe_load(File.read(PATH)).freeze)
+      def find(text, locale: I18n.locale) = instance.find(text, locale: locale)
+      def search(text, locale: I18n.locale, limit: DEFAULT_LIMIT) = instance.search(text, locale: locale, limit: limit)
+      def all(locale: I18n.locale) = instance.all(locale: locale)
 
-    def entries
-      @entries ||= begin
-        ecocrop = ECOCROP_PATH.exist? ? YAML.safe_load(File.read(ECOCROP_PATH)).to_h : {}
-        raw.to_h do |key, body|
-          [ key, Entry.new(key: key, scientific: body["scientific"], family: body["family"], shape: body["shape"],
-                           gaez: body["gaez"], fao56: body["fao56"], requirements: ecocrop[body["scientific"]]).freeze ]
-        end.freeze
+      # Lowercase, no accents, one space between words: the key every lookup uses.
+      def fold(text)
+        ActiveSupport::Inflector.transliterate(text.to_s, "").downcase.squish
       end
     end
 
-    # Common name slug => crop key.
-    def aliases = (@aliases ||= raw.flat_map { |key, body| Array(body["aliases"]).map { |name| [ name, key ] } }.to_h.freeze)
-
-    # A FieldCrop, a crop key, a scientific or a common name; nil when unknown.
-    def find(crop)
-      return entries[crop.crop_key] || find(crop.crop_name) if crop.respond_to?(:crop_key)
-
-      slug = crop.to_s.parameterize
-      entries[slug] || entries[aliases[slug]]
+    def initialize(data)
+      @crops = data.to_h.map do |key, row|
+        row = row.to_h.stringify_keys
+        names = I18n.available_locales.map(&:to_s).index_with { |locale| row[locale].to_s }
+        aliases = (Array(row["aliases"]) + names.values).map { |a| self.class.fold(a) }.reject(&:empty?).uniq
+        { key: key.to_s, scientific_name: row["scientific"].to_s, names: names, aliases: aliases }
+      end
+      @by_alias = @crops.each_with_object({}) do |crop, index|
+        crop[:aliases].each { |a| index[a] ||= crop }
+      end
     end
 
-    def family(crop) = find(crop)&.family
-    def legume?(crop) = find(crop)&.legume? || false
-    def shape(crop) = find(crop)&.shape || "leafy"
-    def gaez_name(crop) = find(crop)&.gaez
-
-    # FieldCrop attributes for a crop picked from the catalog (its key: the
-    # name in this language) or typed by the person (kept as typed).
-    def row(crop, season_year)
-      entry = find(crop)
-      name = entry && crop.to_s == entry.key ? I18n.t("app.crops.names.#{entry.key}", default: entry.scientific) : crop.to_s
-      { "crop_name" => name, "scientific_name" => entry&.scientific, "season_year" => season_year, "role" => "main" }.compact
+    # An exact match on a name or an alias, or nil.
+    def find(text, locale:)
+      crop = @by_alias[self.class.fold(text)]
+      crop && present(crop, locale)
     end
 
-    def reset! = (@raw = @entries = @aliases = nil)
+    # Crops whose names or aliases start with the text, then those with a word
+    # that starts with it; up to limit, each key once.
+    def search(text, locale:, limit: DEFAULT_LIMIT)
+      needle = self.class.fold(text)
+      return [] if needle.empty?
+
+      prefix = @crops.select { |crop| crop[:aliases].any? { |a| a.start_with?(needle) } }
+      words = @crops.select { |crop| crop[:aliases].any? { |a| a.split.any? { |w| w.start_with?(needle) } } }
+      (prefix + words).uniq.first(limit).map { |crop| present(crop, locale) }
+    end
+
+    # Every crop, sorted by its name in the locale.
+    def all(locale:)
+      @crops.map { |crop| present(crop, locale) }.sort_by { |crop| self.class.fold(crop[:crop_name]) }
+    end
+
+    private
+
+    def present(crop, locale)
+      name = crop[:names][locale.to_s].presence || crop[:names][I18n.default_locale.to_s]
+      { key: crop[:key], crop_name: name, scientific_name: crop[:scientific_name] }
+    end
   end
 end

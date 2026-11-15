@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { reducedMotion } from "preferences/motion"
 
 // One chat bubble. When it lands it scrolls itself into view and, for Aluni's
 // lines, tells the mascot to talk (window "mascot:speak" { chars }). Bubbles
@@ -12,7 +13,7 @@ export default class extends Controller {
   connect() {
     if (this.silentValue) return
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const reduced = reducedMotion()
     this.element.scrollIntoView({ block: "end", behavior: reduced ? "auto" : "smooth" })
 
     if (this.roleValue === "assistant") {

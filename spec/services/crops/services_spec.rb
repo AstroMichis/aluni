@@ -28,11 +28,11 @@ RSpec.describe "Crop services" do
   end
 
   it "checks a crop's ECOCROP ranges against the pin's climate and the confirmed soil" do
-    allow(Crops::Catalog).to receive(:find).and_call_original
-    entry = Crops::Catalog.find("zea-mays").dup
+    allow(Crops::Agronomy).to receive(:find).and_call_original
+    entry = Crops::Agronomy.find("zea-mays").dup
     entry.requirements = { "topmn" => 18, "topmx" => 33, "tmin" => 10, "tmax" => 47, "ropmn" => 600, "ropmx" => 1200,
                            "rmin" => 400, "rmax" => 1800, "phopmn" => 5.5, "phopmx" => 7, "text" => "medium, light", "dra" => "well" }
-    allow(Crops::Catalog).to receive(:find).with("zea-mays").and_return(entry)
+    allow(Crops::Agronomy).to receive(:find).with("zea-mays").and_return(entry)
 
     season = Weather::Season.for(field.observation("nasa_power"))
     checks = Crops::Fit.new("zea-mays", season: season, soil: { "ph" => 6.1, "texture" => "heavy" }).checks.to_h { |c| [ c.factor, c.status ] }

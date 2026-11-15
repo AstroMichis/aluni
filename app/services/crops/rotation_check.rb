@@ -23,12 +23,12 @@ module Crops
 
     private
 
-    def key(crop) = Catalog.find(crop)&.key || (crop.respond_to?(:crop_key) ? crop.crop_key : crop.to_s.parameterize)
+    def key(crop) = Agronomy.find(crop)&.key || (crop.respond_to?(:crop_key) ? crop.crop_key : crop.to_s.parameterize)
 
     def repeats
       @seasons.each_cons(2).filter_map do |(year_a, a), (year_b, b)|
-        family = Catalog.family(a)
-        Finding.new(kind: "same_family", years: [ year_a, year_b ], crop: b) if family && family == Catalog.family(b)
+        family = Agronomy.family(a)
+        Finding.new(kind: "same_family", years: [ year_a, year_b ], crop: b) if family && family == Agronomy.family(b)
       end
     end
 
@@ -39,7 +39,7 @@ module Crops
 
     def missing_legume
       recent = @seasons.last(LEGUME_WINDOW)
-      return [] if recent.size < LEGUME_WINDOW || recent.any? { |_, crop| Catalog.legume?(crop) }
+      return [] if recent.size < LEGUME_WINDOW || recent.any? { |_, crop| Agronomy.legume?(crop) }
 
       [ Finding.new(kind: "no_legume", years: recent.map(&:first)) ]
     end

@@ -1,0 +1,65 @@
+/* Preferences chosen on the welcome screen, rendered on <html> (Preferences#html_attributes)
+   and re-applied by preferences_controller.js after every Turbo visit. */
+
+/* Text size scales every rem-based type token. */
+html[data-text-size="large"] { font-size: 112.5%; }
+html[data-text-size="larger"] { font-size: 125%; }
+
+/* Less motion by choice: the same body as the prefers-reduced-motion rule in base/global.css. */
+html[data-motion="reduce"] *,
+html[data-motion="reduce"] *::before,
+html[data-motion="reduce"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+html[data-motion="reduce"] .landing__hero-content--hidden,
+html[data-motion="reduce"] .landing__reveal {
+  opacity: 1;
+  transform: none;
+}
+
+html[data-motion="reduce"] .landing__scroll-cue svg { animation: none; }
+
+/* High contrast: pure text on deep backgrounds, strong borders, in both themes. */
+html[data-contrast="high"] {
+  --color-bg-primary: #06160F;
+  --color-bg-secondary: #0B2419;
+  --color-bg-tertiary: #113326;
+  --color-bg-hover: #16402F;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #F1EBDD;
+  --color-text-tertiary: #E7DFCB;
+  --color-accent: #F2D889;
+  --color-accent-text: #FFF0B8;
+  --color-border-default: #F1EBDD;
+  --color-border-subtle: #B9AD90;
+  --color-border-strong: #FFFFFF;
+}
+
+html[data-contrast="high"][data-theme="light"] {
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #FAF7EF;
+  --color-bg-tertiary: #EFE7D3;
+  --color-bg-hover: #E3DAC2;
+  --color-text-primary: #000000;
+  --color-text-secondary: #0B2419;
+  --color-text-tertiary: #173D2D;
+  --color-accent: #0B2419;
+  --color-accent-text: #0B2419;
+  --color-border-default: #000000;
+  --color-border-subtle: #173D2D;
+  --color-border-strong: #000000;
+}
+
+html[data-contrast="high"] :focus-visible { outline-width: 4px; }
+
+/* The small access buttons in the nav (text size, read aloud) wait for wider screens;
+   on phones the first bubble carries the same controls. */
+.access-button { display: none; }
+
+@media (min-width: 641px) {
+  .access-button { display: inline-flex; }
+}

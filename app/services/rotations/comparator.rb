@@ -62,14 +62,14 @@ module Rotations
 
       before = key_of(@field.history.values[-2])
       current = continue(now, before)
-      families = current.filter_map { |c| Crops::Catalog.family(c) }.uniq
-      has_legume = current.any? { |c| Crops::Catalog.legume?(c) }
+      families = current.filter_map { |c| Crops::Agronomy.family(c) }.uniq
+      has_legume = current.any? { |c| Crops::Agronomy.legume?(c) }
       legume = best_of(LEGUMES)
       grain = best_of(SMALL_GRAINS)
       other = best_of(@potential.ranked.map(&:gaez) + FALLBACK_OTHERS, exclude: families)
       list = { "current" => current }
       list["legume"] = [ legume, now, legume ] if legume && !has_legume
-      list["small_grain"] = [ grain, (has_legume ? current.find { |c| Crops::Catalog.legume?(c) } : legume) || now, now ] if grain
+      list["small_grain"] = [ grain, (has_legume ? current.find { |c| Crops::Agronomy.legume?(c) } : legume) || now, now ] if grain
       list["other_family"] = [ other, now, other ] if other
       forage = @goals.include?("soil_health") || Array(@profile&.livestock).any?
       list["perennial"] = [ "medicago-sativa", "medicago-sativa", now ] if forage && suitable?("Alfalfa") && now != "medicago-sativa"
@@ -93,7 +93,7 @@ module Rotations
       }
       gaps << "market"
       gaps << "soil" if @record.soil["texture"].blank?
-      gaps << "ecocrop" unless crops.all? { |c| Crops::Catalog.find(c)&.requirements.present? }
+      gaps << "ecocrop" unless crops.all? { |c| Crops::Agronomy.find(c)&.requirements.present? }
       Strategy.new(key: key, crops: crops, scores: scores, total: total(scores), why: why(key, crops, scores),
                    evidence: facts.uniq { |f| [ f.key, f.values ] }, gaps: gaps.uniq, risks: risks(crops, scores), benefits: [])
     end
@@ -128,14 +128,14 @@ module Rotations
 
     # Legumes, more families and close-growing crops build soil.
     def soil_health(crops)
-      entries = crops.map { |c| Crops::Catalog.find(c) }
+      entries = crops.map { |c| Crops::Agronomy.find(c) }
       legumes = entries.count { |e| e&.legume? }
       families = entries.filter_map(&:family).uniq.size
       cover = crops.count { |c| !ROW_CROPS.include?(c) }
       [ 25 + (legumes * 20) + (families * 10) + (cover * 10), 100 ].min
     end
 
-    def nitrogen(crops) = (100 * crops.count { |c| Crops::Catalog.legume?(c) } / crops.size.to_f).round
+    def nitrogen(crops) = (100 * crops.count { |c| Crops::Agronomy.legume?(c) } / crops.size.to_f).round
 
     # How much of the crops' water need the usual rain covers (irrigation fills the rest).
     def water(crops, facts, gaps)
@@ -171,7 +171,7 @@ module Rotations
     # Fewer different crops and machinery the farm already has mean less work.
     def workload(crops)
       distinct = crops.uniq.size
-      grains = crops.any? { |c| SMALL_GRAINS.include?(Crops::Catalog.gaez_name(c)) }
+      grains = crops.any? { |c| SMALL_GRAINS.include?(Crops::Agronomy.gaez_name(c)) }
       score = 100 - ((distinct - 1) * 15)
       score -= 20 if grains && !harvester?
       score.clamp(0, 100)
@@ -190,7 +190,7 @@ module Rotations
       list = []
       list << "dry" if !@record.uses_irrigation? && crops.uniq.any? { |c| (n = water_need(c)) && n.rain_mm < n.crop_mm * DRY_SHARE }
       list << "low_suitability" if crops.any? { |c| (r = @potential.for(c)) && r.suitability && r.suitability < LOW_SUITABILITY }
-      list << "harvester" if crops.any? { |c| SMALL_GRAINS.include?(Crops::Catalog.gaez_name(c)) } && !harvester?
+      list << "harvester" if crops.any? { |c| SMALL_GRAINS.include?(Crops::Agronomy.gaez_name(c)) } && !harvester?
       list << "same_family" if scores["pest_break"].to_i < 75
       list << "establishment" if crops.include?("medicago-sativa")
       list
@@ -207,12 +207,12 @@ module Rotations
     # given families), or the first known one when GAEZ has not answered.
     def best_of(gaez_names, exclude: [])
       ranked = @potential.ranked.select { |row| gaez_names.include?(row.gaez) }.map(&:entry)
-      known = gaez_names.filter_map { |name| Crops::Catalog.entries.values.find { |e| e.gaez == name } }
+      known = gaez_names.filter_map { |name| Crops::Agronomy.entries.values.find { |e| e.gaez == name } }
       (ranked + known).compact.find { |entry| !Array(exclude).include?(entry.family) }&.key
     end
 
     def suitable?(gaez_name) = @potential.rows.any? { |r| r.gaez == gaez_name && r.suitability.to_i >= LOW_SUITABILITY }
     def harvester? = Array(@profile&.equipment).include?("harvester")
-    def key_of(crop) = crop && (Crops::Catalog.find(crop)&.key || crop.crop_key)
+    def key_of(crop) = crop && (Crops::Agronomy.find(crop)&.key || crop.crop_key)
   end
 end

@@ -2,103 +2,104 @@ en:
   pages:
     home:
       title: "%{app_name}"
-      nav_label: Site
-      tagline: Your smart crop cultivation assistant
-      headline: Plan your rotation with data from your own field.
-      lede: Drop a pin. %{app_name} reads the soil, the weather and the crop history, then compares rotations side by side. The decision stays yours.
-      sign_in: Sign in
-      sign_up: Create an account
-      get_the_app: Get the app
-      open_app: Continue with %{app_name}
-      take_the_tour: See how it works
-      scroll_cue: Scroll to see how it works
-      preview_notice: This tour uses sample data from one field in Iowa.
-      preview_notice_link: Start with your own field.
-      sample_pill: Sample data
-      tour_label: How it works
-      tour_step_label: 'Step %{number}: %{title}'
-      kicker: Step %{number} of %{total}
-      next: 'Next: %{title}'
-      finish: Start with your own field
+      nav_label: "Site"
+      tagline: "Your smart crop cultivation assistant"
+      headline: "Plan your rotation with data from your own field."
+      lede: "Drop a pin. %{app_name} reads the soil, the weather and the crop history, then compares rotations side by side. The decision stays yours."
+      sign_in: "Sign in"
+      sign_up: "Create an account"
+      get_the_app: "Get the app"
+      open_app: "Continue with %{app_name}"
+      find_my_field: "Find my field"
+      take_the_tour: "See how it works"
+      scroll_cue: "Scroll to see how it works"
+      preview_notice: "This tour uses sample data from one field in Iowa."
+      preview_notice_link: "Start with your own field."
+      sample_pill: "Sample data"
+      tour_label: "How it works"
+      tour_step_label: "Step %{number}: %{title}"
+      kicker: "Step %{number} of %{total}"
+      next: "Next: %{title}"
+      finish: "Start with your own field"
       steps:
         location:
-          title: Drop a pin on your field
-          body: Tap where you farm. That is all the setup there is.
-          phone_title: Add a field
-          search: Search or tap the map
-          place: Near Ames, Iowa
+          title: "Drop a pin on your field"
+          body: "Tap where you farm. That is all the setup there is."
+          phone_title: "Add a field"
+          search: "Search or tap the map"
+          place: "Near Ames, Iowa"
           coords: "%{lat}, %{lon}"
-          cta: Use this spot
+          cta: "Use this spot"
         soil:
-          title: Soil, filled in for you
-          body: Series, texture, organic matter, drainage and slope come from the public soil survey. Change anything you know better.
-          phone_title: Soil profile
-          series_label: Soil series
-          series: Clarion loam
-          drainage_label: Drainage
-          drainage: Well drained
-          om: Organic matter
+          title: "Soil, filled in for you"
+          body: "Series, texture, organic matter, drainage and slope come from the public soil survey. Change anything you know better."
+          phone_title: "Soil profile"
+          series_label: "Soil series"
+          series: "Clarion loam"
+          drainage_label: "Drainage"
+          drainage: "Well drained"
+          om: "Organic matter"
           om_value: "%{value}%"
-          texture: Texture
-          texture_value: Sand %{sand}%, clay %{clay}%
-          awc: Water holding
+          texture: "Texture"
+          texture_value: "Sand %{sand}%, clay %{clay}%"
+          awc: "Water holding"
           awc_value: "%{value} in/in"
-          slope: Slope
+          slope: "Slope"
           slope_value: "%{value}%"
-          group: Hydrologic group
-          group_value: Group %{value}
-          source: From the USDA soil survey
+          group: "Hydrologic group"
+          group_value: "Group %{value}"
+          source: "From the USDA soil survey"
         crops:
-          title: Your crop history, already there
-          body: Satellite crop maps fill in the last six years. Confirm or correct each one. Your answer wins.
-          phone_title: Crop history
-          corn: Corn
-          soybeans: Soybeans
-          pattern: Corn and soybeans, alternating
-          confirm: Looks right
-          edit: Change a year
+          title: "Your crop history, already there"
+          body: "Satellite crop maps fill in the last six years. Confirm or correct each one. Your answer wins."
+          phone_title: "Crop history"
+          corn: "Corn"
+          soybeans: "Soybeans"
+          pattern: "Corn and soybeans, alternating"
+          confirm: "Looks right"
+          edit: "Change a year"
         compare:
-          title: Three ways forward, side by side
-          body: Your current rotation and two alternatives, each with the evidence, the benefits, the gaps and the risks.
-          phone_title: Rotation options
-          evidence: Evidence for this field
+          title: "Three ways forward, side by side"
+          body: "Your current rotation and two alternatives, each with the evidence, the benefits, the gaps and the risks."
+          phone_title: "Rotation options"
+          evidence: "Evidence for this field"
           frost: "%{days} frost days"
           gdd: "%{value} growing degree days"
           heat: "%{days} heat stress days"
           rain: "%{mm} mm of rain"
-          wetness: Root zone wetness %{value}
-          why: Why
-          risk: Risk to review
-          current: Keep corn and soybeans
-          current_why: Known yields and known markets.
-          current_risk: Rootworm pressure builds over time.
-          small_grain: Add a small grain
-          small_grain_why: Oats break the pest cycle and cover the spring.
-          small_grain_risk: One lighter income year. Check local buyers.
-          cover: Add a cover crop
-          cover_why: Covers the bare months and protects the slope.
-          cover_risk: Seed cost and a tight fall window.
+          wetness: "Root zone wetness %{value}"
+          why: "Why"
+          risk: "Risk to review"
+          current: "Keep corn and soybeans"
+          current_why: "Known yields and known markets."
+          current_risk: "Rootworm pressure builds over time."
+          small_grain: "Add a small grain"
+          small_grain_why: "Oats break the pest cycle and cover the spring."
+          small_grain_risk: "One lighter income year. Check local buyers."
+          cover: "Add a cover crop"
+          cover_why: "Covers the bare months and protects the slope."
+          cover_risk: "Seed cost and a tight fall window."
         alerts:
-          title: A nudge at the right moment
-          body: Frost on the way, a bare-field window, soil drying out. A short note on your phone when it matters.
-          phone_title: Alerts
-          frost: Frost likely Thursday night
-          frost_body: Cover young plants or wait before planting.
-          bare: Field bare for six weeks
-          bare_body: A cover crop would fit this window.
-          moisture: Root zone drying
-          moisture_body: Wetness fell to %{value} this week.
-          now: Now
-          earlier: Earlier
+          title: "A nudge at the right moment"
+          body: "Frost on the way, a bare-field window, soil drying out. A short note on your phone when it matters."
+          phone_title: "Alerts"
+          frost: "Frost likely Thursday night"
+          frost_body: "Cover young plants or wait before planting."
+          bare: "Field bare for six weeks"
+          bare_body: "A cover crop would fit this window."
+          moisture: "Root zone drying"
+          moisture_body: "Wetness fell to %{value} this week."
+          now: "Now"
+          earlier: "Earlier"
       capabilities:
-        kicker: Also on your phone
-        title: Take it with you
-        body: 'The web app works in any current browser. The phone apps add:'
-        passkey: Sign in with your face or fingerprint. No passwords.
-        push: Alerts on your phone when conditions change
-        siri: Siri shortcuts for quick questions about your fields
-        device: Your fields and notes, kept on your device and in your account
-        data: Live soil, weather and satellite data for your own location
+        kicker: "Also on your phone"
+        title: "Take it with you"
+        body: "The web app works in any current browser. The phone apps add:"
+        passkey: "Sign in with your face or fingerprint. No passwords."
+        push: "Alerts on your phone when conditions change"
+        siri: "Siri shortcuts for quick questions about your fields"
+        device: "Your fields and notes, kept on your device and in your account"
+        data: "Live soil, weather and satellite data for your own location"
         footnote: "%{app_name} supports your judgment and your local experts. It never replaces them."
-      get_the_app_title: Get the app
-      get_the_app_body: Coming to iPhone and Android. Open source, so anyone can read how it works.
+      get_the_app_title: "Get the app"
+      get_the_app_body: "Coming to iPhone and Android. Open source, so anyone can read how it works."

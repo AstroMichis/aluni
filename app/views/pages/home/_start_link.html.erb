@@ -1,0 +1,6 @@
+<%# "Start with your own field": signed in it is a link to the app; otherwise a button that opens the field finder. Locals: text, css. %>
+<% if authenticated? %>
+  <%= link_to text, app_root_path, class: css %>
+<% else %>
+  <button type="button" class="<%= css %>" data-controller="emit" data-emit-event-value="mascot:lets-go" data-action="emit#fire"><%= text %></button>
+<% end %>

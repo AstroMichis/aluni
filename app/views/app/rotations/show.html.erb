@@ -1,4 +1,4 @@
-<% name = field_name(@field) %>
+<% name = plot_name(@field) %>
 <% content_for :title, t(".title", name: name, app_name: t("app_name")) %>
 <% weights = @comparator.weights %>
 
@@ -49,7 +49,7 @@
                 <li class="season">
                   <span class="season__label text-mono"><%= season_years[i] %></span>
                   <span class="season__crop"><%= crop_name(crop) %></span>
-                  <% if (family = Crops::Catalog.family(crop)) %><span class="season__family"><%= t("app.crops.families.#{family}") %></span><% end %>
+                  <% if (family = Crops::Agronomy.family(crop)) %><span class="season__family"><%= t("app.crops.families.#{family}") %></span><% end %>
                 </li>
               <% end %>
             </ol>

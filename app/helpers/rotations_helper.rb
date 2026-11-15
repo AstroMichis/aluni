@@ -15,7 +15,7 @@ module RotationsHelper
   def season_years(count = Rotations::Comparator::HORIZON) = Array.new(count) { |i| Date.current.year + 1 + i }
 
   def fact_text(fact)
-    values = fact.values.transform_values { |v| v.is_a?(String) && Crops::Catalog.find(v) ? crop_name(v) : v }
+    values = fact.values.transform_values { |v| v.is_a?(String) && Crops::Agronomy.find(v) ? crop_name(v) : v }
     values[:class] = t("app.crops.suitability.#{values[:class]}") if values[:class]
     t("app.rotations.evidence.#{fact.key}", **values)
   end

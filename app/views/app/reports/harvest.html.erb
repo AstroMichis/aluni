@@ -19,13 +19,13 @@
         <% potential = Crops::Potential.new(field.observation("gaez")) %>
         <% row = potential.for(field.current_crop) %>
         <li class="harvest__row">
-          <span class="harvest__name"><%= field_name(field) %> <small><%= crop_name(field.current_crop) %> · <%= field_area(field) %></small></span>
+          <span class="harvest__name"><%= plot_name(field) %> <small><%= crop_name(field.current_crop) %> · <%= field_area(field) %></small></span>
           <% if row&.yield_t %>
             <span class="harvest__value"><%= t("app.crops.attainable", value: chart_number(row.yield_t)) %>
               <small><%= t(".total", value: chart_number(row.yield_t * field.area_hectares, 0)) %></small></span>
             <span class="meter-list__bar"><span class="meter-list__fill" style="--share: <%= [ row.suitability.to_f / 10000, 1 ].min.round(3) %>"></span></span>
           <% else %>
-            <span class="harvest__missing"><%= Crops::Catalog.gaez_name(field.current_crop) ? t("app.crops.gaez_pending") : t("app.crops.no_gaez") %></span>
+            <span class="harvest__missing"><%= Crops::Agronomy.gaez_name(field.current_crop) ? t("app.crops.gaez_pending") : t("app.crops.no_gaez") %></span>
           <% end %>
         </li>
       <% end %>

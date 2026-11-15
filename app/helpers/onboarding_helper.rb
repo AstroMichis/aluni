@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
-# View helpers for the onboarding chat: the confirm card rows built from a
-# staged proposal, the profile preview rows, and the transcript turns.
+# View helpers for the Ask Aluni chat: the one-line summary of what a turn
+# saved (the toast with Undo), the profile preview rows, and the transcript.
 #
-# Proposal shape (Onboarding::ReplyService): a hash of sections,
-#   { "profile" => { "budget_level" => "low", "goals" => ["rotation"] },
-#     "farm" => { "name" => "Finca Ana" },
-#     "field" => { "area" => 12.5, "area_unit" => "hectares", "soil" => { "texture" => "medium", "ph" => 6.1 } },
-#     "crops" => [ { "season_year" => 2025, "role" => "main", "crop_name" => "Corn", ... } ] }
-# Row keys are what ApplyProposalService accepts back: "profile.budget_level",
-# "field.soil.texture", "crops.2025.main".
+# Applied shape (Onboarding::ApplyProposalService, carried by ReplyService's
+# payload[:applied] and session.last_applied["applied"]): one entry per key,
+#   { "profile.budget_level" => "low", "farm.name" => "Finca Ana", "field.area" => 12.5,
+#     "field.area_unit" => "hectares", "field.soil.texture" => "medium",
+#     "crops.2025.main" => { "season_year" => 2025, "role" => "main", "crop_name" => "Corn", ... } }
+# The pin travels as five field.* keys and is summarised as one "Location" item.
 module OnboardingHelper
   # Attributes whose values are enum or allowlist slugs with a label under onboarding.values.<attribute>.
   LABELLED_ATTRIBUTES = %w[
@@ -17,30 +16,42 @@ module OnboardingHelper
     location_confidence location_source area_unit irrigation water_source cropping_intensity source crop_role
     goals equipment livestock market_channels practices texture depth drainage salinity fertility problems
   ].freeze
+  PIN_KEYS = Onboarding::Allowlist::LOCATION_KEYS.map { |key| "field.#{key}" }.freeze
 
-  # One row per accepted key Onboarding::Allowlist.keys_for offers: the pin
-  # (latitude, longitude, place_label, confidence, source) is one "Location" row.
-  def proposal_rows(proposal)
-    data = (proposal || {}).deep_stringify_keys
-    Onboarding::Allowlist.keys_for(data).filter_map do |key|
+  # "Saved: Area 12.5 hectares, Irrigation Drip, Soil texture Medium (loam)."
+  def applied_summary(applied)
+    items = applied_items((applied || {}).to_h.deep_stringify_keys)
+    return t("app.onboarding.show.applied_generic") if items.empty?
+
+    t("app.onboarding.show.applied", items: items.join(", "))
+  end
+
+  # One label-and-value phrase per saved fact, the pin once, the area with its unit.
+  def applied_items(data)
+    data.filter_map do |key, value|
       case key
       when "field.latitude"
-        proposal_row(key, field_label("field", "location"), pin_summary(data["field"]))
+        "#{field_label('field', 'location')} #{pin_summary(applied_pin(data))}"
+      when *PIN_KEYS
+        nil
+      when "field.area"
+        "#{field_label('field', 'area')} #{applied_area(value, data['field.area_unit'])}"
+      when "field.area_unit"
+        data.key?("field.area") ? nil : "#{field_label('field', 'area_unit')} #{value_label('area_unit', value)}"
       when /\Afield\.soil\.(\w+)\z/
         soil_key = Regexp.last_match(1)
-        proposal_row(key, field_label("field.soil", soil_key), format_value(soil_key, data.dig("field", "soil", soil_key)))
+        "#{field_label('field.soil', soil_key)} #{format_value(soil_key, value)}"
       when /\Acrops\.(-?\d+)\.(\w+)\z/
         year, role = Regexp.last_match(1).to_i, Regexp.last_match(2)
-        crop = Array(data["crops"]).find { |row| row.is_a?(Hash) && row["season_year"].to_i == year && row["role"].to_s == role }
-        crop && proposal_row(key, t("onboarding.field_labels.crops", year: year, role: value_label("crop_role", role)), crop_summary(crop))
+        "#{t('onboarding.field_labels.crops', year: year, role: value_label('crop_role', role))} #{crop_summary(section_hash(value))}"
       when /\A(profile|farm|field)\.(\w+)\z/
         section, attribute = Regexp.last_match(1), Regexp.last_match(2)
-        proposal_row(key, field_label(section, attribute), format_value(attribute, data.dig(section, attribute)))
+        "#{field_label(section, attribute)} #{format_value(attribute, value)}"
       end
     end
   end
 
-  # "42.0000, -93.7500 (Near Ames)" for the staged pin.
+  # "42.0000, -93.7500 (Near Ames)" for a pin given as a field hash.
   def pin_summary(field)
     field = section_hash(field)
     pin = preview_pin({ latitude: field["latitude"], longitude: field["longitude"] })
@@ -159,7 +170,15 @@ module OnboardingHelper
 
   def section_hash(section) = section.is_a?(Hash) ? section : {}
 
-  def proposal_row(key, label, value) = { key: key, label: label, value: value }
+  # The five pin keys of an applied hash as one field hash for pin_summary.
+  def applied_pin(data)
+    Onboarding::Allowlist::LOCATION_KEYS.to_h { |key| [ key, data["field.#{key}"] ] }
+  end
+
+  def applied_area(area, unit)
+    number = area.is_a?(Numeric) ? format_value("area", area) : area.to_s
+    unit.present? ? "#{number} #{value_label('area_unit', unit)}" : number
+  end
 
   def preview_row(key, value) = { label: t("app.onboarding.show.preview.#{key}"), value: value.presence || preview_unknown }
 

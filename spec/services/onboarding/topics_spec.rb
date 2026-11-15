@@ -1,26 +1,29 @@
 require "rails_helper"
 
 RSpec.describe Onboarding::Topics do
-  it "lists the topics in conversation order" do
-    expect(described_class.keys).to eq(%w[welcome location land crops soil operation goals summary])
+  it "lists the topics in conversation order, welcome first" do
+    expect(described_class.keys).to eq(%w[welcome crops soil goals summary])
     expect(described_class.first).to eq("welcome")
-    expect(described_class.size).to eq(8)
+    expect(described_class.size).to eq(5)
     expect(described_class.include?("soil")).to be(true)
+    expect(described_class.include?("location")).to be(false)
   end
 
   it "walks forward and stops after the last topic" do
-    expect(described_class.next("welcome")).to eq("location")
+    expect(described_class.next("welcome")).to eq("crops")
     expect(described_class.next("summary")).to be_nil
     expect(described_class.next("nope")).to be_nil
-    expect(described_class.index("crops")).to eq(3)
+    expect(described_class.index("crops")).to eq(1)
     expect(described_class.index("nope")).to be_nil
   end
 
   it "exposes guidance, required facts, rules and title keys" do
-    expect(described_class.guidance("location")).to include("location_guess")
-    expect(described_class.required("welcome")).to eq(%w[profile.role profile.experience profile.team])
+    expect(described_class.guidance("welcome")).to include("field basics you already know")
+    expect(described_class.guidance("crops")).to include("history")
+    expect(described_class.required("welcome")).to eq([])
+    expect(described_class.required("crops")).to eq(%w[crops])
     expect(described_class.required("summary")).to eq([])
-    expect(described_class.rules).to include("One question per turn")
+    expect(described_class.rules).to include("One question per turn").and include("settled during setup")
     expect(described_class.title_key("soil")).to eq("onboarding.topics.soil")
     expect { described_class.guidance("nope") }.to raise_error(ArgumentError, /unknown onboarding topic/)
   end

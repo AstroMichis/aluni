@@ -1,44 +1,29 @@
 es:
   onboarding:
     persona_name: "Aluni"
-    welcome_message: "Hola %{name}, soy Aluni. Te haré unas preguntas cortas sobre tu finca para que los consejos se ajusten a tu tierra, y nada se guarda hasta que tú lo digas. ¿Empezamos por quién eres?"
+    welcome_message: "Hola %{name}, soy Aluni. Ya conozco tu campo desde la configuración, así que no tienes que responder nada. Pregúntame lo que quieras sobre él, o completemos el resto: los cultivos anteriores, el suelo y lo que más te importa."
     topics:
       welcome: "Bienvenida"
-      location: "Ubicación"
-      land: "Tu tierra"
       crops: "Cultivos"
       soil: "Suelo"
-      operation: "Cómo trabajas"
       goals: "Metas"
       summary: "Resumen"
     transitions:
-      welcome: "Empecemos por quién eres."
-      location: "Ahora busquemos tu campo principal en el mapa. Puedes compartir tu ubicación o decirme el pueblo más cercano."
-      land: "Sigamos con la tierra: qué tan grande es y cómo recibe el agua."
-      crops: "Ahora los cultivos. ¿Qué crece ahí esta temporada?"
+      welcome: "Pregúntame lo que quieras, o completemos el resto."
+      crops: "Veamos la historia de cultivos. ¿Qué creció en el campo en las temporadas anteriores a esta?"
       soil: "Hablemos del suelo, con tus propias palabras."
-      operation: "Ya casi. Unas preguntas rápidas sobre cómo trabajas."
       goals: "Última parte: ¿qué es lo que más te importa este año?"
       summary: "Déjame juntarlo todo para que lo revises."
     continuations:
       welcome:
         - "Dame un segundo, todavía me estoy poniendo al día. ¿Me lo repites?"
-        - "Perdí el hilo un momento. ¿Me cuentas otra vez quién eres en la finca?"
-      location:
-        - "Espera, todavía estoy desplegando mis hojas. ¿Dónde queda tu campo?"
-        - "Un momento, eso no me llegó. ¿Puedes compartir tu ubicación o decirme el pueblo más cercano?"
-      land:
-        - "Dame un segundo, me estoy poniendo al día. ¿Qué tan grande es el campo?"
-        - "Se me pasó esa. ¿Me cuentas otra vez sobre la tierra?"
+        - "Perdí el hilo un momento. ¿Me cuentas otra vez en qué quieres trabajar?"
       crops:
         - "Espera, hoy mis raíces van lentas. ¿Qué cultivos dijiste?"
-        - "Eso se me escapó. ¿Qué crece en el campo esta temporada?"
+        - "Eso se me escapó. ¿Qué creció en el campo antes de esta temporada?"
       soil:
         - "Un momento, todavía me estoy poniendo al día. ¿Qué me decías del suelo?"
         - "Se me pasó. Cuéntame otra vez cómo es el suelo, con tus palabras."
-      operation:
-        - "Dame un segundo, me estoy poniendo al día. ¿Qué herramientas y ventas mencionaste?"
-        - "Eso no me llegó. ¿Me lo repites?"
       goals:
         - "Espera, todavía me estoy poniendo al día. ¿Qué es lo que más te importa este año?"
         - "Lo perdí un momento. ¿Me cuentas tus metas otra vez?"

@@ -14,7 +14,7 @@
       <summary class="btn btn--ghost btn--sm"><%= t(".account") %></summary>
       <div class="dial-page__account-menu">
         <%= render "shared/language_toggle" %>
-        <button type="button" class="btn btn--ghost btn--sm" data-action="theme#toggle" aria-label="<%= t("theme.toggle") %>">
+        <button type="button" class="btn btn--ghost btn--sm" data-action="preferences#toggleTheme" aria-label="<%= t("theme.toggle") %>">
           <%= t("theme.toggle_short") %>
         </button>
         <%= link_to t(".talk_to", app_name: t("app_name")), app_onboarding_path, class: "btn btn--ghost btn--sm" %>

@@ -80,7 +80,7 @@ module Fields
     # Rows keyed by season so this season's crop and its months make one row.
     def collect_crops(rows, attr, sub, value, target)
       if attr == "history"
-        value.to_h.compact_blank.each { |year, crop| rows[year.to_i] = (rows[year.to_i] || {}).merge(Crops::Catalog.row(crop, year.to_i)) }
+        value.to_h.compact_blank.each { |year, crop| rows[year.to_i] = (rows[year.to_i] || {}).merge(Crops::Agronomy.row(crop, year.to_i)) }
         return
       end
 
@@ -88,7 +88,7 @@ module Fields
       year = current&.season_year || Date.current.year
       row = rows[year] ||= { "season_year" => year, "role" => "main", "crop_name" => current&.crop_name }.compact
       if sub then row[sub] = value
-      else row.merge!(Crops::Catalog.row(value, year))
+      else row.merge!(Crops::Agronomy.row(value, year))
       end
     end
 

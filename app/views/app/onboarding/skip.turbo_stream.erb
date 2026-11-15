@@ -7,6 +7,3 @@
 <%= turbo_stream.replace "onboarding-progress" do %>
   <%= render "app/onboarding/progress", topic: @topic, index: @index, total: @total %>
 <% end %>
-<%= turbo_stream.update "onboarding-location-tools" do %>
-  <%= render "app/onboarding/location_tools", pin: @pin if @topic == "location" %>
-<% end %>

@@ -1,7 +1,8 @@
 require "rails_helper"
 
-# The orchestrator with its two sub-services stubbed: what gets stored, what
-# the payload looks like, and how every Gemini problem stays in character.
+# The orchestrator with its two sub-services stubbed: what gets stored and
+# applied, what the payload looks like, and how every Gemini problem stays in
+# character.
 RSpec.describe Onboarding::ReplyService, type: :service do
   let(:user) { create(:user, display_name: "Ana") }
   let(:session) { user.onboarding_session || Onboarding::EnsureProfileService.call(user: user).value[:session] }
@@ -20,7 +21,7 @@ RSpec.describe Onboarding::ReplyService, type: :service do
     described_class.call(user: user, text: text, locale: locale, coords: coords)
   end
 
-  it "stores both turns, stages the filtered proposal and answers with the payload shape" do
+  it "stores both turns, applies the filtered facts right away and answers with the payload shape" do
     result = reply
 
     expect(result).to be_success
@@ -28,8 +29,9 @@ RSpec.describe Onboarding::ReplyService, type: :service do
       user_text: "I am the owner",
       assistant_text: "Nice to meet you, Ana. Do you own the land or rent it?",
       transition: nil, topic: "welcome", topic_complete: false,
-      proposal: { "profile" => { "role" => "owner", "goals" => [ "rotation" ] } },
-      progress: { index: 1, total: 8 }, completed: false, degraded: false, refusal: false
+      proposal: nil,
+      applied: { "profile.role" => "owner", "profile.goals" => [ "rotation" ] },
+      progress: { index: 1, total: 5 }, completed: false, degraded: false, refusal: false
     )
 
     session.reload
@@ -38,9 +40,58 @@ RSpec.describe Onboarding::ReplyService, type: :service do
       { "role" => "model", "text" => "Nice to meet you, Ana. Do you own the land or rent it?" }
     ])
     expect(session.transcript.last["at"]).to be_present
-    expect(session.proposal).to eq("profile" => { "role" => "owner", "goals" => [ "rotation" ] })
+    expect(session.proposal).to eq({})
     expect(session).to have_attributes(turns_count: 1, language: "en", strikes: 0, fallbacks_count: 0)
     expect(session.last_message_at).to be_present
+    expect(user.farmer_profile.reload).to have_attributes(role: "owner", goals: [ "rotation" ], team: "unknown")
+  end
+
+  it "remembers the last apply so the toast can undo it" do
+    reply
+
+    last = session.reload.last_applied
+    expect(last["applied"]).to eq("profile.role" => "owner", "profile.goals" => [ "rotation" ])
+    expect(last["before"]).to eq("profile" => { "role" => "unknown", "goals" => [] })
+    expect(Time.iso8601(last["at"])).to be_within(1.minute).of(Time.current)
+  end
+
+  it "applies nothing and keeps last_applied untouched when the answer carries no facts" do
+    session.update!(last_applied: { "before" => { "profile" => { "role" => "unknown" } }, "applied" => { "profile.role" => "owner" }, "at" => Time.current.iso8601 })
+    allow(Onboarding::DraftReplyService).to receive(:call).and_return(Success(draft.value.merge("updates" => {})))
+
+    result = reply("What is loam?")
+
+    expect(result.value).to include(applied: nil, proposal: nil, degraded: false)
+    expect(session.reload.last_applied["applied"]).to eq("profile.role" => "owner")
+  end
+
+  describe "when the apply fails" do
+    it "logs, keeps the proposal staged and finishes the turn without a toast" do
+      allow(Onboarding::ApplyProposalService).to receive(:call).and_return(Failure(code: :invalid, messages: [ "Position must be greater than or equal to 0" ]))
+      allow(Rails.logger).to receive(:error).and_call_original
+
+      result = reply
+
+      expect(result).to be_success
+      expect(result.value).to include(applied: nil, degraded: false, refusal: false,
+                                      proposal: { "profile" => { "role" => "owner", "goals" => [ "rotation" ] } })
+      expect(Onboarding::ApplyProposalService).to have_received(:call).with(user: user, accepted: %w[profile.role profile.goals])
+      expect(Rails.logger).to have_received(:error).with(/keeping it staged/)
+      session.reload
+      expect(session.proposal).to eq("profile" => { "role" => "owner", "goals" => [ "rotation" ] })
+      expect(session.last_applied).to eq({})
+      expect(session.transcript.map { |t| t["role"] }).to eq(%w[user model])
+      expect(user.farmer_profile.reload.role).to eq("unknown")
+    end
+
+    it "never halts the turn when the apply raises" do
+      allow(Onboarding::ApplyProposalService).to receive(:call).and_raise(RuntimeError, "db hiccup")
+
+      result = reply
+
+      expect(result.value).to include(applied: nil, degraded: false, assistant_text: draft.value["response_text"])
+      expect(session.reload.proposal).to eq("profile" => { "role" => "owner", "goals" => [ "rotation" ] })
+    end
   end
 
   it "stores the redacted text and sends the classifier the redacted text too" do
@@ -51,20 +102,20 @@ RSpec.describe Onboarding::ReplyService, type: :service do
   end
 
   it "builds the system prompt and proper multi-turn contents on the request thread" do
-    session.update!(topic: "land", turns_count: 2, transcript: [
+    session.update!(topic: "crops", turns_count: 2, transcript: [
       { "role" => "user", "text" => "hello", "at" => "2026-01-01T00:00:00Z" },
       { "role" => "model", "text" => "hi Ana", "at" => "2026-01-01T00:00:01Z" }
     ])
 
-    reply("12 hectares")
+    reply("soy in 2024")
 
     expect(Onboarding::DraftReplyService).to have_received(:call) do |messages:, system_instruction:, client:|
       expect(messages).to eq([
         { role: "user", parts: [ { text: "hello" } ] },
         { role: "model", parts: [ { text: "hi Ana" } ] },
-        { role: "user", parts: [ { text: "12 hectares" } ] }
+        { role: "user", parts: [ { text: "soy in 2024" } ] }
       ])
-      expect(system_instruction).to include("CURRENT TOPIC: land").and include("LANGUAGE LOCK").and include("FARMER: Ana")
+      expect(system_instruction).to include("CURRENT TOPIC: crops").and include("LANGUAGE LOCK").and include("FARMER: Ana").and include("KNOWN FIELD BASICS")
       expect(system_instruction).not_to include("OPENING LINE")
       expect(client).to be_a(Gemini::Client)
     end
@@ -107,12 +158,14 @@ RSpec.describe Onboarding::ReplyService, type: :service do
   describe "an unsafe message" do
     before { allow(Onboarding::ClassifyIntentService).to receive(:call).and_return(Success(safe: false, language: "en", abuse_type: "insult")) }
 
-    it "discards the draft, refuses in character and counts a strike" do
+    it "discards the draft, refuses in character, applies nothing and counts a strike" do
       result = reply("you are useless")
 
-      expect(result.value).to include(assistant_text: I18n.t("onboarding.refusals.insult", locale: :en), refusal: true, degraded: false, proposal: nil)
+      expect(result.value).to include(assistant_text: I18n.t("onboarding.refusals.insult", locale: :en), refusal: true, degraded: false, proposal: nil, applied: nil)
       expect(session.reload.strikes).to eq(1)
       expect(session.proposal).to eq({})
+      expect(session.last_applied).to eq({})
+      expect(user.farmer_profile.reload.role).to eq("unknown")
       expect(session.transcript.last["text"]).to eq(I18n.t("onboarding.refusals.insult", locale: :en))
     end
 
@@ -141,7 +194,7 @@ RSpec.describe Onboarding::ReplyService, type: :service do
       result = reply("I farm 12 hectares")
 
       lines = I18n.t("onboarding.continuations.welcome", locale: :en)
-      expect(result.value).to include(assistant_text: lines[0], degraded: true, refusal: false, topic: "welcome")
+      expect(result.value).to include(assistant_text: lines[0], degraded: true, refusal: false, topic: "welcome", applied: nil)
       session.reload
       expect(session.pending_message).to eq("I farm 12 hectares")
       expect(session.fallbacks_count).to eq(1)
@@ -206,9 +259,9 @@ RSpec.describe Onboarding::ReplyService, type: :service do
 
       result = reply
 
-      transition = I18n.t("onboarding.transitions.location", locale: :en)
-      expect(result.value).to include(topic: "location", topic_complete: true, transition: transition, progress: { index: 2, total: 8 }, completed: false)
-      expect(session.reload.topic).to eq("location")
+      transition = I18n.t("onboarding.transitions.crops", locale: :en)
+      expect(result.value).to include(topic: "crops", topic_complete: true, transition: transition, progress: { index: 2, total: 5 }, completed: false)
+      expect(session.reload.topic).to eq("crops")
       expect(session.transcript.last["text"]).to eq("#{draft.value['response_text']}\n#{transition}")
     end
 
@@ -220,7 +273,7 @@ RSpec.describe Onboarding::ReplyService, type: :service do
 
       result = reply("yes, that is right")
 
-      expect(result.value).to include(topic: "summary", completed: true, transition: nil, progress: { index: 8, total: 8 })
+      expect(result.value).to include(topic: "summary", completed: true, transition: nil, applied: nil, progress: { index: 5, total: 5 })
       expect(session.reload).to be_completed
       expect(user.farmer_profile.reload.segment).to eq("smallholder_subsistence")
       expect(session.transcript.last["text"]).to eq("All set, Ana.")
@@ -228,37 +281,43 @@ RSpec.describe Onboarding::ReplyService, type: :service do
   end
 
   describe "the pin" do
-    it "merges browser coordinates as a confirmed geolocation pin" do
+    let(:field) { user.farms.first.fields.first }
+
+    it "writes browser coordinates as a confirmed geolocation pin" do
       result = reply("here I am", coords: { latitude: "9.934", longitude: -84.08 })
 
-      expect(result.value[:proposal]["field"]).to eq(
-        "latitude" => 9.934, "longitude" => -84.08, "location_confidence" => "confirmed", "location_source" => "geolocation"
+      expect(result.value[:applied]).to include(
+        "field.latitude" => 9.934, "field.longitude" => -84.08, "field.location_confidence" => "confirmed", "field.location_source" => "geolocation"
       )
+      expect(field.reload).to have_attributes(latitude: 9.934, longitude: -84.08, location_confidence: "confirmed", location_source: "geolocation")
     end
 
-    it "merges a confident location guess as an approximate assistant pin" do
+    it "writes a confident location guess as an approximate assistant pin" do
       guess = { "latitude" => 9.9, "longitude" => -84.1, "label" => "Cartago, Costa Rica", "confidence" => "medium" }
       allow(Onboarding::DraftReplyService).to receive(:call).and_return(Success(draft.value.merge("location_guess" => guess, "updates" => { "field" => { "area" => 3, "latitude" => 50 } })))
 
       result = reply("near Cartago")
 
-      expect(result.value[:proposal]["field"]).to eq(
-        "area" => 3, "latitude" => 9.9, "longitude" => -84.1, "place_label" => "Cartago, Costa Rica",
-        "location_confidence" => "approximate", "location_source" => "assistant"
+      expect(result.value[:applied]).to eq(
+        "field.area" => 3, "field.latitude" => 9.9, "field.longitude" => -84.1, "field.place_label" => "Cartago, Costa Rica",
+        "field.location_confidence" => "approximate", "field.location_source" => "assistant"
       )
+      expect(field.reload).to have_attributes(area: 3, latitude: 9.9, place_label: "Cartago, Costa Rica", location_source: "assistant")
     end
 
     it "ignores a low-confidence guess and out-of-range coordinates" do
       allow(Onboarding::DraftReplyService).to receive(:call).and_return(Success(draft.value.merge("location_guess" => { "latitude" => 9.9, "longitude" => -84.1, "confidence" => "low" })))
 
-      expect(reply("somewhere", coords: { latitude: 120, longitude: 0 }).value[:proposal]).not_to have_key("field")
+      applied = reply("somewhere", coords: { latitude: 120, longitude: 0 }).value[:applied]
+      expect(applied.keys).to all(start_with("profile."))
+      expect(field.reload.latitude).to be_nil
     end
 
     it "prefers the browser pin over a guess" do
       allow(Onboarding::DraftReplyService).to receive(:call).and_return(Success(draft.value.merge("location_guess" => { "latitude" => 1, "longitude" => 1, "confidence" => "high" })))
 
-      field = reply("here", coords: { latitude: 9.9, longitude: -84.1 }).value[:proposal]["field"]
-      expect(field).to include("latitude" => 9.9, "location_source" => "geolocation")
+      applied = reply("here", coords: { latitude: 9.9, longitude: -84.1 }).value[:applied]
+      expect(applied).to include("field.latitude" => 9.9, "field.location_source" => "geolocation")
     end
   end
 

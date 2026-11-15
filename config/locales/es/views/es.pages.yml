@@ -2,103 +2,104 @@ es:
   pages:
     home:
       title: "%{app_name}"
-      nav_label: Sitio
-      tagline: Tu asistente inteligente de cultivo
-      headline: Planea tu rotación con los datos de tu propio campo.
-      lede: Marca un punto. %{app_name} lee el suelo, el clima y el historial de cultivos y compara rotaciones lado a lado. La decisión sigue siendo tuya.
-      sign_in: Iniciar sesión
-      sign_up: Crear una cuenta
-      get_the_app: Descargar la app
-      open_app: Continuar con %{app_name}
-      take_the_tour: Mira cómo funciona
-      scroll_cue: Desplázate para ver cómo funciona
-      preview_notice: Este recorrido usa datos de ejemplo de un campo en Iowa.
-      preview_notice_link: Empieza con tu propio campo.
-      sample_pill: Datos de ejemplo
-      tour_label: Cómo funciona
-      tour_step_label: 'Paso %{number}: %{title}'
-      kicker: Paso %{number} de %{total}
-      next: 'Siguiente: %{title}'
-      finish: Empieza con tu propio campo
+      nav_label: "Sitio"
+      tagline: "Tu asistente inteligente de cultivo"
+      headline: "Planea tu rotación con los datos de tu propio campo."
+      lede: "Marca un punto. %{app_name} lee el suelo, el clima y el historial de cultivos y compara rotaciones lado a lado. La decisión sigue siendo tuya."
+      sign_in: "Iniciar sesión"
+      sign_up: "Crear una cuenta"
+      get_the_app: "Descargar la app"
+      open_app: "Continuar con %{app_name}"
+      find_my_field: "Encontrar mi campo"
+      take_the_tour: "Mira cómo funciona"
+      scroll_cue: "Desplázate para ver cómo funciona"
+      preview_notice: "Este recorrido usa datos de ejemplo de un campo en Iowa."
+      preview_notice_link: "Empieza con tu propio campo."
+      sample_pill: "Datos de ejemplo"
+      tour_label: "Cómo funciona"
+      tour_step_label: "Paso %{number}: %{title}"
+      kicker: "Paso %{number} de %{total}"
+      next: "Siguiente: %{title}"
+      finish: "Empieza con tu propio campo"
       steps:
         location:
-          title: Marca un punto en tu campo
-          body: Toca donde cultivas. Eso es toda la configuración.
-          phone_title: Agregar un campo
-          search: Busca o toca el mapa
-          place: Cerca de Ames, Iowa
+          title: "Marca un punto en tu campo"
+          body: "Toca donde cultivas. Eso es toda la configuración."
+          phone_title: "Agregar un campo"
+          search: "Busca o toca el mapa"
+          place: "Cerca de Ames, Iowa"
           coords: "%{lat}, %{lon}"
-          cta: Usar este lugar
+          cta: "Usar este lugar"
         soil:
-          title: El suelo, ya completado
-          body: La serie, la textura, la materia orgánica, el drenaje y la pendiente vienen del estudio público de suelos. Cambia lo que conozcas mejor.
-          phone_title: Perfil del suelo
-          series_label: Serie de suelo
-          series: Clarion loam
-          drainage_label: Drenaje
-          drainage: Bien drenado
-          om: Materia orgánica
+          title: "El suelo, ya completado"
+          body: "La serie, la textura, la materia orgánica, el drenaje y la pendiente vienen del estudio público de suelos. Cambia lo que conozcas mejor."
+          phone_title: "Perfil del suelo"
+          series_label: "Serie de suelo"
+          series: "Clarion loam"
+          drainage_label: "Drenaje"
+          drainage: "Bien drenado"
+          om: "Materia orgánica"
           om_value: "%{value}%"
-          texture: Textura
-          texture_value: Arena %{sand}%, arcilla %{clay}%
-          awc: Retención de agua
+          texture: "Textura"
+          texture_value: "Arena %{sand}%, arcilla %{clay}%"
+          awc: "Retención de agua"
           awc_value: "%{value} in/in"
-          slope: Pendiente
+          slope: "Pendiente"
           slope_value: "%{value}%"
-          group: Grupo hidrológico
-          group_value: Grupo %{value}
-          source: Del estudio de suelos del USDA
+          group: "Grupo hidrológico"
+          group_value: "Grupo %{value}"
+          source: "Del estudio de suelos del USDA"
         crops:
-          title: Tu historial de cultivos, ya listo
-          body: Los mapas satelitales de cultivos completan los últimos seis años. Confirma o corrige cada uno. Tu respuesta manda.
-          phone_title: Historial de cultivos
-          corn: Maíz
-          soybeans: Soya
-          pattern: Maíz y soya, alternando
-          confirm: Está bien
-          edit: Cambiar un año
+          title: "Tu historial de cultivos, ya listo"
+          body: "Los mapas satelitales de cultivos completan los últimos seis años. Confirma o corrige cada uno. Tu respuesta manda."
+          phone_title: "Historial de cultivos"
+          corn: "Maíz"
+          soybeans: "Soya"
+          pattern: "Maíz y soya, alternando"
+          confirm: "Está bien"
+          edit: "Cambiar un año"
         compare:
-          title: Tres caminos, lado a lado
-          body: Tu rotación actual y dos alternativas, cada una con la evidencia, los beneficios, los vacíos y los riesgos.
-          phone_title: Opciones de rotación
-          evidence: Evidencia de este campo
+          title: "Tres caminos, lado a lado"
+          body: "Tu rotación actual y dos alternativas, cada una con la evidencia, los beneficios, los vacíos y los riesgos."
+          phone_title: "Opciones de rotación"
+          evidence: "Evidencia de este campo"
           frost: "%{days} días de helada"
           gdd: "%{value} grados día de crecimiento"
           heat: "%{days} días de estrés por calor"
           rain: "%{mm} mm de lluvia"
-          wetness: Humedad de la zona radicular %{value}
-          why: Por qué
-          risk: Riesgo a revisar
-          current: Seguir con maíz y soya
-          current_why: Rendimientos y mercados conocidos.
-          current_risk: La presión del gusano de la raíz crece con el tiempo.
-          small_grain: Agregar un grano pequeño
-          small_grain_why: La avena rompe el ciclo de plagas y cubre la primavera.
-          small_grain_risk: Un año de menor ingreso. Revisa los compradores locales.
-          cover: Agregar un cultivo de cobertura
-          cover_why: Cubre los meses de suelo desnudo y protege la pendiente.
-          cover_risk: Costo de semilla y una ventana de otoño ajustada.
+          wetness: "Humedad de la zona radicular %{value}"
+          why: "Por qué"
+          risk: "Riesgo a revisar"
+          current: "Seguir con maíz y soya"
+          current_why: "Rendimientos y mercados conocidos."
+          current_risk: "La presión del gusano de la raíz crece con el tiempo."
+          small_grain: "Agregar un grano pequeño"
+          small_grain_why: "La avena rompe el ciclo de plagas y cubre la primavera."
+          small_grain_risk: "Un año de menor ingreso. Revisa los compradores locales."
+          cover: "Agregar un cultivo de cobertura"
+          cover_why: "Cubre los meses de suelo desnudo y protege la pendiente."
+          cover_risk: "Costo de semilla y una ventana de otoño ajustada."
         alerts:
-          title: Un aviso en el momento justo
-          body: Helada en camino, una ventana de suelo desnudo, el suelo secándose. Una nota breve en tu teléfono cuando importa.
-          phone_title: Avisos
-          frost: Helada probable el jueves por la noche
-          frost_body: Cubre las plantas jóvenes o espera para sembrar.
-          bare: Campo desnudo por seis semanas
-          bare_body: Un cultivo de cobertura cabría en esta ventana.
-          moisture: La zona radicular se está secando
-          moisture_body: La humedad bajó a %{value} esta semana.
-          now: Ahora
-          earlier: Antes
+          title: "Un aviso en el momento justo"
+          body: "Helada en camino, una ventana de suelo desnudo, el suelo secándose. Una nota breve en tu teléfono cuando importa."
+          phone_title: "Avisos"
+          frost: "Helada probable el jueves por la noche"
+          frost_body: "Cubre las plantas jóvenes o espera para sembrar."
+          bare: "Campo desnudo por seis semanas"
+          bare_body: "Un cultivo de cobertura cabría en esta ventana."
+          moisture: "La zona radicular se está secando"
+          moisture_body: "La humedad bajó a %{value} esta semana."
+          now: "Ahora"
+          earlier: "Antes"
       capabilities:
-        kicker: También en tu teléfono
-        title: Llévalo contigo
-        body: 'La app web funciona en cualquier navegador actual. Las apps para teléfono agregan:'
-        passkey: Entra con tu cara o tu huella. Sin contraseñas.
-        push: Avisos en tu teléfono cuando cambian las condiciones
-        siri: Atajos de Siri para preguntas rápidas sobre tus campos
-        device: Tus campos y notas, guardados en tu dispositivo y en tu cuenta
-        data: Datos de suelo, clima y satélite en vivo para tu propia ubicación
+        kicker: "También en tu teléfono"
+        title: "Llévalo contigo"
+        body: "La app web funciona en cualquier navegador actual. Las apps para teléfono agregan:"
+        passkey: "Entra con tu cara o tu huella. Sin contraseñas."
+        push: "Avisos en tu teléfono cuando cambian las condiciones"
+        siri: "Atajos de Siri para preguntas rápidas sobre tus campos"
+        device: "Tus campos y notas, guardados en tu dispositivo y en tu cuenta"
+        data: "Datos de suelo, clima y satélite en vivo para tu propia ubicación"
         footnote: "%{app_name} apoya tu criterio y a tus expertos locales. Nunca los reemplaza."
-      get_the_app_title: Descargar la app
-      get_the_app_body: Llegará a iPhone y Android. Código abierto, así que cualquiera puede leer cómo funciona.
+      get_the_app_title: "Descargar la app"
+      get_the_app_body: "Llegará a iPhone y Android. Código abierto, así que cualquiera puede leer cómo funciona."

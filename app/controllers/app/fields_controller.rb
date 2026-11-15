@@ -2,7 +2,8 @@ module App
   # My fields (menu section 1): each field with what the farmer said and what
   # the public data sources returned for its pin; one form to edit a field,
   # one button to take every source suggestion, a form to add a field, and
-  # where every datum comes from.
+  # where every datum comes from. The landing's field finder also PATCHes
+  # update with its flat keys (Fields::SaveSetupService, as at sign-up).
   class FieldsController < BaseController
     include FarmScreen
 
@@ -18,6 +19,8 @@ module App
     end
 
     def update
+      return save_setup unless params.key?(:values) || params.key?(:confirm)
+
       case Fields::SaveService.call(user: Current.user, subject: @field.key, values: form_values(:field), confirm: form_confirmations)
       in Result::Success
         redirect_to app_field_path(@field.key), notice: t(".saved"), status: :see_other
@@ -58,6 +61,15 @@ module App
     end
 
     private
+
+    def save_setup
+      case Fields::SaveSetupService.call(user: Current.user, attributes: params.permit(*Fields::SaveSetupService::KEYS).to_h)
+      in Result::Success
+        redirect_to app_root_path, notice: t(".saved"), status: :see_other
+      in Result::Failure(error)
+        redirect_back fallback_location: root_path, alert: extract_error_message(error), status: :see_other
+      end
+    end
 
     def set_field
       @field = @farm.field(params[:id]) or raise ActiveRecord::RecordNotFound

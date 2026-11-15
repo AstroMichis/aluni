@@ -18,15 +18,15 @@
         <% crop = field.current_crop %>
         <% season = Weather::Season.for(field.observation("nasa_power")) %>
         <li class="crop-card<%= " crop-card--empty" unless crop %>">
-          <%= link_to app_field_path(field.key), class: "crop-card__plot", aria: { label: field_name(field) } do %>
+          <%= link_to app_field_path(field.key), class: "crop-card__plot", aria: { label: plot_name(field) } do %>
             <%= render "app/fields/plot", crop: crop, size: "sm", id: "plot-crop-#{field.key}" %>
           <% end %>
           <div class="crop-card__body">
-            <p class="crop-card__field"><%= field_name(field) %> · <%= field_area(field) %></p>
+            <p class="crop-card__field"><%= plot_name(field) %> · <%= field_area(field) %></p>
             <h2 class="crop-card__crop"><%= crop ? crop_name(crop) : t("app.fields.index.no_crop") %></h2>
             <% if crop %>
               <p class="crop-card__meta">
-                <% if (family = Crops::Catalog.family(crop)) %><span class="tag"><%= t("app.crops.families.#{family}") %></span><% end %>
+                <% if (family = Crops::Agronomy.family(crop)) %><span class="tag"><%= t("app.crops.families.#{family}") %></span><% end %>
                 <% if crop.planting_month && crop.harvest_month %>
                   <span class="tag"><%= t(".season", from: t("date.month_names")[crop.planting_month], to: t("date.month_names")[crop.harvest_month]) %></span>
                 <% end %>

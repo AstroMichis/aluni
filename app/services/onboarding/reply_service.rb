@@ -1,15 +1,19 @@
 module Onboarding
-  # One turn of the onboarding chat. Stores the farmer's (redacted) message,
+  # One turn of the Ask Aluni chat. Stores the farmer's (redacted) message,
   # drafts Aluni's answer with Gemini while an intent classifier runs beside
-  # it, stages the facts the answer carried for the confirm card, moves the
-  # topic forward and persists the transcript. Only the guards are Failures
-  # (:blocked, :empty); every Gemini problem is a Success in character, either
-  # a refusal (refusal: true) or a continuation line (degraded: true), so the
-  # person waiting on the page always gets a bubble.
+  # it, writes the facts the answer carried right away (the toast offers an
+  # Undo), moves the topic forward and persists the transcript. Only the
+  # guards are Failures (:blocked, :empty); every Gemini problem is a Success
+  # in character, either a refusal (refusal: true) or a continuation line
+  # (degraded: true), so the person waiting on the page always gets a bubble.
   #
   #   Onboarding::ReplyService.call(user:, text:, locale:, coords: { latitude:, longitude: })
-  #   => Success(user_text:, assistant_text:, transition:, topic:, topic_complete:, proposal:,
+  #   => Success(user_text:, assistant_text:, transition:, topic:, topic_complete:, proposal:, applied:,
   #              progress: { index:, total: }, completed:, degraded:, refusal:)
+  #
+  # applied is the hash ApplyProposalService wrote ({ "field.area" => 12.5, ... })
+  # or nil; proposal is nil after a successful apply and holds the staged facts
+  # only when the apply failed (they wait for the next turn).
   class ReplyService < ApplicationService
     USER = "user"
     MODEL = "model"
@@ -157,8 +161,30 @@ module Onboarding
       end
       text = draft["response_text"].to_s.strip
       finish(text, transition)
+      applied = apply_proposal
       complete_onboarding if completing
-      payload(assistant_text: text, transition: transition, topic_complete: complete)
+      payload(assistant_text: text, transition: transition, topic_complete: complete, applied: applied)
+    end
+
+    # The staged facts are written right away; the toast offers an Undo from
+    # session.last_applied. A Failure is logged and leaves the proposal staged
+    # for the next turn; nothing here ever halts the turn.
+    def apply_proposal
+      return nil if @session.proposal.blank?
+
+      case ApplyProposalService.call(user: @user, accepted: Allowlist.keys_for(@session.proposal))
+      in Result::Success({ applied:, before: })
+        return nil if applied.blank?
+
+        @session.update!(last_applied: { "before" => before, "applied" => applied, "at" => Time.current.iso8601 })
+        applied
+      in Result::Failure(error)
+        Rails.logger.error("[Onboarding::ReplyService] could not apply the proposal, keeping it staged: #{error.inspect}")
+        nil
+      end
+    rescue StandardError => e
+      Rails.logger.error("[Onboarding::ReplyService] apply raised, keeping the proposal staged: #{e.class}: #{e.message}")
+      nil
     end
 
     def complete_onboarding
@@ -234,7 +260,7 @@ module Onboarding
       @session.save!
     end
 
-    def payload(assistant_text:, transition: nil, topic_complete: false, degraded: false, refusal: false)
+    def payload(assistant_text:, transition: nil, topic_complete: false, applied: nil, degraded: false, refusal: false)
       topic = @session&.topic || Topics.first
       {
         user_text: @redacted,
@@ -243,6 +269,7 @@ module Onboarding
         topic: topic,
         topic_complete: topic_complete,
         proposal: @session&.proposal.presence,
+        applied: applied,
         progress: { index: (Topics.index(topic) || 0) + 1, total: Topics.size },
         completed: @session&.completed? || false,
         degraded: degraded,

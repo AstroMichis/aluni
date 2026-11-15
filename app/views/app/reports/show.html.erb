@@ -64,7 +64,7 @@
             <% @farm.fields.each do |field| %>
               <% findings = Crops::RotationCheck.new(field.seasons).findings %>
               <tr>
-                <th scope="row"><%= link_to field_name(field), app_field_path(field.key) %></th>
+                <th scope="row"><%= link_to plot_name(field), app_field_path(field.key) %></th>
                 <td><%= field.empty? ? t("app.fields.index.no_crop") : crop_name(field.current_crop) %></td>
                 <td><%= field_area(field) %></td>
                 <td><%= field.plan ? crop_name(field.plan) : t(".table.no_plan") %></td>
