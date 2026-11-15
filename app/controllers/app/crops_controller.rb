@@ -17,7 +17,7 @@ module App
     end
 
     def plan
-      save_and_return Crops::PlanService.call(user: Current.user, field: params[:field], crop: params[:crop]),
+      save_and_return Crops::PlanService.call(user: Current.user, field: params[:field], crop: params[:crop], zone: params[:zone]),
                       fallback: rotation_app_crops_path
     end
   end

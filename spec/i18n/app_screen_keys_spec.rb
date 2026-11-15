@@ -3,7 +3,7 @@ require "rails_helper"
 # Every literal t() key in the menu sections' views (absolute or lazy) exists
 # in both locales, so a renamed or dropped key fails here, not on screen.
 RSpec.describe "Menu section copy" do
-  VIEWS = Dir[Rails.root.join("app/views/app/{fields,farms,crops,weather,team,reports,home,rotations}/**/*.erb")].freeze
+  VIEWS = Dir[Rails.root.join("app/views/app/{fields,farms,crops,weather,team,reports,home,rotations,field_layouts}/**/*.erb")].freeze
 
   def scope_for(file)
     file.delete_prefix("#{Rails.root}/app/views/").sub(/\.html\.erb\z/, "").sub(%r{/_?([^/]+)\z}) { "/#{$1}" }.tr("/", ".")

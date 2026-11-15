@@ -15,6 +15,7 @@
 .dial-page {
   display: grid;
   grid-template-rows: auto 1fr;
+  grid-template-columns: minmax(0, 1fr);
   min-height: 100dvh;
   background:
     radial-gradient(circle at 50% 55%, var(--color-bg-secondary) 0%, transparent 62%),
@@ -25,8 +26,9 @@
 .dial-page__bar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap; /* below 360 px the tools take a second line */
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
   padding-top: max(var(--space-3), env(safe-area-inset-top));
 }
@@ -40,30 +42,40 @@
   letter-spacing: var(--tracking-tight);
 }
 
-/* Account: language, theme, the chat, passkeys and sign out, folded on phones. */
-.dial-page__account { position: relative; }
-.dial-page__account > summary { list-style: none; cursor: pointer; }
-.dial-page__account > summary::-webkit-details-marker { display: none; }
-.dial-page__account-menu {
-  position: absolute;
-  right: 0;
-  top: calc(100% + var(--space-2));
-  z-index: var(--z-dropdown);
-  display: grid;
-  gap: var(--space-2);
-  min-width: 220px;
-  padding: var(--space-3);
-  border-radius: var(--radius-lg);
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border-default);
-  box-shadow: var(--shadow-lg);
+/* Tools: language, theme, passkeys and sign out, all in plain sight (no
+   folded menu). Icon buttons with a 44 px target; the label is aria-label. */
+.dial-page__tools {
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
-.dial-page__account-menu .btn, .dial-page__account-menu form { width: 100%; justify-content: flex-start; }
+/* Narrow phones: a tighter language toggle so the bar fits 360 px. */
+.dial-page__tools .language-toggle { gap: var(--space-1); margin-right: var(--space-1); }
+.dial-page__tools .language-toggle__option { padding-inline: var(--space-2); }
+.dial-page__sign-out { display: contents; }
+
+.dial-tool {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-base), color var(--transition-base), transform var(--transition-base);
+}
+.dial-tool svg { width: 20px; height: 20px; }
+.dial-tool:hover { color: var(--color-text-primary); background: var(--color-bg-hover); }
+.dial-tool:active { transform: scale(0.92); }
 
 .dial-page__main {
   display: grid;
   place-items: center;
-  padding: var(--space-2) var(--space-4) var(--space-8);
+  /* Room at the bottom so Ask Aluni never sits on the last option. */
+  padding: var(--space-2) var(--space-4) calc(var(--space-8) + 56px);
 }
 
 .dial-page__stage {
@@ -97,6 +109,31 @@
   max-width: 44ch;
 }
 .dial-page__plan:hover { box-shadow: var(--shadow-glow); }
+
+/* Next up: one-tap shortcuts to what the farm still needs (MenuHelper#home_shortcuts). */
+.dial-page__shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  animation: dial-rise 600ms 300ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.dial-page__shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-default);
+  background: color-mix(in srgb, var(--color-bg-secondary) 80%, transparent);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  text-align: left;
+}
+.dial-page__shortcut svg { flex-shrink: 0; width: 18px; height: 18px; color: var(--color-accent-text); }
+.dial-page__shortcut:hover { color: var(--color-text-primary); background: var(--color-bg-hover); }
+.dial-page__shortcut--suggestions svg { color: var(--color-info); }
 .dial-page__plan-title { font-weight: 600; color: var(--color-accent-text); }
 .dial-page__plan-body { font-size: var(--text-sm); color: var(--color-text-secondary); }
 
@@ -107,21 +144,25 @@
 
 .dial-page__hint {
   max-width: 40ch;
+  transition: opacity var(--transition-slow);
   text-align: center;
   font-size: var(--text-sm);
   color: var(--color-text-tertiary);
   animation: dial-rise 600ms 700ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
 }
 
+/* Once the wheel has been used, the hint has done its job. */
+.dial-page--used .dial-page__hint { opacity: 0; }
+
 /* The wheel: a square sized to the screen, the SVG fills it and the hub sits
-   on top in the middle. touch-action: none so a finger turns it instead of
-   scrolling the page. */
+   on top in the middle. touch-action: pan-y so a vertical swipe still
+   scrolls the page; a sideways swipe turns the wheel (radial_menu_controller). */
 .dial {
   position: relative;
   width: min(100%, 50dvh, 520px);
   aspect-ratio: 1;
   container-type: inline-size;
-  touch-action: none;
+  touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -296,6 +337,101 @@
   .dial__hub:hover .dial__hub-open svg { transform: translateX(3px); }
 }
 
+/* Pending dot on a wedge (MenuHelper#menu_badges): a count in the section's
+   tint with a soft pulse, so the eye lands where there is work waiting. */
+.dial__badge { pointer-events: none; }
+.dial__badge-dot { fill: var(--tint); stroke: var(--color-bg-primary); stroke-width: 1.2; }
+.dial__badge-pulse {
+  fill: var(--tint);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: dial-pulse 2.4s 1.4s ease-out infinite;
+}
+.dial__badge-text {
+  fill: var(--color-bg-primary);
+  font-family: var(--font-mono);
+  font-size: 6px;
+  font-weight: 700;
+}
+
+/* Steps: arrows either side and a dot per section, the no-spin way round.
+   The selected dot stretches into a pill in its section's tint. */
+.dial-steps {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: calc(var(--space-2) * -1);
+  animation: dial-rise 600ms 500ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+.dial-steps__arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: border-color var(--transition-base), transform var(--transition-base), background var(--transition-base);
+}
+.dial-steps__arrow svg { width: 20px; height: 20px; }
+.dial-steps__arrow:hover { border-color: var(--tint); background: color-mix(in srgb, var(--tint) 10%, var(--color-bg-secondary)); }
+.dial-steps__arrow:active { transform: scale(0.9); }
+
+.dial-steps__dots { display: flex; align-items: center; }
+
+/* The visible dot is small; the button around it keeps a larger target. */
+.dial-steps__dot {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.dial-steps__dot::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--tint) 45%, var(--color-border-default));
+  transition: width var(--transition-slow), background var(--transition-base);
+}
+.dial-steps__dot[aria-current="true"]::before { width: 22px; background: var(--tint); }
+.dial-steps__dot:hover::before { background: var(--tint); }
+
+/* Ask Aluni: the mascot waving from the corner, one tap into the chat. The
+   label joins from 641 px. */
+.dial-ask {
+  position: fixed;
+  right: var(--space-3);
+  bottom: max(var(--space-3), env(safe-area-inset-bottom));
+  z-index: var(--z-sticky);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  padding: var(--space-1);
+  border-radius: var(--radius-full);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 45%, var(--color-border-default));
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  animation: dial-rise 600ms 900ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+.dial-ask:hover { color: var(--color-text-primary); box-shadow: var(--shadow-glow); transform: translateY(-2px); }
+.dial-ask:active { transform: scale(0.96); }
+.dial-ask .mascot-avatar { animation: dial-wave 4s 2s ease-in-out infinite; transform-origin: 50% 90%; }
+.dial-ask__label { display: none; padding-right: var(--space-2); }
+
 /* Options: the selected section's screens, one tap from the wheel. A
    compact list on phones, cards side by side from 641 px. */
 .dial-options {
@@ -391,8 +527,27 @@
   from { opacity: 0; transform: scale(0.6); }
 }
 
+@keyframes dial-pulse {
+  0% { opacity: 0.55; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(2.2); }
+}
+
+@keyframes dial-wave {
+  0%, 80%, 100% { transform: rotate(0); }
+  85% { transform: rotate(-8deg); }
+  90% { transform: rotate(6deg); }
+  95% { transform: rotate(-3deg); }
+}
+
 @keyframes dial-sector-in {
   from { opacity: 0; transform: translateY(18px); }
+}
+
+@media (min-width: 400px) {
+  .dial-page__tools { gap: var(--space-1); }
+  .dial-page__tools .language-toggle { gap: var(--space-2); }
+  .dial-page__tools .language-toggle__option { padding-inline: var(--space-3); }
+  .dial-tool { width: 44px; }
 }
 
 @media (min-width: 641px) {
@@ -401,10 +556,44 @@
   .dial-options__list { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
   .dial-option { align-items: start; padding: var(--space-4); }
   .dial-option__body { display: block; }
+  .dial-ask { right: var(--space-6); bottom: var(--space-6); padding: var(--space-2); }
+  .dial-steps { gap: var(--space-3); }
+  .dial-steps__dot { width: 32px; }
+  .dial-ask__label { display: inline; }
+}
+
+/* From 1024 px the wheel stands on the left and everything it leads to sits
+   beside it, so the whole menu fits one screen: greeting and plan, the
+   section's options as a list, then what to do next. */
+@media (min-width: 1024px) {
+  .dial-page__stage {
+    display: grid;
+    grid-template-columns: auto minmax(0, 28rem);
+    grid-template-areas:
+      "wheel intro"
+      "wheel options"
+      "wheel next"
+      "steps hint";
+    grid-template-rows: auto auto 1fr auto;
+    column-gap: var(--space-12);
+    row-gap: var(--space-5);
+    width: auto;
+    align-items: start;
+  }
+  .dial-page__intro { grid-area: intro; text-align: left; }
+  .dial { grid-area: wheel; width: min(60dvh, 560px); align-self: center; }
+  .dial-steps { grid-area: steps; justify-self: center; margin-top: 0; }
+  .dial-options { grid-area: options; width: 100%; }
+  .dial-options__list { grid-template-columns: 1fr; }
+  .dial-option { align-items: center; padding: var(--space-3) var(--space-4); }
+  .dial-page__shortcuts { grid-area: next; justify-content: flex-start; }
+  .dial-page__hint { grid-area: hint; text-align: left; align-self: center; }
 }
 
 @media (forced-colors: active) {
   .dial__wedge, .dial__wedge-lit { stroke: CanvasText; }
   .dial__sector--selected .dial__wedge { stroke: Highlight; stroke-width: 2; }
-  .dial__hub, .dial-option { border: 1px solid CanvasText; }
+  .dial__hub, .dial-option, .dial-steps__arrow { border: 1px solid CanvasText; }
+  .dial-steps__dot::before { background: CanvasText; }
+  .dial-steps__dot[aria-current="true"]::before { background: Highlight; }
 }

@@ -117,8 +117,12 @@ module Fields
       cleared.select { |c| c.start_with?("#{prefix}.") }.to_h { |c| [ c.split(".").last, [] ] }
     end
 
+    # A season split between crops is the planner's (Field#season_slot): the
+    # form only touches it for a crop it already has.
     def save_crop(record, row)
-      crop = record.field_crops.find_or_initialize_by(season_year: row["season_year"], role: row["role"])
+      crop = record.season_slot(row["season_year"], row["role"], FieldCrop.key_for(row["crop_name"], row["scientific_name"]))
+      return unless crop
+
       crop.assign_attributes(row.except("season_year", "role"))
       return unless crop.changed?
 

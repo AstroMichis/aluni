@@ -1,0 +1,71 @@
+es:
+  app:
+    crops:
+      show:
+        part: "%{area} de %{total}"
+    rotations:
+      show:
+        zones: "Partes del terreno"
+        zone_history: "Antes: %{crops}"
+    fields:
+      show:
+        planting:
+          title: "Siembra %{year}"
+          empty: "Todavía no hay nada sembrado esta temporada. Reparte el terreno entre los cultivos que quieras."
+          edit: "Distribuir siembra"
+    field_layouts:
+      units:
+        hectares: "ha"
+        acres: "acres"
+      map:
+        cell: "Fila %{row}, columna %{col}: %{crop}"
+        empty: "sin sembrar"
+        empty_label: "Sin sembrar"
+      row:
+        crop: "Cultivo"
+        amount: "Área (%{unit})"
+        slider: "Área"
+        dates: "Meses de siembra y cosecha"
+        planting: "Siembra"
+        harvest: "Cosecha"
+        no_month: "Sin definir"
+        remove: "Quitar"
+      edit:
+        title: "Siembra %{year} · %{name} · %{app_name}"
+        eyebrow: "Distribuir siembra · %{area}"
+        headline: "Cómo repartes el terreno en %{year}"
+        lede: "Dale a cada cultivo su área, o elige un cultivo y pinta el mapa con el dedo o el mouse. Puedes dejar parte del terreno sin sembrar."
+        seasons: "Temporadas"
+        season_kinds:
+          past: "Anterior"
+          current: "Esta temporada"
+          next: "Próxima"
+        crops_title: "Cultivos"
+        add: "Agregar un cultivo"
+        unnamed: "Cultivo %{number}"
+        total:
+          left: "Sin sembrar: %{area} (%{percent})"
+          full: "Todo el terreno está sembrado."
+          over: "Los cultivos suman %{area} más que el terreno."
+          server: "Sin sembrar: %{area}"
+        shortcuts:
+          title: "Atajos"
+          equal: "Partes iguales"
+          copy: "Igual que %{year}"
+          swap: "Intercambiar los cultivos de %{year}"
+        map_title: "Mapa del terreno"
+        map_label: "Mapa de %{name} en %{year}, 10 por 10 celdas"
+        map_hint: "Cada celda es el 1% del terreno. Elige un cultivo o el borrador y toca o arrastra sobre las celdas. Con teclado, muévete con las flechas y pulsa Espacio."
+        brushes: "Pintar con"
+        eraser: "Borrador"
+        save: "Guardar la siembra"
+      update:
+        saved: "Siembra %{year} guardada."
+        errors:
+          year: "Esa temporada no se puede planear aquí."
+          too_many: "Hasta 6 cultivos por temporada."
+          duplicate: "Cada cultivo puede aparecer una vez por temporada; dale más área."
+          share: "Dale un área a cada cultivo."
+          over: "Los cultivos suman más que el terreno."
+          overlap: "Dos cultivos no pueden compartir una celda del mapa."
+          invalid: "No se pudo guardar esa siembra."

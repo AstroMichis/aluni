@@ -1,0 +1,30 @@
+<%# The field map: a season's crops on a 10x10 grid of the field, each crop
+    in its slot's colour and texture (components/crop-layout.css).
+    Locals: crops (the season's FieldCrops, largest first), size ("sm" or
+    "lg"), label (what the map shows, for screen readers), editable (true in
+    the planner: an ARIA grid crop_layout_controller.js paints), highlight
+    (optional cells to stand out, a zone; the rest dims). %>
+<% slots = layout_slots(crops) %>
+<% editable = local_assigns[:editable] %>
+<% side = FieldCrop::GRID_SIDE %>
+<% if editable %>
+  <div class="crop-map crop-map--<%= size %> crop-map--editable" role="grid" aria-label="<%= label %>"
+       aria-describedby="crop-map-hint" data-crop-layout-target="grid"
+       data-action="pointerdown->crop-layout#press pointermove->crop-layout#drag pointerup->crop-layout#lift pointercancel->crop-layout#lift keydown->crop-layout#key">
+    <% side.times do |row| %>
+      <div class="crop-map__row" role="row">
+        <% side.times do |col| %>
+          <% index = (row * side) + col %>
+          <div class="crop-map__cell" role="gridcell" data-crop-layout-target="cell" data-index="<%= index %>"
+               data-slot="<%= slots[index] %>" tabindex="<%= index.zero? ? 0 : -1 %>"
+               aria-label="<%= t("app.field_layouts.map.cell", row: row + 1, col: col + 1, crop: slots[index] ? crop_name(crops[slots[index]]) : t("app.field_layouts.map.empty")) %>"></div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="crop-map crop-map--<%= size %>" role="img" aria-label="<%= label %>">
+    <% highlight = local_assigns[:highlight] %>
+    <% slots.each_with_index do |slot, i| %><span class="crop-map__cell<%= " crop-map__cell--dim" if highlight && !highlight.include?(i) %>" data-slot="<%= slot %>"></span><% end %>
+  </div>
+<% end %>

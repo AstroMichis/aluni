@@ -19,9 +19,9 @@
       <% @farm.fields.each do |field| %>
         <li>
           <%= link_to app_field_path(field.key), class: "field-card" do %>
-            <%= render "app/fields/plot", crop: field.current_crop, size: "sm", id: "plot-card-#{field.key}" %>
+            <%= render "app/fields/plot", crops: field.current_crops, size: "sm", id: "plot-card-#{field.key}" %>
             <span class="field-card__name"><%= plot_name(field) %></span>
-            <span class="field-card__meta"><%= field_area(field) %> · <%= field.empty? ? t(".no_crop") : crop_name(field.current_crop) %></span>
+            <span class="field-card__meta"><%= field_area(field) %> · <%= crop_mix(field) %></span>
             <% unless field.located? %><span class="field-card__flag"><%= t(".no_pin") %></span><% end %>
             <span class="meter" style="--share: <%= progress_share(field) %>" aria-hidden="true"><span class="meter__fill"></span></span>
             <span class="field-card__progress"><%= progress_label(field) %></span>

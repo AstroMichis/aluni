@@ -1,0 +1,29 @@
+es:
+  app:
+    fields:
+      workspace:
+        label: "%{name}: secciones"
+        tabs:
+          summary: "Terreno"
+          rotation: "Rotación"
+          data: "Datos"
+      show:
+        data_title: "Datos del terreno"
+      actions:
+        edit: "Editar"
+        edit_datum: "Editar %{datum}"
+    home:
+      show:
+        shortcuts:
+          title: "Para hoy"
+          add: "Agrega tu primer terreno"
+          suggestions:
+            one: "Revisa 1 sugerencia de %{name}"
+            other: "Revisa %{count} sugerencias de %{name}"
+          todo:
+            one: "Completa 1 dato de %{name}"
+            other: "Completa %{count} datos de %{name}"
+          plan: "Planea %{year} en %{name}"
+          profile:
+            one: "Completa 1 dato de tu finca"
+            other: "Completa %{count} datos de tu finca"

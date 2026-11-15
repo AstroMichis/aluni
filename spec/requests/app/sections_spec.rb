@@ -11,7 +11,8 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include('data-controller="radial-menu"').and include(I18n.t("app.home.show.greeting", name: "Ana"))
-    %w[/en/app/fields /en/app/fields/new /en/app/crops /en/app/weather /en/app/team /en/app/reports/harvest].each do |path|
+    # A farm with one field opens it directly from My fields.
+    %W[/en/app/fields/#{field.id} /en/app/fields/new /en/app/crops /en/app/weather /en/app/team /en/app/reports/harvest].each do |path|
       expect(response.body).to include(%(href="#{path}"))
     end
     expect(response.body).not_to include(I18n.t("app.home.show.soon"))
@@ -43,7 +44,7 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
     expect(response.body).to include(%(href="/en/app?section=weather"))
     expect(response.body).to include('class="section-switch"').and include(%(href="/en/app/team"))
 
-    get edit_app_field_path(field, locale: "en"), headers: native_headers
+    get new_app_field_path(locale: "en"), headers: native_headers
     expect(response.body).not_to include('class="section-switch"')
   end
 
@@ -53,9 +54,13 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
 
     get app_field_path(field, locale: "en"), headers: native_headers
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("Hastings silt loam").and include("USGS 3DEP").and include("gibs.earthdata.nasa.gov")
-    expect(response.body).to include(I18n.t("app.fields.actions.proposal", value: I18n.t("onboarding.values.texture.medium")))
+    expect(response.body).to include("gibs.earthdata.nasa.gov").and match(%r{<turbo-frame[^>]*id="workspace"[^>]*target="_top"})
     expect(response.body).to include(%(href="/en/app/fields/#{field.id}/edit")).and include(I18n.t("app.fields.show.suggestions.confirm_all"))
+
+    get app_field_path(field, locale: "en", tab: "data"), headers: native_headers
+    expect(response.body).to include("Hastings silt loam").and include("USGS 3DEP")
+    expect(response.body).to include(I18n.t("app.fields.actions.proposal", value: I18n.t("onboarding.values.texture.medium")))
+    expect(response.body).to include(%(href="/en/app/fields/#{field.id}/edit?focus=soil_texture#field-soil_texture"))
     expect(response.body).to include(I18n.t("app.fields.data_sources.title")).and include(I18n.t("app.fields.data_sources.states.ok"))
   end
 
@@ -66,7 +71,7 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
 
     patch app_field_path(field, locale: "en"), headers: native_headers,
           params: { values: { irrigation: "drip", soil_depth: "deep" }, confirm: %w[soil_texture] }
-    expect(response).to redirect_to(app_field_path(field, locale: "en"))
+    expect(response).to redirect_to(app_field_path(field, locale: "en", tab: "data"))
     expect(field.reload).to have_attributes(irrigation: "drip", soil: include("depth" => "deep", "texture" => "medium"))
   end
 

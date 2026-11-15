@@ -91,9 +91,12 @@ module Fields
       farm.update!(changes) if changes.any?
     end
 
-    # The crop on the field this season, as the farmer said it.
+    # The crop on the field this season, as the farmer said it (never over a
+    # season the farmer split between crops: Field#season_slot).
     def write_crop(field, crop)
-      row = field.field_crops.find_or_initialize_by(season_year: Date.current.year, role: "main")
+      row = field.season_slot(Date.current.year, "main", FieldCrop.key_for(crop[:crop_name], crop[:scientific_name]))
+      return unless row
+
       row.assign_attributes(crop_name: crop[:crop_name], scientific_name: crop[:scientific_name], source: "farmer")
       row.save!
     end

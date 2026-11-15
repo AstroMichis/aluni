@@ -4,6 +4,6 @@
 <section class="screen__section gap-card">
   <%= render "shared/aluni", message: t("app.weather.no_season.#{state}") %>
   <% if @field %>
-    <%= link_to t("app.weather.no_season.open_field"), app_field_path(@field.key, anchor: state == "needs_pin" ? "group-plot" : "data-sources"), class: "btn btn--secondary btn--sm" %>
+    <%= link_to t("app.weather.no_season.open_field"), app_field_path(@field.key, tab: "data", anchor: state == "needs_pin" ? "group-plot" : "data-sources"), class: "btn btn--secondary btn--sm" %>
   <% end %>
 </section>

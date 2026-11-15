@@ -94,7 +94,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_190316) do
     t.string "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["field_id", "season_year", "role"], name: "index_field_crops_on_field_id_and_season_year_and_role", unique: true
+    t.decimal "share", precision: 5, scale: 4
+    t.integer "cells", default: [], null: false, array: true
+    t.index ["field_id", "season_year", "role", "crop_key"], name: "index_field_crops_on_field_season_role_crop", unique: true
     t.index ["field_id"], name: "index_field_crops_on_field_id"
   end
 

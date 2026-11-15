@@ -21,3 +21,6 @@ pin "@hotwired/hotwire-native-bridge", to: "@hotwired--hotwire-native-bridge.js"
 pin "leaflet", to: "leaflet.js", preload: false
 # Shared helpers for the person's preferences (motion), imported by controllers.
 pin_all_from "app/javascript/preferences", under: "preferences", preload: false
+# The field map's cell layout (app/services/fields/cell_layout.rb mirrored),
+# imported by crop_layout_controller.js.
+pin_all_from "app/javascript/fields", under: "fields", preload: false

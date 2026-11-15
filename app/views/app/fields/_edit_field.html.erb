@@ -3,9 +3,16 @@
 <% cdl = datum.column == "crops.history" && subject.respond_to?(:cdl_proposal) ? subject.cdl_proposal : {} %>
 <% suggestion = reading.state == :to_confirm ? proposal_text(reading) : (cdl.any? ? cdl.sort.map { |y, c| "#{y}: #{c}" }.join(" · ") : nil) %>
 <% suffix = value_label("area_unit", subject.record.area_unit) if datum.key == "area" %>
+<%# A season split between crops is edited in the planner (app/field_layouts), not here. %>
+<% planner = datum.column.to_s.start_with?("crops.current") && subject.respond_to?(:split?) && subject.split? %>
 <div class="edit-field<%= " edit-field--suggested" if suggestion %>" id="field-<%= datum.key %>">
   <span class="edit-field__label"><%= datum_label(datum) %></span>
-  <%= render "app/fields/input", datum: datum, name: "values[#{datum.key}]", current: reading.known? && reading.state != :to_confirm ? reading.value : nil, suffix: suffix %>
+  <% if planner %>
+    <p class="edit-field__planner"><%= crop_mix(subject) %>
+      <%= link_to t("app.fields.show.planting.edit"), edit_app_field_layout_path(subject.key, year: subject.current_season) %></p>
+  <% else %>
+    <%= render "app/fields/input", datum: datum, name: "values[#{datum.key}]", current: reading.known? && reading.state != :to_confirm ? reading.value : nil, suffix: suffix %>
+  <% end %>
   <% if suggestion %>
     <label class="edit-field__suggestion">
       <input type="checkbox" name="confirm[]" value="<%= datum.key %>">

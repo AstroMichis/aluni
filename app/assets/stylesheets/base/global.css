@@ -42,7 +42,17 @@ a:hover { color: var(--color-accent); }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
+
+/* Page changes in the app fade through (Turbo + the View Transitions API,
+   opted in by layouts/_app_head); a screen's bar holds still between them. */
+::view-transition-old(root) { animation: 140ms ease-in both page-out; }
+::view-transition-new(root) { animation: 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both page-in; }
+.screen__bar { view-transition-name: screen-bar; }
+
+@keyframes page-out { to { opacity: 0; } }
+@keyframes page-in { from { opacity: 0; transform: translateY(6px); } }
 
 @media print {
   .landing__nav, .landing__hero-bg, .toast, .app-shell__header { display: none !important; }

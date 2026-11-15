@@ -2,19 +2,29 @@
 <% content_for :title, t(".title", name: name, app_name: t("app_name")) %>
 <% weights = @comparator.weights %>
 
-<div class="screen">
-  <%= render "shared/screen_bar", back_path: app_field_path(@field.key), back_label: t("app.fields.back_to_fields"), title: name %>
-
-  <main id="main" class="screen__body">
+<% content_for :workspace do %>
     <header class="screen__header">
       <p class="text-label screen__eyebrow"><%= t(".eyebrow", from: season_years.first, to: season_years.last) %></p>
       <h1 class="text-display screen__title"><%= t(".headline") %></h1>
       <p class="screen__lede"><%= t(".lede") %></p>
     </header>
 
+    <% zones = planted_zones(@field) %>
+    <% if zones.size > 1 %>
+      <nav class="zone-picker" aria-label="<%= t(".zones") %>">
+        <% season_crops = @field.current_crops %>
+        <% zones.each do |zone| %>
+          <%= link_to app_field_rotation_path(@field.key, zone: zone.index, scenario: (@scenario.key unless @scenario.today?)), class: "zone-picker__link", aria: { current: ("page" if zone.index == @zone.index) }, data: in_workspace do %>
+            <%= render "app/field_layouts/map", crops: season_crops, size: "sm", highlight: zone.cells, label: zone_label(@field, zone) %>
+            <span><strong><%= zone_label(@field, zone) %></strong><%= t(".zone_history", crops: zone.history.values.last(3).map { |c| crop_name(c) }.join(" → ")) %></span>
+          <% end %>
+        <% end %>
+      </nav>
+    <% end %>
+
     <% if !@comparator.ready? %>
       <%= render "shared/aluni", message: t(".not_ready") %>
-      <%= link_to t(".add_crop"), edit_app_field_path(@field.key, anchor: "field-current_crop"), class: "btn btn--primary" %>
+      <%= link_to t(".add_crop"), app_field_path(@field.key, anchor: "planting"), class: "btn btn--primary", data: in_workspace %>
     <% else %>
       <% best = @comparator.best %>
       <% current = @comparator.strategies.first %>
@@ -22,7 +32,7 @@
 
       <%= render "app/fields/vegetation", field: @field %>
       <%= render "app/rotations/scenario", scenario: @scenario %>
-      <% timeline = Rotations::Timeline.new(@field, scenario: @scenario) %>
+      <% timeline = Rotations::Timeline.new(@zone, scenario: @scenario) %>
       <%= render "app/rotations/timeline_weather", timeline: timeline %>
 
       <details class="weights">
@@ -60,7 +70,7 @@
             </ol>
             <%= render "app/rotations/timeline", line: timeline.for(strategy.crops) %>
 
-            <%= turbo_frame_tag "why-#{strategy.key}", src: why_app_field_rotation_path(@field.key, strategy: strategy.key, scenario: (@scenario.key unless @scenario.today?)), loading: :lazy do %>
+            <%= turbo_frame_tag "why-#{strategy.key}", src: why_app_field_rotation_path(@field.key, strategy: strategy.key, zone: @zone.index, scenario: (@scenario.key unless @scenario.today?)), loading: :lazy do %>
               <p class="strategy__why"><%= strategy_why(strategy) %></p>
             <% end %>
 
@@ -103,7 +113,7 @@
 
             <% unless strategy.current? %>
               <%= button_to t(".use_as_plan", year: season_years.first), plan_app_crops_path, method: :patch,
-                            params: { field: @field.key, crop: strategy.crops.first }, class: "btn btn--secondary btn--sm" %>
+                            params: { field: @field.key, crop: strategy.crops.first, zone: @zone.index }, class: "btn btn--secondary btn--sm", form: { data: in_workspace } %>
             <% end %>
           </li>
         <% end %>
@@ -111,5 +121,5 @@
 
       <p class="choice-set__hint"><%= t(".disclaimer") %> <%= link_to t(".glossary"), glossary_path %></p>
     <% end %>
-  </main>
-</div>
+<% end %>
+<%= render "app/fields/workspace", field: @field, tab: "rotation" %>

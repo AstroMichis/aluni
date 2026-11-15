@@ -4,9 +4,12 @@ module App
   class HomeController < BaseController
     layout "app_screen"
 
-    # The rotation plan for the main field, the app's main result, sits above the dial.
+    # The rotation plan for the main field, the app's main result, sits above
+    # the dial, with the next things to do (MenuHelper#home_shortcuts). @farm
+    # also lets My fields open a lone field directly (MenuHelper#fields_entry_path).
     def show
-      field = Fields::Farm.for(Current.user).main_field
+      @farm = Fields::Farm.for(Current.user)
+      field = @farm.main_field
       @plan_field = field unless field.nil? || field.empty?
     end
   end

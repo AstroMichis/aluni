@@ -22,6 +22,9 @@ html[data-motion="reduce"] .landing__reveal {
 }
 
 html[data-motion="reduce"] .landing__scroll-cue svg { animation: none; }
+html[data-motion="reduce"]::view-transition-group(*),
+html[data-motion="reduce"]::view-transition-old(*),
+html[data-motion="reduce"]::view-transition-new(*) { animation: none !important; }
 
 /* High contrast: pure text on deep backgrounds, strong borders, in both themes. */
 html[data-contrast="high"] {

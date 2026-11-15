@@ -1,0 +1,71 @@
+en:
+  app:
+    crops:
+      show:
+        part: "%{area} of %{total}"
+    rotations:
+      show:
+        zones: "Pieces of the field"
+        zone_history: "Before: %{crops}"
+    fields:
+      show:
+        planting:
+          title: "Planting %{year}"
+          empty: "Nothing planted this season yet. Split the field between as many crops as you like."
+          edit: "Plan the planting"
+    field_layouts:
+      units:
+        hectares: "ha"
+        acres: "acres"
+      map:
+        cell: "Row %{row}, column %{col}: %{crop}"
+        empty: "not planted"
+        empty_label: "Not planted"
+      row:
+        crop: "Crop"
+        amount: "Area (%{unit})"
+        slider: "Area"
+        dates: "Planting and harvest months"
+        planting: "Planting"
+        harvest: "Harvest"
+        no_month: "Not set"
+        remove: "Remove"
+      edit:
+        title: "Planting %{year} · %{name} · %{app_name}"
+        eyebrow: "Plan the planting · %{area}"
+        headline: "How you split the field in %{year}"
+        lede: "Give each crop its area, or pick a crop and paint the map with your finger or the mouse. Leave part of the field unplanted if you like."
+        seasons: "Seasons"
+        season_kinds:
+          past: "Past"
+          current: "This season"
+          next: "Next"
+        crops_title: "Crops"
+        add: "Add a crop"
+        unnamed: "Crop %{number}"
+        total:
+          left: "Not planted: %{area} (%{percent})"
+          full: "The whole field is planted."
+          over: "The crops add up to %{area} more than the field."
+          server: "Not planted: %{area}"
+        shortcuts:
+          title: "Shortcuts"
+          equal: "Equal parts"
+          copy: "Same as %{year}"
+          swap: "Swap the %{year} crops"
+        map_title: "Map of the field"
+        map_label: "Map of %{name} in %{year}, 10 by 10 cells"
+        map_hint: "Each cell is 1% of the field. Pick a crop or the eraser, then tap or drag over the cells. With a keyboard, move with the arrow keys and press Space."
+        brushes: "Paint with"
+        eraser: "Eraser"
+        save: "Save the planting"
+      update:
+        saved: "Planting %{year} saved."
+        errors:
+          year: "That season cannot be planned here."
+          too_many: "Up to 6 crops per season."
+          duplicate: "Each crop can appear once per season; give it more area instead."
+          share: "Give every crop an area."
+          over: "The crops add up to more than the field."
+          overlap: "Two crops cannot share a cell of the map."
+          invalid: "That planting could not be saved."
