@@ -597,8 +597,28 @@ en:
           rain_normal: Typical rain (mm)
           temp_normal: Typical mean (°C)
         forecast:
-          title: Forecast
-          body: 'The forecast is not connected yet: none of our documented sources gives one. Until then I show what has happened this season.'
+          title: Next seven days
+          loading: Asking for the forecast at your pin…
+      forecast:
+        day: Day
+        temp: Low / high
+        rain: Rain (chance)
+        gust: Gusts
+        soil: "Soil at 5 cm · moisture (1 = field capacity, 0 = wilting)"
+        calm: No frost, heat, heavy rain or strong wind in the next seven days.
+        alerts:
+          frost: "frost possible (air %{tmin} °C, soil %{soil} °C). Cover seedlings and hold irrigation until it warms."
+          heat: "up to %{tmax} °C. Water early and avoid spraying in the heat of the day."
+          heavy_rain: "%{rain} mm of rain. Keep machinery off wet soil and check drains."
+          wind: "gusts of %{gust} km/h. Not a day for spraying."
+        drying: "Over these days the air takes up about %{mm} mm more than the rain brings: the soil dries."
+        wetting: "Over these days the rain brings about %{mm} mm more than the air takes up."
+        source: Forecast by Meteomatics at your pin; days follow the sun at your longitude.
+        errors:
+          needs_pin: Add this field's pin to see its forecast.
+          not_configured: The forecast service is not configured.
+          paused: The forecast is paused for now.
+          unavailable: The forecast did not answer. Try again in a while.
       alerts:
         title: Weather alerts · %{app_name}
         headline: Weather alerts

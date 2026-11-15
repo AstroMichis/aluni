@@ -1,0 +1,50 @@
+<%# The next seven days at the field's pin (Weather::Forecast, Meteomatics), in the "forecast"
+    frame of the weather screen. Locals: forecast. %>
+<%= turbo_frame_tag "forecast" do %>
+  <% if forecast.any? %>
+    <% alerts = forecast.alerts %>
+    <% if alerts.any? %>
+      <ul class="forecast__alerts" role="list">
+        <% alerts.each do |day, kind| %>
+          <li class="forecast__alert forecast__alert--<%= kind %>">
+            <strong><%= l(day.date, format: "%A %-d") %>:</strong> <%= t("app.weather.forecast.alerts.#{kind}", tmin: chart_number(day.tmin), tmax: chart_number(day.tmax), soil: chart_number(day.soil_tmin), rain: chart_number(day.rain, 0), gust: chart_number(day.gust.to_f * 3.6, 0)) %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <%= render "shared/aluni", message: t("app.weather.forecast.calm") %>
+    <% end %>
+
+    <div class="data-table__scroll">
+      <table class="report-table forecast__table">
+        <thead>
+          <tr>
+            <th scope="col"><%= t("app.weather.forecast.day") %></th>
+            <th scope="col"><%= t("app.weather.forecast.temp") %></th>
+            <th scope="col"><%= t("app.weather.forecast.rain") %></th>
+            <th scope="col"><%= t("app.weather.forecast.gust") %></th>
+            <th scope="col"><%= t("app.weather.forecast.soil") %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% forecast.days.each do |day| %>
+            <tr class="<%= "forecast__row--alert" if day.alerts.any? %>">
+              <th scope="row"><%= l(day.date, format: "%a %-d") %></th>
+              <td><%= chart_number(day.tmin) %>° / <%= chart_number(day.tmax) %>°</td>
+              <td><%= chart_number(day.rain) %> mm<% if day.rain_chance %> <small>(<%= chart_number(day.rain_chance, 0) %> %)</small><% end %></td>
+              <td><%= chart_number(day.gust.to_f * 3.6, 0) %> km/h</td>
+              <td><%= chart_number(day.soil_tmin) %>°<% if day.soil_moisture %> <small>· <%= chart_number(day.soil_moisture, 2) %></small><% end %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% balance = forecast.balance %>
+    <p class="choice-set__hint">
+      <%= balance.negative? ? t("app.weather.forecast.drying", mm: -balance) : t("app.weather.forecast.wetting", mm: balance) %>
+      <%= t("app.weather.forecast.source") %>
+    </p>
+  <% else %>
+    <%= render "shared/aluni", message: t("app.weather.forecast.errors.#{forecast.error}", default: t("app.weather.forecast.errors.unavailable")) %>
+  <% end %>
+<% end %>

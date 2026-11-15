@@ -27,7 +27,8 @@ OpenStreetMap's Nominatim, through the server only (the browser never calls it):
 - Successful answers are cached in `Rails.cache` per point rounded to 0.01° and per hour (`METEOMATICS_CACHE_TTL_SECONDS`, default 3600). Failures are not cached.
 - `Platform::Switchboard.guard!(:meteomatics)` before each request. `platform:bootstrap` pauses it on a new server.
 - Errors: `last_error` `{ type:, status:, message: }`, with types `unauthorized`, `rate_limited`, `service_unavailable`, `api_error`, `network_error`, `empty_response`, `invalid_request` and `not_configured`.
-- Specs: `spec/services/meteomatics/client_spec.rb` (WebMock).
+- On screen: `Weather::Forecast.for(field)` asks 168 hours at the pin and sums them into local solar days (UTC shifted by longitude / 15) with alerts (`Weather::Season` lines plus gusts of 15 m/s). `App::WeatherController#forecast` renders it into the weather screen's lazy `forecast` frame, so a slow or failing forecast never holds the page; a cached answer serves the rest of the hour.
+- Specs: `spec/services/meteomatics/client_spec.rb` (WebMock), `spec/services/weather/forecast_spec.rb`.
 
 ## Planetary Computer (`app/services/planetary_computer/client.rb`)
 

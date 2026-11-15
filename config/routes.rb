@@ -91,6 +91,7 @@ scope "(:locale)", locale: /en|es/ do
         patch :plan
       end
       resource :weather, only: :show, controller: "weather" do
+        get :forecast
         get :alerts
         patch :alerts, action: :update_alerts
       end

@@ -1,6 +1,7 @@
 module App
   # Weather (menu section 3): the season so far and the long-term normals at
-  # a field's pin (NASA POWER), and the alerts it would have raised.
+  # a field's pin (NASA POWER), the alerts it would have raised, and the next
+  # seven days (Meteomatics), loaded lazily so a slow forecast never holds the page.
   class WeatherController < BaseController
     include FarmScreen
 
@@ -10,6 +11,10 @@ module App
     end
 
     def show
+    end
+
+    def forecast
+      render partial: "app/weather/forecast", locals: { forecast: Weather::Forecast.for(@field) }, layout: false
     end
 
     def alerts
