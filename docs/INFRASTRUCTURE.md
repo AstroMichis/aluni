@@ -52,7 +52,7 @@ rails, pg, puma, redis + sidekiq + sidekiq-cron (jobs, cron, cache, cable), weba
 | `SIDEKIQ_WEB_USERNAME`, `SIDEKIQ_WEB_PASSWORD` | sidekiq_web.rb |
 | `PLATFORM_PAUSE_ALL`, `PLATFORM_ACTOR` | switchboard brake, toggle actor; services: jobs, cron, gemini, mail, push, geocoding (Nominatim, free, not paused at bootstrap) |
 | `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`, `..._DETERMINISTIC_KEY`, `..._KEY_DERIVATION_SALT`, `AR_ENCRYPTION_SUPPORT_UNENCRYPTED_DATA` | encryption (alternative to credentials) |
-| `GEMINI_FLASH_MODEL`, `GEMINI_PRO_MODEL`, `GEMINI_TRANSCRIBE_MODEL`, `GEMINI_CHAT_MAX_OUTPUT_TOKENS` | gemini.rb |
+| `GEMINI_FLASH_MODEL`, `GEMINI_PRO_MODEL`, `GEMINI_TRANSCRIBE_MODEL`, `GEMINI_CHAT_MAX_OUTPUT_TOKENS`, `GEMINI_DAILY_CAP` (requests per UTC day, default 2000, 0 off) | gemini.rb, `Gemini::DailyCap` |
 | `GEMINI_BACKEND` (`api_key` default, `vertex` in production), `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION` (`global`), `GOOGLE_OAUTH_ACCESS_TOKEN` (development only: a `gcloud auth print-access-token` token so a laptop can use Vertex) | gemini.rb, `Gemini::Client.backend`, `Gemini::VertexToken` |
 | `ACTIVE_STORAGE_SERVICE` (`cloudflare_r2` or `local`), `KAMAL_BACKUP` (`0` leaves the R2 backup accessory out) | production.rb, deploy.yml |
 | `METEOMATICS_USERNAME`, `METEOMATICS_PASSWORD`, `METEOMATICS_CACHE_TTL_SECONDS` | meteomatics.rb, `Meteomatics::Client` (off while unset) |

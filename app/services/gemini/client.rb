@@ -143,6 +143,7 @@ module Gemini
 
     def post_and_extract(path, body, expect_schema:)
       Platform::Switchboard.guard!(:gemini)
+      DailyCap.count!
       response = connection.post(path, body.to_json) do |req|
         req.headers["Authorization"] = "Bearer #{VertexToken.fetch}" if self.class.backend == :vertex
       end

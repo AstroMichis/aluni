@@ -19,6 +19,8 @@ module Platform
 
       Switchboard.bust!
       CronControl.sync! if @service.in?(%w[cron jobs])
+      # Resuming gemini also gives it a fresh daily budget (Gemini::DailyCap).
+      Gemini::DailyCap.reset! if @service == "gemini" && !@paused
       Rails.logger.info("[platform] #{@paused ? 'paused' : 'resumed'} #{@service} by #{@actor}#{" (#{@reason})" if @reason}")
       Success(switch)
     end
