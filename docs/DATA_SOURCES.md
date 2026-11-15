@@ -22,6 +22,7 @@ NASA POWER, FAO GAEZ, SSURGO, USGS 3DEP (EPQS), the Cropland Data Layer and the 
 | Resource | File | Auth |
 |---|---|---|
 | NASA POWER (daily, monthly, climatology) | [nasa_power.md](data_sources/nasa_power.md) | none |
+| Meteomatics Weather API (current + forecast, 1 km; hackathon offer) | [meteomatics.md](data_sources/meteomatics.md) | Meteomatics account |
 | Daymet (ORNL single-pixel) | [daymet.md](data_sources/daymet.md) | none |
 | PRISM Climate Data (Oregon State) | [prism.md](data_sources/prism.md) | none |
 | GPM IMERG precipitation | [gpm_imerg.md](data_sources/gpm_imerg.md) | Earthdata |
@@ -46,7 +47,7 @@ NASA POWER, FAO GAEZ, SSURGO, USGS 3DEP (EPQS), the Cropland Data Layer and the 
 |---|---|---|
 | Vegetation indices (MODIS, HLS, phenology) | [vegetation_indices.md](data_sources/vegetation_indices.md) | Earthdata (via AppEEARS) |
 | Landsat (STAC, M2M) | [landsat.md](data_sources/landsat.md) | none for STAC; USGS ERS for M2M |
-| Sentinel-2 open catalogs (CDSE STAC/OData, Earth Search) | [sentinel2_stac.md](data_sources/sentinel2_stac.md) | none for search |
+| Sentinel-2 open catalogs (CDSE STAC/OData, Earth Search, Planetary Computer with point values) | [sentinel2_stac.md](data_sources/sentinel2_stac.md) | none for search; Planetary Computer none at all |
 | NAIP aerial imagery | [naip.md](data_sources/naip.md) | none |
 | NASA Worldview / GIBS map layers | [gibs_worldview.md](data_sources/gibs_worldview.md) | none |
 | NLCD / Annual NLCD land cover | [nlcd.md](data_sources/nlcd.md) | none |
@@ -99,4 +100,5 @@ NASA POWER, FAO GAEZ, SSURGO, USGS 3DEP (EPQS), the Cropland Data Layer and the 
 | api.data.gov key | USDA ERS | not configured |
 | `CDSE_CLIENT_ID`, `CDSE_CLIENT_SECRET` | Copernicus Data Space (Sentinel Hub) | not configured |
 | CDS API key | ERA5 | not configured |
+| `METEOMATICS_USERNAME`, `METEOMATICS_PASSWORD` | Meteomatics Weather API (`Meteomatics::Client`) | not configured (claim the hackathon offer) |
 | USGS ERS login | Landsat M2M | not configured |

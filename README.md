@@ -4,7 +4,7 @@ An open source tool for people, not for passwords. The site at aluni.us explains
 
 ## Stack
 
-Rails 8.1 on Ruby 4.0.8, PostgreSQL 16, Redis 7 + Sidekiq 8, Hotwire with pure CSS over importmap (no node), Rails built-in sessions with the webauthn gem (passkeys), Hotwire Native shells (`ios/`, `android/`), a Rust extension for heavy service steps (`vendor/gems/aluni_core`), Kamal 2 deploys to an Oracle Always Free VM.
+Rails 8.1 on Ruby 4.0.8, PostgreSQL 16, Redis 7 + Sidekiq 8, Hotwire with pure CSS over importmap (no node), Rails built-in sessions with the webauthn gem (passkeys), Hotwire Native shells (`ios/`, `android/`), a Rust extension for heavy service steps (`vendor/gems/aluni_core`), Kamal 2 deploys to a Google Compute Engine VM behind a Cloudflare Tunnel, on every push to `main` (`docs/deploy/DEPLOY.md`).
 
 ## Getting started
 
