@@ -13,6 +13,22 @@ en:
       cta_open: "Go to %{app_name}"
       availability: "Price and launch date to be announced."
       illustration_label: "Illustration of the %{app_name} Probe station in a field"
+      viewer:
+        label: "3D model of the %{app_name} Probe: a portable station with a solar top, a curved screen, a carry loop and a steel stake"
+        hint: "Drag to turn it, or use the arrow keys."
+        models_label: "Model to show"
+        screen_soil: "Soil"
+        screen_air: "Air"
+        screen_lite: "WiFi"
+        screen_pro: "LTE · GPS"
+      install:
+        kicker: "Setup"
+        title: "How it goes into your field"
+        body: "Portable and wireless: carry it by the loop, stake it where you want to measure and pair it from your phone."
+        steps:
+          stake: "Push the steel stake into the soil, up to the mark."
+          screw: "Screw the Probe on top: the sun switches it on."
+          scan: "Scan its QR code in the app and pick the field."
       highlights:
         autonomy: "Solar powered, weeks without sun"
         offline: "Months of readings without signal"

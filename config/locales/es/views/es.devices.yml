@@ -13,6 +13,22 @@ es:
       cta_open: "Ir a %{app_name}"
       availability: "Precio y fecha de lanzamiento por anunciar."
       illustration_label: "Ilustración de la estación %{app_name} Sonda en un campo"
+      viewer:
+        label: "Modelo 3D de la %{app_name} Sonda: estación portátil con tapa solar, pantalla curva, asa y sonda de acero"
+        hint: "Arrastra para girarla, o usa las flechas del teclado."
+        models_label: "Modelo a mostrar"
+        screen_soil: "Suelo"
+        screen_air: "Aire"
+        screen_lite: "WiFi"
+        screen_pro: "LTE · GPS"
+      install:
+        kicker: "Instalación"
+        title: "Así se instala en tu campo"
+        body: "Portátil y sin cables: la llevas del asa, la clavas donde quieras medir y la vinculas desde el teléfono."
+        steps:
+          stake: "Clava la sonda de acero en el suelo, hasta la marca."
+          screw: "Enrosca la Sonda encima: se enciende sola con el sol."
+          scan: "Escanea su código QR en la app y elige el campo."
       highlights:
         autonomy: "Energía solar, semanas sin sol"
         offline: "Meses de mediciones sin señal"
