@@ -15,6 +15,11 @@ module Gemini
 
     class << self
       def fetch
+        # Outside production there is no metadata server (a laptop): take a short-lived
+        # token from `gcloud auth print-access-token` in GOOGLE_OAUTH_ACCESS_TOKEN.
+        local = local_token
+        return local if local
+
         @mutex.synchronize do
           refresh! if @token.nil? || Time.now >= @expires_at - REFRESH_MARGIN
           @token
@@ -26,6 +31,12 @@ module Gemini
       end
 
       private
+
+      def local_token
+        return if Rails.env.production?
+
+        ENV["GOOGLE_OAUTH_ACCESS_TOKEN"].presence
+      end
 
       def refresh!
         response = Faraday.get(METADATA_URL, nil, "Metadata-Flavor" => "Google") do |req|

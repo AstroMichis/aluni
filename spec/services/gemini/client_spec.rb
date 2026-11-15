@@ -137,6 +137,20 @@ RSpec.describe Gemini::Client do
       expect(token).to have_been_requested.once
     end
 
+    it "uses GOOGLE_OAUTH_ACCESS_TOKEN outside production instead of the metadata server" do
+      metadata = stub_request(:get, metadata_url)
+      call = stub_request(:post, vertex_endpoint).with(headers: { "Authorization" => "Bearer ya29.local" })
+                                                 .to_return(status: 200, body: gemini_response("hola"), headers: { "Content-Type" => "application/json" })
+
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("GOOGLE_OAUTH_ACCESS_TOKEN").and_return("ya29.local")
+
+      expect(client.generate("hi")).to eq("hola")
+
+      expect(call).to have_been_requested
+      expect(metadata).not_to have_been_requested
+    end
+
     it "uses the regional host for a regional location" do
       Rails.configuration.x.gemini.vertex_location = "us-central1"
 
