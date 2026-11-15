@@ -8,7 +8,8 @@
   padding-block: var(--space-16) var(--space-10);
 }
 .devices__soon { align-self: flex-start; }
-.devices__name { margin: 0; }
+.devices__name { margin: 0; font-size: var(--text-4xl); text-wrap: balance; }
+@media (min-width: 1025px) { .devices__name { font-size: var(--text-5xl); } }
 .devices__headline {
   margin: 0;
   font-family: var(--font-serif);
@@ -122,25 +123,56 @@
 
 .devices__closing { padding-bottom: var(--space-16); }
 
-/* The station illustration. */
+/* The 3D product viewer (device_viewer_controller.js). The fallback picture shows until the
+   scene is live, and stays when WebGL or the import fails. */
+.device-viewer { display: flex; flex-direction: column; align-items: center; gap: var(--space-3); width: 100%; }
+.device-viewer__stage {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 1;
+  border-radius: var(--radius-xl);
+  background: radial-gradient(circle at 50% 38%, var(--color-bg-hover) 0%, var(--color-bg-secondary) 45%, var(--color-bg-primary) 75%);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.device-viewer__canvas { position: absolute; inset: 0; cursor: grab; touch-action: pan-y; }
+.device-viewer__canvas:active { cursor: grabbing; }
+.device-viewer__canvas:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -4px; border-radius: var(--radius-xl); }
+.device-viewer__canvas canvas { display: block; width: 100%; height: 100%; }
+.device-viewer__fallback { position: absolute; inset: 0; display: grid; place-items: center; padding: var(--space-8); }
+.device-viewer__fallback[hidden] { display: none; }
+.device-viewer__controls .btn { min-height: 48px; }
+.device-viewer__controls .btn[aria-pressed="true"] { background: var(--color-accent-muted); color: var(--color-accent-text); }
+.device-viewer__hint { margin: 0; font-size: var(--text-sm); color: var(--color-text-tertiary); text-align: center; }
+
+.devices__install { align-items: center; }
+.devices__install-art { display: flex; justify-content: center; }
+.devices__install-steps { margin: 0; padding-left: var(--space-5); display: grid; gap: var(--space-2); color: var(--color-text-primary); }
+
+/* The station illustration (the 3D model as a flat picture; also the no-WebGL fallback). */
 .device-art { width: 100%; max-width: 360px; height: auto; }
 .device-art__soil { fill: var(--color-bg-tertiary); }
 .device-art__soil-deep { fill: var(--color-bg-hover); }
 .device-art__crop { fill: none; stroke: var(--color-secondary); stroke-width: 4; stroke-linecap: round; }
-.device-art__pole,
-.device-art__arm { fill: var(--color-border-strong); stroke: var(--color-border-strong); stroke-width: 6; stroke-linecap: round; }
-.device-art__panel rect { fill: var(--color-chrome); stroke: var(--color-text-tertiary); stroke-width: 2; }
-.device-art__panel-cells { fill: none; stroke: var(--color-info); stroke-width: 1.5; opacity: 0.6; }
-.device-art__box { fill: var(--color-text-primary); stroke: var(--color-border-strong); stroke-width: 2; }
+.device-art__shadow { fill: var(--color-bg-primary); opacity: 0.6; }
+.device-art__body { fill: var(--color-text-primary); stroke: var(--color-text-secondary); stroke-width: 1.5; }
+.device-art__stake { fill: var(--color-text-secondary); }
+.device-art__shine { fill: none; stroke: var(--color-text-inverse); stroke-width: 3; stroke-linecap: round; opacity: 0.12; }
+.device-art__collar { fill: var(--color-text-secondary); }
+.device-art__band { fill: var(--color-accent); }
+.device-art__screen { fill: var(--color-bg-primary); stroke: var(--color-bg-secondary); stroke-width: 3; }
+.device-art__screen-line { fill: none; stroke: var(--color-accent-text); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.device-art__screen-dot { fill: var(--color-text-secondary); }
 .device-art__led { fill: var(--color-success); }
 .device-art__qr { fill: var(--color-bg-primary); }
-.device-art__antenna { fill: none; stroke: var(--color-text-tertiary); stroke-width: 3; stroke-linecap: round; }
+.device-art__depth { fill: var(--color-bg-secondary); }
+.device-art__solar { fill: var(--color-chrome); }
+.device-art__solar-rim { fill: none; stroke: var(--color-text-tertiary); stroke-width: 2; }
+.device-art__loop { fill: none; stroke: var(--color-bg-secondary); stroke-width: 6; stroke-linecap: round; }
+.device-art__antenna { fill: none; stroke: var(--color-bg-secondary); stroke-width: 5; stroke-linecap: round; }
 .device-art__antenna-tip { fill: var(--color-accent); }
-.device-art__shield rect { fill: var(--color-text-secondary); }
-.device-art__gauge { fill: var(--color-text-secondary); }
-.device-art__cable { fill: none; stroke: var(--color-text-tertiary); stroke-width: 3; stroke-dasharray: 2 4; }
-.device-art__probe { fill: var(--color-text-secondary); }
-.device-art__depth { fill: var(--color-accent); }
 .device-art__signal { fill: none; stroke: var(--color-accent-text); stroke-width: 3; stroke-linecap: round; }
 
 @media (min-width: 769px) {

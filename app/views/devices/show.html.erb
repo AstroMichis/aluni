@@ -33,8 +33,29 @@
         </div>
         <p class="devices__availability"><%= t(".availability") %></p>
       </div>
-      <div class="devices__hero-art">
-        <%= render "devices/illustration" %>
+      <div class="devices__hero-art device-viewer"
+           data-controller="device-viewer"
+           data-device-viewer-model-value="pro"
+           data-device-viewer-brand-value="<%= app_name %>"
+           data-device-viewer-soil-label-value="<%= t(".viewer.screen_soil") %>"
+           data-device-viewer-air-label-value="<%= t(".viewer.screen_air") %>"
+           data-device-viewer-lite-status-value="<%= t(".viewer.screen_lite") %>"
+           data-device-viewer-pro-status-value="<%= t(".viewer.screen_pro") %>">
+        <div class="device-viewer__stage">
+          <div class="device-viewer__canvas" data-device-viewer-target="canvas" tabindex="0" role="img"
+               aria-label="<%= t(".viewer.label", app_name: app_name) %>" aria-describedby="device-viewer-hint"
+               data-action="keydown->device-viewer#rotateWithKeys"></div>
+          <div class="device-viewer__fallback" data-device-viewer-target="fallback">
+            <%= render "devices/illustration" %>
+          </div>
+        </div>
+        <div class="device-viewer__controls cluster cluster--sm" role="group" aria-label="<%= t(".viewer.models_label") %>">
+          <button type="button" class="btn btn--ghost btn--sm" aria-pressed="false" data-device-viewer-target="model"
+                  data-action="device-viewer#selectModel" data-device-viewer-model-param="lite"><%= t(".models.lite.name") %></button>
+          <button type="button" class="btn btn--ghost btn--sm" aria-pressed="true" data-device-viewer-target="model"
+                  data-action="device-viewer#selectModel" data-device-viewer-model-param="pro"><%= t(".models.pro.name") %></button>
+        </div>
+        <p id="device-viewer-hint" class="device-viewer__hint"><%= t(".viewer.hint") %></p>
       </div>
     </section>
 
@@ -68,6 +89,22 @@
         <% end %>
       </div>
     </section>
+
+<section class="landing__section container" aria-labelledby="install-title">
+  <div class="devices__install grid grid--2">
+    <div class="devices__install-art"><%= render "devices/illustration" %></div>
+    <div class="stack stack--md">
+      <p class="text-label landing__eyebrow"><%= t(".install.kicker") %></p>
+      <h2 id="install-title" class="text-heading landing__section-title"><%= t(".install.title") %></h2>
+      <p><%= t(".install.body") %></p>
+      <ol class="devices__install-steps">
+        <% %w[stake screw scan].each do |step| %>
+          <li><%= t(".install.steps.#{step}") %></li>
+        <% end %>
+      </ol>
+    </div>
+  </div>
+</section>
 
     <section class="landing__section container" aria-labelledby="sensors-title">
       <p class="text-label landing__eyebrow"><%= t(".sensors.kicker") %></p>
