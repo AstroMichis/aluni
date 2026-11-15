@@ -7,20 +7,33 @@
 #
 # Temperatures in °C, rainfall in mm per year, pH, growing period in days;
 # TEXT and DRA are ECOCROP's own classes (heavy/medium/light/organic, poorly/well/excessive).
+# ECOCROP keeps older botanical names for a few crops; their rows are stored
+# under the current name config/crops/agronomy.yml uses.
+ECOCROP_SYNONYMS = {
+  "Lycopersicon esculentum" => "Solanum lycopersicum",
+  "Brassica oleracea var. capitata" => "Brassica oleracea"
+}.freeze
+
 namespace :ecocrop do
   desc "Extract ECOCROP requirements for config/crops/agronomy.yml into config/ecocrop.yml (CSV=path)"
   task extract: :environment do
     path = ENV.fetch("CSV") { abort "Pass CSV=path/to/EcoCrop_DB.csv" }
     columns = %w[FAMNAME TOPMN TOPMX TMIN TMAX ROPMN ROPMX RMIN RMAX PHOPMN PHOPMX PHMIN PHMAX TEXT DRA GMIN GMAX]
     wanted = YAML.safe_load(File.read(Crops::Agronomy::PATH)).values.map { |crop| crop["scientific"] }
-    lines = File.readlines(path, chomp: true, encoding: "bom|utf-8")
+    # The OpenCLIM CSV is Latin-1 in places (accented common names); read UTF-8
+    # when the file is valid UTF-8, otherwise transcode from ISO-8859-1.
+    raw = File.binread(path).delete_prefix("\xEF\xBB\xBF".b)
+    text = raw.dup.force_encoding(Encoding::UTF_8)
+    text = raw.force_encoding(Encoding::ISO_8859_1).encode(Encoding::UTF_8) unless text.valid_encoding?
+    lines = text.split(/\r?\n/)
     header = lines.shift.split(",").map { |h| h.delete('"') }
     out = {}
     lines.each do |line|
       # Quoted cells may hold commas; split on commas outside quotes.
       row = header.zip(line.scan(/(?:"([^"]*)"|([^,]*))(?:,|\z)/).map { |q, plain| q || plain }).to_h
       name = row["ScientificName"].to_s.strip
-      next unless wanted.include?(name)
+      name = ECOCROP_SYNONYMS.fetch(name, name)
+      next unless wanted.include?(name) && !out.key?(name)
 
       out[name] = columns.to_h do |c|
         value = row[c].to_s.strip
