@@ -13,7 +13,7 @@ module App
     def update
       case Fields::SeasonLayoutService.call(user: Current.user, field: @field.key, year: @year, crops: crop_params)
       in Result::Success
-        redirect_to app_field_path(@field.key, anchor: "planting"), notice: t(".saved", year: @year), status: :see_other
+        redirect_to app_field_path(@field.key), notice: t(".saved", year: @year), status: :see_other
       in Result::Failure(code: :not_found)
         head :not_found
       in Result::Failure(code:)

@@ -28,6 +28,6 @@
     </div>
     <%= render "app/fields/todo", subject: @farm, edit_path: edit_app_farm_path %>
     <%= render "app/fields/section_nav", groups: groups.keys %>
-    <%= render "app/fields/groups", subject: @farm, groups: groups %>
+    <%= render "app/fields/groups", subject: @farm, groups: groups, edit_path: edit_app_farm_path %>
   </main>
 </div>

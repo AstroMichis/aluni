@@ -25,7 +25,7 @@ RSpec.describe "Plan the planting", type: :request do
   it "splits a 2 ha field into 1 ha of corn and 1 ha of beans and shows it everywhere" do
     split_field
 
-    expect(response).to redirect_to(app_field_path(field, locale: "en", anchor: "planting"))
+    expect(response).to redirect_to(app_field_path(field, locale: "en"))
     expect(field.field_crops.where(season_year: year).pluck(:crop_name, :share).sort).to eq([ [ "Beans", 0.5 ], [ "Corn", 0.5 ] ])
 
     get app_field_path(field, locale: "en"), headers: native_headers

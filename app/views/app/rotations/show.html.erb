@@ -2,10 +2,7 @@
 <% content_for :title, t(".title", name: name, app_name: t("app_name")) %>
 <% weights = @comparator.weights %>
 
-<div class="screen">
-  <%= render "shared/screen_bar", back_path: app_field_path(@field.key), back_label: t("app.fields.back_to_fields"), title: name %>
-
-  <main id="main" class="screen__body">
+<% content_for :workspace do %>
     <header class="screen__header">
       <p class="text-label screen__eyebrow"><%= t(".eyebrow", from: season_years.first, to: season_years.last) %></p>
       <h1 class="text-display screen__title"><%= t(".headline") %></h1>
@@ -17,7 +14,7 @@
       <nav class="zone-picker" aria-label="<%= t(".zones") %>">
         <% season_crops = @field.current_crops %>
         <% zones.each do |zone| %>
-          <%= link_to app_field_rotation_path(@field.key, zone: zone.index), class: "zone-picker__link", aria: { current: ("page" if zone.index == @zone.index) } do %>
+          <%= link_to app_field_rotation_path(@field.key, zone: zone.index), class: "zone-picker__link", aria: { current: ("page" if zone.index == @zone.index) }, data: in_workspace do %>
             <%= render "app/field_layouts/map", crops: season_crops, size: "sm", highlight: zone.cells, label: zone_label(@field, zone) %>
             <span><strong><%= zone_label(@field, zone) %></strong><%= t(".zone_history", crops: zone.history.values.last(3).map { |c| crop_name(c) }.join(" → ")) %></span>
           <% end %>
@@ -27,7 +24,7 @@
 
     <% if !@comparator.ready? %>
       <%= render "shared/aluni", message: t(".not_ready") %>
-      <%= link_to t(".add_crop"), edit_app_field_layout_path(@field.key), class: "btn btn--primary" %>
+      <%= link_to t(".add_crop"), edit_app_field_layout_path(@field.key), class: "btn btn--primary", data: in_workspace %>
     <% else %>
       <% best = @comparator.best %>
       <% current = @comparator.strategies.first %>
@@ -115,7 +112,7 @@
 
             <% unless strategy.current? %>
               <%= button_to t(".use_as_plan", year: season_years.first), plan_app_crops_path, method: :patch,
-                            params: { field: @field.key, crop: strategy.crops.first, zone: @zone.index }, class: "btn btn--secondary btn--sm" %>
+                            params: { field: @field.key, crop: strategy.crops.first, zone: @zone.index }, class: "btn btn--secondary btn--sm", form: { data: in_workspace } %>
             <% end %>
           </li>
         <% end %>
@@ -123,5 +120,5 @@
 
       <p class="choice-set__hint"><%= t(".disclaimer") %></p>
     <% end %>
-  </main>
-</div>
+<% end %>
+<%= render "app/fields/workspace", field: @field, tab: "rotation" %>

@@ -6,7 +6,8 @@ module App
     extend ActiveSupport::Concern
 
     included do
-      layout "app_screen"
+      # A frame request (a workspace tab) gets turbo-rails' minimal layout, not the whole screen.
+      layout -> { turbo_frame_request? ? "turbo_rails/frame" : "app_screen" }
       before_action :set_farm
     end
 

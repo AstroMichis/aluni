@@ -163,6 +163,10 @@ module Fields
         list
       end
 
+      # What the sources propose for the farmer to take: each datum to confirm,
+      # and the CDL years as one.
+      def suggestions_count = readings.count { |r| r.state == :to_confirm } + (cdl_proposal.any? ? 1 : 0)
+
       # CDL years the person has not recorded yet (US pins).
       def cdl_proposal
         years = observation_payload("cdl")&.dig("years").to_h

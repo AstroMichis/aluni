@@ -14,7 +14,7 @@
     <ul class="todo__list" role="list">
       <% todo.each do |reading| %>
         <li>
-          <a class="todo__item" href="<%= edit_path %>#field-<%= reading.datum.key %>">
+          <a class="todo__item" href="<%= edit_focus_path(edit_path, reading.datum.key) %>">
             <span class="todo__state todo__state--<%= reading.state %>"><%= t("app.fields.todo.verbs.#{reading.state}") %></span>
             <span><%= datum_label(reading.datum) %></span>
           </a>

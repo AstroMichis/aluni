@@ -36,6 +36,18 @@
             <span class="dial-page__plan-body"><%= t(".plan.body", crop: @plan_field.crop) %></span>
           <% end %>
         <% end %>
+        <% if (shortcuts = home_shortcuts(@farm)).any? %>
+          <nav class="dial-page__shortcuts" aria-label="<%= t(".shortcuts.title") %>">
+            <% shortcuts.each do |kind, label, path| %>
+              <%= link_to path, class: "dial-page__shortcut dial-page__shortcut--#{kind}" do %>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <%= render "shared/glyph", name: { add: "add", suggestions: "tips", todo: "tasks", plan: "calendar" }.fetch(kind) %>
+                </svg>
+                <span><%= label %></span>
+              <% end %>
+            <% end %>
+          </nav>
+        <% end %>
       </div>
 
       <div class="dial"

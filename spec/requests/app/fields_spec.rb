@@ -19,7 +19,7 @@ RSpec.describe "App fields", type: :request do
     follow_redirect!(headers: native_headers)
     expect(response).to have_http_status(:ok)
     expect(response.body).to include(I18n.t("app.fields.update.saved")).and include(I18n.t("app.home.show.eyebrow"))
-    get app_field_path(field, locale: "en"), headers: native_headers
+    get app_field_path(field, locale: "en", tab: "data"), headers: native_headers
     expect(response.body).to include("4.6000, -74.0800")
 
     expect(field.reload).to have_attributes(latitude: 4.6, longitude: -74.08, location_confidence: "confirmed", location_source: "typed",

@@ -97,6 +97,32 @@
   max-width: 44ch;
 }
 .dial-page__plan:hover { box-shadow: var(--shadow-glow); }
+
+/* Next up: one-tap shortcuts to what the farm still needs (MenuHelper#home_shortcuts). */
+.dial-page__shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  animation: dial-rise 600ms 300ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.dial-page__shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-default);
+  background: color-mix(in srgb, var(--color-bg-secondary) 80%, transparent);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  text-align: left;
+}
+.dial-page__shortcut svg { flex-shrink: 0; width: 18px; height: 18px; color: var(--color-accent-text); }
+.dial-page__shortcut:hover { color: var(--color-text-primary); background: var(--color-bg-hover); }
+.dial-page__shortcut--suggestions svg { color: var(--color-info); }
 .dial-page__plan-title { font-weight: 600; color: var(--color-accent-text); }
 .dial-page__plan-body { font-size: var(--text-sm); color: var(--color-text-secondary); }
 

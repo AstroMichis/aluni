@@ -6,10 +6,7 @@
 <% total = layout_total(@field) %>
 <% previous = layout_previous(@field, @year) %>
 
-<div class="screen">
-  <%= render "shared/screen_bar", back_path: app_field_path(@field.key, anchor: "planting"), back_label: t("app.fields.edit.cancel"), title: name, switcher: false %>
-
-  <main id="main" class="screen__body">
+<% content_for :workspace do %>
     <header class="screen__header">
       <p class="text-label screen__eyebrow"><%= t(".eyebrow", area: field_area(@field)) %></p>
       <h1 class="text-display screen__title"><%= t(".headline", year: @year) %></h1>
@@ -18,7 +15,7 @@
 
     <nav class="planner-seasons" aria-label="<%= t(".seasons") %>">
       <% Fields::SeasonLayoutService.years.each do |year| %>
-        <%= link_to edit_app_field_layout_path(@field.key, year: year), class: "planner-seasons__link", aria: { current: ("page" if year == @year) } do %>
+        <%= link_to edit_app_field_layout_path(@field.key, year: year), class: "planner-seasons__link", aria: { current: ("page" if year == @year) }, data: in_workspace do %>
           <span class="text-mono"><%= year %></span>
           <small><%= t(".season_kinds.#{%w[past current next][(year <=> Date.current.year) + 1]}") %></small>
         <% end %>
@@ -27,7 +24,7 @@
 
     <%= render "app/fields/crop_names" %>
     <%= form_with url: app_field_layout_path(@field.key, year: @year), method: :patch, class: "planner",
-                  data: { controller: "crop-layout",
+                  data: { **in_workspace, controller: "crop-layout",
                           crop_layout_total_value: total, crop_layout_unit_value: unit, crop_layout_max_value: Fields::SeasonLayoutService::MAX_CROPS,
                           crop_layout_previous_value: previous.to_json,
                           crop_layout_messages_value: {
@@ -82,8 +79,8 @@
 
       <div class="planner__actions">
         <button type="submit" class="btn btn--primary" data-crop-layout-target="submit"><%= t(".save") %></button>
-        <%= link_to t("app.fields.edit.cancel"), app_field_path(@field.key, anchor: "planting"), class: "btn btn--ghost" %>
+        <%= link_to t("app.fields.edit.cancel"), app_field_path(@field.key), class: "btn btn--ghost", data: in_workspace %>
       </div>
     <% end %>
-  </main>
-</div>
+<% end %>
+<%= render "app/fields/workspace", field: @field, tab: "planting" %>

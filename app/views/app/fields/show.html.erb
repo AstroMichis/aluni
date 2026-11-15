@@ -1,33 +1,40 @@
 <% name = plot_name(@field) %>
+<% tab = params[:tab] == "data" ? "data" : "summary" %>
 <% history = @field.history %>
 <% cdl = @field.cdl_proposal %>
-<% groups = @profile.groups(:field) %>
-<% groups = groups.merge("crop" => groups["crop"].reject { |d| d.key == "crop_history" }) if history.any? %>
-<% suggestions = @field.readings.count { |r| r.state == :to_confirm } + (cdl.any? ? 1 : 0) %>
 <% content_for :title, t(".title", name: name, app_name: t("app_name")) %>
 
-<div class="screen">
-  <%= render "shared/screen_bar", back_path: app_fields_path, back_label: t("app.fields.back_to_fields"), title: t("app.fields.index.crumb") %>
-  <%= render "app/fields/plot_defs" %>
-
-  <main id="main" class="screen__body" data-controller="section-nav" data-section-nav-current-class="section-nav__link--current">
+<% content_for :workspace do %>
+  <% if tab == "summary" %>
+    <%= render "app/fields/plot_defs" %>
     <header class="field-hero">
       <%= render "app/fields/plot", crops: @field.current_crops, size: "lg", id: "plot-hero-#{@field.key}" %>
       <div class="field-hero__copy">
         <h1 class="text-display screen__title"><%= name %></h1>
         <p class="screen__lede"><%= field_area(@field) %> · <%= crop_mix(@field) %></p>
         <div class="cluster cluster--sm">
-          <%= link_to t(".compare"), app_field_rotation_path(@field.key), class: "btn btn--primary btn--sm" unless @field.empty? %>
-          <%= link_to t(".edit"), edit_app_field_path(@field.key), class: "btn btn--secondary btn--sm" %>
+          <%= link_to t(".compare"), app_field_rotation_path(@field.key), class: "btn btn--primary btn--sm", data: in_workspace unless @field.empty? %>
+          <%= link_to t(".edit"), edit_app_field_path(@field.key), class: "btn btn--secondary btn--sm", data: in_workspace %>
         </div>
         <% if @field.empty? %>
           <%= render "shared/aluni", message: t(".empty_message") %>
-          <%= link_to t(".plant"), edit_app_field_layout_path(@field.key), class: "btn btn--primary" %>
+          <%= link_to t(".plant"), edit_app_field_layout_path(@field.key), class: "btn btn--primary", data: in_workspace %>
         <% else %>
           <%= render "shared/aluni", message: t(".tips.#{crop_shape(@field.current_crop)}") %>
         <% end %>
       </div>
     </header>
+
+    <% if (suggestions = @field.suggestions_count).positive? %>
+      <section class="suggestions" id="suggestions" aria-labelledby="suggestions-title">
+        <h2 class="todo__title" id="suggestions-title"><%= t(".suggestions.title", count: suggestions) %></h2>
+        <p class="choice-set__hint"><%= t(".suggestions.body") %></p>
+        <div class="cluster cluster--sm">
+          <%= button_to t(".suggestions.confirm_all"), confirm_app_field_path(@field.key), method: :post, class: "btn btn--primary btn--sm", form: { data: in_workspace } %>
+          <%= link_to t(".suggestions.review"), edit_app_field_path(@field.key), class: "btn btn--ghost btn--sm", data: in_workspace %>
+        </div>
+      </section>
+    <% end %>
 
     <% season = @field.current_season || Date.current.year %>
     <% crops = @field.season_crops(season) %>
@@ -41,11 +48,13 @@
           <p class="choice-set__hint"><%= t(".planting.empty") %></p>
         <% end %>
         <div class="planting__actions">
-          <%= link_to t(".planting.edit"), edit_app_field_layout_path(@field.key, year: season), class: "btn btn--secondary btn--sm" %>
-          <%= link_to t(".planting.plan", year: Date.current.year + 1), edit_app_field_layout_path(@field.key, year: Date.current.year + 1), class: "btn btn--ghost btn--sm" %>
+          <%= link_to t(".planting.edit"), edit_app_field_layout_path(@field.key, year: season), class: "btn btn--secondary btn--sm", data: in_workspace %>
+          <%= link_to t(".planting.plan", year: Date.current.year + 1), edit_app_field_layout_path(@field.key, year: Date.current.year + 1), class: "btn btn--ghost btn--sm", data: in_workspace %>
         </div>
       </div>
     </section>
+
+    <%= render "app/fields/todo", subject: @field, edit_path: edit_app_field_path(@field.key) %>
 
     <% if (image = @field.image_url) %>
       <figure class="area-image">
@@ -55,47 +64,44 @@
     <% end %>
 
     <%= render "app/fields/vegetation", field: @field %>
+  <% else %>
+    <% groups = @profile.groups(:field) %>
+    <% groups = groups.merge("crop" => groups["crop"].reject { |d| d.key == "crop_history" }) if history.any? %>
+    <div data-controller="section-nav" data-section-nav-current-class="section-nav__link--current">
+      <header class="screen__header workspace__header">
+        <h1 class="text-display screen__title"><%= t(".data_title") %></h1>
+        <%= link_to t(".edit"), edit_app_field_path(@field.key), class: "btn btn--primary btn--sm", data: in_workspace %>
+      </header>
+      <%= render "app/fields/section_nav", groups: (history.any? ? ["history"] : []) + groups.keys + ["data-sources"] %>
 
-    <% if suggestions.positive? %>
-      <section class="suggestions" aria-labelledby="suggestions-title">
-        <h2 class="todo__title" id="suggestions-title"><%= t(".suggestions.title", count: suggestions) %></h2>
-        <p class="choice-set__hint"><%= t(".suggestions.body") %></p>
-        <div class="cluster cluster--sm">
-          <%= button_to t(".suggestions.confirm_all"), confirm_app_field_path(@field.key), method: :post, class: "btn btn--primary btn--sm" %>
-          <%= link_to t(".suggestions.review"), edit_app_field_path(@field.key), class: "btn btn--ghost btn--sm" %>
-        </div>
-      </section>
-    <% end %>
+      <% if history.any? || cdl.any? %>
+        <section class="screen__section" id="group-history" aria-labelledby="group-title-history" data-section-nav-target="section">
+          <h2 class="reading-group__title" id="group-title-history">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><%= render "shared/glyph", name: "history" %></svg>
+            <%= t("app.fields.groups.history") %>
+          </h2>
+          <% if history.any? %>
+            <ol class="history" role="list">
+              <% history.values.each_with_index do |crop, i| %>
+                <% repeat = i.positive? && Crops::Agronomy.find(history.values[i - 1])&.key == Crops::Agronomy.find(crop)&.key && Crops::Agronomy.find(crop) %>
+                <li class="history__year<%= " history__year--repeat" if repeat %>">
+                  <span class="history__label text-mono"><%= crop.season_year %></span>
+                  <span class="history__crop"><%= crop_name(crop) %></span>
+                  <span class="history__source"><%= t("app.fields.crop_sources.#{crop.source}") %></span>
+                  <% if repeat %><span class="history__flag"><%= t(".repeat") %></span><% end %>
+                </li>
+              <% end %>
+            </ol>
+          <% end %>
+          <% if cdl.any? %>
+            <p class="cdl-card"><%= t(".cdl", years: cdl.sort.map { |year, crop| "#{year}: #{crop}" }.join(" · ")) %></p>
+          <% end %>
+        </section>
+      <% end %>
 
-    <%= render "app/fields/todo", subject: @field, edit_path: edit_app_field_path(@field.key) %>
-    <%= render "app/fields/section_nav", groups: (history.any? ? ["history"] : []) + groups.keys + ["data-sources"] %>
-
-    <% if history.any? || cdl.any? %>
-      <section class="screen__section" id="group-history" aria-labelledby="group-title-history" data-section-nav-target="section">
-        <h2 class="reading-group__title" id="group-title-history">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><%= render "shared/glyph", name: "history" %></svg>
-          <%= t("app.fields.groups.history") %>
-        </h2>
-        <% if history.any? %>
-          <ol class="history" role="list">
-            <% history.values.each_with_index do |crop, i| %>
-              <% repeat = i.positive? && Crops::Agronomy.find(history.values[i - 1])&.key == Crops::Agronomy.find(crop)&.key && Crops::Agronomy.find(crop) %>
-              <li class="history__year<%= " history__year--repeat" if repeat %>">
-                <span class="history__label text-mono"><%= crop.season_year %></span>
-                <span class="history__crop"><%= crop_name(crop) %></span>
-                <span class="history__source"><%= t("app.fields.crop_sources.#{crop.source}") %></span>
-                <% if repeat %><span class="history__flag"><%= t(".repeat") %></span><% end %>
-              </li>
-            <% end %>
-          </ol>
-        <% end %>
-        <% if cdl.any? %>
-          <p class="cdl-card"><%= t(".cdl", years: cdl.sort.map { |year, crop| "#{year}: #{crop}" }.join(" · ")) %></p>
-        <% end %>
-      </section>
-    <% end %>
-
-    <%= render "app/fields/groups", subject: @field, groups: groups %>
-    <%= render "app/fields/sources_status", field: @field %>
-  </main>
-</div>
+      <%= render "app/fields/groups", subject: @field, groups: groups, edit_path: edit_app_field_path(@field.key) %>
+      <%= render "app/fields/sources_status", field: @field %>
+    </div>
+  <% end %>
+<% end %>
+<%= render "app/fields/workspace", field: @field, tab: tab %>

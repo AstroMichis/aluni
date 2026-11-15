@@ -11,7 +11,7 @@
     </header>
 
     <%= render "shared/aluni", message: t(".aluni") %>
-    <%= render "app/fields/groups", subject: @farm, groups: groups %>
+    <%= render "app/fields/groups", subject: @farm, groups: groups, edit_path: edit_app_farm_path(return_to: "team") %>
     <div class="cluster cluster--sm screen__actions">
       <%= link_to t(".edit"), edit_app_farm_path(return_to: "team", anchor: "group-profile"), class: "btn btn--primary btn--sm" %>
       <%= link_to t(".talk", app_name: t("app_name")), app_onboarding_path, class: "btn btn--ghost btn--sm" %>

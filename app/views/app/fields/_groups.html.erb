@@ -1,4 +1,6 @@
-<%# The data of the farm or a field, one section per group. Locals: subject, groups (group => data). %>
+<%# The data of the farm or a field, one section per group. Locals: subject,
+    groups (group => data), edit_path (optional: each answerable card links
+    to the edit form opened on it). %>
 <% groups.each do |group, data| %>
   <section class="screen__section reading-group" id="group-<%= group %>" aria-labelledby="group-title-<%= group %>" data-section-nav-target="section">
     <h2 class="reading-group__title" id="group-title-<%= group %>">
@@ -8,7 +10,7 @@
       <%= t("app.fields.groups.#{group}") %>
     </h2>
     <ul class="reading-list" role="list">
-      <%= render partial: "app/fields/reading", collection: subject.readings(data), as: :reading %>
+      <%= render partial: "app/fields/reading", collection: subject.readings(data), as: :reading, locals: { edit_path: local_assigns[:edit_path] } %>
     </ul>
   </section>
 <% end %>

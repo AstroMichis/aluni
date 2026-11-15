@@ -30,6 +30,18 @@ module FieldsHelper
 
   def group_glyph(group) = GROUP_GLYPHS.fetch(group, "fields")
 
+  # The field workspace's tabs (app/fields/_workspace), each an existing page.
+  def workspace_tabs(field)
+    { "summary" => app_field_path(field.key), "planting" => edit_app_field_layout_path(field.key),
+      "rotation" => app_field_rotation_path(field.key), "data" => app_field_path(field.key, tab: "data") }
+  end
+
+  # Data for a link or form that stays inside the field workspace.
+  def in_workspace = { turbo_frame: "workspace", turbo_action: "advance" }
+
+  # The edit form opened on one datum: its group unfolded, scrolled to it.
+  def edit_focus_path(edit_path, key) = "#{edit_path}#{edit_path.include?('?') ? '&' : '?'}focus=#{key}#field-#{key}"
+
   # The plant shape of the crop's kind (config/crops/agronomy.yml); nil draws an empty plot.
   def crop_shape(crop) = crop.present? ? Crops::Agronomy.shape(crop) : nil
 

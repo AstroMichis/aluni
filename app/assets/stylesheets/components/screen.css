@@ -344,6 +344,20 @@ h3.reading-group__title { margin-top: var(--space-6); }
   animation: reading-flash 1.6s ease-out;
 }
 .reading__hint { font-size: var(--text-xs); color: var(--color-text-tertiary); }
+.reading__edit {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-accent-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* The field workspace (app/fields/_workspace): its title row and the flash a tab brings. */
+.workspace__header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3); }
 
 .reading--to_confirm { border-color: color-mix(in srgb, var(--color-info) 45%, transparent); }
 .reading--to_confirm .reading__state { background: var(--color-info-bg); color: var(--color-info); }

@@ -7,6 +7,9 @@
 <meta name="theme-color" content="#0F2920" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#F1EBDD" media="(prefers-color-scheme: light)">
 <meta name="robots" content="noindex">
+<%# Turbo animates page changes with the View Transitions API where the browser has it (base/global.css).
+    Off under test: a transition's snapshot sits over the page for a moment and would swallow a spec's click. %>
+<% unless Rails.env.test? %><meta name="view-transition" content="same-origin"><% end %>
 <%= csrf_meta_tags %>
 <%= csp_meta_tag %>
 <link rel="manifest" href="/manifest.json">

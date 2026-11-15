@@ -56,4 +56,23 @@ RSpec.describe "Plan the planting", type: :system do
     expect(field.field_crops.where(season_year: Date.current.year).order(:share).pluck(:crop_name, :share)).to eq([ [ "Corn", 0.48 ], [ "Beans", 0.52 ] ])
     expect_no_server_errors!
   end
+
+  it "moves between the field's tabs without leaving the page" do
+    visit app_field_path(field, locale: "en")
+    page.execute_script("window.__same_page = true")
+
+    within(".workspace__tabs") { click_link I18n.t("app.fields.workspace.tabs.planting") }
+    expect(page).to have_css(".crop-map--editable", wait: 5)
+    expect(page).to have_current_path(edit_app_field_layout_path(field, locale: "en"))
+    click_button I18n.t("app.field_layouts.edit.save")
+    expect(page).to have_content(I18n.t("app.field_layouts.update.saved", year: Date.current.year), wait: 5)
+
+    within(".workspace__tabs") { click_link I18n.t("app.fields.workspace.tabs.rotation") }
+    expect(page).to have_css(".workspace__tabs [aria-current='page']", text: I18n.t("app.fields.workspace.tabs.rotation"), wait: 5)
+    expect(page.evaluate_script("window.__same_page")).to be(true)
+
+    page.go_back
+    expect(page).to have_current_path(app_field_path(field, locale: "en"), wait: 5)
+    expect_no_server_errors!
+  end
 end

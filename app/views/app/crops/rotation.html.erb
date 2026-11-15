@@ -15,7 +15,7 @@
       <section class="screen__section rotation" aria-labelledby="rotation-<%= field.key %>">
         <h2 class="screen__section-title" id="rotation-<%= field.key %>"><%= link_to plot_name(field), app_field_path(field.key) %></h2>
         <% if field.cdl_proposal.any? %>
-          <p class="choice-set__hint"><%= link_to t(".cdl_waiting", count: field.cdl_proposal.size), app_field_path(field.key, anchor: "group-history") %></p>
+          <p class="choice-set__hint"><%= link_to t(".cdl_waiting", count: field.cdl_proposal.size), app_field_path(field.key, tab: "data", anchor: "group-history") %></p>
         <% end %>
 
         <% zones.each do |zone| %>
