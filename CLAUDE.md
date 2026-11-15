@@ -31,10 +31,10 @@ Aluni is your smart crop cultivation assistant: an open source decision-support 
 | Frontend | Hotwire (Turbo + Stimulus), pure CSS, importmap-rails, vendored Three.js r169 |
 | Native | Hotwire Native iOS 1.2 (ios/, XcodeGen) and Android 1.2 (android/, Gradle KTS) |
 | Rust | vendor/gems/aluni_core (magnus 0.9 on rb-sys 0.9, Rust 1.92 via rust-toolchain.toml) |
-| AI | Google Gemini over Faraday (`Gemini::Client`), paused by default on first deploy |
+| AI | Google Gemini over Faraday (`Gemini::Client`): Vertex AI with the VM service account (`GEMINI_BACKEND=vertex`) or an API key; paused by default on first deploy |
 | Push | action_push_native (APNs/FCM) + web-push (VAPID) behind `NotificationRouter` |
-| Storage | Cloudflare R2 (S3 adapter) via Active Storage, proxied through the app |
-| Hosting | Oracle Always Free A1 VM via Kamal 2 + GHCR + GitHub Actions (config/deploy.yml, docs/deploy/DEPLOY.md) |
+| Storage | Active Storage, proxied through the app: Cloudflare R2 (S3 adapter) by default, or the VM volume with `ACTIVE_STORAGE_SERVICE=local` (current GCP deploy) |
+| Hosting | One GCE VM via Kamal 2 + Artifact Registry + Cloudflare Tunnel; GitHub Actions deploys every push to main with keyless Workload Identity Federation (config/deploy.yml, docs/deploy/DEPLOY.md) |
 | Cost control | Operator pause switches for jobs/cron/gemini/mail/push (app/services/platform/, `platform:*` rake, GitHub workflow) |
 | Fonts | Inter (UI), Fraunces (display), JetBrains Mono (numbers); placeholders, swap in base/variables.css |
 
