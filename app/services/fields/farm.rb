@@ -131,6 +131,8 @@ module Fields
       def observations = record.observations
 
       def main_crops = record.field_crops.select(&:role_main?).sort_by(&:season_year)
+      # Cover crops sown between main seasons, up to this season, oldest first.
+      def cover_crops = record.field_crops.select { |c| c.role_cover? && c.season_year <= Date.current.year }.sort_by(&:season_year)
       def current_crop = main_crops.reverse.find { |c| c.season_year <= Date.current.year }
       def plan = main_crops.find { |c| c.season_year > Date.current.year }
       def crop = current_crop&.crop_name

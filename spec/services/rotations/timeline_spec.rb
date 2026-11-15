@@ -51,6 +51,31 @@ RSpec.describe Rotations::Timeline do
     expect(soy.first(5)).to eq([ [ 0, 11 ], [ 0, 12 ], [ 1, 1 ], [ 1, 2 ], [ 1, 3 ] ])
   end
 
+  it "proposes a cover crop for each bare window of two months or more, by its weather" do
+    line = timeline.for(%w[glycine-max zea-mays glycine-max])
+    first = line.windows.first
+
+    span = ->(w) { [ w.first.year, w.first.month, w.last.year, w.last.month ] }
+
+    # Bare until the soybeans in May, then from October until the corn in April of the next year.
+    expect(line.windows.first(2).map(&span)).to eq([ [ year, 1, year, 4 ], [ year, 10, year + 1, 3 ] ])
+    expect([ first.kind, first.cover ]).to eq([ "frost", "secale-cereale" ]) # 20.7 frost days in March
+    expect(line.windows.first(1).map(&:exposed)).to all(be_positive)
+    expect(line.exposed_with_cover).to eq(line.vulnerable.size - line.windows.sum { |w| w.months.drop(1).count(&:vulnerable?) })
+    expect(line.exposed_with_cover).to be >= line.windows.count { |w| w.first.vulnerable? } # each window's first month stays exposed
+    expect(line.window_for(first.months.first)).to eq(first)
+  end
+
+  it "picks a warm-season legume where the window is warm and frost-free" do
+    climatology = field.observation("nasa_power").payload["climatology"]
+    climatology["FROST_DAYS"] = climatology["FROST_DAYS"].transform_values { 0.0 }
+    climatology["T2M"] = climatology["T2M"].transform_values { 24.0 }
+    record.observations.find_by(source: "nasa_power").update!(payload: field.observation("nasa_power").payload.merge("climatology" => climatology))
+    line = described_class.new(Fields::Farm.for(user).field(record.id), first_year: year).for(%w[glycine-max zea-mays glycine-max])
+
+    expect(line.windows.map(&:cover).uniq).to eq([ "vigna-unguiculata" ])
+  end
+
   it "covers a perennial stand all year and leaves an unknown season blank" do
     line = timeline.for(%w[medicago-sativa medicago-sativa secale-cereale])
 

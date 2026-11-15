@@ -25,6 +25,16 @@ es:
         bare: Suelo descubierto
         vulnerable: Descubierto y expuesto
         unknown: Sin dato
+        window: Espacio para un cultivo de cobertura
+      covers:
+        title: Ventanas para un cultivo de cobertura.
+        effect: "Con una cobertura en cada una, los meses expuestos bajan de %{before} a %{after}."
+        window: "%{from} a %{to}: %{crop} (%{why}; %{exposed} meses expuestos)."
+        dry: La ventana es seca; la cobertura necesita riego para establecerse, o deja rastrojo en su lugar.
+        kinds:
+          frost: resiste las heladas
+          cool: una cobertura de estación fría
+          warm: una leguminosa de verano que aporta nitrógeno
       summary: "Descubierto %{bare} de %{total} meses; %{vulnerable} de ellos expuestos (%{stormy} con tormentas)."
       summary_covered: Suelo cubierto los %{total} meses.
       unknown_note: "Todavía no se conoce la temporada de %{crops}, así que esos meses quedan en blanco."

@@ -21,6 +21,7 @@
 .timeline__month { font-size: var(--text-xs); color: var(--color-text-tertiary); text-align: center; text-transform: uppercase; }
 
 .timeline__cell { height: 14px; border-radius: var(--radius-sm); background: var(--color-bg-tertiary); }
+.timeline__grid--strategy { row-gap: 7px; }
 .timeline__grid--strategy .timeline__cell { height: 18px; }
 .timeline__cell--risk { background: var(--color-bg-secondary); }
 .timeline__cell--storm { background: var(--color-info); }
@@ -35,6 +36,10 @@
   border: 1px solid var(--color-danger);
 }
 .timeline__cell--unknown { background: none; border: 1px dashed var(--color-border-strong); }
+/* A window a cover crop could fill: a green underline on the bare months. */
+.timeline__cell--window { box-shadow: 0 3px 0 var(--color-success); }
+.timeline__covers ul { list-style: none; margin: var(--space-1) 0 0; padding: 0; display: grid; gap: var(--space-1); font-size: var(--text-sm); color: var(--color-text-secondary); }
+.timeline__covers small { display: block; color: var(--color-text-tertiary); }
 
 .timeline__legend { list-style: none; margin: 0; padding: 0; font-size: var(--text-xs); color: var(--color-text-secondary); }
 .timeline__key { display: inline-flex; align-items: center; gap: var(--space-1); }
@@ -43,6 +48,7 @@
 .timeline__key--bare::before { background: var(--color-warning-bg); border: 1px solid var(--color-warning); }
 .timeline__key--vulnerable::before { background: repeating-linear-gradient(135deg, var(--color-danger-bg) 0 2px, var(--color-danger) 2px 4px); border: 1px solid var(--color-danger); }
 .timeline__key--unknown::before { border: 1px dashed var(--color-border-strong); }
+.timeline__key--window::before { background: var(--color-warning-bg); box-shadow: 0 3px 0 var(--color-success); }
 
 @media (forced-colors: active) {
   .timeline__cell--crop, .timeline__cell--storm, .timeline__cell--dry, .timeline__cell--frost, .timeline__cell--heat { background: CanvasText; }
