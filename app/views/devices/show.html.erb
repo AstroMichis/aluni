@@ -1,0 +1,173 @@
+<% app_name = t("app_name") %>
+<% content_for :title, t(".title", app_name: app_name) %>
+<% content_for :description, t(".description", app_name: app_name) %>
+
+<div class="landing devices">
+  <nav class="landing__nav" data-controller="landing-nav" aria-label="<%= t(".nav_label") %>">
+    <div class="container landing__nav-inner">
+      <%= link_to root_path, class: "landing__brand", aria: { label: t(".back_home") } do %>
+        <span class="landing__wordmark"><%= app_name %></span>
+      <% end %>
+      <div class="cluster cluster--sm">
+        <%= render "shared/language_toggle" %>
+        <%= render "shared/access_buttons" %>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main">
+    <section class="devices__hero container" aria-labelledby="devices-title">
+      <div class="devices__hero-copy stack stack--md">
+        <span class="badge badge--accent devices__soon"><%= t(".eyebrow") %></span>
+        <h1 id="devices-title" class="text-display devices__name"><%= t(".title", app_name: app_name) %></h1>
+        <p class="devices__headline"><%= t(".headline") %></p>
+        <p class="devices__lede"><%= t(".lede", app_name: app_name) %></p>
+        <div class="cluster cluster--sm">
+          <a class="btn btn--primary btn--lg" data-turbo="false" href="#models"><%= t(".cta_models") %></a>
+          <% if authenticated? %>
+            <%= link_to t(".cta_open", app_name: app_name), app_root_path, class: "btn btn--secondary btn--lg" %>
+          <% else %>
+            <%= link_to t(".cta_try", app_name: app_name), root_path, class: "btn btn--secondary btn--lg" %>
+          <% end %>
+        </div>
+        <p class="devices__availability"><%= t(".availability") %></p>
+      </div>
+      <div class="devices__hero-art">
+        <%= render "devices/illustration" %>
+      </div>
+    </section>
+
+    <section class="container" aria-label="<%= t(".title", app_name: app_name) %>">
+      <ul class="devices__highlights grid grid--2">
+        <% DevicesController::HIGHLIGHTS.each do |key| %>
+          <li class="devices__highlight"><%= t(".highlights.#{key}") %></li>
+        <% end %>
+      </ul>
+    </section>
+
+    <section id="models" class="landing__section container" aria-labelledby="models-title">
+      <p class="text-label landing__eyebrow"><%= t(".models.kicker") %></p>
+      <h2 id="models-title" class="text-heading landing__section-title"><%= t(".models.title") %></h2>
+      <div class="devices__models grid grid--2">
+        <% DevicesController::MODELS.each do |model| %>
+          <article class="card devices__model devices__model--<%= model %>" aria-labelledby="model-<%= model %>">
+            <div class="card__body stack stack--sm">
+              <div class="cluster cluster--sm devices__model-head">
+                <h3 id="model-<%= model %>" class="text-heading devices__model-name"><%= t(".models.#{model}.name") %></h3>
+                <span class="badge badge--<%= model == "pro" ? "accent" : "secondary" %>"><%= t(".models.#{model}.badge") %></span>
+              </div>
+              <p class="devices__model-summary"><%= t(".models.#{model}.summary") %></p>
+              <ul class="devices__features">
+                <% Array(t(".models.#{model}.features")).each do |feature| %>
+                  <li><%= feature %></li>
+                <% end %>
+              </ul>
+            </div>
+          </article>
+        <% end %>
+      </div>
+    </section>
+
+    <section class="landing__section container" aria-labelledby="sensors-title">
+      <p class="text-label landing__eyebrow"><%= t(".sensors.kicker") %></p>
+      <h2 id="sensors-title" class="text-heading landing__section-title"><%= t(".sensors.title") %></h2>
+      <ul class="devices__sensors grid grid--3">
+        <% DevicesController::SENSORS.each do |sensor| %>
+          <li class="card devices__sensor">
+            <div class="card__body stack stack--sm">
+              <h3 class="devices__sensor-title"><%= t(".sensors.#{sensor}.title") %></h3>
+              <p><%= t(".sensors.#{sensor}.body") %></p>
+              <p class="devices__sensor-compare">
+                <span class="devices__sensor-compare-label"><%= t(".sensors.compare_label") %></span>
+                <span><%= t(".sensors.#{sensor}.compare") %></span>
+              </p>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+
+    <section class="landing__section container container--md" aria-labelledby="offline-title">
+      <p class="text-label landing__eyebrow"><%= t(".offline.kicker") %></p>
+      <h2 id="offline-title" class="text-heading landing__section-title"><%= t(".offline.title") %></h2>
+      <p><%= t(".offline.body") %></p>
+      <ol class="devices__steps">
+        <% DevicesController::OFFLINE_STEPS.each do |step| %>
+          <li class="devices__step">
+            <span class="devices__step-title"><%= t(".offline.steps.#{step}.title") %></span>
+            <span class="devices__step-body"><%= t(".offline.steps.#{step}.body", app_name: app_name) %></span>
+          </li>
+        <% end %>
+      </ol>
+    </section>
+
+    <section class="landing__section container" aria-labelledby="compare-title">
+      <div class="devices__compare grid grid--2">
+        <div class="stack stack--md">
+          <p class="text-label landing__eyebrow"><%= t(".compare.kicker") %></p>
+          <h2 id="compare-title" class="text-heading landing__section-title"><%= t(".compare.title") %></h2>
+          <p><%= t(".compare.body", app_name: app_name) %></p>
+        </div>
+        <%= render "devices/compare_chart" %>
+      </div>
+    </section>
+
+    <section class="landing__section container" aria-labelledby="security-title">
+      <p class="text-label landing__eyebrow"><%= t(".security.kicker") %></p>
+      <h2 id="security-title" class="text-heading landing__section-title"><%= t(".security.title") %></h2>
+      <p class="devices__section-lede"><%= t(".security.body") %></p>
+      <ul class="devices__security grid grid--3">
+        <% DevicesController::SECURITY_ITEMS.each do |item| %>
+          <li class="devices__security-item stack stack--sm">
+            <h3 class="devices__sensor-title"><%= t(".security.items.#{item}.title") %></h3>
+            <p><%= t(".security.items.#{item}.body", app_name: app_name) %></p>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+
+    <section class="landing__section container container--md" aria-labelledby="specs-title">
+      <p class="text-label landing__eyebrow"><%= t(".specs.kicker") %></p>
+      <h2 id="specs-title" class="text-heading landing__section-title"><%= t(".specs.title") %></h2>
+      <div class="devices__table-wrap">
+        <table class="devices__table">
+          <caption class="sr-only"><%= t(".specs.caption") %></caption>
+          <thead>
+            <tr>
+              <th scope="col"><%= t(".specs.feature") %></th>
+              <th scope="col"><%= t(".specs.lite") %></th>
+              <th scope="col"><%= t(".specs.pro") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% DevicesController::SPEC_ROWS.each do |row| %>
+              <tr>
+                <th scope="row"><%= t(".specs.rows.#{row}.label") %></th>
+                <td><%= t(".specs.rows.#{row}.lite") %></td>
+                <td><%= t(".specs.rows.#{row}.pro") %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="landing__section container container--md devices__closing" aria-labelledby="closing-title">
+      <div class="card">
+        <div class="card__body stack stack--md">
+          <h2 id="closing-title" class="text-heading landing__section-title"><%= t(".closing.title") %></h2>
+          <p><%= t(".closing.body", app_name: app_name) %></p>
+          <div class="cluster cluster--sm">
+            <% if authenticated? %>
+              <%= link_to t(".cta_open", app_name: app_name), app_root_path, class: "btn btn--primary" %>
+            <% else %>
+              <%= link_to t(".cta_try", app_name: app_name), root_path, class: "btn btn--primary" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <%= render "shared/public_footer" %>
+</div>

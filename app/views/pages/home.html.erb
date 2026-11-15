@@ -97,6 +97,19 @@
           </div>
         </section>
 
+<section class="landing__section container container--md landing__reveal" data-controller="scroll-reveal" aria-labelledby="devices-teaser-title">
+          <div class="card landing__banner-card">
+            <div class="card__body stack stack--md">
+              <span class="badge badge--accent"><%= t(".devices_teaser.kicker") %></span>
+              <h2 id="devices-teaser-title" class="text-heading landing__section-title"><%= t(".devices_teaser.title", app_name: t("app_name")) %></h2>
+              <p><%= t(".devices_teaser.body") %></p>
+              <div class="cluster cluster--sm">
+                <%= link_to t(".devices_teaser.cta"), devices_path, class: "btn btn--secondary" %>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="get-the-app" class="landing__section landing__download container container--md landing__reveal" data-controller="scroll-reveal" aria-labelledby="get-the-app-title">
           <h2 id="get-the-app-title" class="text-heading landing__section-title"><%= t(".get_the_app_title") %></h2>
           <p><%= t(".get_the_app_body") %></p>
