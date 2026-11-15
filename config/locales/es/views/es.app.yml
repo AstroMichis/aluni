@@ -808,4 +808,4 @@ es:
         ecocrop: Los requisitos de temperatura y pH de los cultivos (FAO ECOCROP) todavía no están cargados.
         suitability: FAO GAEZ no tiene valor para algunos de estos cultivos en tu punto.
         water: Por ahora la necesidad de agua solo se conoce para maíz y soya (FAO-56).
-        slope: La pendiente todavía no se conoce fuera de Estados Unidos.
+        slope: "La pendiente en tu punto todavía no se conoce: los datos de elevación (NASADEM, de 56°S a 60°N) no han respondido."

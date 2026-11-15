@@ -48,6 +48,22 @@ RSpec.describe Fields::Farm do
     expect(global.layer).to eq("global")
     expect(global.reading("soil_series").state).to eq(:gap)
     expect(global.reading("soil_texture").state).to eq(:unanswered) # asked outside the US
+    expect(global.reading("slope").state).to eq(:pending) # 3DEP out of coverage, NASADEM not asked yet
+  end
+
+  it "falls back to NASADEM for the slope where 3DEP has none" do
+    elsewhere = create(:field, farm: record.farm, latitude: -41.32, longitude: -72.98)
+    observe(elsewhere, us: false)
+    create(:field_observation, field: elsewhere, source: "nasadem", payload: { "elevation" => 74.0, "slope" => 3.2 })
+    global = described_class.for(user).field(elsewhere.id)
+
+    slope = global.reading("slope")
+    expect([ slope.state, slope.value, slope.source.id ]).to eq([ :auto, 3.2, "srtm" ])
+    expect(global.reading("elevation").value).to eq(74.0)
+
+    # In the US both answer and the lidar wins.
+    create(:field_observation, field: record, source: "nasadem", payload: { "elevation" => 490.0, "slope" => 9.9 })
+    expect(described_class.for(user).field(record.id).reading("slope").source.id).to eq("usgs_3dep")
   end
 
   it "keeps the crop seasons, the plan and the CDL years not recorded yet" do

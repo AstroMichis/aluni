@@ -126,4 +126,42 @@ RSpec.describe PlanetaryComputer::Client do
       expect(fast.monthly_ndvi(lat: 40.95, lon: -97.5, months: 1, today: today, threads: 1)).to eq([ { "month" => "2025-08", "ndvi" => nil } ])
     end
   end
+
+  describe "#terrain" do
+    let(:dem_url) { %r{\Ahttps://planetarycomputer\.microsoft\.com/api/data/v1/item/point/} }
+    let(:metres_per_degree_lon) { 111_320 * Math.cos(-41.32 * Math::PI / 180) }
+
+    # A plane rising 10 % to the east and 13.3 % to the north: a 16.7 % slope.
+    def stub_dem
+      stub_request(:get, dem_url).with(query: hash_including("collection" => "nasadem", "expression" => "elevation_b1")).to_return do |req|
+        lon, lat = req.uri.path.split("/").last.split(",").map(&:to_f)
+        z = 74.0 + ((lon + 72.98) * metres_per_degree_lon * 0.1) + ((lat + 41.32) * 111_320 * (4.0 / 30))
+        { status: 200, body: point(z), headers: { "Content-Type" => "application/json" } }
+      end
+    end
+
+    it "derives elevation and slope from four NASADEM neighbours in the pin's tile" do
+      stub = stub_dem
+
+      expect(client.terrain(lat: -41.32, lon: -72.98)).to eq("elevation" => 74.0, "slope" => 16.7)
+      expect(stub).to have_been_requested.times(5)
+      expect(a_request(:get, dem_url).with(query: hash_including("item" => "NASADEM_HGT_s42w073"))).to have_been_made.times(5)
+    end
+
+    it "is empty over open sea and outside the radar's latitudes" do
+      stub_request(:get, dem_url).to_return(status: 404, body: "Not Found")
+
+      expect(client.terrain(lat: 0.5, lon: -29.5)).to eq({})
+      expect(client.terrain(lat: 70.0, lon: 25.0)).to eq({})
+    end
+
+    it "returns nil with the error when the data API fails" do
+      fast = described_class.new(cache: ActiveSupport::Cache::MemoryStore.new,
+                                 retry_options: described_class::RETRY.merge(interval: 0, interval_randomness: 0))
+      stub_request(:get, dem_url).to_return(status: 503, body: "busy")
+
+      expect(fast.terrain(lat: -41.32, lon: -72.98)).to be_nil
+      expect(fast.last_error).to include(type: :api_error, status: 503)
+    end
+  end
 end

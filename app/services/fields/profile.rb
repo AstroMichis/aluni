@@ -45,8 +45,8 @@ module Fields
       # Nothing connected can fill it on this layer and nobody is asked: a gap.
       def gap?(layer) = !asked?(layer) && sources_for(layer).none?(&:connected?)
 
-      # The observation sources it reads ("ssurgo", "nasa_power", ...).
-      def observed_sources = observation.values.map(&:first).uniq
+      # The observation sources it reads ("ssurgo", "nasa_power", ...), fallbacks included.
+      def observed_sources = observation.values.flatten(1).map(&:first).uniq
     end
 
     Step = Struct.new(:key, :input, :data, keyword_init: true)
@@ -107,10 +107,12 @@ module Fields
         Array(body.dig("sources", layer)).map { |id| @sources.fetch(id) { fail!(key, "unknown source #{id}") } }
       end
       fail!(key, "sources: us ids must be us-layer sources") if sources["us"].any? { |s| s.layer != "us" }
-      observation = body["observation"].to_h.transform_values do |path|
-        obs, *rest = path.split(".")
-        fail!(key, "unknown observation source #{obs}") unless @observation_sources.key?(obs)
-        [ obs, rest ]
+      observation = body["observation"].to_h.transform_values do |paths|
+        paths.split("|").map do |path|
+          obs, *rest = path.strip.split(".")
+          fail!(key, "unknown observation source #{obs}") unless @observation_sources.key?(obs)
+          [ obs, rest ].freeze
+        end.freeze
       end
 
       Datum.new(key: key, level: level, group: body.fetch("group"), origins: origins.freeze, column: column,

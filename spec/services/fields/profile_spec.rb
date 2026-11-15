@@ -45,7 +45,8 @@ RSpec.describe Fields::Profile do
     slope = profile.fetch(:slope)
     expect(slope.sources_for("us").map(&:id)).to eq(%w[usgs_3dep srtm])
     expect(slope.gap?("us")).to be(false)
-    expect(slope.gap?("global")).to be(true) # SRTM is planned, not connected
+    expect(slope.gap?("global")).to be(false) # NASADEM fills it outside the US
+    expect(profile.fetch(:soil_series).gap?("global")).to be(true) # no global soil survey yet
     expect(profile.fetch(:soil_texture).origin("global")).to eq("ask")
     expect(profile.fetch(:soil_texture).origin("us")).to eq("confirm")
   end

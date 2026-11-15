@@ -101,7 +101,7 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
     expect(response.body).to include(I18n.t("onboarding.values.team.family")).and include(I18n.t("onboarding.values.equipment.tractor"))
 
     get sources_app_fields_path(locale: "en"), headers: native_headers
-    expect(response.body).to include("NASA POWER").and include(I18n.t("app.fields.sources.statuses.planned"))
+    expect(response.body).to include("NASA POWER").and include("NASADEM (SRTM)")
   end
 
   it "shows the crops with their GAEZ potential, the rotation and the calendar" do

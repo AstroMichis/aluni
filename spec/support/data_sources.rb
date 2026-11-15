@@ -44,11 +44,16 @@ module DataSourceStubs
     allow_any_instance_of(PlanetaryComputer::Client).to receive(:monthly_ndvi).and_return(rows)
   end
 
+  def stub_terrain(terrain = { "elevation" => 74.0, "slope" => 3.2 })
+    allow_any_instance_of(PlanetaryComputer::Client).to receive(:terrain).and_return(terrain)
+  end
+
   def stub_all_data_sources(us: true)
     stub_fcc(us: us)
     stub_power
     stub_gaez
     stub_vegetation
+    stub_terrain
     stub_us_layer
   end
 end
