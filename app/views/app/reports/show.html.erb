@@ -5,7 +5,7 @@
 <% profile = Current.user.farmer_profile %>
 
 <div class="screen">
-  <%= render "shared/screen_bar", back_path: app_root_path, back_label: t("app.fields.back_to_menu"), title: t(".crumb"), section: :reports %>
+  <%= render "shared/screen_bar", back_path: back_to_menu_path, back_label: t("app.fields.back_to_menu"), title: t(".crumb"), section: :reports %>
 
   <main id="main" class="screen__body report">
     <header class="screen__header">

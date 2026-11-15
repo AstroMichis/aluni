@@ -7,19 +7,16 @@ en:
         talk_to: Talk to %{app_name}
         eyebrow: Main menu
         dial_label: Menu sections
-        hint: Turn the wheel with your finger, the mouse or the arrow keys. Tap the center to open.
+        hint: Turn the wheel with your finger, the mouse or the arrow keys, then tap where you want to go.
         kicker: "%{number} / %{total}"
         open: Open
         open_section: Open %{title}
-        add_field: Add a new field
-        back: Back to the menu
         soon: Coming soon
         sections:
           fields:
             short: Fields
             title: My fields
             description: Your plots, their soil and their history.
-            lede: Every field you farm, with its location, soil profile and the crops it has carried.
             options:
               add:
                 title: Add a field
@@ -34,7 +31,6 @@ en:
             short: Crops
             title: My crops
             description: What is growing, the rotation and tips to yield more.
-            lede: What is in the ground now, what comes next and advice to improve each harvest.
             options:
               current:
                 title: Growing now
@@ -49,7 +45,6 @@ en:
             short: Weather
             title: Weather
             description: Forecast, rain and soil moisture for your fields.
-            lede: The forecast where you farm, with rain, frost and how wet the root zone is.
             options:
               forecast:
                 title: Forecast
@@ -64,7 +59,6 @@ en:
             short: Team
             title: My team
             description: The people who work with you and their tasks.
-            lede: Who works on each field, what they are doing and what they can see.
             options:
               team:
                 title: Team members
@@ -73,7 +67,6 @@ en:
             short: Reports
             title: Reports
             description: Seasons, yields and costs in one place.
-            lede: A clear summary of each season to plan the next one and share it.
             options:
               season:
                 title: Season summary

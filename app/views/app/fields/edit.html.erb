@@ -2,7 +2,7 @@
 <% content_for :title, t(".title", name: name, app_name: t("app_name")) %>
 
 <div class="screen">
-  <%= render "shared/screen_bar", back_path: app_field_path(@field.key), back_label: t("app.fields.edit.cancel"), title: name %>
+  <%= render "shared/screen_bar", back_path: app_field_path(@field.key), back_label: t("app.fields.edit.cancel"), title: name, switcher: false %>
 
   <main id="main" class="screen__body">
     <header class="screen__header">

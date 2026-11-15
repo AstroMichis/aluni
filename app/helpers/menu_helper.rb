@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
-# The main menu dial: its sections, their panel options and the SVG geometry.
-# Copy lives in app.home.show.*; each section key is also its tone (menu.css).
+# The main menu dial: its sections, their options (shown under the wheel for
+# the selected section), where each section starts, which section a screen
+# belongs to (the section switcher and the way back to the dial), and the SVG
+# geometry. Copy lives in app.home.show.*; each section key is also its tone
+# (menu.css).
 #
 # The dial is drawn in a viewBox centred on 0,0. Every wedge is the same path
 # at 12 o'clock, rotated into place, so its texture, label and selected lift
@@ -24,6 +27,18 @@ module MenuHelper
     reports: { season: :app_reports_path, yield: :harvest_app_reports_path, export: :export_app_reports_path }
   }.freeze
 
+  # Each section's first screen: the hub, the switcher and the dial's Enter go here.
+  SECTION_PATHS = {
+    fields: :app_fields_path, crops: :app_crops_path, weather: :app_weather_path,
+    staff: :app_team_path, reports: :app_reports_path
+  }.freeze
+
+  # Which section a screen belongs to, by controller.
+  CONTROLLER_SECTIONS = {
+    "fields" => :fields, "farms" => :fields, "crops" => :crops, "rotations" => :crops,
+    "weather" => :weather, "team" => :staff, "reports" => :reports
+  }.freeze
+
   INNER = 60
   OUTER = 95
   GAP = 3.5 # degrees between wedges
@@ -34,6 +49,16 @@ module MenuHelper
     name = OPTION_PATHS.dig(section, option)
     public_send(name) if name
   end
+
+  def menu_section_path(section) = public_send(SECTION_PATHS.fetch(section))
+
+  def current_menu_section = CONTROLLER_SECTIONS[controller_name]
+
+  # The dial, turned to the section this screen belongs to.
+  def back_to_menu_path = app_root_path(section: current_menu_section)
+
+  # The section the dial opens on: ?section=weather, else the first.
+  def dial_index(param) = SECTIONS.keys.index { |key| key.to_s == param.to_s } || 0
 
   def dial_step = 360.0 / SECTIONS.size
 

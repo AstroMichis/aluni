@@ -7,19 +7,16 @@ es:
         talk_to: Hablar con %{app_name}
         eyebrow: Menú principal
         dial_label: Secciones del menú
-        hint: Gira la rueda con el dedo, el mouse o las flechas del teclado. Toca el centro para abrir.
+        hint: Gira la rueda con el dedo, el mouse o las flechas del teclado y toca a dónde quieres ir.
         kicker: "%{number} / %{total}"
         open: Abrir
         open_section: Abrir %{title}
-        add_field: Agregar un terreno nuevo
-        back: Volver al menú
         soon: Próximamente
         sections:
           fields:
             short: Terrenos
             title: Mis terrenos
             description: Tus parcelas, su suelo y su historial.
-            lede: Cada terreno que trabajas, con su ubicación, su perfil de suelo y los cultivos que ha tenido.
             options:
               add:
                 title: Agregar un terreno
@@ -34,7 +31,6 @@ es:
             short: Cultivos
             title: Mis cultivos
             description: Lo que está creciendo, la rotación y consejos para producir más.
-            lede: Lo que hay en la tierra hoy, lo que viene después y consejos para mejorar cada cosecha.
             options:
               current:
                 title: Creciendo ahora
@@ -49,7 +45,6 @@ es:
             short: Clima
             title: Clima
             description: Pronóstico, lluvia y humedad del suelo en tus terrenos.
-            lede: El pronóstico donde cultivas, con lluvia, heladas y qué tan húmeda está la raíz.
             options:
               forecast:
                 title: Pronóstico
@@ -64,7 +59,6 @@ es:
             short: Equipo
             title: Mi equipo
             description: Las personas que trabajan contigo y sus tareas.
-            lede: Quién trabaja en cada terreno, qué está haciendo y qué puede ver.
             options:
               team:
                 title: Integrantes
@@ -73,7 +67,6 @@ es:
             short: Reportes
             title: Reportes
             description: Temporadas, rendimientos y costos en un solo lugar.
-            lede: Un resumen claro de cada temporada para planear la siguiente y compartirlo.
             options:
               season:
                 title: Resumen de temporada
