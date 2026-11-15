@@ -3,6 +3,15 @@ en:
     vegetation:
       eyebrow: Landsat and Sentinel-2
       title: Your field from space
+      map:
+        label: "Your field from above, coloured by how green it was on %{date}"
+        caption: "NDVI on %{date} (%{mission}), over satellite imagery. One scene, 10 to 30 m pixels."
+        toggle: Show or hide the NDVI
+        attribution: "NDVI: %{mission} via Microsoft Planetary Computer"
+        failed: The map could not load. The chart above has the same months.
+      missions:
+        sentinel-2: Sentinel-2
+        landsat: Landsat
       normal_key: "Usual for the month (%{years} years, MODIS)"
       normal_point: "Usually %{ndvi} in this month."
       normal_below: "Against its usual green (NASA MODIS, since 2001), your spot was well below it in %{months}. If you did not plan that, it is worth a look."

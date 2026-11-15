@@ -79,7 +79,7 @@ All done. AppEEARS runs one task at a time per account, so a new field's SMAP, M
 ## P3: the wow
 
 - ✅ **Scenarios** on Your plan (`Weather::Scenario`): today, +1 °C, +2 °C, +2 °C with 20 % less rain. NASA POWER's normals shifted (frost days fall a quarter per °C), so FAO-56 water need, scores and the timeline's frost, heat and dry months recompute; the "why" is told the scenario.
-- **NDVI overlay** on the field map (Planetary Computer tiles).
+- ✅ **NDVI map** in "Your field from space" (`ndvi_map_controller.js`, `VegetationHelper#ndvi_tiles_url`): Esri imagery with the latest clear scene's NDVI on top, tiles rendered by Planetary Computer's data API from the same band math as the point series; Leaflet loads when the map scrolls into view; the layer can be hidden.
 - ✅ **Glossary and uncertainty** (`/glossary`, public, en/es): 14 terms, each with what it is, the dataset and scale behind it, and its limits; the evidence sources on Your plan link to their entry. Still to come: satellite next to ground readings (the field station, `docs/DEVICES.md`).
 
 ## Demo checklist

@@ -19,7 +19,7 @@ module Fields
     GREEN = 0.45
     SOURCE = "Landsat (NASA/USGS) · Sentinel-2 (ESA)"
 
-    Month = Struct.new(:month, :ndvi, :cover, :mission, :date, keyword_init: true) do
+    Month = Struct.new(:month, :ndvi, :cover, :mission, :date, :scene, keyword_init: true) do
       def label_date = Date.strptime(month, "%Y-%m")
       def known? = !ndvi.nil?
     end
@@ -34,7 +34,7 @@ module Fields
     def months
       @months ||= Array(@payload["months"]).map do |row|
         ndvi = row["ndvi"]&.to_f
-        Month.new(month: row["month"], ndvi: ndvi, cover: cover(ndvi), mission: row["mission"], date: row["date"])
+        Month.new(month: row["month"], ndvi: ndvi, cover: cover(ndvi), mission: row["mission"], date: row["date"], scene: row["scene"])
       end
     end
 
@@ -50,6 +50,8 @@ module Fields
     def bare_months = months.count { |m| m.cover == "bare" }
     def longest_bare = bare_periods.max_by(&:months)
     def greenest = known_months.max_by(&:ndvi)
+    # The most recent month with a clear scene: the picture the field map colours by NDVI.
+    def latest_scene = known_months.reverse.find(&:scene)
     def missions = known_months.filter_map(&:mission).uniq
 
     private

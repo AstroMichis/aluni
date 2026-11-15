@@ -53,6 +53,11 @@ RSpec.describe Appeears::Client do
     stub_request(:get, "https://data.example/f1.csv").to_return(status: 200, body: "ID,Date\nfield-7,2026-01-01\n")
 
     expect(client.results_csv("abc", product: "SPL4SMGP.008")).to eq("ID,Date\nfield-7,2026-01-01\n")
+
+    stub_request(:get, "#{base}/bundle/eco").to_return(status: 200, headers: json, body: { files: [
+      { file_id: "e1", file_name: "aluni-ECO-L4T-ESI-002-results.csv" } ] }.to_json)
+    stub_request(:get, "#{base}/bundle/eco/e1").to_return(status: 200, body: "ID,Date\n")
+    expect(client.results_csv("eco", product: "ECO_L4T_ESI.002")).to eq("ID,Date\n") # underscores become dashes too
   end
 
   it "raises the data source error when the login fails or the credentials are missing" do
