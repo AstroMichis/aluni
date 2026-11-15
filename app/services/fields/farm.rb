@@ -104,7 +104,7 @@ module Fields
         statuses = datum.observed_sources.map { |obs| observation_status(obs) }
         return :failed if statuses.include?("failed")
 
-        statuses.include?(nil) ? :pending : :gap
+        statuses.include?(nil) || statuses.include?("pending") ? :pending : :gap
       end
 
       def present?(value) = !(value.nil? || value == "" || value == [] || value == {} || value == UNKNOWN)

@@ -46,7 +46,7 @@ sources:
   srtm:             { name: "NASADEM (SRTM)", layer: global, scale: parcel, resolution: "30 m", doc: terrain.md, status: connected }
   hls:              { name: "HLS (Landsat + Sentinel-2)", layer: global, scale: parcel, resolution: "30 m", doc: vegetation_indices.md, status: connected }
   modis_phenology:  { name: "MODIS MCD12Q2", layer: global, scale: zone, resolution: "500 m", doc: vegetation_indices.md, status: planned }
-  smap:             { name: "SMAP L4", layer: global, scale: zone, resolution: "9 km", doc: smap.md, status: planned }
+  smap:             { name: "NASA SMAP L4", layer: global, scale: zone, resolution: "9 km", doc: smap.md, status: connected }
   gpm_imerg:        { name: "NASA GPM IMERG", layer: global, scale: zone, resolution: "0.1°", doc: gpm_imerg.md, status: connected }
   soilgrids:        { name: "SoilGrids (ISRIC)", layer: global, scale: zone, resolution: "250 m", doc: null, status: gap }
   reverse_geocoder: { name: "Global reverse geocoder", layer: global, scale: region, resolution: "-", doc: null, status: gap }
@@ -66,6 +66,7 @@ observations:
   vegetation: hls
   nasadem: srtm
   gpm_imerg: gpm_imerg
+  smap: smap
 
 data:
   farm:
@@ -318,6 +319,13 @@ data:
       observation: { value: gpm_imerg.heavy_days_per_year }
       sources: { global: [gpm_imerg] }
       feeds: [erosion, risk]
+    soil_moisture:
+      group: climate
+      origin: auto
+      observation: { value: smap.latest.pctl }
+      precision: 0
+      sources: { global: [smap] }
+      feeds: [water, risk]
 
 # The add-a-field form: one question per screen, in this order. The profile
 # questions belong to the onboarding chat. input: pin | details | crop | history | review

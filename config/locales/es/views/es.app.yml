@@ -253,6 +253,9 @@ es:
         heavy_rain:
           label: Lluvia fuerte
           value: "%{value} días al año con 25 mm o más"
+        soil_moisture:
+          label: Humedad del suelo (raíces)
+          value: "Percentil %{value} de lo habitual (0 lo más seco, 100 lo más húmedo)"
       index:
         title: Mis terrenos · %{app_name}
         lede: Tus terrenos con su cultivo, su suelo y lo que todavía falta.
@@ -410,6 +413,7 @@ es:
           out_of_coverage: No disponible en este país
           failed: No respondió
           waiting: En camino
+          pending: Pedido a la NASA, listo en minutos
       refresh:
         queued: Volviendo a consultar las fuentes de datos. Tarda un minuto.
       edit:
@@ -815,6 +819,8 @@ es:
         water: "%{crop} necesita unos %{need} mm; la lluvia usual cubre unos %{effective} mm."
         slope: Pendiente de %{value} %.
         heavy_rain: "Unos %{days} días al año llueven 25 mm o más, sobre todo en %{months} (%{years} años de lluvia por satélite)."
+        soil_dry: "En el último año la zona de raíces estuvo en el quinto más seco de lo habitual en %{months} (humedad del suelo por satélite)."
+        soil_usual: En el último año la humedad de la zona de raíces se mantuvo dentro de lo habitual (humedad del suelo por satélite).
         heavy_rain_rare: "Aquí la lluvia fuerte es rara: unos %{days} días al año con 25 mm o más (%{years} años de lluvia por satélite)."
         same_family: "%{crop} seguiría a su propia familia."
         monoculture: "%{crop} tres temporadas o más seguidas."
@@ -824,6 +830,7 @@ es:
         low_suitability: Un cultivo tiene aptitud baja en tu punto según FAO GAEZ.
         harvester: Los cereales pequeños necesitan cosechadora; tu equipo no la incluye.
         same_family: Las plagas de una misma familia podrían mantenerse.
+        dry_soil: La zona de raíces estuvo inusualmente seca varios meses del último año. Revisa la humedad del suelo antes de sembrar y deja rastrojo para conservarla.
         heavy_rain: Aquí hay días de 50 mm o más todos los años. Los cultivos en hilera dejan el suelo descubierto entre temporadas; deja rastrojo o un cultivo de cobertura en los meses de tormenta.
         establishment: La alfalfa tarda una temporada en establecerse y necesita mercado o animales.
         new_crop: Trae un cultivo que tu campo no ha tenido, y prefieres cambiar con cuidado. Pruébalo primero en una parte del campo.

@@ -25,6 +25,7 @@ module Rotations
     # Where the slope comes from, sharpest first: US lidar, then NASA's global DEM.
     SLOPE_SOURCES = { "usgs_elevation" => "USGS 3DEP", "nasadem" => "NASA NASADEM" }.freeze
     STORM_PENALTY = 7   # more per row-crop season where 50 mm days come every year (GPM IMERG)
+    DRY_SOIL_MONTHS = 3 # months of the last year in the driest fifth of the usual soil moisture (SMAP)
     DRY_SHARE = 0.5     # a rainfed crop whose season rain is under half its need
     PERENNIALS = %w[medicago-sativa].freeze # a stand of several seasons is one crop, not a repeat
     LOW_SUITABILITY = 4000
@@ -148,6 +149,7 @@ module Rotations
 
     # How much of the crops' water need the usual rain covers (irrigation fills the rest).
     def water(crops, facts, gaps)
+      soil_moisture_fact(facts)
       needs = crops.uniq.filter_map do |crop|
         need = water_need(crop) or next
         facts << Fact.new(key: "water", values: { crop: crop, need: need.crop_mm, effective: need.effective_mm }, source: "NASA POWER · FAO-56")
@@ -194,6 +196,17 @@ module Rotations
 
     def rain = (@rain ||= Weather::RainExtremes.new(@field.observation("gpm_imerg")))
 
+    # How wet the root zone was over the last year against its usual range (SMAP).
+    def soil_moisture_fact(facts)
+      return unless soil.present?
+
+      dry = soil.dry_months.map { |m| m.label_date.month }
+      key, values = dry.any? ? [ "soil_dry", { months: dry } ] : [ "soil_usual", {} ]
+      facts << Fact.new(key: key, values: values, source: Weather::SoilMoisture::SOURCE)
+    end
+
+    def soil = (@soil ||= Weather::SoilMoisture.new(@field.observation("smap")))
+
     # Fewer different crops and machinery the farm already has mean less work.
     def workload(crops)
       distinct = crops.uniq.size
@@ -215,6 +228,7 @@ module Rotations
     def risks(crops, scores)
       list = []
       list << "dry" if !@record.uses_irrigation? && crops.uniq.any? { |c| (n = water_need(c)) && n.rain_mm < n.crop_mm * DRY_SHARE }
+      list << "dry_soil" if !@record.uses_irrigation? && soil.dry_months.size >= DRY_SOIL_MONTHS
       list << "low_suitability" if crops.any? { |c| (r = @potential.for(c)) && r.suitability && r.suitability < LOW_SUITABILITY }
       list << "harvester" if crops.any? { |c| SMALL_GRAINS.include?(Crops::Agronomy.gaez_name(c)) } && !harvester?
       list << "same_family" if scores["pest_break"].to_i < 75
