@@ -65,9 +65,9 @@
               <% findings = Crops::RotationCheck.new(field.seasons).findings %>
               <tr>
                 <th scope="row"><%= link_to plot_name(field), app_field_path(field.key) %></th>
-                <td><%= field.empty? ? t("app.fields.index.no_crop") : crop_name(field.current_crop) %></td>
+                <td><%= crop_mix(field) %></td>
                 <td><%= field_area(field) %></td>
-                <td><%= field.plan ? crop_name(field.plan) : t(".table.no_plan") %></td>
+                <td><%= field.plan_crops.any? ? crop_mix(field, field.plan_crops) : t(".table.no_plan") %></td>
                 <td><%= findings.any? ? findings.map { |f| t("app.crops.rotation.findings.#{f.kind}.label") }.uniq.to_sentence : t(".table.no_flags") %></td>
                 <td><%= progress_label(field) %></td>
               </tr>

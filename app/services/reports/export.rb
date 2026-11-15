@@ -36,7 +36,7 @@ module Reports
 
     def field_hash(field)
       { "id" => field.key, "name" => field.name, "latitude" => field.record.latitude&.to_f, "longitude" => field.record.longitude&.to_f,
-        "crops" => field.record.field_crops.map { |c| c.slice(:season_year, :role, :crop_name, :scientific_name, :planting_month, :harvest_month, :source) },
+        "crops" => field.record.field_crops.map { |c| c.slice(:season_year, :role, :crop_name, :scientific_name, :planting_month, :harvest_month, :source).merge("share" => c.portion, "cells" => c.map_cells) },
         "sources" => field.observations.to_h { |o| [ o.source, { "status" => o.status, "fetched_at" => o.fetched_at&.iso8601 } ] } }
     end
 

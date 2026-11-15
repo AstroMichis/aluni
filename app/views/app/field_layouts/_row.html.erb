@@ -1,0 +1,47 @@
+<%# One crop of the season in the planner. Locals: row (FieldLayoutsHelper#layout_row,
+    or {} for a blank one), slot, unit, total. The inputs keep one order in
+    every row so Rails groups crops[][...] per crop. %>
+<% months = t("date.month_names") %>
+<li class="planner-row" data-crop-layout-target="row" data-slot="<%= slot %>">
+  <label class="planner-row__brush">
+    <input type="radio" name="brush" value="<%= slot %>" data-action="crop-layout#pick"<%= " checked" if slot.zero? %>>
+    <span class="crop-swatch" data-slot="<%= slot %>" aria-hidden="true"></span>
+    <span class="sr-only"><%= t("app.field_layouts.row.paint") %></span>
+  </label>
+
+  <label class="planner-row__crop">
+    <span class="sr-only"><%= t("app.field_layouts.row.crop") %></span>
+    <input class="input" type="text" name="crops[][crop]" value="<%= row[:crop] %>" list="crop-names" maxlength="<%= FieldCrop::NAME_MAX %>"
+           placeholder="<%= t("app.field_layouts.row.crop") %>" autocomplete="off" required data-action="input->crop-layout#rename">
+  </label>
+
+  <button type="button" class="planner-row__remove" data-action="crop-layout#remove" aria-label="<%= t("app.field_layouts.row.remove") %>">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+
+  <label class="planner-row__amount">
+    <span class="sr-only"><%= t("app.field_layouts.row.amount", unit: unit) %></span>
+    <input class="input text-mono" type="number" name="crops[][amount]" value="<%= row[:amount] %>" min="0" max="<%= total %>"
+           step="<%= unit == "%" ? "0.1" : "0.01" %>" inputmode="decimal" data-crop-layout-target="amount" data-action="input->crop-layout#resize">
+    <span class="planner-row__unit" aria-hidden="true"><%= unit %></span>
+    <span class="planner-row__percent text-mono" data-crop-layout-target="percent" aria-hidden="true"><%= number_to_percentage(row[:share].to_f * 100, precision: 0) if row[:share] && unit != "%" %></span>
+  </label>
+  <input class="planner-row__slider" type="range" min="0" max="<%= total %>" step="<%= unit == "%" ? "1" : (total / 100.0).round(4) %>"
+         value="<%= row[:amount] || 0 %>" aria-label="<%= t("app.field_layouts.row.slider") %>" data-crop-layout-target="slider" data-action="input->crop-layout#slide">
+  <input type="hidden" name="crops[][cells]" value="<%= Array(row[:cells]).join(",") %>" data-crop-layout-target="cells">
+
+  <details class="planner-row__dates">
+    <summary><%= t("app.field_layouts.row.dates") %></summary>
+    <div class="planner-row__months">
+      <% { planting_month: "planting", harvest_month: "harvest" }.each do |attr, key| %>
+        <label class="input-group">
+          <span class="input-group__label"><%= t("app.field_layouts.row.#{key}") %></span>
+          <select class="input select" name="crops[][<%= attr %>]">
+            <option value=""><%= t("app.field_layouts.row.no_month") %></option>
+            <% (1..12).each do |m| %><option value="<%= m %>"<%= " selected" if row[attr] == m %>><%= months[m] %></option><% end %>
+          </select>
+        </label>
+      <% end %>
+    </div>
+  </details>
+</li>

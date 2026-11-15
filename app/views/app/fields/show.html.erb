@@ -12,22 +12,40 @@
 
   <main id="main" class="screen__body" data-controller="section-nav" data-section-nav-current-class="section-nav__link--current">
     <header class="field-hero">
-      <%= render "app/fields/plot", crop: @field.current_crop, size: "lg", id: "plot-hero-#{@field.key}" %>
+      <%= render "app/fields/plot", crops: @field.current_crops, size: "lg", id: "plot-hero-#{@field.key}" %>
       <div class="field-hero__copy">
         <h1 class="text-display screen__title"><%= name %></h1>
-        <p class="screen__lede"><%= field_area(@field) %> · <%= @field.empty? ? t("app.fields.index.no_crop") : crop_name(@field.current_crop) %></p>
+        <p class="screen__lede"><%= field_area(@field) %> · <%= crop_mix(@field) %></p>
         <div class="cluster cluster--sm">
           <%= link_to t(".compare"), app_field_rotation_path(@field.key), class: "btn btn--primary btn--sm" unless @field.empty? %>
           <%= link_to t(".edit"), edit_app_field_path(@field.key), class: "btn btn--secondary btn--sm" %>
         </div>
         <% if @field.empty? %>
           <%= render "shared/aluni", message: t(".empty_message") %>
-          <%= link_to t(".plant"), edit_app_field_path(@field.key, anchor: "field-current_crop"), class: "btn btn--primary" %>
+          <%= link_to t(".plant"), edit_app_field_layout_path(@field.key), class: "btn btn--primary" %>
         <% else %>
           <%= render "shared/aluni", message: t(".tips.#{crop_shape(@field.current_crop)}") %>
         <% end %>
       </div>
     </header>
+
+    <% season = @field.current_season || Date.current.year %>
+    <% crops = @field.season_crops(season) %>
+    <section class="screen__section" id="planting" aria-labelledby="planting-title">
+      <h2 class="screen__section-title" id="planting-title"><%= t(".planting.title", year: season) %></h2>
+      <div class="planting">
+        <%= render "app/field_layouts/map", crops: crops, size: "sm", label: t(".planting.map_label", mix: crop_mix(@field, crops)) %>
+        <% if crops.any? %>
+          <%= render "app/field_layouts/legend", field: @field, crops: crops, year: season %>
+        <% else %>
+          <p class="choice-set__hint"><%= t(".planting.empty") %></p>
+        <% end %>
+        <div class="planting__actions">
+          <%= link_to t(".planting.edit"), edit_app_field_layout_path(@field.key, year: season), class: "btn btn--secondary btn--sm" %>
+          <%= link_to t(".planting.plan", year: Date.current.year + 1), edit_app_field_layout_path(@field.key, year: Date.current.year + 1), class: "btn btn--ghost btn--sm" %>
+        </div>
+      </div>
+    </section>
 
     <% if (image = @field.image_url) %>
       <figure class="area-image">

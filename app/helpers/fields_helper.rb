@@ -15,9 +15,16 @@ module FieldsHelper
   # perspective: rows narrow towards the bottom edge.
   PLOT_ROWS = [ [ 52, 5, 26, 174 ], [ 78, 4, 40, 160 ], [ 104, 3, 54, 146 ] ].freeze # y, plants, x from, x to
 
-  def plot_plants
+  # The plants of the illustrated field. With crops, each plant belongs to
+  # the crop whose band (by share, left to right) its place falls in, or to
+  # none past the planted part.
+  def plot_plants(crops = [])
+    bands = crops.each_with_index.reduce([]) { |acc, (crop, i)| acc << [ i, (acc.last&.last || 0) + crop.portion ] }
     PLOT_ROWS.each_with_index.flat_map do |(y, count, from, to), row|
-      Array.new(count) { |i| { x: from + ((to - from) * (i + 0.5) / count), y: y, delay: (row * 4) + i } }
+      Array.new(count) do |i|
+        place = (i + 0.5) / count
+        { x: from + ((to - from) * place), y: y, delay: (row * 4) + i, crop: bands.find { |_, upto| place <= upto + 0.001 }&.first }
+      end
     end
   end
 

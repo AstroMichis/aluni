@@ -1,0 +1,18 @@
+<%# The map's legend: each crop with its swatch and area, and what is left
+    unplanted. Locals: field (Fields::Farm::Field), crops, year. %>
+<ul class="crop-legend" role="list">
+  <% crops.each_with_index do |crop, i| %>
+    <li class="crop-legend__item">
+      <span class="crop-swatch" data-slot="<%= i %>" aria-hidden="true"></span>
+      <span class="crop-legend__name"><%= crop_name(crop) %></span>
+      <span class="crop-legend__area"><%= portion_area(field, crop.portion) %></span>
+    </li>
+  <% end %>
+  <% if (rest = field.unassigned_share(year)) >= 0.01 && crops.any? %>
+    <li class="crop-legend__item crop-legend__item--empty">
+      <span class="crop-swatch" aria-hidden="true"></span>
+      <span class="crop-legend__name"><%= t("app.field_layouts.map.empty_label") %></span>
+      <span class="crop-legend__area"><%= portion_area(field, rest) %></span>
+    </li>
+  <% end %>
+</ul>

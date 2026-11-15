@@ -66,7 +66,7 @@ module Onboarding
         next unless row.is_a?(Hash) && row["season_year"] && row["role"]
 
         key = "crops.#{row['season_year']}.#{row['role']}"
-        crop = field.field_crops.find_by(season_year: row["season_year"], role: row["role"])
+        crop = (row["id"] && field.field_crops.find_by(id: row["id"])) || field.field_crops.find_by(season_year: row["season_year"], role: row["role"])
         if row["new_record"]
           crop&.destroy!
           restored[key] = nil

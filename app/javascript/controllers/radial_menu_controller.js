@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { Turbo } from "@hotwired/turbo-rails"
+import { reducedMotion } from "preferences/motion"
 
 // The main menu dial. The rotor turns under a finger or a mouse drag (with
 // momentum and a spring that snaps to the nearest section), the mouse wheel,
@@ -43,7 +44,7 @@ export default class extends Controller {
     this.velocity = this.wheelDelta = 0
     this.index = -1
     this.animations = []
-    this.reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    this.reduced = reducedMotion()
 
     this.render()
     this.sync(false)

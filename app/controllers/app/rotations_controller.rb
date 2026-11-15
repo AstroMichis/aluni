@@ -1,6 +1,7 @@
 module App
-  # The rotation comparison for one field (Rotations::Comparator): the current
-  # rotation against the alternatives, each with its scores, evidence,
+  # The rotation comparison for one piece of a field (Rotations::Comparator on
+  # a Fields::Zone, ?zone= by index; a field never split is one zone): the
+  # current rotation against the alternatives, each with its scores, evidence,
   # benefits, gaps and risks. "Why" is written by Rotations::NarrateService in
   # a lazy frame; the page shows the rule-based text until it arrives.
   class RotationsController < BaseController
@@ -8,7 +9,8 @@ module App
 
     before_action do
       @field = @farm.field(params[:field_id]) or raise ActiveRecord::RecordNotFound
-      @comparator = Rotations::Comparator.new(@field, profile: Current.user.farmer_profile)
+      @zone = @field.zone(params[:zone])
+      @comparator = Rotations::Comparator.new(@zone, profile: Current.user.farmer_profile)
     end
 
     def show

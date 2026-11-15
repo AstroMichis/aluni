@@ -40,6 +40,19 @@ class Field < ApplicationRecord
 
   def observation(source) = observations.find { |o| o.source == source.to_s }
 
+  # The row a single-crop writer (the field finder, the chat, the field form)
+  # may update for a season: the crop's own row, else the season's only row
+  # when the field is not split, else a new row on an empty season. On a
+  # season split into zones it never takes another crop's row: nil.
+  def season_slot(year, role, crop_key = nil)
+    rows = field_crops.select { |c| c.season_year == year.to_i && c.role == role.to_s }
+    own = crop_key && rows.find { |c| c.crop_key == crop_key }
+    return own if own
+    return field_crops.build(season_year: year, role: role) if rows.empty?
+
+    rows.size == 1 && rows.first.whole_field? ? rows.first : nil
+  end
+
   # Anything but "unknown" and "rainfed" means water is applied.
   def uses_irrigation? = !(irrigation_unknown? || irrigation_rainfed?)
 

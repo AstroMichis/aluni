@@ -70,9 +70,19 @@ RSpec.describe Onboarding::ApplyProposalService do
     expect { result = described_class.call(user: user, accepted: %w[crops.2025.main]) }.not_to change(FieldCrop, :count)
     expect(existing.reload).to have_attributes(crop_name: "Soy", scientific_name: "Glycine max", source: "assistant")
     expect(result.value[:before]["crops"]).to eq([
-      { "season_year" => 2025, "role" => "main",
+      { "season_year" => 2025, "role" => "main", "id" => existing.id,
         "attributes" => { "crop_name" => "Corn", "scientific_name" => "Zea mays", "planting_month" => 4, "harvest_month" => 10, "source" => "farmer" } }
     ])
+  end
+
+  it "never takes another crop's row in a season the farmer split between crops" do
+    corn = create(:field_crop, field: field, season_year: 2025, role: :main, crop_name: "Corn", share: 0.5, cells: (0...50).to_a)
+    beans = create(:field_crop, field: field, season_year: 2025, role: :main, crop_name: "Beans", scientific_name: "Phaseolus vulgaris",
+                                share: 0.5, cells: (50...100).to_a)
+    session.update!(proposal: { "crops" => [ { "season_year" => 2025, "role" => "main", "crop_name" => "Soy", "scientific_name" => "Glycine max" } ] })
+
+    expect { described_class.call(user: user, accepted: %w[crops.2025.main]) }.not_to change(FieldCrop, :count)
+    expect([ corn.reload.crop_name, beans.reload.crop_name ]).to eq(%w[Corn Beans])
   end
 
   it "applies the pin as one fact" do

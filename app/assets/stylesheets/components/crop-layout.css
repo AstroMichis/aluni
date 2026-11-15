@@ -1,0 +1,223 @@
+/* The field map and the planner (app/field_layouts, crop_layout_controller.js).
+   A season's crops on a 10x10 grid of the field, drawn like the tour's field
+   finder: rounded cells with a hairline of ground between them. Each crop
+   takes a slot (0 to 5, largest first) with its own colour AND texture, so
+   the map never relies on colour alone; the legend and the numbers name them. */
+
+.crop-map,
+.planner,
+.crop-legend {
+  --crop-0: var(--color-success);
+  --crop-1: var(--color-warning);
+  --crop-2: var(--color-info);
+  --crop-3: var(--color-danger);
+  --crop-4: var(--color-mascot-seed);
+  --crop-5: var(--color-secondary-hover);
+  --crop-ground: var(--color-bg-tertiary);
+}
+
+/* Slot colour and texture, shared by map cells and swatches. */
+[data-slot="0"] { --crop: var(--crop-0); --crop-texture: radial-gradient(circle at 30% 30%, var(--crop-ink) 0 14%, transparent 16%) 0 0 / 8px 8px; }
+[data-slot="1"] { --crop: var(--crop-1); --crop-texture: repeating-linear-gradient(45deg, var(--crop-ink) 0 1.5px, transparent 1.5px 6px); }
+[data-slot="2"] { --crop: var(--crop-2); --crop-texture: repeating-linear-gradient(90deg, var(--crop-ink) 0 1.5px, transparent 1.5px 6px); }
+[data-slot="3"] { --crop: var(--crop-3); --crop-texture: repeating-linear-gradient(-45deg, var(--crop-ink) 0 1.5px, transparent 1.5px 6px); }
+[data-slot="4"] { --crop: var(--crop-4); --crop-texture: repeating-linear-gradient(0deg, var(--crop-ink) 0 1.5px, transparent 1.5px 6px); }
+[data-slot="5"] { --crop: var(--crop-5); --crop-texture: repeating-linear-gradient(45deg, var(--crop-ink) 0 1px, transparent 1px 5px), repeating-linear-gradient(-45deg, var(--crop-ink) 0 1px, transparent 1px 5px); }
+[data-slot] { --crop-ink: color-mix(in srgb, var(--color-bg-primary) 38%, transparent); }
+
+.crop-swatch {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-sm);
+  background: var(--crop-texture, none), var(--crop, var(--crop-ground));
+  border: 1px solid color-mix(in srgb, var(--crop, var(--color-border-strong)) 70%, var(--color-bg-primary));
+}
+
+/* Map */
+.crop-map {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+  aspect-ratio: 1;
+  padding: 4px;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-default);
+}
+.crop-map--sm { width: 88px; gap: 1px; padding: 2px; border-radius: var(--radius-md); }
+.crop-map--lg { width: 100%; max-width: 420px; }
+.crop-map__row { display: contents; }
+
+.crop-map__cell {
+  border-radius: 3px;
+  background: var(--crop-texture, none), var(--crop, var(--crop-ground));
+  transition: background-color var(--transition-fast);
+}
+.crop-map--sm .crop-map__cell { border-radius: 1.5px; }
+.crop-map__cell--dim { opacity: 0.25; }
+.crop-map__cell:not([data-slot]),
+.crop-map__cell[data-slot=""] { --crop: var(--crop-ground); --crop-texture: none; }
+
+.crop-map--editable {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: crosshair;
+}
+.crop-map--editable .crop-map__cell:focus-visible { outline: 2px solid var(--color-text-primary); outline-offset: 1px; position: relative; z-index: 1; }
+
+/* Legend */
+.crop-legend { display: grid; gap: var(--space-2); }
+.crop-legend__item { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); }
+.crop-legend__name { font-weight: 600; }
+.crop-legend__area { margin-left: auto; font-family: var(--font-mono); color: var(--color-text-secondary); }
+.crop-legend__item--empty .crop-legend__name { font-weight: 400; color: var(--color-text-secondary); }
+
+/* Zone picker (app/rotations/show): each piece of the field with its map. */
+.zone-picker { display: flex; gap: var(--space-3); margin-bottom: var(--space-6); overflow-x: auto; scrollbar-width: none; }
+.zone-picker__link {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 200px;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+}
+.zone-picker__link .crop-map--sm { width: 56px; }
+.zone-picker__link strong { display: block; color: var(--color-text-primary); }
+.zone-picker__link[aria-current="page"] { border-color: var(--color-accent); background: var(--color-accent-muted); }
+
+/* A piece of a field in the rotation overview (app/crops/rotation). */
+.rotation__zone + .rotation__zone { margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid var(--color-border-subtle); }
+.rotation__zone-title { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); font-size: var(--text-base); }
+.rotation__zone-title .crop-map--sm { width: 48px; }
+
+/* Planting summary on a field (app/fields/show) */
+.planting { display: grid; grid-template-columns: auto 1fr; gap: var(--space-4); align-items: center; }
+.planting .crop-map--sm { width: 104px; }
+.planting__actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+/* Planner */
+.planner-seasons {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.planner-seasons__link {
+  display: grid;
+  justify-items: center;
+  min-width: 72px;
+  min-height: 48px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+}
+.planner-seasons__link small { font-size: var(--text-xs); }
+.planner-seasons__link[aria-current="page"] { border-color: var(--color-accent); background: var(--color-accent-muted); color: var(--color-text-primary); }
+
+.planner__layout { display: grid; gap: var(--space-8); }
+.planner__list { display: grid; gap: var(--space-3); }
+
+.planner-row {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 44px;
+  grid-template-areas: "brush crop remove" "brush amount amount" "slider slider slider" "dates dates dates";
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-left: 4px solid var(--crop, var(--color-border-default));
+}
+.planner-row__brush { grid-area: brush; align-self: start; display: grid; place-items: center; width: 48px; height: 48px; border-radius: var(--radius-md); cursor: pointer; }
+.planner-row__brush input { position: absolute; opacity: 0; pointer-events: none; }
+.planner-row__brush .crop-swatch { width: 28px; height: 28px; transition: transform var(--transition-fast); }
+.planner-row__brush:has(input:checked) { background: color-mix(in srgb, var(--crop) 16%, transparent); outline: 2px solid var(--crop); }
+.planner-row__brush:has(input:checked) .crop-swatch { transform: scale(1.1); }
+.planner-row__brush:has(input:focus-visible) { outline: 2px solid var(--color-text-primary); outline-offset: 2px; }
+.planner-row__crop { grid-area: crop; }
+.planner-row__remove {
+  grid-area: remove;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+}
+.planner-row__remove svg { width: 18px; height: 18px; }
+.planner-row__remove:hover { color: var(--color-text-primary); background: var(--color-bg-hover); }
+.planner-row__amount { grid-area: amount; display: flex; align-items: center; gap: var(--space-2); }
+.planner-row__amount .input { width: 7.5rem; }
+.planner-row__unit { color: var(--color-text-secondary); font-size: var(--text-sm); }
+.planner-row__percent { margin-left: auto; color: var(--color-text-secondary); font-size: var(--text-sm); }
+.planner-row__slider { grid-area: slider; width: 100%; min-height: 32px; accent-color: var(--crop, var(--color-accent)); }
+.planner-row__dates { grid-area: dates; font-size: var(--text-sm); }
+.planner-row__dates summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--color-text-secondary); }
+.planner-row__months { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); padding-top: var(--space-2); }
+
+.planner__add { margin-top: var(--space-3); }
+.planner__add svg { width: 16px; height: 16px; }
+
+.planner__total { margin-top: var(--space-4); font-family: var(--font-mono); font-size: var(--text-sm); color: var(--color-text-secondary); }
+.planner__total--over { color: var(--color-danger); font-weight: 600; }
+
+.planner__shortcuts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: var(--space-4); }
+.planner__shortcuts[hidden], .planner__brushes[hidden] { display: none; }
+.planner__shortcuts-label { width: 100%; font-size: var(--text-xs); color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: var(--tracking-wide); }
+.planner__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-default);
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.planner__chip:hover { background: var(--color-bg-hover); }
+.planner__chip[aria-pressed="true"] { border-color: var(--color-text-primary); background: var(--color-bg-hover); font-weight: 600; }
+.planner__chip:focus-visible { outline: 2px solid var(--color-text-primary); outline-offset: 2px; }
+
+.planner__brushes { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-3); }
+.planner__map .choice-set__hint { margin-top: var(--space-3); }
+
+.planner__actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-8);
+  padding: var(--space-3) 0 max(var(--space-3), env(safe-area-inset-bottom));
+  background: linear-gradient(transparent, var(--color-bg-primary) 30%);
+}
+
+/* Phones: the map first, then the crops. Wide screens: the crops on the
+   left, the map beside them, staying in view while the list scrolls. */
+.crop-map--lg { margin-inline: auto; }
+
+@media (min-width: 1025px) {
+  .planner__layout { grid-template-columns: minmax(0, 1fr) minmax(320px, 420px); align-items: start; }
+  .planner__crops { grid-column: 1; grid-row: 1; }
+  .planner__map { grid-column: 2; grid-row: 1; position: sticky; top: calc(72px + var(--space-4)); }
+}
+
+@media (forced-colors: active) {
+  .crop-map__cell, .crop-swatch { forced-color-adjust: none; border: 1px solid CanvasText; }
+  .planner-row__brush:has(input:checked) { outline: 2px solid Highlight; }
+}
