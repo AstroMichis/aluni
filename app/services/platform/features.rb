@@ -23,6 +23,10 @@ module Platform
     # gemini.api_key) or, with GEMINI_BACKEND=vertex, a Google Cloud project.
     def gemini? = Gemini::Client.configured?
 
+    # Meteomatics needs the account's username and password (credentials
+    # meteomatics.* or ENV METEOMATICS_*). Planetary Computer needs nothing.
+    def meteomatics? = Meteomatics::Client.configured?
+
     # Native push is configured when either APNs or FCM credentials exist (config/push.yml).
     def push?
       Rails.application.credentials.dig(:action_push_native, :apns, :key_id).present? ||

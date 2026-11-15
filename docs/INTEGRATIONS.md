@@ -15,6 +15,24 @@ Every outside service has one client class, a switchboard guard, structured erro
 - Pictures of the farmer's area come from NASA GIBS WMS (`Onboarding::AreaImage.url`), loaded by the browser as an `<img>` (`img-src https:` in the CSP); the server never fetches them, so there is no client and no switchboard entry. The default layer is static Blue Marble; the daily true-colour layer needs a `TIME`.
 - Specs: `spec/services/gemini/client_spec.rb` (WebMock); `spec/support/external_apis.rb` fails the suite if any other spec reaches a Google host.
 
+## Meteomatics (`app/services/meteomatics/client.rb`)
+
+- Weather API, current conditions and forecast at 1 km (`docs/data_sources/meteomatics.md`). The hackathon offer gives 1,000 queries a day.
+- Off until configured: credentials `meteomatics.{username,password}` or ENV `METEOMATICS_USERNAME` / `METEOMATICS_PASSWORD` into `config.x.meteomatics` (`config/initializers/meteomatics.rb`). `Platform::Features.meteomatics?` is false while either is missing, and the client returns `nil` with `last_error[:type] == :not_configured` without calling out.
+- `forecast(lat:, lon:, hours: 72, step: "PT1H", parameters: FORECAST_PARAMETERS)` returns `{ "t_2m:C" => [[Time, value], ...] }`, at most 10 parameters per query. HTTP Basic auth, timeout 20 s, retries on 502/503/504.
+- Successful answers are cached in `Rails.cache` per point rounded to 0.01° and per hour (`METEOMATICS_CACHE_TTL_SECONDS`, default 3600). Failures are not cached.
+- `Platform::Switchboard.guard!(:meteomatics)` before each request. `platform:bootstrap` pauses it on a new server.
+- Errors: `last_error` `{ type:, status:, message: }`, with types `unauthorized`, `rate_limited`, `service_unavailable`, `api_error`, `network_error`, `empty_response`, `invalid_request` and `not_configured`.
+- Specs: `spec/services/meteomatics/client_spec.rb` (WebMock).
+
+## Planetary Computer (`app/services/planetary_computer/client.rb`)
+
+- Sentinel-2 L2A from Microsoft Planetary Computer, with no account or key (`docs/data_sources/sentinel2_stac.md`).
+- `scenes(lat:, lon:, from:, to:, max_cloud: 30)` runs a STAC search over the point, least cloudy first. `point_value(lat:, lon:, item:, expression:)` calls the data API's (TiTiler) `item/point`, which computes band math server side, so no imagery is downloaded.
+- `ndvi(lat:, lon:, from:, to:)` returns `[{ date:, ndvi:, scene:, cloud_cover: }, ...]` newest first. It keeps only scenes whose pixel is clear in the scene classification (`SCL` 4, 5 or 6), costs two point calls per scene (at most 8 scenes), and is cached for 6 h.
+- Free, so it ships unpaused, but it has a switch: `Platform::Switchboard.guard!(:planetary_computer)`. Timeout 20 s, retries on 429/502/503/504.
+- Specs: `spec/services/planetary_computer/client_spec.rb` (WebMock).
+
 ## Outbound client pattern
 
 One class per provider under `app/services/<provider>/client.rb`: Faraday with JSON middleware and `faraday-retry`, explicit timeouts, structured error classes, `Platform::Switchboard.guard!(:service)` before each call (or `Platform::FaradayPauseGuard` as middleware for clients with several connections), a `PlatformSwitch::SERVICES` entry and a `Platform::Features` flag when the integration ships off by default.
