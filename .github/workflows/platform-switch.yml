@@ -1,7 +1,9 @@
 name: Platform switch
 
 # Pause or resume an outside service from GitHub (works from the phone app).
-# Runs the platform rake tasks on the server (lib/tasks/platform.rake).
+# Runs the platform rake tasks (lib/tasks/platform.rake) inside the running
+# web container on the GCP VM. Same access path as deploy.yml: keyless
+# Workload Identity Federation (main only), SSH over IAP with a pinned host key.
 on:
   workflow_dispatch:
     inputs:
@@ -25,8 +27,7 @@ concurrency:
 
 permissions:
   contents: read
-  # OIDC token for the Tailscale workload identity sign-in.
-  id-token: write
+  id-token: write # GitHub OIDC token for Workload Identity Federation
 
 jobs:
   switch:
@@ -34,13 +35,18 @@ jobs:
     timeout-minutes: 10
     environment: production
     env:
-      KAMAL_HOST: ${{ secrets.KAMAL_HOST }}
-      KAMAL_KNOWN_HOSTS: ${{ secrets.KAMAL_KNOWN_HOSTS }}
-      TS_OAUTH_CLIENT_ID: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-      KAMAL_SSH_USER: ${{ vars.KAMAL_SSH_USER || 'deploy' }}
-      KAMAL_IMAGE: ${{ github.repository_owner }}/aluni
-      KAMAL_REGISTRY_USERNAME: ${{ github.repository_owner }}
-      KAMAL_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      GCP_PROJECT: astromichis-aluni
+      GCP_ZONE: us-central1-a
+      GCP_VM: aluni-vm
+      KAMAL_HOST: aluni-vm
+      KAMAL_SSH_USER: deploy
+      KAMAL_REGISTRY_SERVER: us-central1-docker.pkg.dev
+      KAMAL_REGISTRY_USERNAME: oauth2accesstoken
+      KAMAL_IMAGE: astromichis-aluni/aluni/aluni
+      APP_DOMAIN: aluni.us
+      KAMAL_TUNNEL: "1"
+      KAMAL_BACKUP: "0"
+      ACTIVE_STORAGE_SERVICE: local
       INPUT_ACTION: ${{ inputs.action }}
       INPUT_SERVICE: ${{ inputs.service }}
       INPUT_REASON: ${{ inputs.reason }}
@@ -49,23 +55,40 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
+
+      - name: Sign in to Google Cloud (OIDC, no key)
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
         with:
-          bundler-cache: true
+          workload_identity_provider: projects/865393748299/locations/global/workloadIdentityPools/github/providers/aluni-repo
+          service_account: github-deployer@astromichis-aluni.iam.gserviceaccount.com
+
+      - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
+
+      - uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
+      - name: Install Kamal (version from Gemfile.lock)
+        run: gem install kamal --no-document -v "$(sed -n 's/^    kamal (\(.*\))$/\1/p' Gemfile.lock)"
+
       - uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
         with:
           ssh-private-key: ${{ secrets.KAMAL_SSH_KEY }}
-      - name: Join tailnet
-        if: env.TS_OAUTH_CLIENT_ID != ''
-        uses: tailscale/github-action@99a8333667fff04fdd6cffb46dfd409f8329a7bf # v4.3.0
-        with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          audience: ${{ secrets.TS_AUDIENCE }}
-          tags: tag:ci
-      - name: Trust the server host key
+
+      - name: SSH to the VM through IAP
+        env:
+          KAMAL_KNOWN_HOSTS: ${{ secrets.KAMAL_KNOWN_HOSTS }}
         run: |
-          mkdir -p ~/.ssh
-          printf '%s\n' "$KAMAL_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KAMAL_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host aluni-vm
+            User deploy
+            StrictHostKeyChecking yes
+            ProxyCommand gcloud compute start-iap-tunnel $GCP_VM 22 --listen-on-stdin --zone=$GCP_ZONE --project=$GCP_PROJECT --verbosity=warning
+          EOF
+          chmod 600 ~/.ssh/config ~/.ssh/known_hosts
+          ssh aluni-vm true
+
+      # `app exec --reuse` runs in the web container already up, so no image
+      # pull and no app secrets are needed on the runner.
       - name: Run platform task
         run: |
           case "$INPUT_ACTION" in
@@ -78,7 +101,4 @@ jobs:
               task="platform:${INPUT_ACTION}" ;;
           esac
           actor=$(printf '%s' "$PLATFORM_ACTOR" | tr -cd '[:alnum:]._-')
-          bin/kamal app exec --reuse --roles=web "env PLATFORM_ACTOR=$actor bin/rails '$task'"
-      - name: Leave tailnet
-        if: always() && env.TS_OAUTH_CLIENT_ID != ''
-        run: sudo tailscale logout || true
+          kamal app exec --reuse --roles=web "env PLATFORM_ACTOR=$actor bin/rails '$task'"
