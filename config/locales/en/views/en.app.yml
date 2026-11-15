@@ -253,6 +253,9 @@ en:
         heavy_rain:
           label: Heavy rain
           value: "%{value} days a year with 25 mm or more"
+        soil_moisture:
+          label: Soil moisture (root zone)
+          value: "Percentile %{value} of its usual range (0 driest, 100 wettest)"
       index:
         title: My fields · %{app_name}
         lede: Your fields with their crop, their soil and what is still missing.
@@ -410,6 +413,7 @@ en:
           out_of_coverage: Not available in this country
           failed: Could not be reached
           waiting: On its way
+          pending: Requested from NASA, ready in minutes
       refresh:
         queued: Asking the data sources again. This takes a minute.
       edit:
@@ -815,6 +819,8 @@ en:
         water: "%{crop} needs about %{need} mm; the usual rain covers about %{effective} mm."
         slope: Slope of %{value} %.
         heavy_rain: "About %{days} days a year bring 25 mm of rain or more, most of them in %{months} (%{years} years of satellite rain)."
+        soil_dry: "Over the last year the root zone was in the driest fifth of its usual range in %{months} (satellite soil moisture)."
+        soil_usual: Over the last year the root zone stayed within its usual range of moisture (satellite soil moisture).
         heavy_rain_rare: "Heavy rain is rare here: about %{days} days a year with 25 mm or more (%{years} years of satellite rain)."
         same_family: "%{crop} would follow its own family."
         monoculture: "%{crop} three seasons or more in a row."
@@ -824,6 +830,7 @@ en:
         low_suitability: A crop has low suitability at your pin according to FAO GAEZ.
         harvester: Small grains need a combine; your equipment does not list one.
         same_family: Pests that live on one family could carry over.
+        dry_soil: The root zone was unusually dry for several months of the last year. Check the soil's moisture before planting and keep residue to hold it.
         heavy_rain: Days of 50 mm or more come every year here. Row crops leave soil bare between seasons; keep residue or a cover crop over the stormy months.
         establishment: Alfalfa takes a season to establish and needs a market or animals.
         new_crop: It brings a crop your field has not grown before, and you prefer to change carefully. Try it on part of a field first.

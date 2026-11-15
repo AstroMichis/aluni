@@ -40,6 +40,13 @@ OpenStreetMap's Nominatim, through the server only (the browser never calls it):
 - Free, so it ships unpaused, but it has a switch: `Platform::Switchboard.guard!(:planetary_computer)`. Timeout 20 s. Retries on 429/502/503/504 with exponential backoff and jitter (`RETRY`: 4 retries from 2 s, capped at 30 s, honouring `Retry-After`); `monthly_ndvi` asks 2 months at a time and stops at the first failure, and `rate_limited?` tells `Fields::FetchObservationsJob` to rerun only the vegetation later.
 - Specs: `spec/services/planetary_computer/client_spec.rb` (WebMock).
 
+## AppEEARS (`app/services/appeears/client.rb`)
+
+- NASA's point-extraction service for SMAP, MODIS, ECOSTRESS and more (`docs/data_sources/appeears.md`). Asynchronous: `submit_point` returns a task id, `status` polls it, `results_csv(task_id, product:)` reads one product's CSV from the bundle (following the redirect to the file).
+- Auth: `EARTHDATA_USERNAME` and `EARTHDATA_PASSWORD` in the credentials (the team's Earthdata account, which must have signed in to AppEEARS once to authorise it; an account that never did gets a 504 from `/login` after 60 s). The 48 h bearer token is cached in `Rails.cache` until an hour before it expires; a 401 logs in again once.
+- `Platform::Switchboard.guard!(:data)` before each call; failures raise `DataSources::Client::Error`. Only `Fields::FetchSoilMoistureJob` calls it: submit, then poll every 5 minutes for up to 3 hours, keeping the `smap` observation `pending` meanwhile.
+- Specs: `spec/services/appeears/client_spec.rb` (WebMock, tag `:appeears_api`), `spec/jobs/fields/fetch_soil_moisture_job_spec.rb`.
+
 ## Outbound client pattern
 
 One class per provider under `app/services/<provider>/client.rb`: Faraday with JSON middleware and `faraday-retry`, explicit timeouts, structured error classes, `Platform::Switchboard.guard!(:service)` before each call (or `Platform::FaradayPauseGuard` as middleware for clients with several connections), a `PlatformSwitch::SERVICES` entry and a `Platform::Features` flag when the integration ships off by default.

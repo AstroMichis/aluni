@@ -35,6 +35,7 @@ module Fields
       record("vegetation") { vegetation }
       record("nasadem") { nasadem }
       record("gpm_imerg") { gpm_imerg }
+      FetchSoilMoistureJob.perform_later(field.id) # SMAP through AppEEARS answers in minutes, not seconds
       US_SOURCES.each do |source|
         us ? record(source) { send(source) } : mark(source, :out_of_coverage)
       end

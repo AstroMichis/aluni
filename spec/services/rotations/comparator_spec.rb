@@ -53,6 +53,17 @@ RSpec.describe Rotations::Comparator do
     expect(stormy.scores["erosion"]).to eq(calm - (3 * described_class::STORM_PENALTY))
   end
 
+  it "cites the last year's soil moisture (SMAP) and warns a rainfed field after dry months" do
+    record.update!(irrigation: :rainfed)
+    months = %w[2026-01 2026-02 2026-03 2026-04].each_with_index.map { |m, i| { "month" => m, "rootzone" => 0.1, "pctl" => i < 3 ? 12 : 55 } }
+    create(:field_observation, field: record, source: "smap", payload: { "months" => months, "latest" => { "pctl" => 55 } })
+    current = described_class.new(Fields::Farm.for(user).field(record.id), profile: user.farmer_profile).strategies.first
+
+    soil = current.evidence.find { |f| f.key == "soil_dry" }
+    expect([ soil.values, soil.source ]).to eq([ { months: [ 1, 2, 3 ] }, "NASA SMAP L4" ])
+    expect(current.risks).to include("dry_soil")
+  end
+
   it "says what is better than now, what is unknown and what to check locally" do
     alternative = comparator.strategies.drop(1).first
     expect(alternative.gaps).to include("market", "soil")

@@ -39,7 +39,7 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 **Rate limit (fixed):** Planetary Computer rate-limits bursts (429). The client now asks 2 months at a time, retries 429/5xx with exponential backoff and jitter (about 2, 4, 8, 16 s, or `Retry-After`), and stops the other months once one fails. A rate-limited field reruns only the NDVI later (15, 30, 45 min plus jitter, 3 times).
 
 **Still missing:**
-- **NASA breadth.** Done: POWER, Landsat, NASADEM (SRTM), GPM IMERG. Missing from the challenge list: SMAP, ECOSTRESS, MODIS, GRACE.
+- **NASA breadth.** Done: POWER, Landsat, NASADEM (SRTM), GPM IMERG, SMAP. Missing from the challenge list: ECOSTRESS, MODIS, GRACE.
 - **Alerts.** None are sent.
 - **Global soil.** Outside the US it depends on the farmer (the slope now comes from NASADEM).
 
@@ -57,7 +57,7 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 
 ## P1: NASA depth (each item checks one dataset off the challenge list)
 
-Suggested next order: SMAP, then MODIS, GRACE and ECOSTRESS.
+Suggested next order: MODIS and ECOSTRESS (same AppEEARS task path as SMAP), then GRACE.
 
 | Item | Dataset | How |
 |---|---|---|
@@ -65,7 +65,7 @@ Suggested next order: SMAP, then MODIS, GRACE and ECOSTRESS.
 | Long-term vegetation baseline and anomalies | MODIS NDVI (16-day, 20+ years) | AppEEARS or Planetary Computer |
 | ✅ **Global slope** for erosion | NASADEM (SRTM) | Done: `PlanetaryComputer::Client#terrain`, the `nasadem` observation; 3DEP first in the US, NASADEM everywhere else (56°S to 60°N) in the profile and the comparator. |
 | ✅ Extreme rain frequency | GPM IMERG | Done: 20 years of daily IMERG through NASA POWER (`IMERG_PRECTOT`, no account), `Weather::RainExtremes`, the `gpm_imerg` observation; storm-prone months and 50 mm days raise the erosion of row crops in the comparator. The stormy months are on the 3-season timeline. |
-| Soil moisture and anomalies | SMAP L3/L4 | AppEEARS async request (Earthdata) |
+| ✅ Soil moisture and anomalies | SMAP L4 | Done: `Appeears::Client` (submit, poll, results CSV), `Fields::FetchSoilMoistureJob` (the `smap` observation stays `pending` while AppEEARS works), `Weather::SoilMoisture`; the plan cites dry months and warns a rainfed field. |
 | Long-term water trend | GRACE / GRACE-FO | One trend indicator per region |
 | Heat stress and evaporation | ECOSTRESS | AppEEARS |
 | Global soil | SoilGrids (ISRIC) | REST point query; fills texture and pH outside SSURGO |

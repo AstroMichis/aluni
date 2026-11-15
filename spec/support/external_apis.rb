@@ -4,7 +4,7 @@
 #
 #   it "parses the answer", :gemini_api do ... end
 #   it "finds the town", :geocoding_api do ... end
-#   (also :meteomatics_api and :planetary_computer_api)
+#   (also :meteomatics_api, :planetary_computer_api and :appeears_api)
 #
 # Files whose subject IS a client (spec/services/<client>/ below)
 # are tagged by path. After each example, every HTTP request WebMock saw
@@ -16,7 +16,8 @@ module ExternalApiCallCounter
     gemini_api: /(?:\A|\.)googleapis\.com\z/,
     geocoding_api: /(?:\A|\.)openstreetmap\.org\z/,
     meteomatics_api: /(?:\A|\.)meteomatics\.com\z/,
-    planetary_computer_api: /(?:\A|\.)planetarycomputer\.microsoft\.com\z/
+    planetary_computer_api: /(?:\A|\.)planetarycomputer\.microsoft\.com\z/,
+    appeears_api: /(?:\A|\.)appeears\.earthdatacloud\.nasa\.gov\z/
   }.freeze
   @calls = []
 
@@ -50,6 +51,10 @@ RSpec.configure do |config|
 
   config.define_derived_metadata(file_path: %r{spec/services/planetary_computer/}) do |meta|
     meta[:planetary_computer_api] = true unless meta.key?(:planetary_computer_api)
+  end
+
+  config.define_derived_metadata(file_path: %r{spec/services/appeears/}) do |meta|
+    meta[:appeears_api] = true unless meta.key?(:appeears_api)
   end
 
   config.after do |example|
