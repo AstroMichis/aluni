@@ -45,7 +45,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --pr
 # Install application gems (the in-repo Rust gem compiles here, inside the gem layer)
 COPY vendor/* ./vendor/
 COPY vendor/gems ./vendor/gems
-COPY Gemfile Gemfile.lock ./
+COPY Gemfile Gemfile.lock .ruby-version ./
 
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     bundle install && \
