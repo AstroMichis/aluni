@@ -50,7 +50,7 @@ Where the app goes after the profile, aimed at the NASA Space Apps 2026 challeng
 | P0.1 | Gemini on (Vertex, daily cap 2000) | ✅ |
 | P0.2 | Finishing the profile opens **Your plan**; a "Your rotation plan" card sits above the home dial | ✅ #21 |
 | P0.3 | Water need for 20 of 27 catalog crops (FAO-56 Tables 11/12), with seasons flipped south of 15°S | ✅ #21 |
-| P0.3b | ECOCROP requirements (`config/ecocrop.yml`, 25 of 27; the task reads the Latin-1 CSV and maps older names) | ✅ #21; tomato and cabbage pending |
+| P0.3b | ECOCROP requirements (`config/ecocrop.yml`, 27 of 27; the task reads the Latin-1 CSV and maps older names such as Lycopersicon esculentum) | ✅ #21, tomato and cabbage added |
 | P0.4 | Use the profile's priorities: conservation practices count as the soil health goal; a cautious farmer sees "new crop" risks; contract or export sales see "check your buyer" | ✅ #21 |
 | P0.5 | Cover crops: the timeline marks every bare window of two months or more and proposes a cover from the catalog by its weather (rye where it freezes, oats when cool, cowpea when warm; dry windows flagged), with the exposed months it saves (the first month still counts); the comparator cites the field's past cover crops (`role: cover`). Second crops (`role: second`) still wait | ✅ cover crops; second crops ⏳ |
 | P0.6 | Use irrigation water source and soil depth, salinity and drainage in the water and fit scores | ⏳ |
