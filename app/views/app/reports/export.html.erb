@@ -9,26 +9,18 @@
       <p class="screen__lede"><%= t(".lede") %></p>
     </header>
 
-
     <ul class="export-list" role="list">
-      <% %w[csv json].each do |format| %>
+      <% ReportsHelper::REPORT_FORMATS.each do |format| %>
         <li class="export-card">
           <span class="export-card__format text-mono"><%= format.upcase %></span>
           <span class="export-card__body">
             <span class="export-card__title"><%= t(".formats.#{format}.title") %></span>
             <span class="export-card__text"><%= t(".formats.#{format}.text") %></span>
           </span>
-          <%= link_to t(".download"), download_app_reports_path(format: format), class: "btn btn--primary btn--sm", data: { turbo: false }, download: "" %>
+          <%= link_to t(".download"), download_app_reports_path(format: format), class: "btn btn--primary btn--sm", data: { turbo: false }, download: "",
+                                                                                 aria: { label: t("app.reports.downloads.#{format}") } %>
         </li>
       <% end %>
-      <li class="export-card">
-        <span class="export-card__format text-mono"><%= t(".formats.print.badge") %></span>
-        <span class="export-card__body">
-          <span class="export-card__title"><%= t(".formats.print.title") %></span>
-          <span class="export-card__text"><%= t(".formats.print.text") %></span>
-        </span>
-        <%= link_to t(".open_report"), app_reports_path, class: "btn btn--secondary btn--sm" %>
-      </li>
     </ul>
 
     <%= render "shared/aluni", message: t("app.reports.aluni") %>

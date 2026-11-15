@@ -102,7 +102,7 @@ scope "(:locale)", locale: /en|es/ do
       resource :reports, only: :show do
         get :harvest
         get :export
-        get :download, constraints: { format: /json|csv/ }
+        get :download, constraints: { format: /pdf|csv|json/ }
       end
       # The onboarding chat: one page, Turbo Stream actions for every turn.
       resource :onboarding, only: :show, controller: "onboarding" do

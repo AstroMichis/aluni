@@ -690,8 +690,7 @@ en:
         lede:
           one: One field, %{area}.
           other: "%{count} fields, %{area}."
-        print: Print or save as PDF
-        export: Download the data
+        download: Download
         crops_title: Area by crop
         weather_title: Weather
         fields_title: Field by field
@@ -723,18 +722,39 @@ en:
         lede: 'Everything the farm holds, with the source and confidence of each value. Your data is yours: take it to your advisor, your buyer or another tool.'
         download: Download
         open_report: Open the report
+        csv:
+          generated: Generated on
+          season: Season
+          hectares: Hectares
+          field_crops: Crops by field and season
+          data: All the data, value by value
+          columns:
+            field: Field
+            season: Season
+            role: Role
+            crop: Crop
+            share: Part of the field
+            hectares: Hectares
+            planting: Planting month
+            harvest: Harvest month
+            source: Source
         formats:
           csv:
             title: Spreadsheet
-            text: 'One row per value: field, datum, state, value, source and confidence.'
+            text: "The report for a spreadsheet: area by crop, weather, field by field, each field's crops by season, the team, and every value with its source."
           json:
             title: Full data
-            text: The same values plus your plans, team and tasks, for another tool.
-          print:
-            badge: PDF
-            title: Printable report
-            text: The season report, ready to print or save as PDF.
+            text: "The same report for another tool, with plain numbers and stable keys: every field's seasons, shares, sources and values."
+          pdf:
+            title: Season report
+            text: The report as a document to print, send or keep, with area by crop, weather and every field.
       aluni: Exports are generated from what you see here, in this browser session.
+      downloads:
+        pdf: Download the report as PDF
+        csv: Download the data as CSV
+        json: Download the data as JSON
+      pdf:
+        footer: "%{app_name} · %{date} · page %{page} of %{total}"
     screens:
       saved: Saved.
       invalid: That value does not fit. Please check it.
