@@ -1,14 +1,21 @@
 name: Deploy
 
-# Kamal deploy to the production VM (docs/deploy/DEPLOY.md). Runs by hand or
-# on a version tag (git tag v2026.11.1 && git push --tags), never on every
-# push, to save Actions minutes. The image is built natively on the server
-# (KAMAL_BUILDER_REMOTE, also what keeps the Rust compile off QEMU) and pushed
-# to GitHub Container Registry.
+# Kamal deploy to the GCP VM on every push to main (and by hand). Runs in
+# parallel with CI: a failing test suite does not block the deploy, and Kamal's
+# health check on /up keeps the previous version serving if the new one does
+# not boot.
+#
+# No long-lived Google key: the runner signs in with Workload Identity
+# Federation (GitHub OIDC token), which GCP accepts only from this repository
+# (by numeric id, so it survives a transfer) on refs/heads/main. The service
+# account can push images to Artifact Registry, open IAP tunnels and read the
+# VM, nothing else. SSH to the VM goes through IAP; port 22 is not open to
+# the internet.
 on:
-  workflow_dispatch:
   push:
-    tags: ["v*"]
+    branches: [main]
+    paths-ignore: ["docs/**", "**/*.md"]
+  workflow_dispatch:
 
 concurrency:
   group: deploy
@@ -16,74 +23,90 @@ concurrency:
 
 permissions:
   contents: read
-  packages: write
-  # OIDC token for the Tailscale workload identity sign-in.
-  id-token: write
+  id-token: write # GitHub OIDC token for Workload Identity Federation
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 40
-    # Secrets live in the "production" environment, limited to main and v*
-    # tags, so a workflow on any other branch cannot read them.
+    # Secrets live in the "production" environment, limited to main.
     environment: production
     env:
-      KAMAL_HOST: ${{ secrets.KAMAL_HOST }}
-      KAMAL_KNOWN_HOSTS: ${{ secrets.KAMAL_KNOWN_HOSTS }}
-      TS_OAUTH_CLIENT_ID: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-      KAMAL_SSH_USER: ${{ vars.KAMAL_SSH_USER || 'deploy' }}
-      KAMAL_ARCH: ${{ vars.KAMAL_ARCH || 'arm64' }}
-      KAMAL_TUNNEL: ${{ vars.KAMAL_TUNNEL || '1' }}
-      KAMAL_BUILDER_REMOTE: ssh://${{ vars.KAMAL_SSH_USER || 'deploy' }}@${{ secrets.KAMAL_HOST }}
-      KAMAL_IMAGE: ${{ github.repository_owner }}/aluni
-      KAMAL_REGISTRY_USERNAME: ${{ github.repository_owner }}
-      KAMAL_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      GCP_PROJECT: astromichis-aluni
+      GCP_ZONE: us-central1-a
+      GCP_VM: aluni-vm
+      KAMAL_HOST: aluni-vm
+      KAMAL_SSH_USER: deploy
+      KAMAL_ARCH: amd64
+      KAMAL_BUILDER_REMOTE: ssh://aluni-vm
+      KAMAL_REGISTRY_SERVER: us-central1-docker.pkg.dev
+      KAMAL_REGISTRY_USERNAME: oauth2accesstoken
+      KAMAL_IMAGE: astromichis-aluni/aluni/aluni
+      APP_DOMAIN: aluni.us
+      KAMAL_TUNNEL: "1"
+      KAMAL_BACKUP: "0"
+      ACTIVE_STORAGE_SERVICE: local
+      GEMINI_BACKEND: vertex
+      GOOGLE_CLOUD_PROJECT: astromichis-aluni
+      GOOGLE_CLOUD_LOCATION: global
+      SIGNUPS_ENABLED: ${{ vars.SIGNUPS_ENABLED || '1' }}
+      PLATFORM_PAUSE_ALL: ${{ vars.PLATFORM_PAUSE_ALL || '0' }}
       RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       APP_DB_PASSWORD: ${{ secrets.APP_DB_PASSWORD }}
       REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-      BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
-      TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
-      CERTIFICATE_PEM: ${{ secrets.CERTIFICATE_PEM }}
-      PRIVATE_KEY_PEM: ${{ secrets.PRIVATE_KEY_PEM }}
-      S3_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
-      S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
       SIDEKIQ_WEB_USERNAME: ${{ secrets.SIDEKIQ_WEB_USERNAME }}
       SIDEKIQ_WEB_PASSWORD: ${{ secrets.SIDEKIQ_WEB_PASSWORD }}
-      PLATFORM_PAUSE_ALL: ${{ vars.PLATFORM_PAUSE_ALL || '0' }}
-      SIGNUPS_ENABLED: ${{ vars.SIGNUPS_ENABLED || '1' }}
+      TUNNEL_TOKEN: ${{ secrets.TUNNEL_TOKEN }}
+      ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY: ${{ secrets.ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY }}
+      ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY: ${{ secrets.ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY }}
+      ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT: ${{ secrets.ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
+
+      - name: Sign in to Google Cloud (OIDC, no key)
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
         with:
-          bundler-cache: true
+          workload_identity_provider: projects/865393748299/locations/global/workloadIdentityPools/github/providers/aluni-repo
+          service_account: github-deployer@astromichis-aluni.iam.gserviceaccount.com
+
+      - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
+
+      # Only Kamal is needed here: the image (and the Rust extension) is built
+      # on the VM, so the app's own gems are never installed on the runner.
+      - uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
+      - name: Install Kamal (version from Gemfile.lock)
+        run: gem install kamal --no-document -v "$(sed -n 's/^    kamal (\(.*\))$/\1/p' Gemfile.lock)"
+
       - uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
         with:
           ssh-private-key: ${{ secrets.KAMAL_SSH_KEY }}
-      # SSH is not open to the internet: the runner joins the tailnet as an
-      # ephemeral node and reaches the server by its Tailscale address
-      # (KAMAL_HOST). It signs in with workload identity federation (a GitHub
-      # OIDC token, no stored Tailscale secret). Skipped until the federated
-      # identity is configured.
-      - name: Join tailnet
-        if: env.TS_OAUTH_CLIENT_ID != ''
-        uses: tailscale/github-action@99a8333667fff04fdd6cffb46dfd409f8329a7bf # v4.3.0
-        with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          audience: ${{ secrets.TS_AUDIENCE }}
-          tags: tag:ci
-      # The server's host key is pinned (ssh-keyscan output saved once), so a
-      # spoofed server cannot receive the deploy.
-      - name: Trust the server host key
+
+      # Both Kamal (net-ssh) and the remote Docker builder read ~/.ssh/config,
+      # so the IAP tunnel is set up once here. The VM's host key is pinned:
+      # a spoofed server cannot receive the deploy.
+      - name: SSH to the VM through IAP
+        env:
+          KAMAL_KNOWN_HOSTS: ${{ secrets.KAMAL_KNOWN_HOSTS }}
         run: |
-          mkdir -p ~/.ssh
-          printf '%s\n' "$KAMAL_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KAMAL_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host aluni-vm
+            User deploy
+            StrictHostKeyChecking yes
+            ProxyCommand gcloud compute start-iap-tunnel $GCP_VM 22 --listen-on-stdin --zone=$GCP_ZONE --project=$GCP_PROJECT --verbosity=warning
+          EOF
+          chmod 600 ~/.ssh/config ~/.ssh/known_hosts
+          ssh aluni-vm true
+
+      - name: Registry token (1 hour)
+        run: |
+          token="$(gcloud auth print-access-token)"
+          echo "::add-mask::$token"
+          echo "KAMAL_REGISTRY_PASSWORD=$token" >> "$GITHUB_ENV"
+
       - name: Kamal deploy
-        run: bin/kamal deploy
-      # Ephemeral nodes otherwise linger for 30 to 60 minutes after the run.
-      - name: Leave tailnet
-        if: always() && env.TS_OAUTH_CLIENT_ID != ''
-        run: sudo tailscale logout || true
+        run: kamal deploy

@@ -79,6 +79,13 @@ env:
   clear:
     RAILS_LOG_LEVEL: info
     RAILS_MAX_THREADS: 3
+    # cloudflare_r2 (default) or local (the aluni_storage volume, no R2 account needed).
+    ACTIVE_STORAGE_SERVICE: <%= ENV.fetch("ACTIVE_STORAGE_SERVICE", "cloudflare_r2") %>
+    # Gemini: api_key (default, credentials gemini.api_key) or vertex (the VM's
+    # service account, no key; needs GOOGLE_CLOUD_PROJECT).
+    GEMINI_BACKEND: <%= ENV.fetch("GEMINI_BACKEND", "api_key") %>
+    GOOGLE_CLOUD_PROJECT: <%= ENV.fetch("GOOGLE_CLOUD_PROJECT", "") %>
+    GOOGLE_CLOUD_LOCATION: <%= ENV.fetch("GOOGLE_CLOUD_LOCATION", "global") %>
     # Less memory fragmentation per thread (jemalloc is already preloaded).
     MALLOC_ARENA_MAX: 2
     # Emergency brake: set to 1 and `bin/kamal deploy` (or `bin/kamal app boot`)
@@ -103,6 +110,11 @@ env:
     - REDIS_URL
     - SIDEKIQ_WEB_USERNAME
     - SIDEKIQ_WEB_PASSWORD
+    # Only needed when the production credentials lack active_record_encryption.*
+    # (config/environments/production.rb reads these first).
+    - ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY
+    - ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY
+    - ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT
 
 aliases:
   console: app exec --interactive --reuse "bin/rails console"
@@ -153,8 +165,10 @@ accessories:
     directories:
       - data:/data
 
+<% if ENV.fetch("KAMAL_BACKUP", "1") == "1" %>
   # Nightly logical backup of Postgres to Cloudflare R2 (S3-compatible),
   # keeping 14 days. Restore drill: docs/deploy/DEPLOY.md.
+  # KAMAL_BACKUP=0 leaves it out (no R2 account; the database then has no off-box copy).
   backup:
     image: eeshugerman/postgres-backup-s3:16
     host: <%= ENV.fetch("KAMAL_HOST", "203.0.113.10") %>
@@ -177,6 +191,7 @@ accessories:
         # leaked R2 token does not leak data. Keep a copy offline: without it
         # the backups cannot be restored.
         - PASSPHRASE:BACKUP_PASSPHRASE
+<% end %>
 
 <% if tunnel %>
   # Cloudflare Tunnel: outbound-only connection to Cloudflare. Public

@@ -12,7 +12,8 @@ You are building a Gemini-backed feature for Aluni. The request is: $ARGUMENTS
 ## Gemini::Client
 
 ```ruby
-client = Gemini::Client.new(model: :flash)          # :flash | :pro | :transcribe (config.x.gemini, ENV GEMINI_*_MODEL)
+client = Gemini::Client.new(model: :flash)          # :flash | :pro | :transcribe (config.x.gemini, ENV GEMINI_*_MODEL); timeout: seconds overrides the 30 s read timeout
+# Backend from ENV GEMINI_BACKEND: api_key (credentials gemini.api_key) or vertex (GOOGLE_CLOUD_PROJECT, token from the VM's service account; production). Same bodies either way.
 
 text = client.generate(prompt,
   system_instruction: Gemini::LanguagePrompt.lock(I18n.locale) + persona,
@@ -78,5 +79,5 @@ Run it from a job on the `gemini` queue (`queue_as :gemini`) unless a person is 
 
 - `spec/services/gemini/` is tagged `:gemini_api`; other specs must stub with WebMock (`stub_request(:post, /generativelanguage\.googleapis\.com/)`) and are failed by `spec/support/external_apis.rb` if a request leaks
 - Cover: success, 429 then success, exhaustion (nil + `last_error`), malformed JSON, the paused switch
-- Stub `Rails.application.credentials.dig(:gemini, :api_key)` in specs; the key is never in the repo
+- Stub `Rails.application.credentials.dig(:gemini, :api_key)` in specs (the test backend is `api_key`); the key is never in the repo. Vertex has its own context in `spec/services/gemini/client_spec.rb` (metadata-server token stubbed with WebMock)
 - Run: `mise exec -- bundle exec rspec spec/services/gemini`

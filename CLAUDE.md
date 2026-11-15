@@ -31,7 +31,7 @@ Aluni is your smart crop cultivation assistant: an open source decision-support 
 | Frontend | Hotwire (Turbo + Stimulus), pure CSS, importmap-rails, vendored Three.js r169 |
 | Native | Hotwire Native iOS 1.2 (ios/, XcodeGen) and Android 1.2 (android/, Gradle KTS) |
 | Rust | vendor/gems/aluni_core (magnus 0.9 on rb-sys 0.9, Rust 1.92 via rust-toolchain.toml) |
-| AI | Google Gemini over Faraday (`Gemini::Client`), paused by default on first deploy |
+| AI | Google Gemini over Faraday (`Gemini::Client`): `GEMINI_BACKEND=api_key` (credentials key, development) or `vertex` (the GCP VM's service account, production); paused by default on first deploy |
 | Push | action_push_native (APNs/FCM) + web-push (VAPID) behind `NotificationRouter` |
 | Storage | Cloudflare R2 (S3 adapter) via Active Storage, proxied through the app |
 | Hosting | Oracle Always Free A1 VM via Kamal 2 + GHCR + GitHub Actions (config/deploy.yml, docs/deploy/DEPLOY.md) |

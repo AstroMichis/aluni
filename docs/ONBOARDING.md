@@ -274,7 +274,7 @@ Run: `mise exec -- bundle exec rspec spec/services/onboarding spec/services/gemi
 
 ## Demo runbook
 
-1. `gemini.api_key` in the credentials and `mise exec -- bin/rails 'platform:resume[gemini]'`; while Gemini is paused or the key is missing Aluni answers only with the continuation lines (`degraded: true`).
+1. A configured Gemini backend (development: `gemini.api_key` in the credentials; production: `GEMINI_BACKEND=vertex` with `GOOGLE_CLOUD_PROJECT`, `docs/INTEGRATIONS.md`) and `mise exec -- bin/rails 'platform:resume[gemini]'`; while Gemini is paused or unconfigured Aluni answers only with the continuation lines (`degraded: true`).
 2. `mise exec -- bin/dev`, open `http://localhost:3000` (a secure context: passkeys and the share-location button need one; a phone needs an https tunnel with `APP_DOMAIN`, `docs/AUTH.md`).
 3. Wait for Aluni to walk in, press "Let's go", give a name, pick a language, create the passkey. The chat opens at the welcome topic.
 4. Walk the eight topics in English and in Spanish; tick a few proposals, skip one topic, refresh once mid-way (the transcript resumes from the row), send an insult to see the refusal, pause Gemini (`platform:pause[gemini]`) to see the calm continuation line, finish to reach the recap on `/app`.

@@ -99,4 +99,56 @@ RSpec.describe Gemini::Client do
     expect(quick.send(:connection).options.timeout).to eq(7)
     expect(client.send(:connection).options.timeout).to eq(30)
   end
+
+  context "with the Vertex AI backend" do
+    let(:vertex_endpoint) do
+      "https://aiplatform.googleapis.com/v1/projects/test-project/locations/global/publishers/google/models/gemini-3.8-flash:generateContent"
+    end
+    let(:metadata_url) { Gemini::VertexToken::METADATA_URL }
+
+    around do |example|
+      config = Rails.configuration.x.gemini
+      saved = [ config.backend, config.vertex_project, config.vertex_location ]
+      config.backend = "vertex"
+      config.vertex_project = "test-project"
+      config.vertex_location = "global"
+      Gemini::VertexToken.reset!
+      example.run
+    ensure
+      config.backend, config.vertex_project, config.vertex_location = saved
+      Gemini::VertexToken.reset!
+    end
+
+    it "is configured by the project alone, without an API key" do
+      allow(Rails.application.credentials).to receive(:dig).with(:gemini, :api_key).and_return(nil)
+
+      expect(described_class.configured?).to be(true)
+    end
+
+    it "calls Vertex AI with a metadata-server token and no API key" do
+      token = stub_request(:get, metadata_url).with(headers: { "Metadata-Flavor" => "Google" })
+                                              .to_return(status: 200, body: { access_token: "ya29.test", expires_in: 3599 }.to_json)
+      call = stub_request(:post, vertex_endpoint).with(headers: { "Authorization" => "Bearer ya29.test" }) { |req| !req.headers.key?("X-Goog-Api-Key") }
+                                                 .to_return(status: 200, body: gemini_response("hola"), headers: { "Content-Type" => "application/json" })
+
+      expect(client.generate("hi")).to eq("hola")
+      expect(client.generate("again")).to eq("hola")
+      expect(call).to have_been_requested.twice
+      expect(token).to have_been_requested.once
+    end
+
+    it "uses the regional host for a regional location" do
+      Rails.configuration.x.gemini.vertex_location = "us-central1"
+
+      expect(described_class.base_url).to eq("https://us-central1-aiplatform.googleapis.com/v1/projects/test-project/locations/us-central1/publishers/google/")
+    end
+
+    it "returns nil with an api_error when no token can be fetched" do
+      stub_request(:get, metadata_url).to_return(status: 404, body: "")
+
+      expect(client.generate("hi")).to be_nil
+      expect(client.last_error).to include(type: :api_error)
+      expect(client.last_error[:message]).to include("Vertex AI token")
+    end
+  end
 end

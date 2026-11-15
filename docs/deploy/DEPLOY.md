@@ -16,7 +16,7 @@ web (Puma, 3 threads) + worker (Sidekiq, 3 threads) + Postgres 16 (1 GB shared b
 4. **Harden the server (You, with Claude Code's script).** Create the `deploy` user with the SSH key, disable password SSH, `ufw` default deny inbound, install Docker, let `deploy` use Docker. Prompt: "Write the server hardening script for docs/deploy/DEPLOY.md step 4 for Ubuntu 24.04 arm64."
 5. **Tailscale lock-down (You).** Install Tailscale on the VM; SSH only over the tailnet (`ufw` allows 22 on `tailscale0` only). Optional: an OAuth client with workload identity for GitHub Actions (`TS_OAUTH_CLIENT_ID`, `TS_AUDIENCE`, tag `tag:ci`); until then the deploy workflow skips the tailnet step and `KAMAL_HOST` must be reachable from the runner.
 6. **Cloudflare (You).** Zero Trust > Networks > Tunnels: create a tunnel, copy its token (`TUNNEL_TOKEN`), map `aluni.us` and `www.aluni.us` to `http://kamal-proxy:80`. Create the R2 buckets `aluni` (uploads) and `aluni-backups`. Boot kamal-proxy bound to localhost once: `bin/kamal proxy boot_config set --publish-host-ip=127.0.0.1 && bin/kamal proxy reboot`.
-7. **Production credentials (You).** `mise exec -- bin/rails credentials:edit --environment production` (or the shared file): `secret_key_base`, `active_record_encryption.*` (`bin/rails db:encryption:init`), `redis.url`, `r2.*`, `mailer.from`, `smtp.*` (Resend or Brevo free tier), `gemini.api_key` when wanted, `web_push.*` (`bin/rails web_push:vapid_keys`), `action_push_native.*` and `native_app.*` when the stores exist.
+7. **Production credentials (You).** `mise exec -- bin/rails credentials:edit --environment production` (or the shared file): `secret_key_base`, `active_record_encryption.*` (`bin/rails db:encryption:init`), `redis.url`, `r2.*`, `mailer.from`, `smtp.*` (Resend or Brevo free tier), `gemini.api_key` only when `GEMINI_BACKEND=api_key` (the GCP VM uses `GEMINI_BACKEND=vertex` with its attached service account and `GOOGLE_CLOUD_PROJECT`; no key), `web_push.*` (`bin/rails web_push:vapid_keys`), `action_push_native.*` and `native_app.*` when the stores exist.
 8. **GitHub (You).** Create the `production` environment limited to `main` and `v*` tags; add the secrets from steps 2, 5, 6 plus `KAMAL_KNOWN_HOSTS` (`ssh-keyscan <host>` output) and the variables `KAMAL_SSH_USER`, `KAMAL_ARCH`, `KAMAL_TUNNEL`, `SIGNUPS_ENABLED`, `PLATFORM_PAUSE_ALL`. Allow Actions to write packages.
 9. **Validate the config (Claude Code).** `bin/kamal config` with placeholder ENV exported; `docker build .` locally (arm64) to prove the Rust toolchain and the gem layer build.
 10. **First deploy (You).** Run the Deploy workflow (or `git tag v2026.11.1 && git push --tags`). The first remote build compiles crates and takes several minutes; later builds hit the layer cache. Then `bin/kamal app exec --reuse "bin/rails platform:bootstrap"` pauses cron, gemini, mail and push.
@@ -33,7 +33,7 @@ No inbound port but Tailscale SSH; TLS at Cloudflare; the app connects to Postgr
 bin/kamal app exec --reuse "bin/rails platform:status"
 bin/kamal app exec --reuse "bin/rails 'platform:resume[mail]'"      # after SMTP credentials and DNS records
 bin/kamal app exec --reuse "bin/rails 'platform:resume[cron]'"      # after the first deploy is stable
-bin/kamal app exec --reuse "bin/rails 'platform:resume[gemini]'"    # after gemini.api_key and a budget alert; the onboarding chat answers with continuation lines until then
+bin/kamal app exec --reuse "bin/rails 'platform:resume[gemini]'"    # after the Gemini backend is configured (Vertex: GOOGLE_CLOUD_PROJECT + roles/aiplatform.user on the VM's service account; api_key: credentials gemini.api_key) and a budget alert; the onboarding chat answers with continuation lines until then
 bin/kamal app exec --reuse "bin/rails 'platform:resume[push]'"      # after APNs/FCM credentials
 ```
 
@@ -41,7 +41,7 @@ Or the Platform switch GitHub workflow (works from the phone). `PLATFORM_PAUSE_A
 
 ## Before a demo
 
-1. `gemini.api_key` in the production credentials and `platform:resume[gemini]` (above); without it Aluni only says her continuation lines.
+1. A configured Gemini backend (`Platform::Features.gemini?`: in production `GEMINI_BACKEND=vertex` with `GOOGLE_CLOUD_PROJECT`, in development `gemini.api_key` in the credentials) and `platform:resume[gemini]` (above); without it Aluni only says her continuation lines.
 2. `NATIVE_WEB_ACCESS` defaults to on, so sign-in, the onboarding chat and `/app` work in any current browser; set it to `0` only to close the web and keep the shells.
 3. Passkeys and the share-location button need a secure context: the production domain, or `localhost` in development.
 4. Open the landing page, wait for Aluni to walk in, run the sign-up and a full onboarding in English and in Spanish, refresh once mid-way to see the transcript resume.
