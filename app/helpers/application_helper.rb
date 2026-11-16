@@ -6,10 +6,22 @@ module ApplicationHelper
   # paused, in a browser let in (NativeOnly). The shells get them once the
   # system-browser handoff exists (docs/AUTH.md).
   def social_providers
-    return [] if hotwire_native_app? || !Platform::Features.native_web_access? || Platform::Switchboard.paused?(:oauth)
+    return [] if !social_shown? || Platform::Switchboard.paused?(:oauth)
 
     SOCIAL_ORDER & Platform::Features.oauth_providers
   end
+
+  # Every provider, each with whether it works here: the ones without credentials
+  # (or while `oauth` is paused) show as disabled placeholders, so the option is
+  # visible before the operator configures it. [[provider, available], ...]
+  def social_buttons
+    return [] unless social_shown?
+
+    live = social_providers
+    SOCIAL_ORDER.map { |provider| [ provider, live.include?(provider) ] }
+  end
+
+  def social_shown? = !hotwire_native_app? && Platform::Features.native_web_access?
 
   # The current page in another locale, by swapping the path prefix, so the
   # language toggle and the hreflang alternates work on any routed page.

@@ -50,13 +50,14 @@
   </section>
 
   <% linkable = social_providers %>
-  <% if @identities.any? || linkable.any? %>
+  <% shown = social_buttons.map(&:first) %>
+  <% if @identities.any? || shown.any? %>
     <section class="card" aria-labelledby="connected-accounts">
       <div class="card__body stack stack--md">
         <h2 class="text-heading" id="connected-accounts"><%= t(".connected.title") %></h2>
         <p class="auth__lede"><%= t(".connected.lede") %></p>
         <ul class="passkey-list" role="list">
-          <% (Identity::PROVIDERS & (linkable + @identities.map(&:provider))).each do |provider| %>
+          <% (Identity::PROVIDERS & (shown + @identities.map(&:provider))).each do |provider| %>
             <% identity = @identities.find { |i| i.provider == provider } %>
             <li class="passkey-list__item">
               <div class="stack stack--sm">
@@ -72,6 +73,8 @@
                   <input type="hidden" name="locale" value="<%= I18n.locale %>">
                   <button type="submit" class="btn btn--secondary btn--sm"><%= t(".connected.connect") %></button>
                 <% end %>
+              <% else %>
+                <button type="button" class="btn btn--secondary btn--sm auth-social__button--soon" disabled><%= t("sign_in_codes.social.soon") %></button>
               <% end %>
             </li>
           <% end %>

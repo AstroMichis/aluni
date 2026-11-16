@@ -3,6 +3,7 @@ en:
     social:
       or: "or"
       continue: "Continue with %{provider}"
+      soon: "Soon"
     choice:
       passkey_title: "Use your face or fingerprint"
       passkey_line: "Your device checks it is you. Nothing about you is sent to us."

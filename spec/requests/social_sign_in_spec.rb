@@ -105,4 +105,14 @@ RSpec.describe "Sign in with Google, Apple or Microsoft", type: :request do
     expect(response.body).to include('action="/auth/apple/callback"').and include('value="c0de"').and include('value="st4te"')
     expect(response.body).to match(/<script nonce="[^"]+">document.getElementById/)
   end
+
+  it "shows the providers without credentials as disabled placeholders" do
+    allow(Platform::Features).to receive(:oauth_providers).and_return(%w[google_oauth2])
+
+    get "/en/sign_in"
+    expect(response.body).to include('action="/auth/google_oauth2"')
+    expect(response.body).not_to include('action="/auth/apple"')
+    expect(response.body).to include(I18n.t("sign_in_codes.social.continue", provider: "Apple")).and include("auth-social__button--soon")
+    expect(response.body.scan(I18n.t("sign_in_codes.social.soon")).size).to eq(2)
+  end
 end
