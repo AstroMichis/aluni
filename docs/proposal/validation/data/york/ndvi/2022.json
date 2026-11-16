@@ -1,0 +1,86 @@
+[
+  {
+    "month": "2022-01",
+    "ndvi": 0.097,
+    "date": "2022-01-26",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20220126_02_T1"
+  },
+  {
+    "month": "2022-02",
+    "ndvi": 0.111,
+    "date": "2022-02-26",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20220226T172301_R012_T14TPL_20220302T122944"
+  },
+  {
+    "month": "2022-03",
+    "ndvi": 0.103,
+    "date": "2022-03-13",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20220313T172009_R012_T14TPL_20220314T060853"
+  },
+  {
+    "month": "2022-04",
+    "ndvi": 0.1,
+    "date": "2022-04-08",
+    "mission": "landsat",
+    "scene": "LC09_L2SP_029032_20220408_02_T1"
+  },
+  {
+    "month": "2022-05",
+    "ndvi": 0.129,
+    "date": "2022-05-18",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029031_20220518_02_T1"
+  },
+  {
+    "month": "2022-06",
+    "ndvi": 0.117,
+    "date": "2022-06-03",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20220603_02_T1"
+  },
+  {
+    "month": "2022-07",
+    "ndvi": 0.562,
+    "date": "2022-07-21",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20220721T171859_R012_T14TPL_20220723T221333"
+  },
+  {
+    "month": "2022-08",
+    "ndvi": 0.471,
+    "date": "2022-08-30",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20220830T171859_R012_T14TPL_20220901T062601"
+  },
+  {
+    "month": "2022-09",
+    "ndvi": 0.333,
+    "date": "2022-09-29",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20220929T172119_R012_T14TPL_20240726T010306"
+  },
+  {
+    "month": "2022-10",
+    "ndvi": 0.418,
+    "date": "2022-10-29",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20221029T172429_R012_T14TPL_20221030T041743"
+  },
+  {
+    "month": "2022-11",
+    "ndvi": 0.388,
+    "date": "2022-11-13",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20221113T172601_R012_T14TPL_20240804T114101"
+  },
+  {
+    "month": "2022-12",
+    "ndvi": 0.151,
+    "date": "2022-12-18",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20221218T172729_R012_T14TPL_20221219T112337"
+  }
+]

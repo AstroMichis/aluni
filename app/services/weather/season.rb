@@ -12,6 +12,9 @@ module Weather
     DRY_DAY_MM = 1.0
     DRY_SPELL_DAYS = 10    # shorter runs are not worth an alert
     GROWING = (4..10)      # months when frost and dry spells matter to a crop
+    GDD_BASE_C = 10.0      # growing degree days, 86/50 method: each day's low and
+    GDD_CAP_C = 30.0       # high held within 10-30 °C (50-86 °F) before averaging
+    GDD_MONTHS = (5..9)    # May to September, as docs/proposal claim W3 (1702 at Ames, 2025)
     MONTHS = %w[JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC].freeze
 
     Day = Struct.new(:date, :tmin, :tmean, :tmax, :rain, :wetness, keyword_init: true)
@@ -57,8 +60,17 @@ module Weather
         temp: mean(days.map(&:tmean)),
         frost_days: days.count { |d| d.tmin <= FROST_C },
         heat_days: days.count { |d| d.tmax > HEAT_C },
-        wetness: mean(days.map(&:wetness), 2)
+        wetness: mean(days.map(&:wetness), 2),
+        gdd: gdd
       }
+    end
+
+    # Growing degree days base 10 °C, 86/50 method, May to September so far.
+    # The simple T2M - 10 sum reads higher (1915 against 1702 at Ames in 2025).
+    def gdd
+      days.select { |d| GDD_MONTHS.cover?(d.date.month) }.sum do |d|
+        [ ((d.tmax.clamp(GDD_BASE_C, GDD_CAP_C) + d.tmin.clamp(GDD_BASE_C, GDD_CAP_C)) / 2) - GDD_BASE_C, 0 ].max
+      end.round
     end
 
     # Rain summed per 7-day block from the first day: [first date, mm].

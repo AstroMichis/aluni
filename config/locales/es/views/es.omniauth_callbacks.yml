@@ -1,0 +1,22 @@
+es:
+  omniauth_callbacks:
+    providers:
+      google_oauth2: "Google"
+      apple: "Apple"
+      microsoft_graph: "Microsoft"
+    connected: "%{provider} quedó conectado. La próxima vez puedes entrar con él."
+    apple_return:
+      title: "Entrando"
+      continue: "Continuar"
+    errors:
+      provider_failed: "Esa entrada no terminó. Inténtalo otra vez, o usa una llave de acceso o un código por correo."
+      paused: "Entrar con Google, Apple o Microsoft está en pausa por ahora. Usa una llave de acceso o un código por correo."
+      email_conflict: "Ya hay una cuenta con ese correo. Entra con una llave de acceso o un código por correo y luego conecta %{provider} desde tu cuenta."
+      already_linked: "Esa cuenta de %{provider} ya está conectada a otra cuenta aquí."
+      signups_closed: "Por ahora no se abren cuentas nuevas."
+      name_required: "%{provider} no compartió un nombre. Regístrate con un código por correo."
+      invalid: "No se pudo guardar esa cuenta. Inténtalo otra vez, o usa un código por correo."
+  identities:
+    destroy:
+      removed: "%{provider} desconectado."
+      last_way_in: "Es tu única forma de entrar. Agrega una llave de acceso o confirma tu correo primero."

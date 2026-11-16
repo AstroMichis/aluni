@@ -5,7 +5,9 @@ module Weather
   # alerts, the next two days of the forecast at each located field
   # (Weather::Forecast, Meteomatics) and one NotificationRouter message per
   # field, day and kind they asked for: frost, heat, heavy rain, or a dry spell
-  # (DRY_DAYS days ahead with almost no rain). The idempotency key
+  # (DRY_DAYS days ahead with almost no rain). A "scout" alert comes from the
+  # season so far instead (Weather::ScoutWindows): when the weather favours
+  # tar spot at a corn field, once per favourable run. The idempotency key
   # (weather:<field>:<date>:<kind>) sends each alert once however often the job
   # runs, and the alerts screen lists what was sent from it.
   class DailyAlertsJob < ApplicationJob
@@ -38,28 +40,43 @@ module Weather
     private
 
     def alert(user, field, kinds)
+      scout(user, field) if kinds.include?("scout")
+      forecast_alerts(user, field, kinds)
+    end
+
+    def scout(user, field)
+      season = Weather::Season.for(field.observation("nasa_power"))
+      window = Weather::ScoutWindows.for(season, field.current_crops.map(&:crop_key)).tar_spot
+      return unless window&.active
+
+      run = window.runs.last
+      deliver(user, field, run.first, "scout", text_args: { days: run.size })
+    end
+
+    def forecast_alerts(user, field, kinds)
       forecast = Weather::Forecast.for(field)
       return unless forecast.any?
 
       forecast.days.first(AHEAD).each do |day|
-        (day.alerts & kinds).each { |kind| deliver(user, field, day, kind) }
+        (day.alerts & kinds).each { |kind| deliver(user, field, day.date, kind, text_args: day_args(day)) }
       end
       dry = forecast.days.first(DRY_DAYS)
       return unless kinds.include?("dry_spell") && dry.size == DRY_DAYS && dry.all? { |d| d.rain.to_f < DRY_MM }
 
-      deliver(user, field, dry.first, "dry_spell", days: DRY_DAYS)
+      deliver(user, field, dry.first.date, "dry_spell", text_args: day_args(dry.first).merge(days: DRY_DAYS))
     end
 
-    def deliver(user, field, day, kind, days: nil)
+    def day_args(day) = { tmin: number(day.tmin), tmax: number(day.tmax), soil: number(day.soil_tmin), rain: number(day.rain, 0) }
+
+    def deliver(user, field, date, kind, text_args: {})
       I18n.with_locale(user.locale.presence || I18n.default_locale) do
         name = helpers.plot_name(field)
         kind_label = I18n.t("notifications.weather_alert.kinds.#{kind}")
-        when_label = I18n.l(day.date, format: "%A %-d")
-        text = I18n.t("notifications.weather_alert.text.#{kind}",
-                      tmin: number(day.tmin), tmax: number(day.tmax), soil: number(day.soil_tmin), rain: number(day.rain, 0), days: days)
+        when_label = I18n.l(date, format: "%A %-d")
+        text = I18n.t("notifications.weather_alert.text.#{kind}", **text_args)
         path = "/app/weather?field=#{field.record.id}"
         NotificationRouter.deliver(
-          recipient: user, purpose: PURPOSE, idempotency_key: self.class.key(field.record.id, day.date, kind),
+          recipient: user, purpose: PURPOSE, idempotency_key: self.class.key(field.record.id, date, kind),
           payload: {
             group: { field: field.record.id },
             push: { title: { field: name, kind: kind_label }, body: { day: when_label, text: text }, path: path, url: "/#{I18n.locale}#{path}" },

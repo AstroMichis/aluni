@@ -24,5 +24,6 @@ class EvidenceController < ApplicationController
   def show
     @snapshot = self.class.snapshot
     @studies = @snapshot.fetch("studies")
+    @sites = @snapshot.fetch("sites", {}) # other fields of the hindcast (docs/proposal/validation/sites.yml)
   end
 end

@@ -1,0 +1,41 @@
+<%# "Continue with Google / Apple / Microsoft": one POST form per provider registered in
+    config/initializers/omniauth.rb (Platform::Features.oauth_providers), straight to OmniAuth's
+    request phase, outside Turbo (the provider is a full-page redirect). A provider without
+    credentials, or every one while `oauth` is paused, shows as a disabled placeholder
+    (ApplicationHelper#social_buttons). In the finder each form carries the finder's hidden flat
+    inputs too (finder_controller fills every [data-finder-target=field]), so the new account gets
+    the field. Not offered in the native shells yet: Google refuses embedded web views, and the
+    system-browser handoff (AuthHandoff) is the next step.
+    Locals: mode ("sign_in" | "sign_up" | "finder"), intent ("sign_in" | "connect"). %>
+<% buttons = social_buttons %>
+<% if buttons.any? %>
+  <% mode = local_assigns.fetch(:mode, "sign_in") %>
+  <div class="auth-social">
+    <p class="auth-social__or"><span><%= t("sign_in_codes.social.or") %></span></p>
+    <% buttons.each do |provider, available| %>
+      <% label = t("sign_in_codes.social.continue", provider: t("omniauth_callbacks.providers.#{provider}")) %>
+      <% if available %>
+        <%= form_tag "/auth/#{provider}", method: :post, class: "auth-social__form", data: { turbo: false } do %>
+          <% if mode == "finder" %>
+            <% Fields::SaveSetupService::KEYS.each do |key| %>
+              <input type="hidden" name="<%= key %>" value="" data-finder-target="field">
+            <% end %>
+          <% end %>
+          <input type="hidden" name="locale" value="<%= I18n.locale %>">
+          <input type="hidden" name="intent" value="<%= local_assigns.fetch(:intent, "sign_in") %>">
+          <button type="submit" class="btn btn--secondary btn--lg btn--full auth-social__button auth-social__button--<%= provider %>">
+            <%= render "sign_in_codes/provider_glyph", provider: provider %>
+            <span><%= label %></span>
+          </button>
+        <% end %>
+      <% else %>
+        <button type="button" class="btn btn--secondary btn--lg btn--full auth-social__button auth-social__button--soon" disabled
+                aria-describedby="auth-social-soon-<%= provider %>">
+          <%= render "sign_in_codes/provider_glyph", provider: provider %>
+          <span><%= label %></span>
+          <span class="auth-social__soon" id="auth-social-soon-<%= provider %>"><%= t("sign_in_codes.social.soon") %></span>
+        </button>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

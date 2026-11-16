@@ -1,0 +1,86 @@
+[
+  {
+    "month": "2023-01",
+    "ndvi": 0.14,
+    "date": "2023-01-05",
+    "mission": "landsat",
+    "scene": "LC09_L2SP_029032_20230105_02_T1"
+  },
+  {
+    "month": "2023-02",
+    "ndvi": 0.145,
+    "date": "2023-02-11",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20230211T172441_R012_T14TPL_20240814T121303"
+  },
+  {
+    "month": "2023-03",
+    "ndvi": 0.135,
+    "date": "2023-03-28",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20230328T171859_R012_T14TPL_20240830T013002"
+  },
+  {
+    "month": "2023-04",
+    "ndvi": 0.13,
+    "date": "2023-04-17",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20230417T171859_R012_T14TPL_20240903T030937"
+  },
+  {
+    "month": "2023-05",
+    "ndvi": 0.125,
+    "date": "2023-05-17",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20230517T171859_R012_T14TPL_20230531T115543"
+  },
+  {
+    "month": "2023-06",
+    "ndvi": 0.343,
+    "date": "2023-06-26",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20230626T171859_R012_T14TPL_20230626T230656"
+  },
+  {
+    "month": "2023-07",
+    "ndvi": 0.4,
+    "date": "2023-07-26",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20230726T171859_R012_T14TPL_20241010T041348"
+  },
+  {
+    "month": "2023-08",
+    "ndvi": 0.528,
+    "date": "2023-08-30",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20230830T171901_R012_T14TPL_20240822T112126"
+  },
+  {
+    "month": "2023-09",
+    "ndvi": 0.167,
+    "date": "2023-09-24",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20230924T171939_R012_T14TPL_20230925T001946"
+  },
+  {
+    "month": "2023-10",
+    "ndvi": 0.115,
+    "date": "2023-10-19",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20231019T172331_R012_T14TPL_20241107T000534"
+  },
+  {
+    "month": "2023-11",
+    "ndvi": 0.118,
+    "date": "2023-11-13",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20231113T172559_R012_T14TPL_20231113T221319"
+  },
+  {
+    "month": "2023-12",
+    "ndvi": 0.105,
+    "date": "2023-12-18",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20231218T172731_R012_T14TPL_20231220T105315"
+  }
+]

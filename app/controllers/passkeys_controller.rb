@@ -8,6 +8,7 @@ class PasskeysController < ApplicationController
 
   def index
     @passkeys = Current.user.passkeys.order(:created_at)
+    @identities = Current.user.identities.order(:created_at).to_a
   end
 
   def options
@@ -38,7 +39,7 @@ class PasskeysController < ApplicationController
   def destroy
     passkey = Current.user.passkeys.find(params[:id])
 
-    if Current.user.passkeys.count <= 1 && Current.user.email_verified_at.nil?
+    if Current.user.passkeys.count <= 1 && Current.user.email_verified_at.nil? && Current.user.identities.none?
       redirect_to passkeys_path, alert: t(".last_passkey"), status: :see_other
     else
       passkey.destroy

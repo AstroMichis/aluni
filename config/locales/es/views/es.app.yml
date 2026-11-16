@@ -234,6 +234,15 @@ es:
         water_capacity:
           label: Agua que retiene el suelo
           value: "%{value} cm por cm de suelo"
+        hydrologic_group:
+          label: Grupo de escurrimiento
+          value: "Grupo %{value} (A drena más rápido, D más lento)"
+        soil_erodibility:
+          label: Qué tan fácil se erosiona el suelo
+          value: "Factor K %{value}"
+        tolerable_loss:
+          label: Pérdida de suelo que la tierra soporta
+          value: "%{value} t por acre al año"
         elevation:
           label: Altitud
           value: "%{value} m"
@@ -323,8 +332,8 @@ es:
             question: "¿Dónde está este terreno?"
             aluni: Comparte tu ubicación o escribe las coordenadas. Con el punto leo su clima, su suelo y el potencial de sus cultivos.
           details:
-            question: Cuéntame del terreno
-            aluni: Un nombre que reconozcas, su tamaño y cómo recibe agua.
+            question: ¿Cómo le dices a este terreno?
+            aluni: Basta con un nombre que reconozcas. Su tamaño y su agua pueden esperar hasta que cambien una respuesta.
           crop:
             question: "¿Qué tienes sembrado ahora?"
             aluni: Lo que siembras hoy es el punto de partida con el que comparo rotaciones.
@@ -563,7 +572,7 @@ es:
           unknown: sin saber todavía
       water:
         need: Necesita unos %{need} mm en su temporada; la lluvia usual cubre unos %{effective} mm (faltan %{deficit} mm).
-        note: Una guía del riesgo de sequía, no un pronóstico de cosecha. Lluvia de NASA GPM IMERG (NASA POWER donde falta), consumo de agua del cultivo según FAO-56 con el clima de NASA POWER. No cuenta el agua que el suelo guarda de antes, así que en zonas húmedas el faltante sale alto. Probada en 25 temporadas en Iowa, marcó los años de sequía pero no el tamaño de las cosechas.
+        note: Una guía del riesgo de sequía, no un pronóstico de cosecha. Lluvia de NASA GPM IMERG (NASA POWER donde falta), consumo de agua del cultivo según FAO-56 con el clima de NASA POWER. No cuenta el agua que el suelo guarda de antes, así que en zonas húmedas el faltante sale alto. Probada en 25 temporadas en Iowa, que es húmeda, marcó los años de sequía pero no el tamaño de las cosechas; en Nebraska, más seca y de temporal, siguió los años buenos y malos, aunque exagera las pérdidas.
     weather:
       tabs:
         season: Esta temporada
@@ -580,6 +589,8 @@ es:
           frost_days: Días con helada
           heat_days: Días sobre 32 °C
           wetness: Humedad en la raíz
+          gdd: Grados día de crecimiento
+        gdd_note: 'Grados día de crecimiento, base 10 °C con mínimas y máximas acotadas entre 10 y 30 °C (método 86/50), de mayo a septiembre hasta hoy.'
         charts:
           temp:
             title: Temperatura diaria
@@ -659,6 +670,9 @@ es:
           dry_spell:
             label: Racha seca
             event: "%{days} días casi sin lluvia"
+          scout:
+            label: Hora de recorrer
+            event: "%{days} días con clima que favorece la mancha de asfalto"
         frost_free:
           title: Periodo sin heladas
           last_spring: 'Última helada de primavera:'
@@ -671,11 +685,59 @@ es:
           one: Con lo que elegiste, esta temporada te habría enviado una alerta.
           other: Con lo que elegiste, esta temporada te habría enviado %{count} alertas.
       picker_label: Terreno
+      scout:
+        title: Cuándo recorrer el campo
+        tar_spot:
+          label: Mancha de asfalto en el maíz
+          active: "el clima la favorece ahora: %{days} días desde el %{first} con una media de 30 días entre 18 y 23 °C. Recorre el campo y mira las hojas bajas."
+          past: "%{days} días de esta temporada la favorecieron, del %{first} al %{last}. Si no recorriste entonces, busca las manchas negras antes de la cosecha."
+          none: Ningún día de esta temporada ha favorecido la mancha de asfalto en el maíz por ahora.
+        armyworm:
+          label: Gusano cogollero
+          body: "%{degree_days} grados día sobre 12,57 °C desde mayo: alcanza para %{generations} generaciones si llega la polilla. La llegada se sabe por trampas, no por el clima."
+        unrun: "No se revisa aquí: %{rules}. Necesitan la humedad por hora o el mojado de la hoja, que mediría una estación en el campo."
+        rules:
+          gray_leaf_spot: la mancha gris de la hoja
+          northern_corn_leaf_blight: el tizón norteño de la hoja
+          soybean_rust: la roya asiática de la soya
+          wheat_rusts: las royas del trigo
+          fusarium_head_blight: la fusariosis de la espiga
       no_season:
         needs_pin: Este terreno todavía no tiene punto. Agrégalo y leo el clima ahí.
         pending: Estoy consultando a NASA POWER sobre este punto. Vuelve en un minuto.
         failed: NASA POWER no respondió esta vez. Intenta actualizar desde la página del terreno.
         open_field: Abrir el terreno
+    harvests:
+      edit:
+        title: "%{crop} %{year} · %{app_name}"
+        back: Volver a la cosecha
+        headline: "Lo que te dio %{crop}"
+        lede: En las unidades que usas. Deja en blanco lo que no sepas; el margen aparece cuando hay un rendimiento y un precio.
+        yield: Rendimiento
+        unit: Unidad
+        basis: Por
+        units:
+          t: toneladas
+          kg: kilogramos
+          bu: bushels
+          qq: quintales
+        units_short:
+          t: t
+          kg: kg
+          bu: bu
+          qq: qq
+        bases:
+          ha: hectárea
+          ac: acre
+        price: Precio recibido
+        price_hint: Por unidad de rendimiento, después de descuentos.
+        cost: Costos
+        cost_hint: Semilla, fertilizante, agroquímicos, combustible y trabajo contratado, por hectárea o acre como arriba.
+        currency: Moneda
+        private: Solo tú ves estas cifras. Quedan en tu cuenta y en tus exportaciones.
+        save: Guardar
+      update:
+        saved: "%{crop} %{year} guardado."
     reports:
       tabs:
         season: Temporada
@@ -691,6 +753,7 @@ es:
           other: "%{count} terrenos, %{area}."
         download: Descargar
         crops_title: Área por cultivo
+        add_area: "%{name} todavía no tiene área, así que los totales no lo cuentan. Agrégala"
         weather_title: Clima
         fields_title: Terreno por terreno
         team_title: Equipo
@@ -708,13 +771,22 @@ es:
           other: "%{count} personas"
       harvest:
         title: Cosecha · %{app_name}
-        headline: Cosecha alcanzable
-        lede: Lo que FAO GAEZ estima que puede rendir la mejor tierra alrededor de cada punto con el cultivo de esta temporada.
+        headline: Cosecha
+        lede: Lo que rindieron y dejaron tus terrenos, según tus propios registros, y la referencia de FAO GAEZ al lado.
         total: "%{value} t en este terreno"
-        note: Peso seco, de temporal, clima 1981-2010. Una referencia, no un pronóstico.
+        add_area: Agrega el área del terreno para ver las toneladas y los totales de la finca
+        note: Peso seco, de temporal, clima 1981-2010. Un techo para la mejor tierra alrededor del punto, no un pronóstico.
         own:
           title: Tus propios rendimientos
-          body: Registrar tus cosechas necesita su propio lugar en tu perfil. Es el siguiente paso de este reporte.
+          yield: "%{value} %{unit}/%{basis}"
+          margin: "Margen %{value} por hectárea"
+          missing: Sin registrar todavía
+          record: Registrar la cosecha
+          edit: Cambiar
+          hint: Tus registros son los rendimientos y precios que la comparación de rotaciones usa para su margen. Nada sale de tu cuenta.
+        reference:
+          title: Referencia de FAO GAEZ
+          lede: Lo que FAO GAEZ estima que puede rendir la mejor tierra alrededor de cada punto con el cultivo de esta temporada.
       export:
         title: Exportar · %{app_name}
         headline: Exporta tus datos
@@ -737,6 +809,12 @@ es:
             planting: Mes de siembra
             harvest: Mes de cosecha
             source: Origen
+            yield: Rendimiento
+            yield_unit: Unidad de rendimiento
+            price: Precio recibido
+            cost: Costos
+            currency: Moneda
+            margin: Margen por hectárea
         formats:
           csv:
             title: Hoja de cálculo
@@ -783,6 +861,9 @@ es:
       update:
         saved: Perfil guardado.
     rotations:
+      water_question:
+        title: ¿Este terreno se riega?
+        why: Cambia la calificación de Agua de abajo y qué avisos de sequía aplican. ¿No estás seguro? Déjalo; lo trato como de temporal.
       show:
         title: Rotaciones de %{name} · %{app_name}
         eyebrow: Temporadas %{from} a %{to}
@@ -855,6 +936,9 @@ es:
         suitability: "%{crop}: %{class} en tu punto."
         water: "%{crop} necesita unos %{need} mm; la lluvia usual cubre unos %{effective} mm."
         slope: Pendiente de %{value} %.
+        soil_loss: "Cerca de %{no_cover} t de suelo por hectárea al año; una cubierta de centeno entre cultivos la dejaría en %{with_cover} t (%{saved} %% menos). Dentro de las %{tolerable} t que la tierra soporta. Los valores de rastrojo son supuestos."
+        soil_loss_over: "Cerca de %{no_cover} t de suelo por hectárea al año, sobre las %{tolerable} t que la tierra soporta; una cubierta de centeno entre cultivos la dejaría en %{with_cover} t (%{saved} %% menos). Los valores de rastrojo son supuestos."
+        margin: "Cerca de %{value} por hectárea por temporada, según tus %{seasons} cosechas registradas. Informa la decisión; no es parte de la calificación."
         cover_history: "Este terreno ya tuvo un cultivo de cobertura (%{crops}) en %{years}."
         soil_texture: "%{crop}: crece mejor en suelo %{need}; el tuyo es %{value}."
         soil_drainage: "%{crop}: necesita este drenaje: %{need}; el tuyo: %{value}."
@@ -888,11 +972,11 @@ es:
         new_crop: Trae un cultivo que tu campo no ha tenido, y prefieres cambiar con cuidado. Pruébalo primero en una parte del campo.
         contract: Vendes por contrato o para exportar. Consulta con tu comprador antes de cambiar el cultivo.
       gaps:
-        market: 'Precios y compradores: todavía no hay fuente para tu mercado local.'
+        market: 'Margen: registra el rendimiento y el precio de cada uno de estos cultivos (Reportes, Cosecha) para ver lo que esta rotación dejaría con tus números.'
         water_source: Todavía no se sabe de dónde viene el agua de riego (pozo, canal, reservorio).
         second_crop: Siembras dos cultivos al año, pero el segundo todavía no está registrado; agrégalo al historial del terreno para verlo en la línea de tiempo.
         soil: La textura de tu suelo todavía no está confirmada.
         ecocrop: Los requisitos de temperatura y pH de los cultivos (FAO ECOCROP) todavía no están cargados.
         suitability: FAO GAEZ no tiene valor para algunos de estos cultivos en tu punto.
-        water: Por ahora la necesidad de agua solo se conoce para maíz y soya (FAO-56).
+        water: "Todavía no se conoce la necesidad de agua de algunos de estos cultivos: FAO-56 no da coeficientes para ellos."
         slope: "La pendiente en tu punto todavía no se conoce: los datos de elevación (NASADEM, de 56°S a 60°N) no han respondido."

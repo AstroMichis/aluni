@@ -1,0 +1,9 @@
+<%# One line of the hindcast beside the advice it backs (config/evidence/backtest.yml, words in shared.evidence_note). Locals: study ("v4"), note (key under shared.evidence_note). %>
+<% data = evidence_study(study) %>
+<% if data.present? %>
+  <p class="evidence-note">
+    <span class="<%= evidence_badge(data["verdict"]) %>"><%= study.upcase %> · <%= t("evidence.show.verdicts.#{data['verdict'].downcase}") %></span>
+    <span class="evidence-note__text"><%= t("shared.evidence_note.#{note}", **evidence_vars(data), app_name: t("app_name")) %></span>
+    <%= link_to t("shared.evidence_note.link"), evidence_path(anchor: "study-#{study}"), class: "evidence-note__link", data: { turbo: false } %>
+  </p>
+<% end %>

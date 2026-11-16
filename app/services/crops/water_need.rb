@@ -63,6 +63,15 @@ module Crops
       ((month.to_i + 5) % 12) + 1
     end
 
+    # Kc along the season: flat, rising, flat, falling (FAO-56 Fig. 25).
+    def self.kc_at(day, (kc_ini, kc_mid, kc_end), (ini, dev, mid, late))
+      return kc_ini if day < ini
+      return kc_ini + ((kc_mid - kc_ini) * (day - ini) / dev.to_f) if day < ini + dev
+      return kc_mid if day < ini + dev + mid
+
+      kc_mid + ((kc_end - kc_mid) * (day - ini - dev - mid) / late.to_f)
+    end
+
     def initialize(fao, et0, rain, planting_month, rain_source: "power")
       @kc_ini, @kc_mid, @kc_end = fao["kc"]
       @stages = fao["stages"]
@@ -90,15 +99,7 @@ module Crops
 
     private
 
-    # Kc along the season: flat, rising, flat, falling (FAO-56 Fig. 25).
-    def kc(day)
-      ini, dev, mid, late = @stages
-      return @kc_ini if day < ini
-      return @kc_ini + ((@kc_mid - @kc_ini) * (day - ini) / dev.to_f) if day < ini + dev
-      return @kc_mid if day < ini + dev + mid
-
-      @kc_mid + ((@kc_end - @kc_mid) * (day - ini - dev - mid) / late.to_f)
-    end
+    def kc(day) = self.class.kc_at(day, [ @kc_ini, @kc_mid, @kc_end ], @stages)
 
     # Effective monthly rain (mm) from the month's total (FAO/CROPWAT, Smith 1992).
     def effective_rain(month_mm)

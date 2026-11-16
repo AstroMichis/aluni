@@ -234,6 +234,15 @@ en:
         water_capacity:
           label: Water the soil holds
           value: "%{value} cm per cm of soil"
+        hydrologic_group:
+          label: Runoff group
+          value: "Group %{value} (A drains fastest, D slowest)"
+        soil_erodibility:
+          label: How easily the soil erodes
+          value: "K factor %{value}"
+        tolerable_loss:
+          label: Soil loss the land can bear
+          value: "%{value} t per acre a year"
         elevation:
           label: Elevation
           value: "%{value} m"
@@ -323,8 +332,8 @@ en:
             question: Where is this field?
             aluni: Share your location or type the coordinates. With the pin I read its weather, soil and crop potential.
           details:
-            question: Tell me about the field
-            aluni: A name you recognise, its size and how it gets water.
+            question: What do you call this field?
+            aluni: A name you recognise is enough. Its size and its water can wait until they change an answer.
           crop:
             question: What is growing there now?
             aluni: What you grow today is the starting point I compare rotations against.
@@ -563,7 +572,7 @@ en:
           unknown: not known yet
       water:
         need: Needs about %{need} mm over its season; the usual rain covers about %{effective} mm (%{deficit} mm short).
-        note: A drought-risk guide, not a harvest forecast. Rain from NASA GPM IMERG (NASA POWER where it is missing), crop water use from FAO-56 with NASA POWER weather. It does not count the water the soil keeps from before, so in humid areas the shortfall reads high. Tested on 25 seasons in Iowa, it marked the drought years but not the size of the harvests.
+        note: A drought-risk guide, not a harvest forecast. Rain from NASA GPM IMERG (NASA POWER where it is missing), crop water use from FAO-56 with NASA POWER weather. It does not count the water the soil keeps from before, so in humid areas the shortfall reads high. Tested on 25 seasons in humid Iowa, it marked the drought years but not the size of the harvests; in drier, rainfed Nebraska it followed the good and bad years, still overstating the losses.
     weather:
       tabs:
         season: This season
@@ -580,6 +589,8 @@ en:
           frost_days: Frost days
           heat_days: Days above 32 °C
           wetness: Root zone moisture
+          gdd: Growing degree days
+        gdd_note: 'Growing degree days, base 10 °C with lows and highs held within 10 to 30 °C (the 86/50 method), May to September so far.'
         charts:
           temp:
             title: Daily temperature
@@ -659,6 +670,9 @@ en:
           dry_spell:
             label: Dry spell
             event: "%{days} days with almost no rain"
+          scout:
+            label: Time to scout
+            event: "%{days} days with weather that suits tar spot"
         frost_free:
           title: Frost-free stretch
           last_spring: 'Last spring frost:'
@@ -671,11 +685,59 @@ en:
           one: With your choices I would have sent you one alert this season.
           other: With your choices I would have sent you %{count} alerts this season.
       picker_label: Field
+      scout:
+        title: When to scout
+        tar_spot:
+          label: Tar spot on corn
+          active: "the weather suits it now: %{days} days since %{first} with a 30-day mean of 18 to 23 °C. Walk the field and look at the lower leaves."
+          past: "%{days} days this season suited it, from %{first} to %{last}. If you did not scout then, look for the black spots before harvest."
+          none: No day this season has suited tar spot on corn so far.
+        armyworm:
+          label: Fall armyworm
+          body: "%{degree_days} degree-days above 12.57 °C since May: enough for %{generations} generations if the moth arrives. Arrival comes from traps, not from the weather."
+        unrun: "Not checked here: %{rules}. They need hourly humidity or leaf wetness, which a field station would measure."
+        rules:
+          gray_leaf_spot: gray leaf spot
+          northern_corn_leaf_blight: northern corn leaf blight
+          soybean_rust: Asian soybean rust
+          wheat_rusts: the wheat rusts
+          fusarium_head_blight: Fusarium head blight
       no_season:
         needs_pin: This field has no pin yet. Add it and I will read the weather there.
         pending: I am asking NASA POWER about this pin. Come back in a minute.
         failed: NASA POWER did not answer this time. Try refreshing from the field page.
         open_field: Open the field
+    harvests:
+      edit:
+        title: "%{crop} %{year} · %{app_name}"
+        back: Back to the harvest
+        headline: "What %{crop} gave you"
+        lede: In the units you use. Leave blank what you do not know; the margin appears once there is a yield and a price.
+        yield: Yield
+        unit: Unit
+        basis: Per
+        units:
+          t: tonnes
+          kg: kilograms
+          bu: bushels
+          qq: quintals
+        units_short:
+          t: t
+          kg: kg
+          bu: bu
+          qq: qq
+        bases:
+          ha: hectare
+          ac: acre
+        price: Price received
+        price_hint: Per unit of yield, after deductions.
+        cost: Costs
+        cost_hint: Seed, fertilizer, chemicals, fuel and hired work, per hectare or acre as above.
+        currency: Currency
+        private: Only you see these figures. They stay on your account and in your exports.
+        save: Save
+      update:
+        saved: "%{crop} %{year} saved."
     reports:
       tabs:
         season: Season
@@ -691,6 +753,7 @@ en:
           other: "%{count} fields, %{area}."
         download: Download
         crops_title: Area by crop
+        add_area: "%{name} has no area yet, so the totals leave it out. Add it"
         weather_title: Weather
         fields_title: Field by field
         team_title: Team
@@ -708,13 +771,22 @@ en:
           other: "%{count} people"
       harvest:
         title: Harvest · %{app_name}
-        headline: Attainable harvest
-        lede: What FAO GAEZ estimates the best land around each pin can yield with this season's crop.
+        headline: Harvest
+        lede: What your fields yielded and earned, from your own records, and the FAO GAEZ reference beside them.
         total: "%{value} t on this field"
-        note: Dry weight, rainfed, 1981-2010 climate. A reference, not a forecast.
+        add_area: Add the field's area to see the tonnes and the farm's totals
+        note: Dry weight, rainfed, 1981-2010 climate. A ceiling for the best land around the pin, not a forecast.
         own:
           title: Your own yields
-          body: Recording your harvests needs its own place in your profile. It is the next step for this report.
+          yield: "%{value} %{unit}/%{basis}"
+          margin: "Margin %{value} a hectare"
+          missing: Not recorded yet
+          record: Record the harvest
+          edit: Change
+          hint: Your records are the yields and prices the rotation comparison uses for its margin. Nothing leaves your account.
+        reference:
+          title: FAO GAEZ reference
+          lede: What FAO GAEZ estimates the best land around each pin can yield with this season's crop.
       export:
         title: Export · %{app_name}
         headline: Export your data
@@ -737,6 +809,12 @@ en:
             planting: Planting month
             harvest: Harvest month
             source: Source
+            yield: Yield
+            yield_unit: Yield unit
+            price: Price received
+            cost: Costs
+            currency: Currency
+            margin: Margin a hectare
         formats:
           csv:
             title: Spreadsheet
@@ -783,6 +861,9 @@ en:
       update:
         saved: Profile saved.
     rotations:
+      water_question:
+        title: Is this field watered?
+        why: It changes the Water score below and which dry-weather warnings apply. Not sure? Leave it; I treat it as rainfed.
       show:
         title: Rotations for %{name} · %{app_name}
         eyebrow: Seasons %{from} to %{to}
@@ -855,6 +936,9 @@ en:
         suitability: "%{crop}: %{class} at your pin."
         water: "%{crop} needs about %{need} mm; the usual rain covers about %{effective} mm."
         slope: Slope of %{value} %.
+        soil_loss: "About %{no_cover} t of soil a hectare a year; a rye cover between crops would make it %{with_cover} t (%{saved} %% less). Within the %{tolerable} t the land can bear. Residue values are assumed."
+        soil_loss_over: "About %{no_cover} t of soil a hectare a year, above the %{tolerable} t the land can bear; a rye cover between crops would make it %{with_cover} t (%{saved} %% less). Residue values are assumed."
+        margin: "About %{value} a hectare a season, from your own %{seasons} recorded harvests. It informs the choice; it is not part of the score."
         cover_history: "This field already had a cover crop (%{crops}) in %{years}."
         soil_texture: "%{crop}: grows best in %{need} soil; yours is %{value}."
         soil_drainage: "%{crop}: needs this drainage: %{need}; yours is %{value}."
@@ -888,11 +972,11 @@ en:
         new_crop: It brings a crop your field has not grown before, and you prefer to change carefully. Try it on part of a field first.
         contract: You sell under contract or for export. Check with your buyer before changing the crop.
       gaps:
-        market: 'Prices and buyers: there is no source for your local market yet.'
+        market: 'Margin: record the yield and price of each of these crops (Reports, Harvest) to see what this rotation would earn on your numbers.'
         water_source: Where the irrigation water comes from is not known yet (well, canal, reservoir).
         second_crop: You grow two crops a year, but the second one is not recorded yet; add it to the field's history to see it on the timeline.
         soil: Your soil texture is not confirmed yet.
         ecocrop: The crops' temperature and pH requirements (FAO ECOCROP) are not loaded yet.
         suitability: FAO GAEZ has no value for some of these crops at your pin.
-        water: The water need is only known for corn and soybeans so far (FAO-56).
+        water: "The water need is not known yet for some of these crops: FAO-56 gives no coefficients for them."
         slope: "The slope at your pin is not known yet: the elevation data (NASADEM, 56°S to 60°N) has not answered."

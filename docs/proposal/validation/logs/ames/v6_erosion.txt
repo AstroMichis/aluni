@@ -1,0 +1,19 @@
+
+== RUSLE inputs ==
+R 3582 MJ mm/(ha h yr) from 1015 mm/yr (Daymet 2001-2025); K 0.0316 (kwfact .24); slope length 40.0 m; T 11.2 t/ha/yr
+Erosivity share by month: {3 => 0.033, 4 => 0.095, 5 => 0.154, 6 => 0.161, 7 => 0.14, 8 => 0.173, 9 => 0.096, 10 => 0.072, 11 => 0.034, 12 => 0.028}
+LS: 3DEP 4.05% -> 0.58, SSURGO 8% -> 1.19
+
+== Soil loss, t/ha/yr, slope 3DEP 4.05% ==
+current       no cover 20.13  with rye cover 17.48  saved 13%  ABOVE the T factor 11.2
+small_grain   no cover 16.95  with rye cover 14.59  saved 14%  ABOVE the T factor 11.2
+other_family  no cover 23.59  with rye cover 20.49  saved 13%  ABOVE the T factor 11.2
+
+== Soil loss, t/ha/yr, slope SSURGO 8% ==
+current       no cover 41.2  with rye cover 35.78  saved 13%  ABOVE the T factor 11.2
+small_grain   no cover 34.69  with rye cover 29.86  saved 14%  ABOVE the T factor 11.2
+other_family  no cover 48.28  with rye cover 41.93  saved 13%  ABOVE the T factor 11.2
+
+RUSLE order (least loss first): small_grain > current > other_family; app erosion score {"current" => 76, "small_grain" => 84, "other_family" => 76} is consistent with it (the score ties 76)
+
+V6: PASS  current 20.13 -> 17.48 t/ha/yr (-13%); small_grain 16.95 -> 14.59 t/ha/yr (-14%); other_family 23.59 -> 20.49 t/ha/yr (-13%) on the 3DEP slope; T = 11.2; score order matches RUSLE

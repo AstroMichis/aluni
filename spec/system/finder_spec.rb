@@ -65,12 +65,11 @@ RSpec.describe "Field finder", type: :system do
       expect(page).to have_content(I18n.t("places.reverse.near", place: "Ames, Iowa"), wait: 10)
       expect(page).to have_content(I18n.t("finder.steps.basics.title"))
       expect(page).to have_css(".finder__kicker", text: /#{Regexp.escape(I18n.t("finder.kicker", index: 2, total: 3))}/i)
-      # A US pin defaults the area unit to acres.
-      expect(find("input[name='area_unit'][value='acres']", visible: :all)).to be_checked
+      # Only the crop is asked here: water and area wait for the Rotation tab and the reports.
+      expect(page).to have_no_field("finder-area")
+      expect(page).to have_no_css("input[name='irrigation']:not([type='hidden'])", visible: :all)
 
       fill_in "finder-crop", with: "maíz"
-      find("label.finder__chip", text: I18n.t("onboarding.values.irrigation.irrigated")).click
-      fill_in "finder-area", with: "12.5"
       click_button I18n.t("finder.steps.basics.continue")
 
       expect(page).to have_content(I18n.t("finder.steps.save.title"))
@@ -86,9 +85,9 @@ RSpec.describe "Field finder", type: :system do
       expect(hidden_value("admin_area")).to eq("Iowa")
       expect(hidden_value("location_source")).to eq("geolocation")
       expect(hidden_value("crop_name")).to eq("maíz")
-      expect(hidden_value("irrigation")).to eq("irrigated")
-      expect(hidden_value("area")).to eq("12.5")
-      expect(hidden_value("area_unit")).to eq("acres")
+      expect(hidden_value("irrigation")).to eq("")
+      expect(hidden_value("area")).to eq("")
+      expect(hidden_value("area_unit")).to eq("acres") # a US pin: acres, for when the area is given
       expect(find("#finder-save input[name='locale']", visible: :all).value).to eq("en")
     end
 

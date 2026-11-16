@@ -338,8 +338,9 @@
 }
 
 .phone-frame__alert--frost { border-left-color: var(--color-info); }
-.phone-frame__alert--bare { border-left-color: var(--color-secondary); }
-.phone-frame__alert--moisture { border-left-color: var(--color-warning); }
+.phone-frame__alert--scout { border-left-color: var(--color-accent); }
+.phone-frame__alert--dry { border-left-color: var(--color-warning); }
+.phone-frame__score { font-weight: 500; color: var(--color-accent-text); white-space: nowrap; }
 
 .phone-frame__alert-head {
   display: flex;

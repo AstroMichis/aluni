@@ -42,4 +42,17 @@ RSpec.describe Weather::DailyAlertsJob do
 
     expect(Weather::Forecast).not_to have_received(:for)
   end
+
+  it "says when to scout for tar spot while the weather suits it, once per run" do
+    travel_to Date.new(2025, 7, 20) do
+      user.farmer_profile.update!(notification_preferences: { "weather" => %w[scout] })
+      allow(Weather::Forecast).to receive(:for).and_return(forecast([]))
+      days = (Date.new(2025, 5, 1)..Date.current).map { |d| Weather::Season::Day.new(date: d, tmin: 15, tmean: 20, tmax: 25, rain: 0, wetness: 0.4) }
+      allow(Weather::Season).to receive(:for).and_return(Weather::Season.new(days))
+      allow(Weather::ScoutWindows).to receive(:for).and_wrap_original { |m, season, _crops| m.call(season, %w[zea-mays]) }
+
+      expect { 2.times { described_class.perform_now } }.to change(NotificationDelivery, :count).by(1)
+      expect(NotificationDelivery.last.idempotency_key).to eq("weather:#{record.id}:2025-06-15:scout")
+    end
+  end
 end

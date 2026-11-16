@@ -190,4 +190,21 @@ RSpec.describe Rotations::Comparator do
     expect(comparator).not_to be_ready
     expect(comparator.strategies).to be_empty
   end
+
+  it "shows the margin from the farmer's own harvests without scoring it, and asks for them otherwise" do
+    before = comparator.strategies.first
+    expect(before.gaps).to include("market")
+
+    { "Corn" => [ "Zea mays", 11.0, 180 ], "Soybeans" => [ "Glycine max", 3.5, 400 ] }.each_with_index do |(name, (sci, amount, price)), i|
+      crop = record.field_crops.find_by(scientific_name: sci) ||
+             create(:field_crop, field: record, crop_name: name, scientific_name: sci, season_year: Date.current.year - 5 - i)
+      crop.update!(yield_amount: amount, yield_unit: "t", area_basis: "ha", price: price, cost: 1000, currency: "USD")
+    end
+    current = described_class.new(field, profile: user.farmer_profile).strategies.first
+
+    margin = current.evidence.find { |f| f.key == "margin" }
+    expect(margin.values).to include(value: ((400 * 2) + 980) / 3, currency: "USD")
+    expect(current.gaps).not_to include("market")
+    expect(current.total).to eq(before.total)
+  end
 end

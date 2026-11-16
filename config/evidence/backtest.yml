@@ -39,6 +39,10 @@ studies:
     stressed_min: 22
     stressed_max: 24
     soy_2025: 4.2
+    app_r_corn: 0.2
+    app_r_soy: -0.0
+    app_rho_corn: 0.77
+    app_rho_soy: 0.83
   v3:
     verdict: FAIL
     suitability: 10000
@@ -89,3 +93,98 @@ studies:
     nov_dec_open: 26
     nov_dec_views: 26
     app_rule_agreement: 90
+sites:
+  york:
+    field:
+      lat: 40.95
+      lon: -97.5
+      place: York County, Nebraska
+      from: 2001
+      to: 2025
+    summary:
+      V1: PASS
+      V2: PASS
+      V3: FAIL
+      V4: PASS
+      V5: REPORTED
+      V6: PASS
+      V7: PASS
+      V8: FAIL
+    studies:
+      v1:
+        verdict: PASS
+        tmax_rmse: 1.88
+        tmin_rmse: 2.49
+        frost_agreement: 96
+        gauges: 77
+        seasons: 18
+        power_low_seasons: 14
+        power_bias: 4.8
+        power_within: 83
+        imerg_within: 83
+        power_hit: 50
+        imerg_hit: 67
+      v2:
+        verdict: PASS
+        r_corn: 0.66
+        r_soy: 0.77
+        rho_corn: 0.84
+        rho_soy: 0.76
+        stressed_min: 25
+        stressed_max: 25
+        soy_2025:
+        app_r_corn: 0.63
+        app_r_soy: 0.78
+        app_rho_corn: 0.75
+        app_rho_soy: 0.82
+      v3:
+        verdict: FAIL
+        suitability: 5555
+        crops: 8
+        water_first:
+        - triticum-aestivum
+        - helianthus-annuus
+        maize_gap: 21
+        soy_gap: 14
+      v4:
+        verdict: PASS
+        gain: 12.7
+        low: 5.6
+        high: 22.0
+        trials: 194
+        sites: 17
+        gain_no_n: 56.6
+      v5:
+        verdict: REPORTED
+        rho_min: -0.19
+        rho_max: 0.18
+        rules: 5
+        lead: 1
+      v6:
+        verdict: PASS
+        saved_min: 12
+        saved_max: 13
+        loss_min: 20
+        loss_max: 27
+        t_factor: 11.2
+      v7:
+        verdict: PASS
+        years: 15
+        aluni: 13335
+        farmer: 12583
+        corn_always: 10388
+        foresight: 13886
+        springs: 25
+        short_springs: 0
+        planted_first: 05-02
+        planted_last: 05-19
+      v8:
+        verdict: FAIL
+        agreement: 65
+        months: 148
+        edges: 0
+        lag: 2.2
+        nov_dec_open: 19
+        nov_dec_views: 21
+        app_rule_agreement: 82
+    name: York, York County, Nebraska

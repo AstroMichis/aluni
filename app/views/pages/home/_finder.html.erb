@@ -1,4 +1,4 @@
-<%# The field finder: locate (the device position, asked for as soon as the step opens without a pin, with "Use my location" over the map to ask again; a town search; a map with a draggable pin), basics (crop, water, area) and save (two ways in for a newcomer, or "Save my field" when signed in). A .panel (bottom sheet on phones, side panel from 1025px) hidden until the mascot's "Find my field" (window mascot:lets-go). finder_controller.js runs the steps, field_map_controller.js the map, geolocate_controller.js the device position, passkey_controller.js the ceremony (its form posts every input as one flat map, so the hidden inputs are flat and RegistrationsController reads them from the body). The save step hosts the "auth" Turbo Frame with sign_in_codes/_choice: the passkey card holds #finder-save (its button is in the footer), the email card posts the same flat inputs to SignInCodesController, whose Turbo Streams swap the frame (the code entry, the name step). #finder-companion is where the mascot docks. %>
+<%# The field finder: locate (the device position, asked for as soon as the step opens without a pin, with "Use my location" over the map to ask again; a town search; a map with a draggable pin), basics (the crop only; water and area are asked later where they change something: the Rotation tab and the reports) and save (two ways in for a newcomer, or "Save my field" when signed in). A .panel (bottom sheet on phones, side panel from 1025px) hidden until the mascot's "Find my field" (window mascot:lets-go). finder_controller.js runs the steps, field_map_controller.js the map, geolocate_controller.js the device position, passkey_controller.js the ceremony (its form posts every input as one flat map, so the hidden inputs are flat and RegistrationsController reads them from the body). The save step hosts the "auth" Turbo Frame with sign_in_codes/_choice: the passkey card holds #finder-save (its button is in the footer), the email card posts the same flat inputs to SignInCodesController, whose Turbo Streams swap the frame (the code entry, the name step). #finder-companion is where the mascot docks. %>
 <% field_id = authenticated? ? Current.user.farms.first&.fields&.first&.id : nil %>
 <% passkey = !authenticated? && signups_enabled? %>
 <section id="finder" class="panel finder" hidden
@@ -99,33 +99,6 @@
           <p class="input-group__hint"><%= t("finder.steps.basics.crop_hint") %></p>
         </div>
 
-        <fieldset class="finder__group">
-          <legend class="finder__legend"><%= t("finder.steps.basics.irrigation") %></legend>
-          <div class="finder__chips">
-            <% %w[rainfed irrigated].each do |value| %>
-              <label class="finder__chip">
-                <input type="radio" name="irrigation" value="<%= value %>">
-                <span><%= t("onboarding.values.irrigation.#{value}") %></span>
-              </label>
-            <% end %>
-          </div>
-        </fieldset>
-
-        <fieldset class="finder__group">
-          <legend class="finder__legend"><%= t("finder.steps.basics.area") %> <span class="finder__optional"><%= t("finder.steps.basics.optional") %></span></legend>
-          <div class="finder__area">
-            <label class="sr-only" for="finder-area"><%= t("finder.steps.basics.area_label") %></label>
-            <input id="finder-area" class="input finder__area-input" type="number" name="area" min="0.01" step="0.01" inputmode="decimal" placeholder="0">
-            <div class="finder__chips" role="radiogroup" aria-label="<%= t("finder.steps.basics.unit_label") %>">
-              <% Field.area_units.keys.each do |unit| %>
-                <label class="finder__chip finder__chip--compact">
-                  <input type="radio" name="area_unit" value="<%= unit %>" <%= "checked" if unit == "hectares" %> data-action="change->finder#chooseUnit">
-                  <span><%= t("onboarding.values.area_unit.#{unit}") %></span>
-                </label>
-              <% end %>
-            </div>
-          </div>
-        </fieldset>
       </form>
     </section>
 

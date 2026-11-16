@@ -77,7 +77,7 @@ puts "Nov-Dec (unknown in the worked example): #{nov_dec.size} clear views, #{no
 # The rule the app uses since the backtest (U-28, U-29): plant in the region's calendar month
 # (config/crops/planting_calendars.yml, NASS progress) and count the months before FAO-56 effective full
 # cover (initial + development days) as open soil. Scored on the same clear months.
-calendar = YAML.safe_load_file(File.join(ROOT, "config/crops/planting_calendars.yml")).dig("US", "Iowa") || {}
+calendar = YAML.safe_load_file(File.join(ROOT, "config/crops/planting_calendars.yml")).dig("US", SITE["state_name"]) || {}
 covered = lambda do |crop, m|
   fao = AGRONOMY.dig(crop, "fao56")
   first = calendar.dig(crop, "planting_month") || fao["planting_month"]

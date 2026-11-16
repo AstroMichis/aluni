@@ -25,7 +25,12 @@
       <li class="kpi"><span class="kpi__label"><%= t(".kpis.frost_days") %></span><span class="kpi__value"><%= totals[:frost_days] %></span></li>
       <li class="kpi"><span class="kpi__label"><%= t(".kpis.heat_days") %></span><span class="kpi__value"><%= totals[:heat_days] %></span></li>
       <li class="kpi"><span class="kpi__label"><%= t(".kpis.wetness") %></span><span class="kpi__value"><%= chart_number(totals[:wetness], 2) %></span></li>
+      <li class="kpi"><span class="kpi__label"><%= t(".kpis.gdd") %></span><span class="kpi__value"><%= totals[:gdd] %></span></li>
     </ul>
+    <p class="choice-set__hint"><%= t(".gdd_note") %></p>
+    <%= render "shared/evidence_note", study: "v1", note: "weather" %>
+
+    <%= render "app/weather/scout", scout: @scout %>
 
     <% temps = days.flat_map { |d| [ d.tmin, d.tmax ] } %>
     <% frame = chart_frame(temps, count: days.size, step: 10) %>

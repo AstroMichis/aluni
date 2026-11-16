@@ -5,7 +5,7 @@ module Weather
   # FarmerProfile#notification_preferences["weather"] (sent through
   # NotificationRouter once alerts run).
   class AlertsService < ApplicationService
-    KINDS = %w[frost heat heavy_rain dry_spell].freeze
+    KINDS = %w[frost heat heavy_rain dry_spell scout].freeze
 
     def initialize(user:, alerts:)
       @user = user

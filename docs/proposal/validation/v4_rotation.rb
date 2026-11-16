@@ -9,7 +9,7 @@
 # yield after non-legume); wgt = the paper's replicate weight.
 #
 # The subset that matches this field: maize after soybean, then narrowed to the USA, to a climate like
-# Ames (mean annual temperature 6-12 C, annual rain 700-1100 mm), and by the maize's nitrogen rate
+# the site (sites.yml trial_climate; Ames: 6-12 C, 700-1100 mm), and by the maize's nitrogen rate
 # (Iowa farms fertilise corn at about 150-200 kg N/ha, so the high-N effect is the one a farmer gets).
 # Weighted mean lnRR with a 95% interval from a site-clustered bootstrap (observations from one site are
 # resampled together, since they are not independent).
@@ -17,7 +17,7 @@
 # The comparator's own rotation rules are also checked against the field's real history (CDL 2008-2025).
 #
 # Pre-registered criterion: the effect size with its 95% interval replaces the rotation placeholder in
-# the margin calculation (V7). PASS when the high-N, Ames-like interval excludes zero, i.e. the evidence
+# the margin calculation (V7). PASS when the high-N, site-like interval excludes zero, i.e. the evidence
 # supports the rotation advice at the nitrogen rates farmers here use.
 #
 # Run: mise exec -- ruby docs/proposal/validation/v4_rotation.rb
@@ -50,12 +50,19 @@ def effect(subset, num, boot: 2000, seed: 7)
     corn_after_corn_factor: Math.exp(-est).round(3) }
 end
 
+# Trials "like this site": the climate window in sites.yml (Ames: the pre-registered 6-12 C, 700-1100 mm).
+mat_lo, mat_hi = SITE.dig("trial_climate", "mat")
+map_lo, map_hi = SITE.dig("trial_climate", "map")
+like = ->(r) { (mat_lo..mat_hi).cover?(num.(r["MAT"]).to_f) && (map_lo..map_hi).cover?(num.(r["MAP"]).to_f) }
+LIKE = "#{SITE['name'].split(',').first}-like".freeze
+puts "#{SITE['name']}: trials with mean annual temperature #{mat_lo}-#{mat_hi} C and rain #{map_lo}-#{map_hi} mm"
+
 subsets = {
   "all maize after soybean" => base,
   "USA" => base.select { |r| r["Country"] == "United States of America" },
-  "Ames-like climate (MAT 6-12 C, MAP 700-1100 mm)" => base.select { |r| (6..12).cover?(num.(r["MAT"]).to_f) && (700..1100).cover?(num.(r["MAP"]).to_f) },
-  "Ames-like, maize N 0 kg/ha" => base.select { |r| (6..12).cover?(num.(r["MAT"]).to_f) && (700..1100).cover?(num.(r["MAP"]).to_f) && num.(r["NFR"]).to_f.zero? },
-  "Ames-like, maize N >= 120 kg/ha" => base.select { |r| (6..12).cover?(num.(r["MAT"]).to_f) && (700..1100).cover?(num.(r["MAP"]).to_f) && num.(r["NFR"]).to_f >= 120 },
+  "site-like climate" => base.select(&like),
+  "site-like, maize N 0 kg/ha" => base.select { |r| like.(r) && num.(r["NFR"]).to_f.zero? },
+  "site-like, maize N >= 120 kg/ha" => base.select { |r| like.(r) && num.(r["NFR"]).to_f >= 120 },
   "USA, maize N >= 150 kg/ha" => base.select { |r| r["Country"] == "United States of America" && num.(r["NFR"]).to_f >= 150 }
 }
 heading "Maize yield after soybean vs after a non-legume (Zhao et al. 2022)"
@@ -79,14 +86,14 @@ no_legume = cdl.each_cons(4).count { |w| w.none? { |_, c| c == "Soybeans" } }
 puts "Same-family pairs #{same_family}, monoculture runs #{mono}, 4-season windows without a legume #{no_legume}: " \
      "the farmer's strict corn-soybean alternation already satisfies every rule, so pest_break = 100 for the current rotation."
 
-key = "Ames-like, maize N >= 120 kg/ha"
+key = "site-like, maize N >= 120 kg/ha"
 chosen = effects[key] || effects["USA, maize N >= 150 kg/ha"]
 pass = chosen ? chosen[:ci_pct].first.positive? : nil
 record("V4",
        question: "Is the rotation advice backed by evidence, and how large is the benefit here?",
        truth: "Zhao et al. 2022 meta-analysis, #{base.size} maize-after-soybean observations; the field's CDL history",
-       criterion: "The high-N, Ames-like 95% interval of the soybean pre-crop effect on maize excludes zero",
+       criterion: "The high-N, #{LIKE} 95% interval of the soybean pre-crop effect on maize excludes zero",
        verdict: verdict(pass),
        summary: chosen ? "maize after soybean yields #{chosen[:gain_pct]}% more than after a non-legume at farm N rates [#{chosen[:ci_pct].join(' to ')}%], " \
                          "#{chosen[:n]} obs; so continuous corn yields #{chosen[:corn_after_corn_factor]} x rotated corn" : "too few observations",
-       details: { effects: effects, chosen: key, cdl_rules: { same_family: same_family, monoculture: mono, no_legume_windows: no_legume } })
+       details: { effects: effects, chosen: key, trial_climate: SITE['trial_climate'], cdl_rules: { same_family: same_family, monoculture: mono, no_legume_windows: no_legume } })

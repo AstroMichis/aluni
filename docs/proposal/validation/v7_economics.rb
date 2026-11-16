@@ -36,12 +36,11 @@ PLACEHOLDER = {
   "planter_kmh" => 8.0, "planter_m" => 9.1, "planter_eff" => 0.65, "hours_per_day" => 10.0, "farm_ha" => 400.0
 }.freeze
 
-rows = JSON.parse(File.read(path("nass/yield_county.json")))
-desc = { CORN => "CORN, GRAIN - YIELD, MEASURED IN BU / ACRE", SOY => "SOYBEANS - YIELD, MEASURED IN BU / ACRE" }
-yields = desc.to_h do |k, d|
-  [ k, rows.select { |r| r["short_desc"] == d && r["reference_period_desc"] == "YEAR" }
-          .filter_map { |r| (v = Float(r["Value"].to_s.delete(","), exception: false)) && [ r["year"].to_i, v * BU_AC_TO_T_HA[k] ] }.to_h ]
-end
+# County yields in the site's preferred series (sites.yml: non-irrigated first where it exists), t/ha.
+# The series must cover the decision years (York's non-irrigated split ends in 2013-2017, so it falls back to all practices).
+yield_series = [ CORN, SOY ].to_h { |k| [ k, nass_yields(k, within: 2008..2025, min: 14) ] }
+yield_series.each { |k, (_, d)| puts "NASS #{k}: #{d || 'none'}" }
+yields = yield_series.transform_values { |series, _| series }.to_h { |k, series| [ k, series.transform_values { |v| v * BU_AC_TO_T_HA[k] } ] }
 prices_raw = JSON.parse(File.read(path("nass/price_received.json")))
 pdesc = { CORN => "CORN, GRAIN - PRICE RECEIVED, MEASURED IN $ / BU", SOY => "SOYBEANS - PRICE RECEIVED, MEASURED IN $ / BU" }
 MONTHS = %w[JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC].freeze
@@ -56,8 +55,8 @@ cdl = JSON.parse(File.read(path("cdl.json"))).transform_keys(&:to_i).transform_v
 YEARS = (2008..2025).select { |y| yields.values.all? { |h| h[y] } && [ CORN, SOY ].all? { |k| spring.(k, y) && harvest.(k, y) } }
 raise Blocked, "NASS yields or prices missing for the decision years" if YEARS.size < 10
 
-# Corn after corn: the V4 measurement (Zhao 2022, Ames-like climate, farm N rates) when V4 has run.
-v4 = File.exist?(OUT) ? JSON.parse(File.read(OUT)).dig("V4", "details", "effects", "Ames-like, maize N >= 120 kg/ha") : nil
+# Corn after corn: the V4 measurement (Zhao 2022, site-like climate, farm N rates) when V4 has run.
+v4 = File.exist?(OUT) ? JSON.parse(File.read(OUT)).dig("V4", "details", "effects", "site-like, maize N >= 120 kg/ha") : nil
 ROTATION = PLACEHOLDER["rotation"].merge(v4 ? { [ CORN, CORN ] => v4["corn_after_corn_factor"] } : {})
 puts "Corn after corn = #{ROTATION[[ CORN, CORN ]]} x rotated corn (#{v4 ? "V4, Zhao 2022" : "placeholder"}); soybean after soybean #{ROTATION[[ SOY, SOY ]]} (placeholder)"
 rot = ->(c, prev) { ROTATION.fetch([ c, prev ], 1.0) }
@@ -121,7 +120,7 @@ if File.exist?(path("nass/days_suitable.json"))
     half = progress.select { |r| r["year"].to_i == y && r["commodity_desc"] == "CORN" && Float(r["Value"].to_s, exception: false).to_f >= 50 }
                    .filter_map { |r| r["week_ending"].to_s[0, 10].then { |d| d.empty? ? nil : Date.parse(d) } }.min
     ops[y] = { days: days.round(1), plantable_ha: ha.round, enough: ha >= PLACEHOLDER["farm_ha"], corn_50pct_planted: half }
-    puts "#{y}: #{days.round(1)} suitable days -> #{ha.round} ha with one planter (#{ops[y][:enough] ? 'enough' : 'SHORT'}); Iowa corn 50% planted by #{half || '-'}"
+    puts "#{y}: #{days.round(1)} suitable days -> #{ha.round} ha with one planter (#{ops[y][:enough] ? 'enough' : 'SHORT'}); #{SITE['state_name']} corn 50% planted by #{half || '-'}"
   end
   short = ops.select { |_, o| !o[:enough] }.keys
   puts "Planter capacity #{capacity.round(2)} ha/h. Short of time in #{short.size} of #{ops.size} springs: #{short.join(', ')}"
@@ -132,7 +131,7 @@ end
 pass = totals["aluni"] >= totals["farmer"]
 record("V7",
        question: "Would choosing by expected margin have paid, and could the farm plant on time?",
-       truth: "NASS Story County yields, NASS Iowa prices received and days suitable for fieldwork; placeholder costs",
+       truth: "NASS #{SITE['county_name']} County yields, NASS #{SITE['state_name']} prices received and days suitable for fieldwork; placeholder costs",
        criterion: "The margin rule's realised margin 2008-2025 is at least the farmer's (strict alternation)",
        verdict: verdict(pass),
        summary: "margin rule $#{totals['aluni']} vs farmer $#{totals['farmer']} vs continuous corn $#{totals['corn_always']} vs hindsight $#{totals['foresight']} per ha over #{YEARS.size} years; " \

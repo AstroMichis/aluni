@@ -15,15 +15,10 @@ es:
         confirm: "Este es mi campo"
       basics:
         title: "¿Qué crece ahí ahora?"
-        line: "Dos cosas rápidas sobre el campo. Puedes saltarlas y agregarlas después."
+        line: "Una cosa rápida sobre el campo. Puedes saltarla y agregarla después."
         crop: "Cultivo en el campo ahora"
         crop_placeholder: "Maíz, frijol, café..."
         crop_hint: "Escribe el nombre que usas. Sirve en cualquier idioma."
-        irrigation: "Agua"
-        area: "Superficie"
-        optional: "opcional"
-        area_label: "Superficie del campo"
-        unit_label: "Unidad"
         continue: "Continuar"
         skip: "Saltar por ahora"
       save:

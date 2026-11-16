@@ -16,7 +16,8 @@ require "date"
 require "json"
 require "yaml"
 
-DATA = File.expand_path("data/nass", __dir__)
+# Progress files from any site folder (fetch.rb writes data/<site>/nass/); the all-states file wins.
+DATA = File.expand_path("data", __dir__)
 OUT = File.expand_path("../../../config/crops/planting_calendars.yml", __dir__)
 YEARS = 10
 # NASS commodity (and class, when it matters) => catalog key (config/crops/agronomy.yml).
@@ -28,7 +29,7 @@ CROPS = {
   [ "DRY EDIBLE BEANS", nil ] => "phaseolus-vulgaris", [ "POTATOES", nil ] => "solanum-tuberosum"
 }.freeze
 
-file = %w[progress_all.json progress.json].map { |f| File.join(DATA, f) }.find { |f| File.exist?(f) } or abort "no NASS progress file (run fetch.rb)"
+file = (Dir[File.join(DATA, "*/nass/progress_all.json")] + Dir[File.join(DATA, "*/nass/progress.json")]).first or abort "no NASS progress file (run fetch.rb)"
 rows = JSON.parse(File.read(file)).select { |r| r["unit_desc"] == "PCT PLANTED" && r["week_ending"].to_s =~ /\A\d{4}-\d{2}-\d{2}/ }
 
 # The date a cumulative weekly series first reaches `pct`, linearly between the two weeks around it.

@@ -1133,9 +1133,9 @@
       "NASA POWER precipitation, 2025-01-01..2025-10-31"
     ],
     "gdd": [
-      1915.0,
-      1915,
-      "simple method, daily T2M - 10 C, 2025-01-01..2025-10-31; 86/50 gives 2077 (May-Sep 1702)"
+      1702.0,
+      1702,
+      "86/50 method, May-Sep (Weather::Season); the simple method over 2025-01-01..2025-10-31 gives 1915"
     ],
     "heat_days": [
       8.0,
@@ -1244,7 +1244,7 @@
     {
       "check": "measured NASA POWER wind covers every day of the record",
       "ok": true,
-      "detail": "WS2M from validation/data/power_daily.json"
+      "detail": "WS2M from validation/data/ames/power_daily.json"
     },
     {
       "check": "daily ET0 within 0-12 mm (FAO-56 plausible range)",
@@ -1274,7 +1274,7 @@
     {
       "check": "landing gdd matches the data",
       "ok": true,
-      "detail": "shown 1915.0, computed 1915"
+      "detail": "shown 1702.0, computed 1702"
     },
     {
       "check": "landing heat_days matches the data",

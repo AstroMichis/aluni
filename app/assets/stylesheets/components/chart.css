@@ -121,5 +121,6 @@
 }
 .forecast__alert--frost { border-left-color: var(--color-info); background: var(--color-info-bg); }
 .forecast__alert--heat { border-left-color: var(--color-danger); background: var(--color-danger-bg); }
+.forecast__alert--scout { border-left-color: var(--color-accent); background: var(--color-accent-muted); }
 .forecast__row--alert th { color: var(--color-warning); }
 .forecast__table small { color: var(--color-text-tertiary); }

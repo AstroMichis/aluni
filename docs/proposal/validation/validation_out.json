@@ -199,7 +199,7 @@
       },
       "gauges": 59
     },
-    "run_at": "2026-11-15T22:47:07Z"
+    "run_at": "2026-11-15T23:36:26Z"
   },
   "V2": {
     "question": "Would the water model have flagged the bad years?",
@@ -319,6 +319,43 @@
               2022,
               2023,
               2024
+            ]
+          },
+          "App rule": {
+            "pearson_vs_nass": 0.2,
+            "p_value": 0.3343,
+            "n": 25,
+            "lowest3": [
+              2012,
+              2021,
+              2013
+            ],
+            "flags_2012": true,
+            "spearman_vs_rma_drought": 0.77,
+            "rma_p_value": 0.0002,
+            "stressed_years": [
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2011,
+              2012,
+              2013,
+              2016,
+              2017,
+              2018,
+              2019,
+              2020,
+              2021,
+              2022,
+              2023,
+              2024,
+              2025
             ]
           }
         },
@@ -497,6 +534,45 @@
               2012,
               2013,
               2014,
+              2016,
+              2017,
+              2018,
+              2019,
+              2020,
+              2021,
+              2022,
+              2023,
+              2024,
+              2025
+            ]
+          },
+          "App rule": {
+            "pearson_vs_nass": -0.0,
+            "p_value": 0.996,
+            "n": 25,
+            "lowest3": [
+              2012,
+              2021,
+              2013
+            ],
+            "flags_2012": true,
+            "spearman_vs_rma_drought": 0.83,
+            "rma_p_value": 0.0002,
+            "stressed_years": [
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2011,
+              2012,
+              2013,
+              2014,
+              2015,
               2016,
               2017,
               2018,
@@ -1305,7 +1381,7 @@
         }
       }
     },
-    "run_at": "2026-11-15T22:47:09Z"
+    "run_at": "2026-11-15T23:36:29Z"
   },
   "V6": {
     "question": "How much soil does each rotation lose, and how much does a cover crop save?",
@@ -1402,7 +1478,7 @@
       },
       "blocked": "comparison with published Iowa soil-loss figures (source to document)"
     },
-    "run_at": "2026-11-15T22:47:18Z"
+    "run_at": "2026-11-15T23:36:38Z"
   },
   "V8": {
     "question": "Do the timeline's crop and bare months match what the satellites saw?",
@@ -1670,7 +1746,7 @@
       "nov_dec_views": 26,
       "app_rule_agreement_pct": 90
     },
-    "run_at": "2026-11-15T22:47:18Z"
+    "run_at": "2026-11-15T23:36:38Z"
   },
   "V5": {
     "question": "Do the pest and disease weather rules line up with real losses?",
@@ -2666,7 +2742,7 @@
         "Webster"
       ]
     },
-    "run_at": "2026-11-15T22:47:17Z"
+    "run_at": "2026-11-15T23:36:37Z"
   },
   "V3": {
     "question": "Does the crop evidence point at the crops that thrive here?",
@@ -2738,19 +2814,19 @@
           "nass_dw": 9182,
           "gaez": 11056,
           "diff_pct": 20,
-          "level": "Story County",
+          "level": "Story County (corn, grain)",
           "years": 10
         },
         "glycine-max": {
           "nass_dw": 2825,
           "gaez": 5615,
           "diff_pct": 99,
-          "level": "Story County",
+          "level": "Story County (soybeans)",
           "years": 10
         }
       }
     },
-    "run_at": "2026-11-15T22:47:10Z"
+    "run_at": "2026-11-15T23:36:29Z"
   },
   "V4": {
     "question": "Is the rotation advice backed by evidence, and how large is the benefit here?",
@@ -2782,7 +2858,7 @@
           ],
           "corn_after_corn_factor": 0.862
         },
-        "Ames-like climate (MAT 6-12 C, MAP 700-1100 mm)": {
+        "site-like climate": {
           "n": 1159,
           "sites": 47,
           "lnrr": 0.1494,
@@ -2793,7 +2869,7 @@
           ],
           "corn_after_corn_factor": 0.861
         },
-        "Ames-like, maize N 0 kg/ha": {
+        "site-like, maize N 0 kg/ha": {
           "n": 118,
           "sites": 20,
           "lnrr": 0.3769,
@@ -2804,7 +2880,7 @@
           ],
           "corn_after_corn_factor": 0.686
         },
-        "Ames-like, maize N >= 120 kg/ha": {
+        "site-like, maize N >= 120 kg/ha": {
           "n": 670,
           "sites": 39,
           "lnrr": 0.0941,
@@ -2827,14 +2903,24 @@
           "corn_after_corn_factor": 0.904
         }
       },
-      "chosen": "Ames-like, maize N >= 120 kg/ha",
+      "chosen": "site-like, maize N >= 120 kg/ha",
+      "trial_climate": {
+        "mat": [
+          6,
+          12
+        ],
+        "map": [
+          700,
+          1100
+        ]
+      },
       "cdl_rules": {
         "same_family": 0,
         "monoculture": 0,
         "no_legume_windows": 0
       }
     },
-    "run_at": "2026-11-15T22:47:14Z"
+    "run_at": "2026-11-15T23:36:34Z"
   },
   "V7": {
     "question": "Would choosing by expected margin have paid, and could the farm plant on time?",
@@ -3414,6 +3500,6 @@
       },
       "corn_after_corn": 0.91
     },
-    "run_at": "2026-11-15T22:47:18Z"
+    "run_at": "2026-11-15T23:36:38Z"
   }
 }

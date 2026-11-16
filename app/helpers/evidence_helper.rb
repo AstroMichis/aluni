@@ -16,5 +16,10 @@ module EvidenceHelper
     end
   end
 
+  # One study's numbers from the snapshot, read once per process.
+  def evidence_study(id) = (EvidenceHelper.snapshot["studies"] || {}).fetch(id.to_s, {})
+
+  def self.snapshot = @snapshot ||= EvidenceController.snapshot
+
   def evidence_badge(verdict) = "badge badge--#{EvidenceController::VERDICT_BADGES.fetch(verdict.to_s, 'info')}"
 end

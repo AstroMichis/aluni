@@ -4,6 +4,9 @@
 # yield_desc: NASS QuickStats short_desc per crop, in order of preference; the first with 15+ years is used.
 #   York takes the non-irrigated (rainfed) series first: the water model is a rainfed model.
 # district: counties (RMA spelling) pooled for the pest study (V5), because one county has too few claims.
+# trial_climate: the field trials (V4) that count as "like this site": mean annual temperature (C) and rain (mm).
+#   Ames keeps its pre-registered window; York's is the same rule (+-3 C, +-25 % rain) on its NASA POWER climate
+#   (2001-2025: 11.1 C, 700 mm).
 ames:
   name: Ames, Story County, Iowa
   lat: 42.0
@@ -15,6 +18,7 @@ ames:
   county_name: Story
   district_name: NASS Central Iowa district
   district: [Boone, Dallas, Grundy, Hamilton, Hardin, Jasper, Marshall, Polk, Poweshiek, Story, Tama, Webster]
+  trial_climate: { mat: [6, 12], map: [700, 1100] }
   yield_desc:
     zea-mays: ["CORN, GRAIN - YIELD, MEASURED IN BU / ACRE"]
     glycine-max: ["SOYBEANS - YIELD, MEASURED IN BU / ACRE"]
@@ -29,6 +33,7 @@ york:
   county_name: York
   district_name: York County and its neighbours
   district: [York, Hamilton, Polk, Seward, Fillmore, Butler, Saline, Clay]
+  trial_climate: { mat: [8, 14], map: [550, 900] }
   yield_desc:
     zea-mays: ["CORN, GRAIN, NON-IRRIGATED - YIELD, MEASURED IN BU / ACRE", "CORN, GRAIN - YIELD, MEASURED IN BU / ACRE"]
     glycine-max: ["SOYBEANS, NON-IRRIGATED - YIELD, MEASURED IN BU / ACRE", "SOYBEANS - YIELD, MEASURED IN BU / ACRE"]

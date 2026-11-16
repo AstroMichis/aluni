@@ -15,15 +15,10 @@ en:
         confirm: "This is my field"
       basics:
         title: "What grows there now?"
-        line: "Two quick things about the field. You can skip them and add them later."
+        line: "One quick thing about the field. You can skip it and add it later."
         crop: "Crop on the field now"
         crop_placeholder: "Corn, beans, coffee..."
         crop_hint: "Type the name you use. Any language works."
-        irrigation: "Water"
-        area: "Area"
-        optional: "optional"
-        area_label: "Area of the field"
-        unit_label: "Unit"
         continue: "Continue"
         skip: "Skip for now"
       save:

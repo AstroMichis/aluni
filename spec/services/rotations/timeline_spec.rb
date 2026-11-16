@@ -57,7 +57,7 @@ RSpec.describe Rotations::Timeline do
       line.months.select { |m| m.crop == "zea-mays" && m.year == year }.map(&:month)
     end
 
-    expect(corn_months.call("Nebraska")).to eq((4..8).to_a) # no calendar here yet: the FAO-56 row, April
+    expect(corn_months.call("Nevada")).to eq((4..8).to_a)   # no NASS calendar here: the FAO-56 row, April
     expect(corn_months.call("iowa")).to eq((5..9).to_a)     # Iowa: half the corn is planted by about 6 May
   end
 

@@ -12,6 +12,12 @@ Rails.application.routes.draw do
   get ".well-known/assetlinks.json", to: "app_links#android", format: false
 
   # PWA
+  # Social sign-in (config/initializers/omniauth.rb): OmniAuth's middleware owns POST /auth/:provider;
+  # these are the answers. Apple posts cross-site to /auth/apple/return, which re-posts from our origin.
+  match "auth/:provider/callback", to: "omniauth_callbacks#callback", via: %i[get post], as: :omniauth_callback
+  post  "auth/apple/return", to: "omniauth_callbacks#apple_return", as: :apple_return
+  get   "auth/failure", to: "omniauth_callbacks#failure", as: :omniauth_failure
+
   get "manifest.json", to: "pwa#manifest", format: false, as: :pwa_manifest
   get "service-worker.js", to: "pwa#service_worker", format: false, as: :pwa_service_worker
 
@@ -80,6 +86,8 @@ scope "(:locale)", locale: /en|es/ do
     resources :passkeys, only: %i[index create destroy] do
       post :options, on: :collection
     end
+    # Google, Apple or Microsoft linked to the account (connect is a POST to /auth/:provider).
+    resources :identities, only: :destroy
 
     # Authenticated area.
     namespace :app do
@@ -95,6 +103,8 @@ scope "(:locale)", locale: /en|es/ do
         end
         # How a season splits the field between crops (?year=, this season by default).
         resource :layout, only: %i[edit update], controller: "field_layouts"
+        # What a season's crop yielded and earned (the farmer's own records).
+        resources :harvests, only: %i[edit update]
         # The rotation comparison and each strategy's "why" (loaded lazily).
         resource :rotation, only: :show, controller: "rotations" do
           get "why/:strategy", action: :why, as: :why

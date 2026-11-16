@@ -1,0 +1,43 @@
+
+== Monthly agreement, predicted (FAO-56 calendar) vs observed (NDVI >= 0.4) ==
+Jan  agree 100% (n=12), mean NDVI 0.12
+Feb  agree 92% (n=13), mean NDVI 0.15
+Mar  agree 91% (n=11), mean NDVI 0.18
+Apr  agree 58% (n=12), mean NDVI 0.2
+May  agree 0% (n=12), mean NDVI 0.13
+Jun  agree 0% (n=13), mean NDVI 0.23
+Jul  agree 69% (n=13), mean NDVI 0.53
+Aug  agree 77% (n=13), mean NDVI 0.54
+Sep  agree 50% (n=12), mean NDVI 0.35
+Oct  agree 62% (n=13), mean NDVI 0.32
+Nov  agree 85% (n=13), mean NDVI 0.22
+Dec  agree 100% (n=11), mean NDVI 0.14
+Overall: 96 of 148 clear months agree (65%)
+Disagreements: predicted crop, saw bare: 41; predicted bare, saw crop: 11
+
+== Season edges: predicted planting and harvest vs observed green-up and senescence ==
+2015 Soybeans planted May -> green Jul; harvest Sep -> senescent after Aug
+2016 Corn     planted Apr -> green Jul; harvest Aug -> senescent after Nov
+2017 Soybeans planted May -> green Jul; harvest Sep -> senescent after Aug
+2018 Corn     planted Apr -> green Jul; harvest Aug -> senescent after Oct
+2019 Soybeans planted May -> green Jul; harvest Sep -> senescent after Oct
+2020 Corn     planted Apr -> green Feb; harvest Aug -> senescent after Oct
+2021 Soybeans planted May -> green Aug; harvest Sep -> senescent after Sep
+2022 Corn     planted Apr -> green Jul; harvest Aug -> senescent after Oct
+2023 Soybeans planted May -> green Jul; harvest Sep -> senescent after Aug
+2024 Corn     planted Apr -> green Jul; harvest Aug -> senescent after Nov
+2025 Soybeans planted May -> green Aug; harvest Sep -> senescent after Aug
+Both edges within one month in 0 of 11 seasons (0%); mean lag from planting to a green canopy 2.2 months
+Nov-Dec (unknown in the worked example): 21 clear views, 19 of them open soil (NDVI < 0.4)
+
+== The app's rule since the backtest: NASS calendar planting + open soil until FAO-56 full cover ==
+Monthly agreement: 122 of 148 (82%), was 65% with the FAO-56 calendar
+Apr  agree 92% (was 58%)
+May  agree 100% (was 0%)
+Jun  agree 100% (was 0%)
+Jul  agree 69% (was 69%)
+Aug  agree 77% (was 77%)
+Sep  agree 25% (was 50%)
+Oct  agree 62% (was 62%)
+
+V8: FAIL  65% of 148 clear months agree; edges within a month in 0% of seasons; a green canopy appears 2.2 months after the FAO-56 planting month on average

@@ -196,5 +196,14 @@
     ],
     "fetched_at": "2026-11-15T22:15:50Z",
     "seconds": 30
+  },
+  "nass_progress_all": {
+    "status": "ok",
+    "url": "https://quickstats.nass.usda.gov/api/api_GET/ (PCT PLANTED, all states)",
+    "files": [
+      "nass/progress_all.json"
+    ],
+    "fetched_at": "2026-11-15T22:58:36Z",
+    "seconds": 69
   }
 }

@@ -8,6 +8,7 @@
       <% if row.yield_t %><span class="potential__yield"><%= t("app.crops.attainable", value: chart_number(row.yield_t)) %></span><% end %>
     </p>
     <p class="choice-set__hint"><%= t("app.crops.gaez_note") %></p>
+    <%= render "shared/evidence_note", study: "v3", note: "crop_rank" %>
   <% elsif Crops::Agronomy.gaez_name(crop).nil? %>
     <p class="choice-set__hint"><%= t("app.crops.no_gaez") %></p>
   <% else %>
@@ -20,6 +21,7 @@
   <% if need %>
     <p class="potential__water"><%= t("app.crops.water.need", need: need.crop_mm, effective: need.effective_mm, deficit: need.deficit_mm) %></p>
     <p class="choice-set__hint"><%= t("app.crops.water.note") %></p>
+    <%= render "shared/evidence_note", study: "v2", note: "water" %>
   <% end %>
 
   <% if fit.available? %>

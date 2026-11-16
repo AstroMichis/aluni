@@ -97,12 +97,36 @@ en:
           criterion: "At least 80 %% of the months agree, and planting and harvest within one month of the satellite green-up and drying."
           result: "Only %{agreement} %% of %{months} months agreed: the canopy closes about %{lag} months after the table's planting month, and November and December were open soil in %{nov_dec_open} of %{nov_dec_views} views. With the rule the app uses now (real planting months, young crops counted as open soil) agreement rises to %{app_rule_agreement} %%."
           meaning: "The timeline now plants when farmers in the region plant and shows the soil open until the crop covers it."
+      sites:
+        title: "A second field: does it hold up somewhere else?"
+        lede: "One field could be luck. We ran the same eight studies, with the same pass marks, on the team's demo farm: %{names}, which is warmer and drier and where USDA publishes rainfed (non-irrigated) yields."
+        study: "Study"
+        names:
+          v1: "NASA data"
+          v2: "Water model vs yields"
+          v3: "Crop evidence"
+          v4: "Rotation"
+          v5: "Pest rules"
+          v6: "Erosion"
+          v7: "Margin rule"
+          v8: "Timeline"
+        short:
+          v1: "Highs within %{tmax_rmse} °C, lows %{tmin_rmse} °C. POWER rain within 15 %% in %{power_within} %% of seasons, IMERG in %{imerg_within} %%."
+          v2: "Correlation with yields: %{r_corn} corn, %{r_soy} soybeans. Drought losses ranked %{rho_corn} / %{rho_soy}."
+          v3: "GAEZ maize %{maize_gap} %% and soybeans %{soy_gap} %% off the real yields; water alone favours %{water_first}."
+          v4: "Corn after soybeans +%{gain} %% (%{low} to %{high} %%), %{trials} trial comparisons from %{sites} sites."
+          v5: "Correlations %{rho_min} to %{rho_max}; none significant."
+          v6: "A rye cover saves %{saved_min} to %{saved_max} %% of the soil lost."
+          v7: "Margin rule $%{aluni} against the farmer's $%{farmer} per hectare, %{years} seasons."
+          v8: "%{agreement} %% of months agree; %{app_rule_agreement} %% with the rule the app uses now."
+        takeaway: "What changes with two fields. The water model, which did not track yields in humid Iowa, tracks rainfed yields in drier Nebraska: it works where water is what limits the harvest, and the app should say how much that applies to each field. The margin rule beat the York farmer, who grew corn three years running, but not the Ames farmer, who alternated strictly: it helps most where a rotation slips. Rotation evidence, the erosion ranking and the weak pest rules repeat on both fields. The York rainfed yields stop in 2017 (corn) and 2013 (soybeans), so its sample is smaller."
+        buin: "Buin, Chile, the other demo farm, cannot be scored the same way yet: none of the documented open sources has Chilean rain gauges, county yields or crop insurance losses."
       answers_title: "Answers to the questions that matter"
       answers:
         facts:
           question: "Could %{app_name} have predicted the facts on this field?"
           short: "Partly."
-          body: "Temperature and frost from NASA are reliable at the pin; rain from NASA GPM IMERG passes, NASA POWER rain reads low. %{app_name} spots drought disasters but does not forecast a harvest."
+          body: "Temperature and frost from NASA are reliable at both fields; rain from NASA GPM IMERG passes everywhere, NASA POWER rain read low in Iowa. In drier, rainfed Nebraska the water model tracks the yields (correlation 0.66 for corn, 0.77 for soybeans); in humid Iowa it only spots the drought disasters. %{app_name} shows it as a drought risk, not a harvest figure, because it overstates the size of the losses at both fields."
         rotation:
           question: "Can it suggest a better rotation or a replacement crop?"
           short: "A better rotation, yes. A replacement crop, not yet."

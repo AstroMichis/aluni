@@ -97,12 +97,36 @@ es:
           criterion: "Al menos el 80 %% de los meses coinciden, y la siembra y la cosecha a menos de un mes del reverdecer y del secado vistos por satélite."
           result: "Solo coincidió el %{agreement} %% de %{months} meses: el follaje se cierra unos %{lag} meses después del mes de siembra de la tabla, y noviembre y diciembre fueron suelo abierto en %{nov_dec_open} de %{nov_dec_views} vistas. Con la regla que la app usa ahora (meses de siembra reales, cultivos jóvenes como suelo abierto) la coincidencia sube al %{app_rule_agreement} %%."
           meaning: "La línea de tiempo ahora siembra cuando siembran los agricultores de la región y muestra el suelo abierto hasta que el cultivo lo cubre."
+      sites:
+        title: "Un segundo campo: ¿se sostiene en otro lugar?"
+        lede: "Un solo campo podría ser suerte. Corrimos los mismos ocho estudios, con las mismas notas de aprobación, en el campo de demostración del equipo: %{names}, más cálido y más seco, y donde el USDA publica rendimientos de secano (sin riego)."
+        study: "Estudio"
+        names:
+          v1: "Datos de la NASA"
+          v2: "Modelo de agua frente a rendimientos"
+          v3: "Evidencia de cultivos"
+          v4: "Rotación"
+          v5: "Reglas de plagas"
+          v6: "Erosión"
+          v7: "Regla de margen"
+          v8: "Línea de tiempo"
+        short:
+          v1: "Máximas dentro de %{tmax_rmse} °C, mínimas %{tmin_rmse} °C. Lluvia de POWER dentro del 15 %% en el %{power_within} %% de las temporadas, IMERG en el %{imerg_within} %%."
+          v2: "Correlación con los rendimientos: %{r_corn} maíz, %{r_soy} soya. Pérdidas por sequía ordenadas %{rho_corn} / %{rho_soy}."
+          v3: "GAEZ se desvía %{maize_gap} %% en maíz y %{soy_gap} %% en soya de los rendimientos reales; solo con el agua se prefiere %{water_first}."
+          v4: "Maíz después de soya +%{gain} %% (%{low} a %{high} %%), %{trials} comparaciones de ensayos en %{sites} sitios."
+          v5: "Correlaciones de %{rho_min} a %{rho_max}; ninguna significativa."
+          v6: "Una cobertura de centeno ahorra de %{saved_min} a %{saved_max} %% del suelo perdido."
+          v7: "Regla de margen US$%{aluni} frente a US$%{farmer} del agricultor por hectárea, %{years} temporadas."
+          v8: "Coincide el %{agreement} %% de los meses; el %{app_rule_agreement} %% con la regla que la app usa ahora."
+        takeaway: "Qué cambia con dos campos. El modelo de agua, que no siguió los rendimientos en el Iowa húmedo, sí sigue los rendimientos de secano en el Nebraska más seco: funciona donde el agua es lo que limita la cosecha, y la app debería decir cuánto aplica eso a cada campo. La regla de margen le ganó al agricultor de York, que sembró maíz tres años seguidos, pero no al de Ames, que alternó estrictamente: ayuda más donde la rotación se desordena. La evidencia de rotación, el orden de erosión y la debilidad de las reglas de plagas se repiten en ambos campos. Los rendimientos de secano de York llegan hasta 2017 (maíz) y 2013 (soya), así que su muestra es menor."
+        buin: "Buin, Chile, el otro campo de demostración, todavía no puede calificarse igual: ninguna de las fuentes abiertas documentadas tiene pluviómetros, rendimientos por comuna ni pérdidas aseguradas de Chile."
       answers_title: "Respuestas a las preguntas que importan"
       answers:
         facts:
           question: "¿%{app_name} habría podido predecir los hechos en este campo?"
           short: "En parte."
-          body: "La temperatura y las heladas de la NASA son confiables en el punto; la lluvia de NASA GPM IMERG aprueba y la de NASA POWER sale baja. %{app_name} detecta los desastres de sequía, pero no pronostica una cosecha."
+          body: "La temperatura y las heladas de la NASA son confiables en ambos campos; la lluvia de NASA GPM IMERG aprueba en todas partes y la de NASA POWER salió baja en Iowa. En el Nebraska más seco y de secano, el modelo de agua sigue los rendimientos (correlación de 0,66 en maíz y 0,77 en soya); en el Iowa húmedo solo detecta los desastres de sequía. %{app_name} lo muestra como riesgo de sequía, no como cifra de cosecha, porque exagera el tamaño de las pérdidas en ambos campos."
         rotation:
           question: "¿Puede sugerir una mejor rotación o un cultivo de reemplazo?"
           short: "Una mejor rotación, sí. Un cultivo de reemplazo, todavía no."

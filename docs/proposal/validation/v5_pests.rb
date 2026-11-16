@@ -25,7 +25,7 @@ require_relative "lib"
 include Hindcast
 
 YEARS = (2001..2025).to_a
-CENTRAL = %w[Boone Dallas Grundy Hamilton Hardin Jasper Marshall Polk Poweshiek Story Tama Webster].freeze
+CENTRAL = SITE.fetch("district").freeze # sites.yml: the counties pooled for this site
 power = power_daily
 
 hourly = YEARS.to_h do |y|
@@ -62,7 +62,7 @@ losses = YEARS.to_h do |y|
   end ]
 end
 
-heading "Season counts at the pin and Central Iowa insured losses"
+heading "Season counts at the pin and insured losses in #{SITE['district_name']}"
 puts "year  GLS days  NCLB days  tar-spot days  FAW DD | corn disease $  corn insects $  soy disease $  soy insects $"
 YEARS.each do |y|
   c = counts[y]
@@ -108,7 +108,7 @@ median_lead = lead.empty? ? nil : lead.map { |l| l[:lead_months] }.sort[lead.siz
 strong = correlations.select { |_, c| c[:rho].to_f >= 0.4 && c[:p].to_f <= 0.05 }.keys
 record("V5",
        question: "Do the pest and disease weather rules line up with real losses?",
-       truth: "USDA RMA insured losses to plant disease, mycotoxin and insects, NASS Central Iowa district, 2001-2025",
+       truth: "USDA RMA insured losses to plant disease, mycotoxin and insects, #{SITE['district_name']}, 2001-2025",
        criterion: "Reported, not scored: Spearman rho with a permutation p-value per rule, and the lead time",
        verdict: "REPORTED",
        summary: "#{strong.empty? ? 'no rule' : strong.join(', ')} reached rho >= 0.4 at p <= 0.05; " \

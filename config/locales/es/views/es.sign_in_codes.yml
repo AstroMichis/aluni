@@ -1,5 +1,9 @@
 es:
   sign_in_codes:
+    social:
+      or: "o"
+      continue: "Continuar con %{provider}"
+      soon: "Pronto"
     choice:
       passkey_title: "Usa tu cara o tu huella"
       passkey_line: "Tu dispositivo comprueba que eres tú. No nos envía nada sobre ti."

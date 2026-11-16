@@ -1,0 +1,83 @@
+[
+  {
+    "month": "2016-01",
+    "ndvi": -0.037,
+    "date": "2016-01-10",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029031_20160110_02_T1"
+  },
+  {
+    "month": "2016-02",
+    "ndvi": 0.089,
+    "date": "2016-02-27",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20160227_02_T1"
+  },
+  {
+    "month": "2016-03",
+    "ndvi": null
+  },
+  {
+    "month": "2016-04",
+    "ndvi": 0.083,
+    "date": "2016-04-23",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_029032_20160423_02_T1"
+  },
+  {
+    "month": "2016-05",
+    "ndvi": 0.072,
+    "date": "2016-05-25",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_029031_20160525_02_T1"
+  },
+  {
+    "month": "2016-06",
+    "ndvi": 0.179,
+    "date": "2016-06-07",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20160607T172302_R012_T14TPL_20210211T172617"
+  },
+  {
+    "month": "2016-07",
+    "ndvi": 0.424,
+    "date": "2016-07-20",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20160720_02_T1"
+  },
+  {
+    "month": "2016-08",
+    "ndvi": 0.343,
+    "date": "2016-08-21",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20160821_02_T1"
+  },
+  {
+    "month": "2016-09",
+    "ndvi": 0.224,
+    "date": "2016-09-23",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_028032_20160923_02_T1"
+  },
+  {
+    "month": "2016-10",
+    "ndvi": 0.448,
+    "date": "2016-10-24",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20161024_02_T1"
+  },
+  {
+    "month": "2016-11",
+    "ndvi": 0.453,
+    "date": "2016-11-10",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_028032_20161110_02_T1"
+  },
+  {
+    "month": "2016-12",
+    "ndvi": 0.203,
+    "date": "2016-12-27",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20161227_02_T1"
+  }
+]

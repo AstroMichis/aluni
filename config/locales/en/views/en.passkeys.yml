@@ -1,6 +1,14 @@
 en:
   passkeys:
     index:
+      connected:
+        title: "Connected accounts"
+        lede: "Sign in with Google, Apple or Microsoft as well as your passkeys. Aluni keeps no password or token from them."
+        linked: "Connected"
+        not_linked: "Not connected"
+        connect: "Connect"
+        disconnect: "Disconnect"
+        confirm_disconnect: "Disconnect %{provider}? You can connect it again later."
       title: "Your passkeys"
       lede: "Each device you sign in from has its own passkey. Add one before you switch phones."
       lede_empty: "Add a passkey to sign in with your face or fingerprint next time."

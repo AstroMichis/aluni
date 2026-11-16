@@ -7,11 +7,12 @@
   <li class="phone-frame__chip phone-frame__chip--fact"><%= t("#{scope}.wetness", value: sample[:wetness]) %></li>
 </ul>
 <ol class="phone-frame__options">
-  <% %w[current small_grain cover].each do |option| %>
+  <% sample[:scores].each do |option, score| %>
     <li class="phone-frame__option">
-      <span class="phone-frame__value"><%= t("#{scope}.#{option}") %></span>
+      <span class="phone-frame__value"><%= t("#{scope}.#{option}") %> <span class="phone-frame__score text-mono"><%= t("#{scope}.score", value: score) %></span></span>
       <span class="phone-frame__line"><span class="phone-frame__line-label"><%= t("#{scope}.why") %></span> <%= t("#{scope}.#{option}_why") %></span>
       <span class="phone-frame__line"><span class="phone-frame__line-label"><%= t("#{scope}.risk") %></span> <%= t("#{scope}.#{option}_risk") %></span>
     </li>
   <% end %>
 </ol>
+<p class="phone-frame__note"><%= t("#{scope}.proof") %> <%= link_to t("#{scope}.evidence_link"), evidence_path, data: { turbo: false } %></p>

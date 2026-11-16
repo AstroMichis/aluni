@@ -1,0 +1,15 @@
+<%# Asked here, not at sign-up: whether the field is watered changes the Water score
+    (Rotations::Comparator#water) and the dry or water-store warnings. One tap; the field form keeps it. %>
+<% if field.record.irrigation_unknown? %>
+  <section class="water-question" aria-labelledby="water-question">
+    <h2 class="water-question__title" id="water-question"><%= t("app.rotations.water_question.title") %></h2>
+    <p class="choice-set__hint"><%= t("app.rotations.water_question.why") %></p>
+    <div class="water-question__actions">
+      <% %w[rainfed irrigated].each do |value| %>
+        <%= button_to value_label("irrigation", value), app_field_path(field.key), method: :patch,
+                      params: { values: { irrigation: value }, return_to: "rotation", zone: zone.index },
+                      class: "btn btn--secondary btn--sm", form: { data: in_workspace } %>
+      <% end %>
+    </div>
+  </section>
+<% end %>

@@ -1,0 +1,86 @@
+[
+  {
+    "month": "2020-01",
+    "ndvi": 0.328,
+    "date": "2020-01-05",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029031_20200105_02_T1"
+  },
+  {
+    "month": "2020-02",
+    "ndvi": 0.723,
+    "date": "2020-02-22",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20200222T172329_R012_T14TPL_20200927T210944"
+  },
+  {
+    "month": "2020-03",
+    "ndvi": 0.684,
+    "date": "2020-03-03",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20200303T172119_R012_T14TPL_20200926T033226"
+  },
+  {
+    "month": "2020-04",
+    "ndvi": 0.81,
+    "date": "2020-04-07",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20200407T171851_R012_T14TPL_20200925T091714"
+  },
+  {
+    "month": "2020-05",
+    "ndvi": 0.119,
+    "date": "2020-05-28",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029031_20200528_02_T1"
+  },
+  {
+    "month": "2020-06",
+    "ndvi": 0.246,
+    "date": "2020-06-11",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20200611T171859_R012_T14TPL_20200827T011334"
+  },
+  {
+    "month": "2020-07",
+    "ndvi": 0.822,
+    "date": "2020-07-11",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20200711T171859_R012_T14TPL_20200912T211724"
+  },
+  {
+    "month": "2020-08",
+    "ndvi": 0.739,
+    "date": "2020-08-10",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20200810T171859_R012_T14TPL_20200814T142927"
+  },
+  {
+    "month": "2020-09",
+    "ndvi": 0.745,
+    "date": "2020-09-04",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20200904T171901_R012_T14TPL_20200908T004616"
+  },
+  {
+    "month": "2020-10",
+    "ndvi": 0.48,
+    "date": "2020-10-04",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20201004T172201_R012_T14TPL_20201005T220217"
+  },
+  {
+    "month": "2020-11",
+    "ndvi": 0.27,
+    "date": "2020-11-28",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20201128T172659_R012_T14TPL_20201129T053545"
+  },
+  {
+    "month": "2020-12",
+    "ndvi": 0.089,
+    "date": "2020-12-07",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_028032_20201207_02_T1"
+  }
+]

@@ -1,0 +1,23 @@
+
+== What the land grew (CDL at the pin, 2008-2025) ==
+Corn 10 years, Soybeans 8 years
+
+== GAEZ v4 at the pin (rainfed, 1981-2010) ==
+Maize      suitability high 5555 / low 7778; attainable high 6867 / low 2746 kg DW/ha
+Soybean    suitability high 5555 / low 7778; attainable high 2721 / low 926 kg DW/ha
+Wheat      suitability high 5555 / low 10000; attainable high 5710 / low 2386 kg DW/ha
+Sunflower  suitability high 7777 / low 7778; attainable high 2880 / low 1464 kg DW/ha
+Also suitable here (high input): Sorghum 10000, Oat 7777, Barley 7777, Alfalfa 7777
+GAEZ suitability separates the crops.
+
+== Water model, 2001-2025 (mean modelled yield factor, POWER inputs as the app reads them) ==
+Maize      mean yield factor 0.456
+Soybean    mean yield factor 0.533
+Wheat      mean yield factor 0.593
+Sunflower  mean yield factor 0.589
+
+== GAEZ attainable yield vs NASS (dry weight, 2001-2010 mean) ==
+Maize    NASS York County (corn, grain, non-irrigated) 5693 kg DW/ha (10 yrs) vs GAEZ 6867 -> 21%
+Soybean  NASS York County (soybeans, non-irrigated) 2383 kg DW/ha (10 yrs) vs GAEZ 2721 -> 14%
+
+V3: FAIL  GAEZ separates the crops (Maize 5555, Soybean 5555, Wheat 5555, Sunflower 7777); water model ranks Wheat and Sunflower first; attainable vs NASS: Maize 21%, Soybean 14%

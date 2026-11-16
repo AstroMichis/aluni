@@ -11,8 +11,10 @@ en:
         heat: Extreme heat
         heavy_rain: Heavy rain
         dry_spell: Dry spell
+        scout: Time to scout
       text:
         frost: "low of %{tmin} °C (soil %{soil} °C). Cover seedlings and hold irrigation until it warms."
         heat: "high of %{tmax} °C. Water early and avoid spraying in the heat of the day."
         heavy_rain: "%{rain} mm of rain. Keep machinery off wet soil and check drains."
         dry_spell: "%{days} days ahead with almost no rain. Plan irrigation and keep residue on the soil."
+        scout: "%{days} days so far with weather that suits tar spot on corn. Walk the field and look at the lower leaves; the weather alone does not mean it is there."

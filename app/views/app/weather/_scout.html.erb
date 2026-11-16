@@ -1,0 +1,26 @@
+<%# When to walk the field: Weather::ScoutWindows on the season so far. Weather that suits a pest is not the pest. %>
+<% if scout.watched? || scout.unrun.any? %>
+  <section class="screen__section" aria-labelledby="scout">
+    <h2 class="screen__section-title" id="scout"><%= t("app.weather.scout.title") %></h2>
+    <ul class="forecast__alerts" role="list">
+      <% if (tar = scout.tar_spot) %>
+        <li class="forecast__alert forecast__alert--scout">
+          <strong><%= t("app.weather.scout.tar_spot.label") %>:</strong>
+          <%= t("app.weather.scout.tar_spot.#{tar.active ? 'active' : 'past'}", days: tar.favourable_days, first: l(tar.first, format: :long), last: l(tar.last, format: :long)) %>
+        </li>
+      <% elsif scout.watched? && scout.season.any? %>
+        <li class="forecast__alert"><%= t("app.weather.scout.tar_spot.none") %></li>
+      <% end %>
+      <% if (worm = scout.armyworm) %>
+        <li class="forecast__alert forecast__alert--scout">
+          <strong><%= t("app.weather.scout.armyworm.label") %>:</strong>
+          <%= t("app.weather.scout.armyworm.body", degree_days: worm.degree_days, generations: chart_number(worm.generations)) %>
+        </li>
+      <% end %>
+    </ul>
+    <% if scout.unrun.any? %>
+      <p class="choice-set__hint"><%= t("app.weather.scout.unrun", rules: scout.unrun.map { |r| t("app.weather.scout.rules.#{r}") }.to_sentence) %></p>
+    <% end %>
+    <%= render "shared/evidence_note", study: "v5", note: "scout" %>
+  </section>
+<% end %>

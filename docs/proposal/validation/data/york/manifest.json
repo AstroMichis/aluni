@@ -1,0 +1,209 @@
+{
+  "power_daily": {
+    "status": "ok",
+    "url": "https://power.larc.nasa.gov/api/temporal/daily/point",
+    "files": [
+      "power_daily.json"
+    ],
+    "fetched_at": "2026-11-15T22:58:43Z",
+    "seconds": 4
+  },
+  "power_hourly": {
+    "status": "ok",
+    "url": "https://power.larc.nasa.gov/api/temporal/hourly/point",
+    "files": [
+      "power_hourly/2001.json",
+      "power_hourly/2002.json",
+      "power_hourly/2003.json",
+      "power_hourly/2004.json",
+      "power_hourly/2005.json",
+      "power_hourly/2006.json",
+      "power_hourly/2007.json",
+      "power_hourly/2008.json",
+      "power_hourly/2009.json",
+      "power_hourly/2010.json",
+      "power_hourly/2011.json",
+      "power_hourly/2012.json",
+      "power_hourly/2013.json",
+      "power_hourly/2014.json",
+      "power_hourly/2015.json",
+      "power_hourly/2016.json",
+      "power_hourly/2017.json",
+      "power_hourly/2018.json",
+      "power_hourly/2019.json",
+      "power_hourly/2020.json",
+      "power_hourly/2021.json",
+      "power_hourly/2022.json",
+      "power_hourly/2023.json",
+      "power_hourly/2024.json",
+      "power_hourly/2025.json"
+    ],
+    "fetched_at": "2026-11-15T22:59:45Z",
+    "seconds": 61
+  },
+  "power_climatology": {
+    "status": "ok",
+    "url": "https://power.larc.nasa.gov/api/temporal/climatology/point",
+    "files": [
+      "power_climatology.json"
+    ],
+    "fetched_at": "2026-11-15T22:59:46Z",
+    "seconds": 1
+  },
+  "imerg": {
+    "status": "ok",
+    "url": "https://power.larc.nasa.gov/api/temporal/daily/point (IMERG_PRECTOT)",
+    "files": [
+      "imerg_daily.json"
+    ],
+    "fetched_at": "2026-11-15T22:59:47Z",
+    "seconds": 2
+  },
+  "daymet": {
+    "status": "ok",
+    "url": "https://daymet.ornl.gov/single-pixel/api/data",
+    "files": [
+      "daymet.csv"
+    ],
+    "fetched_at": "2026-11-15T23:31:03Z",
+    "seconds": 2
+  },
+  "cocorahs": {
+    "status": "ok",
+    "url": "https://data.cocorahs.org/export/exportreports.aspx (State=NE, within 30 km)",
+    "files": [
+      "cocorahs/2008.csv",
+      "cocorahs/2009.csv",
+      "cocorahs/2010.csv",
+      "cocorahs/2011.csv",
+      "cocorahs/2012.csv",
+      "cocorahs/2013.csv",
+      "cocorahs/2014.csv",
+      "cocorahs/2015.csv",
+      "cocorahs/2016.csv",
+      "cocorahs/2017.csv",
+      "cocorahs/2018.csv",
+      "cocorahs/2019.csv",
+      "cocorahs/2020.csv",
+      "cocorahs/2021.csv",
+      "cocorahs/2022.csv",
+      "cocorahs/2023.csv",
+      "cocorahs/2024.csv",
+      "cocorahs/2025.csv"
+    ],
+    "fetched_at": "2026-11-15T23:16:33Z",
+    "seconds": 1005
+  },
+  "rma": {
+    "status": "ok",
+    "url": "https://pubfs-rma.fpac.usda.gov/pub/Web_Data_Files/Summary_of_Business/cause_of_loss/colsom_{year}.zip",
+    "files": [
+      "rma/colsom_2001_NE.txt",
+      "rma/colsom_2002_NE.txt",
+      "rma/colsom_2003_NE.txt",
+      "rma/colsom_2004_NE.txt",
+      "rma/colsom_2005_NE.txt",
+      "rma/colsom_2006_NE.txt",
+      "rma/colsom_2007_NE.txt",
+      "rma/colsom_2008_NE.txt",
+      "rma/colsom_2009_NE.txt",
+      "rma/colsom_2010_NE.txt",
+      "rma/colsom_2011_NE.txt",
+      "rma/colsom_2012_NE.txt",
+      "rma/colsom_2013_NE.txt",
+      "rma/colsom_2014_NE.txt",
+      "rma/colsom_2015_NE.txt",
+      "rma/colsom_2016_NE.txt",
+      "rma/colsom_2017_NE.txt",
+      "rma/colsom_2018_NE.txt",
+      "rma/colsom_2019_NE.txt",
+      "rma/colsom_2020_NE.txt",
+      "rma/colsom_2021_NE.txt",
+      "rma/colsom_2022_NE.txt",
+      "rma/colsom_2023_NE.txt",
+      "rma/colsom_2024_NE.txt",
+      "rma/colsom_2025_NE.txt"
+    ],
+    "fetched_at": "2026-11-15T23:19:11Z",
+    "seconds": 158
+  },
+  "cdl": {
+    "status": "ok",
+    "url": "Cdl::Client#history",
+    "files": [
+      "cdl.json"
+    ],
+    "fetched_at": "2026-11-15T23:19:54Z",
+    "seconds": 43
+  },
+  "ssurgo_erosion": {
+    "status": "ok",
+    "url": "https://sdmdataaccess.sc.egov.usda.gov/Tabular/post.rest",
+    "files": [
+      "ssurgo_erosion.json"
+    ],
+    "fetched_at": "2026-11-15T23:19:55Z",
+    "seconds": 1
+  },
+  "gaez": {
+    "status": "ok",
+    "url": "Gaez::Client (res05, 1981-2010, rainfed, high and low input)",
+    "files": [
+      "gaez.json"
+    ],
+    "fetched_at": "2026-11-15T23:20:20Z",
+    "seconds": 25
+  },
+  "zhao2022": {
+    "status": "ok",
+    "url": "https://api.figshare.com/v2/articles/20290923",
+    "files": [
+      "zhao2022_data.csv"
+    ],
+    "fetched_at": "2026-11-15T23:20:24Z",
+    "seconds": 4
+  },
+  "ndvi": {
+    "status": "ok",
+    "url": "PlanetaryComputer::Client#monthly_ndvi",
+    "files": [
+      "ndvi/2013.json",
+      "ndvi/2014.json",
+      "ndvi/2015.json",
+      "ndvi/2016.json",
+      "ndvi/2017.json",
+      "ndvi/2018.json",
+      "ndvi/2019.json",
+      "ndvi/2020.json",
+      "ndvi/2021.json",
+      "ndvi/2022.json",
+      "ndvi/2023.json",
+      "ndvi/2024.json",
+      "ndvi/2025.json"
+    ],
+    "fetched_at": "2026-11-15T23:27:20Z",
+    "seconds": 416
+  },
+  "nass_progress_all": {
+    "status": "ok",
+    "url": "https://quickstats.nass.usda.gov/api/api_GET/ (PCT PLANTED, all states)",
+    "files": [
+      "nass/progress_all.json"
+    ],
+    "fetched_at": "2026-11-15T23:27:48Z",
+    "seconds": 28
+  },
+  "nass": {
+    "status": "ok",
+    "url": "https://quickstats.nass.usda.gov/api/api_GET/",
+    "files": [
+      "nass/yield_county.json",
+      "nass/yield_state.json",
+      "nass/price_received.json",
+      "nass/days_suitable.json",
+      "nass/progress.json"
+    ],
+    "fetched_at": "2026-11-15T23:28:17Z",
+    "seconds": 28
+  }
+}

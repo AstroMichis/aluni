@@ -1,0 +1,3477 @@
+{
+  "V3": {
+    "question": "Does the crop evidence point at the crops that thrive here?",
+    "truth": "CDL crops grown at the pin 2008-2025; NASS York County (and Nebraska) yields",
+    "criterion": "Corn and soybean ranked above wheat and sunflower; GAEZ attainable yield within +-30% of NASS (2001-2010) for both",
+    "verdict": "FAIL",
+    "summary": "GAEZ separates the crops (Maize 5555, Soybean 5555, Wheat 5555, Sunflower 7777); water model ranks Wheat and Sunflower first; attainable vs NASS: Maize 21%, Soybean 14%",
+    "details": {
+      "grown": {
+        "Corn": 10,
+        "Soybeans": 8
+      },
+      "gaez": {
+        "zea-mays": {
+          "suit_high": 5555.0,
+          "suit_low": 7778.0,
+          "yield_high": 6867.0,
+          "yield_low": 2746.0
+        },
+        "glycine-max": {
+          "suit_high": 5555.0,
+          "suit_low": 7778.0,
+          "yield_high": 2721.0,
+          "yield_low": 926.0
+        },
+        "triticum-aestivum": {
+          "suit_high": 5555.0,
+          "suit_low": 10000.0,
+          "yield_high": 5710.0,
+          "yield_low": 2386.0
+        },
+        "helianthus-annuus": {
+          "suit_high": 7777.0,
+          "suit_low": 7778.0,
+          "yield_high": 2880.0,
+          "yield_low": 1464.0
+        }
+      },
+      "gaez_other": {
+        "Sorghum": {
+          "suitability": 10000.0,
+          "attainable_yield": 6794.0,
+          "yield_units": "kg DW/ha"
+        },
+        "Oat": {
+          "suitability": 7777.0,
+          "attainable_yield": 3475.0,
+          "yield_units": "kg DW/ha"
+        },
+        "Barley": {
+          "suitability": 7777.0,
+          "attainable_yield": 6267.0,
+          "yield_units": "kg DW/ha"
+        },
+        "Alfalfa": {
+          "suitability": 7777.0,
+          "attainable_yield": 1466.0,
+          "yield_units": "10kg DW/ha"
+        }
+      },
+      "water_mean_factor": {
+        "zea-mays": 0.456,
+        "glycine-max": 0.533,
+        "triticum-aestivum": 0.593,
+        "helianthus-annuus": 0.589
+      },
+      "gaez_vs_nass": {
+        "zea-mays": {
+          "nass_dw": 5693,
+          "gaez": 6867,
+          "diff_pct": 21,
+          "level": "York County (corn, grain, non-irrigated)",
+          "years": 10
+        },
+        "glycine-max": {
+          "nass_dw": 2383,
+          "gaez": 2721,
+          "diff_pct": 14,
+          "level": "York County (soybeans, non-irrigated)",
+          "years": 10
+        }
+      }
+    },
+    "run_at": "2026-11-15T23:36:43Z"
+  },
+  "V4": {
+    "question": "Is the rotation advice backed by evidence, and how large is the benefit here?",
+    "truth": "Zhao et al. 2022 meta-analysis, 2112 maize-after-soybean observations; the field's CDL history",
+    "criterion": "The high-N, York-like 95% interval of the soybean pre-crop effect on maize excludes zero",
+    "verdict": "PASS",
+    "summary": "maize after soybean yields 12.7% more than after a non-legume at farm N rates [5.6 to 22.0%], 194 obs; so continuous corn yields 0.887 x rotated corn",
+    "details": {
+      "effects": {
+        "all maize after soybean": {
+          "n": 2112,
+          "sites": 121,
+          "lnrr": 0.1426,
+          "gain_pct": 15.3,
+          "ci_pct": [
+            11.2,
+            19.9
+          ],
+          "corn_after_corn_factor": 0.867
+        },
+        "USA": {
+          "n": 1504,
+          "sites": 78,
+          "lnrr": 0.1487,
+          "gain_pct": 16.0,
+          "ci_pct": [
+            12.7,
+            19.8
+          ],
+          "corn_after_corn_factor": 0.862
+        },
+        "site-like climate": {
+          "n": 412,
+          "sites": 24,
+          "lnrr": 0.2081,
+          "gain_pct": 23.1,
+          "ci_pct": [
+            15.5,
+            31.1
+          ],
+          "corn_after_corn_factor": 0.812
+        },
+        "site-like, maize N 0 kg/ha": {
+          "n": 67,
+          "sites": 11,
+          "lnrr": 0.4483,
+          "gain_pct": 56.6,
+          "ci_pct": [
+            40.0,
+            66.1
+          ],
+          "corn_after_corn_factor": 0.639
+        },
+        "site-like, maize N >= 120 kg/ha": {
+          "n": 194,
+          "sites": 17,
+          "lnrr": 0.1197,
+          "gain_pct": 12.7,
+          "ci_pct": [
+            5.6,
+            22.0
+          ],
+          "corn_after_corn_factor": 0.887
+        },
+        "USA, maize N >= 150 kg/ha": {
+          "n": 695,
+          "sites": 53,
+          "lnrr": 0.1008,
+          "gain_pct": 10.6,
+          "ci_pct": [
+            7.6,
+            14.3
+          ],
+          "corn_after_corn_factor": 0.904
+        }
+      },
+      "chosen": "site-like, maize N >= 120 kg/ha",
+      "trial_climate": {
+        "mat": [
+          8,
+          14
+        ],
+        "map": [
+          550,
+          900
+        ]
+      },
+      "cdl_rules": {
+        "same_family": 2,
+        "monoculture": 1,
+        "no_legume_windows": 0
+      }
+    },
+    "run_at": "2026-11-15T23:36:47Z"
+  },
+  "V5": {
+    "question": "Do the pest and disease weather rules line up with real losses?",
+    "truth": "USDA RMA insured losses to plant disease, mycotoxin and insects, York County and its neighbours, 2001-2025",
+    "criterion": "Reported, not scored: Spearman rho with a permutation p-value per rule, and the lead time",
+    "verdict": "REPORTED",
+    "summary": "no rule reached rho >= 0.4 at p <= 0.05; median lead from the first favourable day to the main loss month 1 months",
+    "details": {
+      "counts": {
+        "2001": {
+          "gls": 0,
+          "gls_first": null,
+          "nclb": 10,
+          "nclb_first": "2001-06-11",
+          "tar": 20,
+          "tar_first": "2001-06-15",
+          "faw_dd": 1543,
+          "rh90_hours": 378
+        },
+        "2002": {
+          "gls": 2,
+          "gls_first": "2002-05-27",
+          "nclb": 4,
+          "nclb_first": "2002-05-08",
+          "tar": 8,
+          "tar_first": "2002-06-15",
+          "faw_dd": 1644,
+          "rh90_hours": 197
+        },
+        "2003": {
+          "gls": 1,
+          "gls_first": "2003-05-04",
+          "nclb": 3,
+          "nclb_first": "2003-06-22",
+          "tar": 20,
+          "tar_first": "2003-06-16",
+          "faw_dd": 1488,
+          "rh90_hours": 223
+        },
+        "2004": {
+          "gls": 3,
+          "gls_first": "2004-06-15",
+          "nclb": 18,
+          "nclb_first": "2004-05-21",
+          "tar": 65,
+          "tar_first": "2004-06-15",
+          "faw_dd": 1420,
+          "rh90_hours": 398
+        },
+        "2005": {
+          "gls": 2,
+          "gls_first": "2005-08-24",
+          "nclb": 12,
+          "nclb_first": "2005-05-11",
+          "tar": 14,
+          "tar_first": "2005-06-15",
+          "faw_dd": 1644,
+          "rh90_hours": 333
+        },
+        "2006": {
+          "gls": 2,
+          "gls_first": "2006-08-17",
+          "nclb": 17,
+          "nclb_first": "2006-05-23",
+          "tar": 13,
+          "tar_first": "2006-09-03",
+          "faw_dd": 1532,
+          "rh90_hours": 331
+        },
+        "2007": {
+          "gls": 9,
+          "gls_first": "2007-06-12",
+          "nclb": 37,
+          "nclb_first": "2007-05-05",
+          "tar": 26,
+          "tar_first": "2007-06-15",
+          "faw_dd": 1469,
+          "rh90_hours": 691
+        },
+        "2008": {
+          "gls": 11,
+          "gls_first": "2008-05-24",
+          "nclb": 38,
+          "nclb_first": "2008-05-25",
+          "tar": 58,
+          "tar_first": "2008-06-15",
+          "faw_dd": 1227,
+          "rh90_hours": 678
+        },
+        "2009": {
+          "gls": 1,
+          "gls_first": "2009-06-15",
+          "nclb": 12,
+          "nclb_first": "2009-06-15",
+          "tar": 45,
+          "tar_first": "2009-06-15",
+          "faw_dd": 1225,
+          "rh90_hours": 484
+        },
+        "2010": {
+          "gls": 8,
+          "gls_first": "2010-06-11",
+          "nclb": 32,
+          "nclb_first": "2010-05-23",
+          "tar": 21,
+          "tar_first": "2010-06-15",
+          "faw_dd": 1467,
+          "rh90_hours": 686
+        },
+        "2011": {
+          "gls": 2,
+          "gls_first": "2011-06-26",
+          "nclb": 22,
+          "nclb_first": "2011-05-09",
+          "tar": 35,
+          "tar_first": "2011-06-15",
+          "faw_dd": 1458,
+          "rh90_hours": 445
+        },
+        "2012": {
+          "gls": 0,
+          "gls_first": null,
+          "nclb": 5,
+          "nclb_first": "2012-05-03",
+          "tar": 9,
+          "tar_first": "2012-06-15",
+          "faw_dd": 1803,
+          "rh90_hours": 151
+        },
+        "2013": {
+          "gls": 6,
+          "gls_first": "2013-05-19",
+          "nclb": 16,
+          "nclb_first": "2013-05-19",
+          "tar": 29,
+          "tar_first": "2013-06-15",
+          "faw_dd": 1548,
+          "rh90_hours": 375
+        },
+        "2014": {
+          "gls": 3,
+          "gls_first": "2014-06-26",
+          "nclb": 21,
+          "nclb_first": "2014-06-01",
+          "tar": 42,
+          "tar_first": "2014-06-15",
+          "faw_dd": 1356,
+          "rh90_hours": 525
+        },
+        "2015": {
+          "gls": 9,
+          "gls_first": "2015-06-05",
+          "nclb": 32,
+          "nclb_first": "2015-05-06",
+          "tar": 43,
+          "tar_first": "2015-06-15",
+          "faw_dd": 1438,
+          "rh90_hours": 678
+        },
+        "2016": {
+          "gls": 2,
+          "gls_first": "2016-05-24",
+          "nclb": 20,
+          "nclb_first": "2016-05-23",
+          "tar": 10,
+          "tar_first": "2016-06-15",
+          "faw_dd": 1586,
+          "rh90_hours": 440
+        },
+        "2017": {
+          "gls": 2,
+          "gls_first": "2017-08-16",
+          "nclb": 8,
+          "nclb_first": "2017-06-02",
+          "tar": 34,
+          "tar_first": "2017-06-15",
+          "faw_dd": 1485,
+          "rh90_hours": 287
+        },
+        "2018": {
+          "gls": 3,
+          "gls_first": "2018-07-28",
+          "nclb": 26,
+          "nclb_first": "2018-05-29",
+          "tar": 17,
+          "tar_first": "2018-08-21",
+          "faw_dd": 1545,
+          "rh90_hours": 572
+        },
+        "2019": {
+          "gls": 24,
+          "gls_first": "2019-05-27",
+          "nclb": 58,
+          "nclb_first": "2019-05-17",
+          "tar": 58,
+          "tar_first": "2019-06-15",
+          "faw_dd": 1293,
+          "rh90_hours": 1060
+        },
+        "2020": {
+          "gls": 4,
+          "gls_first": "2020-06-30",
+          "nclb": 26,
+          "nclb_first": "2020-05-24",
+          "tar": 16,
+          "tar_first": "2020-06-15",
+          "faw_dd": 1454,
+          "rh90_hours": 530
+        },
+        "2021": {
+          "gls": 2,
+          "gls_first": "2021-06-24",
+          "nclb": 16,
+          "nclb_first": "2021-05-22",
+          "tar": 12,
+          "tar_first": "2021-06-15",
+          "faw_dd": 1615,
+          "rh90_hours": 452
+        },
+        "2022": {
+          "gls": 2,
+          "gls_first": "2022-06-05",
+          "nclb": 10,
+          "nclb_first": "2022-05-09",
+          "tar": 8,
+          "tar_first": "2022-06-15",
+          "faw_dd": 1781,
+          "rh90_hours": 307
+        },
+        "2023": {
+          "gls": 0,
+          "gls_first": null,
+          "nclb": 6,
+          "nclb_first": "2023-06-10",
+          "tar": 3,
+          "tar_first": "2023-06-15",
+          "faw_dd": 1818,
+          "rh90_hours": 240
+        },
+        "2024": {
+          "gls": 2,
+          "gls_first": "2024-07-01",
+          "nclb": 9,
+          "nclb_first": "2024-05-21",
+          "tar": 10,
+          "tar_first": "2024-06-15",
+          "faw_dd": 1688,
+          "rh90_hours": 307
+        },
+        "2025": {
+          "gls": 4,
+          "gls_first": "2025-06-24",
+          "nclb": 29,
+          "nclb_first": "2025-06-17",
+          "tar": 23,
+          "tar_first": "2025-06-15",
+          "faw_dd": 1600,
+          "rh90_hours": 520
+        }
+      },
+      "losses": {
+        "2001": {
+          "corn": {
+            "disease": 291,
+            "insects": 30026,
+            "weather": 3678405,
+            "disease_months": {
+              "12": 1
+            },
+            "insect_months": {
+              "5": 11,
+              "6": 6,
+              "10": 1,
+              "8": 1,
+              "7": 1,
+              "11": 1
+            }
+          },
+          "soybeans": {
+            "disease": 16385,
+            "insects": 28066,
+            "weather": 2837893,
+            "disease_months": {
+              "8": 1,
+              "6": 2,
+              "12": 2,
+              "7": 1,
+              "5": 2
+            },
+            "insect_months": {
+              "5": 4,
+              "6": 4,
+              "7": 3,
+              "11": 1
+            }
+          }
+        },
+        "2002": {
+          "corn": {
+            "disease": 1357,
+            "insects": 52662,
+            "weather": 32045422,
+            "disease_months": {
+              "6": 1,
+              "8": 1
+            },
+            "insect_months": {
+              "7": 6,
+              "6": 2,
+              "10": 1,
+              "8": 4,
+              "5": 1
+            }
+          },
+          "soybeans": {
+            "disease": 1145,
+            "insects": 16365,
+            "weather": 10941843,
+            "disease_months": {
+              "5": 1,
+              "8": 1
+            },
+            "insect_months": {
+              "8": 4,
+              "7": 2,
+              "9": 2,
+              "10": 1,
+              "5": 1
+            }
+          }
+        },
+        "2003": {
+          "corn": {
+            "disease": 0,
+            "insects": 14125,
+            "weather": 20926827,
+            "disease_months": {},
+            "insect_months": {
+              "7": 2,
+              "8": 2,
+              "5": 1
+            }
+          },
+          "soybeans": {
+            "disease": 0,
+            "insects": 16691,
+            "weather": 12178536,
+            "disease_months": {},
+            "insect_months": {
+              "8": 3,
+              "7": 3,
+              "5": 1,
+              "6": 1
+            }
+          }
+        },
+        "2004": {
+          "corn": {
+            "disease": 0,
+            "insects": 3646,
+            "weather": 1240802,
+            "disease_months": {},
+            "insect_months": {
+              "5": 2,
+              "6": 1,
+              "9": 1
+            }
+          },
+          "soybeans": {
+            "disease": 5004,
+            "insects": 32189,
+            "weather": 2156319,
+            "disease_months": {
+              "7": 1
+            },
+            "insect_months": {
+              "8": 4,
+              "10": 1,
+              "6": 1
+            }
+          }
+        },
+        "2005": {
+          "corn": {
+            "disease": 7148,
+            "insects": 1184,
+            "weather": 5214471,
+            "disease_months": {
+              "5": 1
+            },
+            "insect_months": {
+              "6": 1
+            }
+          },
+          "soybeans": {
+            "disease": 0,
+            "insects": 108,
+            "weather": 997681,
+            "disease_months": {},
+            "insect_months": {
+              "7": 1
+            }
+          }
+        },
+        "2006": {
+          "corn": {
+            "disease": 23912,
+            "insects": 7083,
+            "weather": 7304640,
+            "disease_months": {
+              "8": 2
+            },
+            "insect_months": {
+              "7": 2,
+              "5": 1
+            }
+          },
+          "soybeans": {
+            "disease": 445,
+            "insects": 390,
+            "weather": 1676498,
+            "disease_months": {
+              "5": 1
+            },
+            "insect_months": {
+              "6": 1
+            }
+          }
+        },
+        "2007": {
+          "corn": {
+            "disease": 71484,
+            "insects": 4747,
+            "weather": 2028586,
+            "disease_months": {
+              "7": 3
+            },
+            "insect_months": {
+              "7": 1
+            }
+          },
+          "soybeans": {
+            "disease": 0,
+            "insects": 8844,
+            "weather": 1255774,
+            "disease_months": {},
+            "insect_months": {
+              "5": 1,
+              "7": 1,
+              "6": 1
+            }
+          }
+        },
+        "2008": {
+          "corn": {
+            "disease": 1080,
+            "insects": 2592,
+            "weather": 10030195,
+            "disease_months": {
+              "6": 1
+            },
+            "insect_months": {
+              "5": 1
+            }
+          },
+          "soybeans": {
+            "disease": 0,
+            "insects": 21097,
+            "weather": 5646462,
+            "disease_months": {},
+            "insect_months": {
+              "6": 1,
+              "8": 1,
+              "7": 1
+            }
+          }
+        },
+        "2009": {
+          "corn": {
+            "disease": 20125,
+            "insects": 0,
+            "weather": 1901386,
+            "disease_months": {
+              "12": 1
+            },
+            "insect_months": {}
+          },
+          "soybeans": {
+            "disease": 0,
+            "insects": 0,
+            "weather": 1182864,
+            "disease_months": {},
+            "insect_months": {}
+          }
+        },
+        "2010": {
+          "corn": {
+            "disease": 48974,
+            "insects": 3362,
+            "weather": 2988928,
+            "disease_months": {
+              "10": 2,
+              "8": 2,
+              "6": 1,
+              "7": 1
+            },
+            "insect_months": {
+              "5": 3
+            }
+          },
+          "soybeans": {
+            "disease": 748,
+            "insects": 4183,
+            "weather": 931447,
+            "disease_months": {
+              "5": 1
+            },
+            "insect_months": {
+              "8": 1,
+              "6": 2
+            }
+          }
+        },
+        "2011": {
+          "corn": {
+            "disease": 11438,
+            "insects": 0,
+            "weather": 3766061,
+            "disease_months": {
+              "6": 1,
+              "7": 1
+            },
+            "insect_months": {}
+          },
+          "soybeans": {
+            "disease": 0,
+            "insects": 0,
+            "weather": 1386551,
+            "disease_months": {},
+            "insect_months": {}
+          }
+        },
+        "2012": {
+          "corn": {
+            "disease": 84839,
+            "insects": 9741,
+            "weather": 64310533,
+            "disease_months": {
+              "8": 3,
+              "9": 1
+            },
+            "insect_months": {
+              "7": 2
+            }
+          },
+          "soybeans": {
+            "disease": 9932,
+            "insects": 2865,
+            "weather": 32325923,
+            "disease_months": {
+              "7": 2
+            },
+            "insect_months": {
+              "8": 1
+            }
+          }
+        },
+        "2013": {
+          "corn": {
+            "disease": 27346,
+            "insects": 207937,
+            "weather": 20246870,
+            "disease_months": {
+              "7": 1,
+              "6": 1,
+              "11": 1
+            },
+            "insect_months": {
+              "8": 4,
+              "7": 1
+            }
+          },
+          "soybeans": {
+            "disease": 0,
+            "insects": 37891,
+            "weather": 7782596,
+            "disease_months": {},
+            "insect_months": {
+              "7": 2,
+              "8": 4,
+              "9": 1
+            }
+          }
+        },
+        "2014": {
+          "corn": {
+            "disease": 4135,
+            "insects": 0,
+            "weather": 33565795,
+            "disease_months": {
+              "7": 1
+            },
+            "insect_months": {}
+          },
+          "soybeans": {
+            "disease": 8274,
+            "insects": 0,
+            "weather": 5592868,
+            "disease_months": {
+              "7": 2
+            },
+            "insect_months": {}
+          }
+        },
+        "2015": {
+          "corn": {
+            "disease": 0,
+            "insects": 0,
+            "weather": 3292501,
+            "disease_months": {},
+            "insect_months": {}
+          },
+          "soybeans": {
+            "disease": 13553,
+            "insects": 0,
+            "weather": 2237279,
+            "disease_months": {
+              "7": 2,
+              "10": 1
+            },
+            "insect_months": {}
+          }
+        },
+        "2016": {
+          "corn": {
+            "disease": 20097,
+            "insects": 2947,
+            "weather": 5161155,
+            "disease_months": {
+              "5": 1,
+              "4": 1,
+              "10": 1,
+              "7": 1
+            },
+            "insect_months": {
+              "8": 1
+            }
+          },
+          "soybeans": {
+            "disease": 20254,
+            "insects": 0,
+            "weather": 817313,
+            "disease_months": {
+              "10": 1,
+              "8": 1,
+              "6": 1
+            },
+            "insect_months": {}
+          }
+        },
+        "2017": {
+          "corn": {
+            "disease": 8624,
+            "insects": 1172,
+            "weather": 3505580,
+            "disease_months": {
+              "9": 1
+            },
+            "insect_months": {
+              "6": 1
+            }
+          },
+          "soybeans": {
+            "disease": 12963,
+            "insects": 16395,
+            "weather": 1927526,
+            "disease_months": {
+              "9": 2,
+              "8": 3,
+              "10": 1
+            },
+            "insect_months": {
+              "6": 2,
+              "11": 1
+            }
+          }
+        },
+        "2018": {
+          "corn": {
+            "disease": 0,
+            "insects": 170,
+            "weather": 2584918,
+            "disease_months": {},
+            "insect_months": {
+              "8": 1
+            }
+          },
+          "soybeans": {
+            "disease": 2340,
+            "insects": 20476,
+            "weather": 6595377,
+            "disease_months": {
+              "10": 1
+            },
+            "insect_months": {
+              "10": 1,
+              "5": 3,
+              "8": 1
+            }
+          }
+        },
+        "2019": {
+          "corn": {
+            "disease": 0,
+            "insects": 0,
+            "weather": 5616475,
+            "disease_months": {},
+            "insect_months": {}
+          },
+          "soybeans": {
+            "disease": 0,
+            "insects": 6657,
+            "weather": 3173010,
+            "disease_months": {},
+            "insect_months": {
+              "9": 1
+            }
+          }
+        },
+        "2020": {
+          "corn": {
+            "disease": 0,
+            "insects": 63682,
+            "weather": 4101544,
+            "disease_months": {},
+            "insect_months": {
+              "7": 1
+            }
+          },
+          "soybeans": {
+            "disease": 0,
+            "insects": 35499,
+            "weather": 1432388,
+            "disease_months": {},
+            "insect_months": {
+              "5": 6,
+              "6": 1
+            }
+          }
+        },
+        "2021": {
+          "corn": {
+            "disease": 10329,
+            "insects": 0,
+            "weather": 2402086,
+            "disease_months": {
+              "5": 1
+            },
+            "insect_months": {}
+          },
+          "soybeans": {
+            "disease": 6271,
+            "insects": 14611,
+            "weather": 1729026,
+            "disease_months": {
+              "9": 1
+            },
+            "insect_months": {
+              "8": 2,
+              "5": 1
+            }
+          }
+        },
+        "2022": {
+          "corn": {
+            "disease": 0,
+            "insects": 0,
+            "weather": 114743317,
+            "disease_months": {},
+            "insect_months": {}
+          },
+          "soybeans": {
+            "disease": 0,
+            "insects": 13157,
+            "weather": 30018882,
+            "disease_months": {},
+            "insect_months": {
+              "8": 1
+            }
+          }
+        },
+        "2023": {
+          "corn": {
+            "disease": 0,
+            "insects": 0,
+            "weather": 105658987,
+            "disease_months": {},
+            "insect_months": {}
+          },
+          "soybeans": {
+            "disease": 430653,
+            "insects": 32368,
+            "weather": 68719243,
+            "disease_months": {
+              "6": 2,
+              "8": 2,
+              "9": 4
+            },
+            "insect_months": {
+              "7": 1
+            }
+          }
+        },
+        "2024": {
+          "corn": {
+            "disease": 10555,
+            "insects": 1253,
+            "weather": 14158930,
+            "disease_months": {
+              "8": 1
+            },
+            "insect_months": {
+              "8": 1
+            }
+          },
+          "soybeans": {
+            "disease": 2120,
+            "insects": 19302,
+            "weather": 6979702,
+            "disease_months": {
+              "7": 1
+            },
+            "insect_months": {
+              "9": 1,
+              "5": 2,
+              "6": 1,
+              "8": 1
+            }
+          }
+        },
+        "2025": {
+          "corn": {
+            "disease": 596801,
+            "insects": 130236,
+            "weather": 6862284,
+            "disease_months": {
+              "8": 6,
+              "7": 2,
+              "9": 4,
+              "11": 1,
+              "12": 1
+            },
+            "insect_months": {
+              "6": 2,
+              "5": 1,
+              "8": 1
+            }
+          },
+          "soybeans": {
+            "disease": 47335,
+            "insects": 8667,
+            "weather": 856953,
+            "disease_months": {
+              "9": 2
+            },
+            "insect_months": {
+              "6": 1,
+              "7": 1,
+              "9": 1
+            }
+          }
+        }
+      },
+      "correlations": {
+        "gray leaf spot -> corn disease": {
+          "rho": -0.02,
+          "p": 0.932,
+          "rho_share": 0.01,
+          "p_share": 0.974,
+          "loss_years": 17
+        },
+        "N. corn leaf blight -> corn disease": {
+          "rho": 0.05,
+          "p": 0.795,
+          "rho_share": 0.16,
+          "p_share": 0.469,
+          "loss_years": 17
+        },
+        "tar spot -> corn disease": {
+          "rho": -0.05,
+          "p": 0.801,
+          "rho_share": 0.04,
+          "p_share": 0.852,
+          "loss_years": 17
+        },
+        "fall armyworm DD -> corn insects": {
+          "rho": 0.18,
+          "p": 0.387,
+          "rho_share": 0.03,
+          "p_share": 0.886,
+          "loss_years": 17
+        },
+        "RH >= 90% hours -> soybean disease": {
+          "rho": -0.19,
+          "p": 0.343,
+          "rho_share": -0.09,
+          "p_share": 0.663,
+          "loss_years": 15
+        }
+      },
+      "lead": [
+        {
+          "year": 2001,
+          "first_favourable": "2001-06-15",
+          "main_loss_month": 12,
+          "lead_months": 6
+        },
+        {
+          "year": 2002,
+          "first_favourable": "2002-05-27",
+          "main_loss_month": 6,
+          "lead_months": 1
+        },
+        {
+          "year": 2005,
+          "first_favourable": "2005-06-15",
+          "main_loss_month": 5,
+          "lead_months": -1
+        },
+        {
+          "year": 2006,
+          "first_favourable": "2006-08-17",
+          "main_loss_month": 8,
+          "lead_months": 0
+        },
+        {
+          "year": 2007,
+          "first_favourable": "2007-06-12",
+          "main_loss_month": 7,
+          "lead_months": 1
+        },
+        {
+          "year": 2008,
+          "first_favourable": "2008-05-24",
+          "main_loss_month": 6,
+          "lead_months": 1
+        },
+        {
+          "year": 2009,
+          "first_favourable": "2009-06-15",
+          "main_loss_month": 12,
+          "lead_months": 6
+        },
+        {
+          "year": 2010,
+          "first_favourable": "2010-06-11",
+          "main_loss_month": 10,
+          "lead_months": 4
+        },
+        {
+          "year": 2011,
+          "first_favourable": "2011-06-15",
+          "main_loss_month": 6,
+          "lead_months": 0
+        },
+        {
+          "year": 2012,
+          "first_favourable": "2012-06-15",
+          "main_loss_month": 8,
+          "lead_months": 2
+        },
+        {
+          "year": 2013,
+          "first_favourable": "2013-05-19",
+          "main_loss_month": 7,
+          "lead_months": 2
+        },
+        {
+          "year": 2014,
+          "first_favourable": "2014-06-15",
+          "main_loss_month": 7,
+          "lead_months": 1
+        },
+        {
+          "year": 2016,
+          "first_favourable": "2016-05-24",
+          "main_loss_month": 5,
+          "lead_months": 0
+        },
+        {
+          "year": 2017,
+          "first_favourable": "2017-06-15",
+          "main_loss_month": 9,
+          "lead_months": 3
+        },
+        {
+          "year": 2021,
+          "first_favourable": "2021-06-15",
+          "main_loss_month": 5,
+          "lead_months": -1
+        },
+        {
+          "year": 2024,
+          "first_favourable": "2024-06-15",
+          "main_loss_month": 8,
+          "lead_months": 2
+        },
+        {
+          "year": 2025,
+          "first_favourable": "2025-06-15",
+          "main_loss_month": 8,
+          "lead_months": 2
+        }
+      ],
+      "counties": [
+        "York",
+        "Hamilton",
+        "Polk",
+        "Seward",
+        "Fillmore",
+        "Butler",
+        "Saline",
+        "Clay"
+      ]
+    },
+    "run_at": "2026-11-15T23:36:50Z"
+  },
+  "V8": {
+    "question": "Do the timeline's crop and bare months match what the satellites saw?",
+    "truth": "Landsat + Sentinel-2 monthly NDVI at the pin (2013-2025) with the CDL crop of each year",
+    "criterion": "Monthly agreement >= 80% and both season edges within one month in >= 80% of years",
+    "verdict": "FAIL",
+    "summary": "65% of 148 clear months agree; edges within a month in 0% of seasons; a green canopy appears 2.2 months after the FAO-56 planting month on average",
+    "details": {
+      "by_month": {
+        "1": {
+          "agree_pct": 100,
+          "n": 12,
+          "mean_ndvi": 0.12
+        },
+        "2": {
+          "agree_pct": 92,
+          "n": 13,
+          "mean_ndvi": 0.15
+        },
+        "3": {
+          "agree_pct": 91,
+          "n": 11,
+          "mean_ndvi": 0.18
+        },
+        "4": {
+          "agree_pct": 58,
+          "n": 12,
+          "mean_ndvi": 0.2
+        },
+        "5": {
+          "agree_pct": 0,
+          "n": 12,
+          "mean_ndvi": 0.13
+        },
+        "6": {
+          "agree_pct": 0,
+          "n": 13,
+          "mean_ndvi": 0.23
+        },
+        "7": {
+          "agree_pct": 69,
+          "n": 13,
+          "mean_ndvi": 0.53
+        },
+        "8": {
+          "agree_pct": 77,
+          "n": 13,
+          "mean_ndvi": 0.54
+        },
+        "9": {
+          "agree_pct": 50,
+          "n": 12,
+          "mean_ndvi": 0.35
+        },
+        "10": {
+          "agree_pct": 62,
+          "n": 13,
+          "mean_ndvi": 0.32
+        },
+        "11": {
+          "agree_pct": 85,
+          "n": 13,
+          "mean_ndvi": 0.22
+        },
+        "12": {
+          "agree_pct": 100,
+          "n": 11,
+          "mean_ndvi": 0.14
+        }
+      },
+      "disagreements": {
+        "crop -> bare": 41,
+        "bare -> crop": 11
+      },
+      "seasons": [
+        {
+          "year": 2015,
+          "crop": "Soybeans",
+          "planting": 5,
+          "harvest": 9,
+          "green_up": 7,
+          "senescence": 8,
+          "nov_dec": {
+            "11": 0.07,
+            "12": 0.059
+          },
+          "months_seen": 11
+        },
+        {
+          "year": 2016,
+          "crop": "Corn",
+          "planting": 4,
+          "harvest": 8,
+          "green_up": 7,
+          "senescence": 11,
+          "nov_dec": {
+            "11": 0.453,
+            "12": 0.203
+          },
+          "months_seen": 11
+        },
+        {
+          "year": 2017,
+          "crop": "Soybeans",
+          "planting": 5,
+          "harvest": 9,
+          "green_up": 7,
+          "senescence": 8,
+          "nov_dec": {
+            "11": 0.095,
+            "12": null
+          },
+          "months_seen": 9
+        },
+        {
+          "year": 2018,
+          "crop": "Corn",
+          "planting": 4,
+          "harvest": 8,
+          "green_up": 7,
+          "senescence": 10,
+          "nov_dec": {
+            "11": 0.25,
+            "12": 0.149
+          },
+          "months_seen": 12
+        },
+        {
+          "year": 2019,
+          "crop": "Soybeans",
+          "planting": 5,
+          "harvest": 9,
+          "green_up": 7,
+          "senescence": 10,
+          "nov_dec": {
+            "11": 0.271,
+            "12": 0.31
+          },
+          "months_seen": 12
+        },
+        {
+          "year": 2020,
+          "crop": "Corn",
+          "planting": 4,
+          "harvest": 8,
+          "green_up": 2,
+          "senescence": 10,
+          "nov_dec": {
+            "11": 0.27,
+            "12": 0.089
+          },
+          "months_seen": 12
+        },
+        {
+          "year": 2021,
+          "crop": "Soybeans",
+          "planting": 5,
+          "harvest": 9,
+          "green_up": 8,
+          "senescence": 9,
+          "nov_dec": {
+            "11": 0.187,
+            "12": 0.169
+          },
+          "months_seen": 12
+        },
+        {
+          "year": 2022,
+          "crop": "Corn",
+          "planting": 4,
+          "harvest": 8,
+          "green_up": 7,
+          "senescence": 10,
+          "nov_dec": {
+            "11": 0.388,
+            "12": 0.151
+          },
+          "months_seen": 12
+        },
+        {
+          "year": 2023,
+          "crop": "Soybeans",
+          "planting": 5,
+          "harvest": 9,
+          "green_up": 7,
+          "senescence": 8,
+          "nov_dec": {
+            "11": 0.118,
+            "12": 0.105
+          },
+          "months_seen": 12
+        },
+        {
+          "year": 2024,
+          "crop": "Corn",
+          "planting": 4,
+          "harvest": 8,
+          "green_up": 7,
+          "senescence": 11,
+          "nov_dec": {
+            "11": 0.413,
+            "12": 0.117
+          },
+          "months_seen": 12
+        },
+        {
+          "year": 2025,
+          "crop": "Soybeans",
+          "planting": 5,
+          "harvest": 9,
+          "green_up": 8,
+          "senescence": 8,
+          "nov_dec": {
+            "11": 0.108,
+            "12": 0.067
+          },
+          "months_seen": 12
+        }
+      ],
+      "years": [
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ],
+      "agreement_pct": 65,
+      "edges_pct": 0,
+      "lag_months": 2.2,
+      "nov_dec_open": 19,
+      "nov_dec_views": 21,
+      "app_rule_agreement_pct": 82
+    },
+    "run_at": "2026-11-15T23:36:51Z"
+  },
+  "V7": {
+    "question": "Would choosing by expected margin have paid, and could the farm plant on time?",
+    "truth": "NASS York County yields, NASS Nebraska prices received and days suitable for fieldwork; placeholder costs",
+    "criterion": "The margin rule's realised margin 2008-2025 is at least the farmer's (strict alternation)",
+    "verdict": "PASS",
+    "summary": "margin rule $13335 vs farmer $12583 vs continuous corn $10388 vs hindsight $13886 per ha over 15 years; differs from the farmer in 8 years; short of planting days in 0 of 25 springs",
+    "details": {
+      "years": [
+        2008,
+        2009,
+        2010,
+        2011,
+        2012,
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2022,
+        2024
+      ],
+      "totals": {
+        "farmer": 12583,
+        "aluni": 13335,
+        "corn_always": 10388,
+        "foresight": 13886
+      },
+      "policies": {
+        "farmer": [
+          {
+            "year": 2008,
+            "crop": "zea-mays",
+            "margin": 752
+          },
+          {
+            "year": 2009,
+            "crop": "glycine-max",
+            "margin": 629
+          },
+          {
+            "year": 2010,
+            "crop": "zea-mays",
+            "margin": 899
+          },
+          {
+            "year": 2011,
+            "crop": "glycine-max",
+            "margin": 959
+          },
+          {
+            "year": 2012,
+            "crop": "zea-mays",
+            "margin": 2039
+          },
+          {
+            "year": 2013,
+            "crop": "zea-mays",
+            "margin": 762
+          },
+          {
+            "year": 2014,
+            "crop": "zea-mays",
+            "margin": 371
+          },
+          {
+            "year": 2015,
+            "crop": "glycine-max",
+            "margin": 559
+          },
+          {
+            "year": 2016,
+            "crop": "zea-mays",
+            "margin": 410
+          },
+          {
+            "year": 2017,
+            "crop": "glycine-max",
+            "margin": 712
+          },
+          {
+            "year": 2018,
+            "crop": "zea-mays",
+            "margin": 644
+          },
+          {
+            "year": 2019,
+            "crop": "glycine-max",
+            "margin": 506
+          },
+          {
+            "year": 2020,
+            "crop": "zea-mays",
+            "margin": 877
+          },
+          {
+            "year": 2022,
+            "crop": "zea-mays",
+            "margin": 1614
+          },
+          {
+            "year": 2024,
+            "crop": "zea-mays",
+            "margin": 850
+          }
+        ],
+        "aluni": [
+          {
+            "year": 2008,
+            "crop": "zea-mays",
+            "margin": 752
+          },
+          {
+            "year": 2009,
+            "crop": "glycine-max",
+            "margin": 629
+          },
+          {
+            "year": 2010,
+            "crop": "zea-mays",
+            "margin": 899
+          },
+          {
+            "year": 2011,
+            "crop": "zea-mays",
+            "margin": 1042
+          },
+          {
+            "year": 2012,
+            "crop": "zea-mays",
+            "margin": 1624
+          },
+          {
+            "year": 2013,
+            "crop": "zea-mays",
+            "margin": 762
+          },
+          {
+            "year": 2014,
+            "crop": "glycine-max",
+            "margin": 672
+          },
+          {
+            "year": 2015,
+            "crop": "zea-mays",
+            "margin": 746
+          },
+          {
+            "year": 2016,
+            "crop": "glycine-max",
+            "margin": 716
+          },
+          {
+            "year": 2017,
+            "crop": "glycine-max",
+            "margin": 635
+          },
+          {
+            "year": 2018,
+            "crop": "glycine-max",
+            "margin": 353
+          },
+          {
+            "year": 2019,
+            "crop": "zea-mays",
+            "margin": 698
+          },
+          {
+            "year": 2020,
+            "crop": "glycine-max",
+            "margin": 974
+          },
+          {
+            "year": 2022,
+            "crop": "zea-mays",
+            "margin": 2028
+          },
+          {
+            "year": 2024,
+            "crop": "glycine-max",
+            "margin": 805
+          }
+        ],
+        "corn_always": [
+          {
+            "year": 2008,
+            "crop": "zea-mays",
+            "margin": 752
+          },
+          {
+            "year": 2009,
+            "crop": "zea-mays",
+            "margin": 416
+          },
+          {
+            "year": 2010,
+            "crop": "zea-mays",
+            "margin": 613
+          },
+          {
+            "year": 2011,
+            "crop": "zea-mays",
+            "margin": 1042
+          },
+          {
+            "year": 2012,
+            "crop": "zea-mays",
+            "margin": 1624
+          },
+          {
+            "year": 2013,
+            "crop": "zea-mays",
+            "margin": 762
+          },
+          {
+            "year": 2014,
+            "crop": "zea-mays",
+            "margin": 371
+          },
+          {
+            "year": 2015,
+            "crop": "zea-mays",
+            "margin": 477
+          },
+          {
+            "year": 2016,
+            "crop": "zea-mays",
+            "margin": 179
+          },
+          {
+            "year": 2017,
+            "crop": "zea-mays",
+            "margin": 272
+          },
+          {
+            "year": 2018,
+            "crop": "zea-mays",
+            "margin": 387
+          },
+          {
+            "year": 2019,
+            "crop": "zea-mays",
+            "margin": 435
+          },
+          {
+            "year": 2020,
+            "crop": "zea-mays",
+            "margin": 594
+          },
+          {
+            "year": 2022,
+            "crop": "zea-mays",
+            "margin": 1614
+          },
+          {
+            "year": 2024,
+            "crop": "zea-mays",
+            "margin": 850
+          }
+        ],
+        "foresight": [
+          {
+            "year": 2008,
+            "crop": "zea-mays",
+            "margin": 752
+          },
+          {
+            "year": 2009,
+            "crop": "glycine-max",
+            "margin": 629
+          },
+          {
+            "year": 2010,
+            "crop": "zea-mays",
+            "margin": 899
+          },
+          {
+            "year": 2011,
+            "crop": "glycine-max",
+            "margin": 959
+          },
+          {
+            "year": 2012,
+            "crop": "zea-mays",
+            "margin": 2039
+          },
+          {
+            "year": 2013,
+            "crop": "glycine-max",
+            "margin": 983
+          },
+          {
+            "year": 2014,
+            "crop": "glycine-max",
+            "margin": 597
+          },
+          {
+            "year": 2015,
+            "crop": "zea-mays",
+            "margin": 746
+          },
+          {
+            "year": 2016,
+            "crop": "glycine-max",
+            "margin": 716
+          },
+          {
+            "year": 2017,
+            "crop": "glycine-max",
+            "margin": 635
+          },
+          {
+            "year": 2018,
+            "crop": "zea-mays",
+            "margin": 644
+          },
+          {
+            "year": 2019,
+            "crop": "zea-mays",
+            "margin": 435
+          },
+          {
+            "year": 2020,
+            "crop": "glycine-max",
+            "margin": 974
+          },
+          {
+            "year": 2022,
+            "crop": "zea-mays",
+            "margin": 2028
+          },
+          {
+            "year": 2024,
+            "crop": "zea-mays",
+            "margin": 850
+          }
+        ]
+      },
+      "capture_pct": 58,
+      "operations": {
+        "2001": {
+          "days": 24.2,
+          "plantable_ha": 1145,
+          "enough": true,
+          "corn_50pct_planted": "2001-05-06"
+        },
+        "2002": {
+          "days": 31.3,
+          "plantable_ha": 1481,
+          "enough": true,
+          "corn_50pct_planted": "2002-05-05"
+        },
+        "2003": {
+          "days": 20.0,
+          "plantable_ha": 946,
+          "enough": true,
+          "corn_50pct_planted": "2003-05-18"
+        },
+        "2004": {
+          "days": 31.6,
+          "plantable_ha": 1495,
+          "enough": true,
+          "corn_50pct_planted": "2004-05-02"
+        },
+        "2005": {
+          "days": 25.1,
+          "plantable_ha": 1188,
+          "enough": true,
+          "corn_50pct_planted": "2005-05-08"
+        },
+        "2006": {
+          "days": 33.5,
+          "plantable_ha": 1585,
+          "enough": true,
+          "corn_50pct_planted": "2006-05-07"
+        },
+        "2007": {
+          "days": 23.3,
+          "plantable_ha": 1103,
+          "enough": true,
+          "corn_50pct_planted": "2007-05-13"
+        },
+        "2008": {
+          "days": 23.4,
+          "plantable_ha": 1107,
+          "enough": true,
+          "corn_50pct_planted": "2008-05-11"
+        },
+        "2009": {
+          "days": 29.1,
+          "plantable_ha": 1377,
+          "enough": true,
+          "corn_50pct_planted": "2009-05-03"
+        },
+        "2010": {
+          "days": 25.1,
+          "plantable_ha": 1188,
+          "enough": true,
+          "corn_50pct_planted": "2010-05-09"
+        },
+        "2011": {
+          "days": 22.9,
+          "plantable_ha": 1084,
+          "enough": true,
+          "corn_50pct_planted": "2011-05-08"
+        },
+        "2012": {
+          "days": 31.1,
+          "plantable_ha": 1472,
+          "enough": true,
+          "corn_50pct_planted": "2012-05-06"
+        },
+        "2013": {
+          "days": 23.1,
+          "plantable_ha": 1093,
+          "enough": true,
+          "corn_50pct_planted": "2013-05-19"
+        },
+        "2014": {
+          "days": 29.9,
+          "plantable_ha": 1414,
+          "enough": true,
+          "corn_50pct_planted": "2014-05-11"
+        },
+        "2015": {
+          "days": 22.4,
+          "plantable_ha": 1060,
+          "enough": true,
+          "corn_50pct_planted": "2015-05-03"
+        },
+        "2016": {
+          "days": 22.7,
+          "plantable_ha": 1074,
+          "enough": true,
+          "corn_50pct_planted": "2016-05-08"
+        },
+        "2017": {
+          "days": 23.5,
+          "plantable_ha": 1112,
+          "enough": true,
+          "corn_50pct_planted": "2017-05-14"
+        },
+        "2018": {
+          "days": 25.9,
+          "plantable_ha": 1226,
+          "enough": true,
+          "corn_50pct_planted": "2018-05-13"
+        },
+        "2019": {
+          "days": 23.9,
+          "plantable_ha": 1131,
+          "enough": true,
+          "corn_50pct_planted": "2019-05-19"
+        },
+        "2020": {
+          "days": 30.1,
+          "plantable_ha": 1424,
+          "enough": true,
+          "corn_50pct_planted": "2020-05-03"
+        },
+        "2021": {
+          "days": 30.6,
+          "plantable_ha": 1448,
+          "enough": true,
+          "corn_50pct_planted": "2021-05-09"
+        },
+        "2022": {
+          "days": 29.5,
+          "plantable_ha": 1396,
+          "enough": true,
+          "corn_50pct_planted": "2022-05-15"
+        },
+        "2023": {
+          "days": 32.0,
+          "plantable_ha": 1514,
+          "enough": true,
+          "corn_50pct_planted": "2023-05-07"
+        },
+        "2024": {
+          "days": 25.2,
+          "plantable_ha": 1192,
+          "enough": true,
+          "corn_50pct_planted": "2024-05-12"
+        },
+        "2025": {
+          "days": 33.7,
+          "plantable_ha": 1595,
+          "enough": true,
+          "corn_50pct_planted": "2025-05-04"
+        }
+      },
+      "placeholders": {
+        "cost": {
+          "zea-mays": 1040.0,
+          "glycine-max": 815.0
+        },
+        "n_rate": {
+          "[\"zea-mays\", \"glycine-max\"]": 150.0,
+          "[\"zea-mays\", \"zea-mays\"]": 200.0
+        },
+        "n_price": 1.0,
+        "rotation": {
+          "[\"zea-mays\", \"zea-mays\"]": 0.9,
+          "[\"glycine-max\", \"glycine-max\"]": 0.95
+        },
+        "planter_kmh": 8.0,
+        "planter_m": 9.1,
+        "planter_eff": 0.65,
+        "hours_per_day": 10.0,
+        "farm_ha": 400.0
+      },
+      "corn_after_corn": 0.887
+    },
+    "run_at": "2026-11-15T23:36:51Z"
+  },
+  "V1": {
+    "question": "Is the NASA data at the pin factual?",
+    "truth": "Daymet 1 km (temperature); CoCoRaHS gauges (77 stations within 30 km) (rain)",
+    "criterion": "Tmax and Tmin RMSE <= 2.5 C vs Daymet; May-Sep rain within +-15% of the gauges in >= 80% of years",
+    "verdict": "PASS",
+    "summary": "Tmax RMSE 1.88 C, Tmin RMSE 2.49 C; season rain within 15% in 83% of years against CoCoRaHS gauges (77 stations within 30 km)",
+    "details": {
+      "temperature": {
+        "tmax": {
+          "rmse": 1.88,
+          "bias": 0.13,
+          "r": 0.988
+        },
+        "tmin": {
+          "rmse": 2.49,
+          "bias": 1.23,
+          "r": 0.981
+        }
+      },
+      "frost_agreement_pct": 95.8,
+      "seasons": [
+        {
+          "year": 2008,
+          "truth": 658,
+          "power": 603,
+          "imerg": 598,
+          "daymet": 603,
+          "power_err": -8.4,
+          "imerg_err": -9.1
+        },
+        {
+          "year": 2009,
+          "truth": 415,
+          "power": 397,
+          "imerg": 416,
+          "daymet": 450,
+          "power_err": -4.3,
+          "imerg_err": 0.2
+        },
+        {
+          "year": 2010,
+          "truth": 476,
+          "power": 551,
+          "imerg": 596,
+          "daymet": 498,
+          "power_err": 15.8,
+          "imerg_err": 25.3
+        },
+        {
+          "year": 2011,
+          "truth": 541,
+          "power": 506,
+          "imerg": 518,
+          "daymet": 602,
+          "power_err": -6.5,
+          "imerg_err": -4.3
+        },
+        {
+          "year": 2012,
+          "truth": 199,
+          "power": 223,
+          "imerg": 255,
+          "daymet": 217,
+          "power_err": 12.3,
+          "imerg_err": 28.0
+        },
+        {
+          "year": 2013,
+          "truth": 396,
+          "power": 401,
+          "imerg": 450,
+          "daymet": 418,
+          "power_err": 1.3,
+          "imerg_err": 13.6
+        },
+        {
+          "year": 2014,
+          "truth": 715,
+          "power": 596,
+          "imerg": 615,
+          "daymet": 737,
+          "power_err": -16.7,
+          "imerg_err": -14.0
+        },
+        {
+          "year": 2015,
+          "truth": 617,
+          "power": 548,
+          "imerg": 666,
+          "daymet": 621,
+          "power_err": -11.1,
+          "imerg_err": 8.0
+        },
+        {
+          "year": 2016,
+          "truth": 436,
+          "power": 394,
+          "imerg": 505,
+          "daymet": 463,
+          "power_err": -9.8,
+          "imerg_err": 15.7
+        },
+        {
+          "year": 2017,
+          "truth": 503,
+          "power": 483,
+          "imerg": 560,
+          "daymet": 532,
+          "power_err": -4.0,
+          "imerg_err": 11.3
+        },
+        {
+          "year": 2018,
+          "truth": 589,
+          "power": 566,
+          "imerg": 577,
+          "daymet": 614,
+          "power_err": -3.9,
+          "imerg_err": -2.1
+        },
+        {
+          "year": 2019,
+          "truth": 734,
+          "power": 678,
+          "imerg": 688,
+          "daymet": 773,
+          "power_err": -7.6,
+          "imerg_err": -6.2
+        },
+        {
+          "year": 2020,
+          "truth": 415,
+          "power": 367,
+          "imerg": 408,
+          "daymet": 417,
+          "power_err": -11.5,
+          "imerg_err": -1.7
+        },
+        {
+          "year": 2021,
+          "truth": 411,
+          "power": 379,
+          "imerg": 393,
+          "daymet": 396,
+          "power_err": -7.9,
+          "imerg_err": -4.5
+        },
+        {
+          "year": 2022,
+          "truth": 427,
+          "power": 326,
+          "imerg": 411,
+          "daymet": 456,
+          "power_err": -23.7,
+          "imerg_err": -3.6
+        },
+        {
+          "year": 2023,
+          "truth": 332,
+          "power": 320,
+          "imerg": 367,
+          "daymet": 310,
+          "power_err": -3.7,
+          "imerg_err": 10.6
+        },
+        {
+          "year": 2024,
+          "truth": 485,
+          "power": 434,
+          "imerg": 509,
+          "daymet": 437,
+          "power_err": -10.4,
+          "imerg_err": 4.9
+        },
+        {
+          "year": 2025,
+          "truth": 492,
+          "power": 557,
+          "imerg": 554,
+          "daymet": 454,
+          "power_err": 13.3,
+          "imerg_err": 12.7
+        }
+      ],
+      "heavy_days": {
+        "POWER": {
+          "truth_days": 101,
+          "model_days": 77,
+          "hit_rate": 50,
+          "false_alarm_ratio": 35
+        },
+        "IMERG": {
+          "truth_days": 101,
+          "model_days": 133,
+          "hit_rate": 67,
+          "false_alarm_ratio": 46
+        }
+      },
+      "gauges": 77
+    },
+    "run_at": "2026-11-15T23:36:40Z"
+  },
+  "V2": {
+    "question": "Would the water model have flagged the bad years?",
+    "truth": "NASS York County yields (detrended), USDA RMA insured losses by cause, 2001-2025",
+    "criterion": "Pearson r >= 0.5 vs detrended yield anomaly and 2012 among the 3 lowest modelled years, per crop (app's POWER rain)",
+    "verdict": "PASS",
+    "summary": "corn PASS: r=0.66 vs NASS, 2012 flagged, rho=0.84 vs RMA drought; soybean PASS: r=0.77 vs NASS, 2012 flagged, rho=0.76 vs RMA drought",
+    "details": {
+      "zea-mays": {
+        "verdict": "PASS",
+        "scored": {
+          "POWER": {
+            "pearson_vs_nass": 0.66,
+            "p_value": 0.0026,
+            "n": 17,
+            "lowest3": [
+              2012,
+              2002,
+              2023
+            ],
+            "flags_2012": true,
+            "spearman_vs_rma_drought": 0.84,
+            "rma_p_value": 0.0002,
+            "stressed_years": [
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014,
+              2015,
+              2016,
+              2017,
+              2018,
+              2019,
+              2020,
+              2021,
+              2022,
+              2023,
+              2024,
+              2025
+            ]
+          },
+          "IMERG": {
+            "pearson_vs_nass": 0.65,
+            "p_value": 0.0034,
+            "n": 17,
+            "lowest3": [
+              2012,
+              2002,
+              2023
+            ],
+            "flags_2012": true,
+            "spearman_vs_rma_drought": 0.83,
+            "rma_p_value": 0.0002,
+            "stressed_years": [
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014,
+              2015,
+              2016,
+              2017,
+              2018,
+              2019,
+              2020,
+              2021,
+              2022,
+              2023,
+              2024,
+              2025
+            ]
+          },
+          "Daymet": {
+            "pearson_vs_nass": 0.6,
+            "p_value": 0.011,
+            "n": 17,
+            "lowest3": [
+              2012,
+              2002,
+              2003
+            ],
+            "flags_2012": true,
+            "spearman_vs_rma_drought": 0.86,
+            "rma_p_value": 0.0002,
+            "stressed_years": [
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014,
+              2015,
+              2016,
+              2017,
+              2018,
+              2019,
+              2020,
+              2021,
+              2022,
+              2023,
+              2024,
+              2025
+            ]
+          },
+          "App rule": {
+            "pearson_vs_nass": 0.63,
+            "p_value": 0.0052,
+            "n": 17,
+            "lowest3": [
+              2012,
+              2002,
+              2022
+            ],
+            "flags_2012": true,
+            "spearman_vs_rma_drought": 0.75,
+            "rma_p_value": 0.0002,
+            "stressed_years": [
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014,
+              2015,
+              2016,
+              2017,
+              2018,
+              2019,
+              2020,
+              2021,
+              2022,
+              2023,
+              2024,
+              2025
+            ]
+          }
+        },
+        "misses": {
+          "2005": "drought",
+          "2013": "drought"
+        },
+        "lowest_quarter": [
+          2012,
+          2002,
+          2023,
+          2022,
+          2003,
+          2016,
+          2006
+        ],
+        "false_alarms": [
+          2016
+        ],
+        "r_deep_roots": 0.68,
+        "y2025": {
+          "model_power": {
+            "factor": 0.577,
+            "factor_deep": 0.755,
+            "deficit": 337
+          },
+          "model_daymet": {
+            "factor": 0.446,
+            "factor_deep": 0.624,
+            "deficit": 402
+          },
+          "nass_anomaly": null,
+          "rma": {
+            "decline in price": 111972,
+            "drought": 17273,
+            "heat": 15862,
+            "hail": 366757,
+            "excess moisture/precipitation/rain": 5455,
+            "arpi/sco/eco/stax/mp/pace crops only": 2316504,
+            "wind/excess wind": 447265
+          }
+        },
+        "nass_anomaly": {
+          "2001": 46.0,
+          "2002": -53.2,
+          "2003": -63.0,
+          "2004": 38.3,
+          "2005": -13.5,
+          "2006": -28.7,
+          "2007": 35.7,
+          "2008": 36.4,
+          "2009": 34.5,
+          "2010": 21.2,
+          "2011": 11.6,
+          "2012": -59.6,
+          "2013": -22.7,
+          "2014": 2.5,
+          "2015": 11.4,
+          "2016": 2.1,
+          "2017": -2.3
+        }
+      },
+      "glycine-max": {
+        "verdict": "PASS",
+        "scored": {
+          "POWER": {
+            "pearson_vs_nass": 0.77,
+            "p_value": 0.0012,
+            "n": 13,
+            "lowest3": [
+              2012,
+              2002,
+              2023
+            ],
+            "flags_2012": true,
+            "spearman_vs_rma_drought": 0.76,
+            "rma_p_value": 0.0002,
+            "stressed_years": [
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014,
+              2015,
+              2016,
+              2017,
+              2018,
+              2019,
+              2020,
+              2021,
+              2022,
+              2023,
+              2024,
+              2025
+            ]
+          },
+          "IMERG": {
+            "pearson_vs_nass": 0.78,
+            "p_value": 0.001,
+            "n": 13,
+            "lowest3": [
+              2012,
+              2002,
+              2013
+            ],
+            "flags_2012": true,
+            "spearman_vs_rma_drought": 0.82,
+            "rma_p_value": 0.0002,
+            "stressed_years": [
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014,
+              2015,
+              2016,
+              2017,
+              2018,
+              2019,
+              2020,
+              2021,
+              2022,
+              2023,
+              2024,
+              2025
+            ]
+          },
+          "Daymet": {
+            "pearson_vs_nass": 0.77,
+            "p_value": 0.0014,
+            "n": 13,
+            "lowest3": [
+              2012,
+              2002,
+              2001
+            ],
+            "flags_2012": true,
+            "spearman_vs_rma_drought": 0.83,
+            "rma_p_value": 0.0002,
+            "stressed_years": [
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014,
+              2015,
+              2016,
+              2017,
+              2018,
+              2019,
+              2020,
+              2021,
+              2022,
+              2023,
+              2024,
+              2025
+            ]
+          },
+          "App rule": {
+            "pearson_vs_nass": 0.78,
+            "p_value": 0.001,
+            "n": 13,
+            "lowest3": [
+              2012,
+              2002,
+              2013
+            ],
+            "flags_2012": true,
+            "spearman_vs_rma_drought": 0.82,
+            "rma_p_value": 0.0002,
+            "stressed_years": [
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2013,
+              2014,
+              2015,
+              2016,
+              2017,
+              2018,
+              2019,
+              2020,
+              2021,
+              2022,
+              2023,
+              2024,
+              2025
+            ]
+          }
+        },
+        "misses": {
+          "2003": "drought"
+        },
+        "lowest_quarter": [
+          2012,
+          2002,
+          2023,
+          2022,
+          2001,
+          2013,
+          2016
+        ],
+        "false_alarms": [
+          2001
+        ],
+        "r_deep_roots": 0.77,
+        "y2025": {
+          "model_power": {
+            "factor": 0.674,
+            "factor_deep": 0.787,
+            "deficit": 301
+          },
+          "model_daymet": {
+            "factor": 0.586,
+            "factor_deep": 0.699,
+            "deficit": 364
+          },
+          "nass_anomaly": null,
+          "rma": {
+            "decline in price": 8969,
+            "drought": 3166,
+            "heat": 11879,
+            "hail": 13750,
+            "excess moisture/precipitation/rain": 3914,
+            "wind/excess wind": 430,
+            "insects": 3619
+          }
+        },
+        "nass_anomaly": {
+          "2001": 14.6,
+          "2002": -21.6,
+          "2003": -53.4,
+          "2004": 4.6,
+          "2005": 2.4,
+          "2006": 5.4,
+          "2007": 33.5,
+          "2008": 21.0,
+          "2009": 25.9,
+          "2010": 17.1,
+          "2011": 20.8,
+          "2012": -54.0,
+          "2013": -17.3
+        }
+      },
+      "rma_by_year": {
+        "2001": {
+          "zea-mays": {
+            "drought_heat": 114800,
+            "top_cause": "drought",
+            "top_amount": 93605,
+            "by_cause": {
+              "decline in price": 70694,
+              "drought": 93606,
+              "heat": 21194,
+              "excess moisture/precipitation/rain": 17405,
+              "flood": 2290,
+              "insects": 989,
+              "other (snow,lightning,etc)": 171
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 78951,
+            "top_cause": "drought",
+            "top_amount": 51420,
+            "by_cause": {
+              "decline in price": 1287,
+              "drought": 51420,
+              "heat": 27531,
+              "hail": 18927,
+              "excess moisture/precipitation/rain": 14022,
+              "cold winter": 2311,
+              "cold wet weather": 484,
+              "flood": 231,
+              "other (snow,lightning,etc)": 2512
+            }
+          }
+        },
+        "2002": {
+          "zea-mays": {
+            "drought_heat": 2400624,
+            "top_cause": "drought",
+            "top_amount": 2306082,
+            "by_cause": {
+              "decline in price": 1484,
+              "drought": 2306083,
+              "heat": 94541,
+              "failure of irrigation supply": 10430,
+              "hail": 21361,
+              "excess moisture/precipitation/rain": 4329,
+              "wind/excess wind": 5578,
+              "hot wind": 2739,
+              "insects": 3930,
+              "\"other (snow,lightning,etc)\"": 1466
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 672308,
+            "top_cause": "drought",
+            "top_amount": 596401,
+            "by_cause": {
+              "decline in price": 2169,
+              "drought": 596402,
+              "heat": 75907,
+              "failure of irrigation supply": 99,
+              "hail": 20243,
+              "excess moisture/precipitation/rain": 3764,
+              "wind/excess wind": 704,
+              "hot wind": 4883
+            }
+          }
+        },
+        "2003": {
+          "zea-mays": {
+            "drought_heat": 2190120,
+            "top_cause": "drought",
+            "top_amount": 2141297,
+            "by_cause": {
+              "decline in price": 493,
+              "drought": 2141297,
+              "heat": 48823,
+              "failure of irrigation supply": 2694,
+              "hail": 89192,
+              "excess moisture/precipitation/rain": 407,
+              "wind/excess wind": 6942,
+              "hot wind": 4711
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 1589417,
+            "top_cause": "drought",
+            "top_amount": 1514399,
+            "by_cause": {
+              "decline in price": 4153,
+              "drought": 1514399,
+              "heat": 75018,
+              "failure of irrigation supply": 3942,
+              "hail": 233206,
+              "excess moisture/precipitation/rain": 9939,
+              "hot wind": 5228,
+              "insects": 148
+            }
+          }
+        },
+        "2004": {
+          "zea-mays": {
+            "drought_heat": 83644,
+            "top_cause": "drought",
+            "top_amount": 83644,
+            "by_cause": {
+              "decline in price": 262869,
+              "drought": 83644,
+              "hail": 3070,
+              "wind/excess wind": 9746,
+              "hot wind": 486
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 175860,
+            "top_cause": "drought",
+            "top_amount": 143582,
+            "by_cause": {
+              "decline in price": 245200,
+              "drought": 143582,
+              "heat": 32278,
+              "hail": 45804,
+              "excess moisture/precipitation/rain": 11132,
+              "wind/excess wind": 360,
+              "hot wind": 128
+            }
+          }
+        },
+        "2005": {
+          "zea-mays": {
+            "drought_heat": 304721,
+            "top_cause": "drought",
+            "top_amount": 283856,
+            "by_cause": {
+              "decline in price": 27547,
+              "drought": 283857,
+              "heat": 20865,
+              "hail": 100049,
+              "excess moisture/precipitation/rain": 106958,
+              "flood": 22757,
+              "grp/grip  crops only`": 65227,
+              "hot wind": 2922,
+              "wildlife": 630
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 31587,
+            "top_cause": "excess moisture/precipitation/rain",
+            "top_amount": 103250,
+            "by_cause": {
+              "decline in price": 801,
+              "drought": 29603,
+              "heat": 1984,
+              "hail": 3898,
+              "excess moisture/precipitation/rain": 103251,
+              "flood": 17020,
+              "hot wind": 12
+            }
+          }
+        },
+        "2006": {
+          "zea-mays": {
+            "drought_heat": 942413,
+            "top_cause": "drought",
+            "top_amount": 937011,
+            "by_cause": {
+              "drought": 937012,
+              "heat": 5401,
+              "hail": 32699,
+              "excess moisture/precipitation/rain": 1144,
+              "cold wet weather": 2256,
+              "grp/grip  crops only`": 49723,
+              "wind/excess wind": 41724,
+              "hot wind": 762,
+              "plant disease": 19283
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 108112,
+            "top_cause": "hail",
+            "top_amount": 112707,
+            "by_cause": {
+              "decline in price": 185,
+              "drought": 99237,
+              "heat": 8875,
+              "hail": 112708,
+              "excess moisture/precipitation/rain": 260
+            }
+          }
+        },
+        "2007": {
+          "zea-mays": {
+            "drought_heat": 7973,
+            "top_cause": "grp/grip  crops only`",
+            "top_amount": 255821,
+            "by_cause": {
+              "decline in price": 27936,
+              "drought": 7973,
+              "hail": 58913,
+              "excess moisture/precipitation/rain": 7827,
+              "cold wet weather": 1234,
+              "grp/grip  crops only`": 255821,
+              "plant disease": 54268
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 2412,
+            "top_cause": "excess moisture/precipitation/rain",
+            "top_amount": 43978,
+            "by_cause": {
+              "drought": 2412,
+              "hail": 12997,
+              "excess moisture/precipitation/rain": 43978,
+              "flood": 558,
+              "hot wind": 23175,
+              "\"other (snow,lightning,etc)\"": 26577
+            }
+          }
+        },
+        "2008": {
+          "zea-mays": {
+            "drought_heat": 1828,
+            "top_cause": "grp/grip  crops only`",
+            "top_amount": 1836387,
+            "by_cause": {
+              "decline in price": 1358627,
+              "drought": 1828,
+              "hail": 228074,
+              "excess moisture/precipitation/rain": 72453,
+              "flood": 5422,
+              "grp/grip  crops only`": 1836387,
+              "wind/excess wind": 212909,
+              "tornado": 3024
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 1656,
+            "top_cause": "hail",
+            "top_amount": 252129,
+            "by_cause": {
+              "decline in price": 1045462,
+              "drought": 1656,
+              "hail": 252129,
+              "excess moisture/precipitation/rain": 91792,
+              "flood": 9133,
+              "grp/grip  crops only`": 60603
+            }
+          }
+        },
+        "2009": {
+          "zea-mays": {
+            "drought_heat": 0,
+            "top_cause": "hail",
+            "top_amount": 193380,
+            "by_cause": {
+              "decline in price": 14698,
+              "hail": 193380,
+              "excess moisture/precipitation/rain": 15449,
+              "wind/excess wind": 75613
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 2685,
+            "top_cause": "hail",
+            "top_amount": 116360,
+            "by_cause": {
+              "drought": 2685,
+              "hail": 116360,
+              "excess moisture/precipitation/rain": 5837,
+              "frost": 5546,
+              "wind/excess wind": 476
+            }
+          }
+        },
+        "2010": {
+          "zea-mays": {
+            "drought_heat": 0,
+            "top_cause": "wind/excess wind",
+            "top_amount": 53015,
+            "by_cause": {
+              "hail": 2661,
+              "excess moisture/precipitation/rain": 35788,
+              "wind/excess wind": 53015,
+              "plant disease": 21480,
+              "mycotoxin (aflatoxin)": 2483
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 0,
+            "top_cause": "excess moisture/precipitation/rain",
+            "top_amount": 60587,
+            "by_cause": {
+              "excess moisture/precipitation/rain": 60587
+            }
+          }
+        },
+        "2011": {
+          "zea-mays": {
+            "drought_heat": 16145,
+            "top_cause": "hail",
+            "top_amount": 161587,
+            "by_cause": {
+              "drought": 4996,
+              "heat": 11149,
+              "hail": 161588,
+              "excess moisture/precipitation/rain": 30777,
+              "cold wet weather": 22318,
+              "wind/excess wind": 26000,
+              "tornado": 26615,
+              "plant disease": 8153,
+              "other (snow, lightning, etc.)": 15995
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 10736,
+            "top_cause": "hail",
+            "top_amount": 145502,
+            "by_cause": {
+              "decline in price": 1711,
+              "heat": 10736,
+              "hail": 145502,
+              "excess moisture/precipitation/rain": 29186,
+              "cold wet weather": 10829,
+              "flood": 2387,
+              "wind/excess wind": 2420,
+              "tornado": 12654,
+              "other (snow, lightning, etc.)": 21304
+            }
+          }
+        },
+        "2012": {
+          "zea-mays": {
+            "drought_heat": 5442443,
+            "top_cause": "drought",
+            "top_amount": 4732890,
+            "by_cause": {
+              "decline in price": 37750,
+              "drought": 4732890,
+              "heat": 709553,
+              "failure of irrigation supply": 21858,
+              "hail": 72657,
+              "excess moisture/precipitation/rain": 3774,
+              "wind/excess wind": 28288,
+              "hot wind": 41643
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 2867840,
+            "top_cause": "drought",
+            "top_amount": 2481984,
+            "by_cause": {
+              "decline in price": 9026,
+              "drought": 2481984,
+              "heat": 385856,
+              "failure of irrigation supply": 6522,
+              "hail": 103987,
+              "excess moisture/precipitation/rain": 42019,
+              "hot wind": 33666,
+              "insects": 2865
+            }
+          }
+        },
+        "2013": {
+          "zea-mays": {
+            "drought_heat": 1490578,
+            "top_cause": "drought",
+            "top_amount": 1170348,
+            "by_cause": {
+              "decline in price": 1819563,
+              "drought": 1170348,
+              "heat": 320230,
+              "hail": 27044,
+              "excess moisture/precipitation/rain": 11159,
+              "wind/excess wind": 657,
+              "plant disease": 669,
+              "other (snow, lightning, etc.)": 34921
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 576209,
+            "top_cause": "drought",
+            "top_amount": 430206,
+            "by_cause": {
+              "decline in price": 5144,
+              "drought": 430207,
+              "heat": 146002,
+              "hail": 19020,
+              "excess moisture/precipitation/rain": 11013,
+              "flood": 3856,
+              "wind/excess wind": 571,
+              "hot wind": 3707,
+              "insects": 5983,
+              "other (snow, lightning, etc.)": 7322
+            }
+          }
+        },
+        "2014": {
+          "zea-mays": {
+            "drought_heat": 5673,
+            "top_cause": "hail",
+            "top_amount": 10950101,
+            "by_cause": {
+              "decline in price": 2626398,
+              "drought": 743,
+              "heat": 4930,
+              "hail": 10950101,
+              "excess moisture/precipitation/rain": 276102,
+              "frost": 2565,
+              "flood": 5215,
+              "other (snow, lightning, etc.)": 81328
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 0,
+            "top_cause": "hail",
+            "top_amount": 966026,
+            "by_cause": {
+              "decline in price": 506964,
+              "hail": 966027,
+              "excess moisture/precipitation/rain": 84735,
+              "frost": 15640,
+              "cold wet weather": 2613,
+              "flood": 3342
+            }
+          }
+        },
+        "2015": {
+          "zea-mays": {
+            "drought_heat": 5089,
+            "top_cause": "excess moisture/precipitation/rain",
+            "top_amount": 242605,
+            "by_cause": {
+              "decline in price": 8562,
+              "drought": 3,
+              "heat": 5086,
+              "hail": 17300,
+              "excess moisture/precipitation/rain": 242605,
+              "cold wet weather": 24208,
+              "flood": 432
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 9989,
+            "top_cause": "hail",
+            "top_amount": 124773,
+            "by_cause": {
+              "decline in price": 22339,
+              "drought": 1659,
+              "heat": 8330,
+              "hail": 124774,
+              "excess moisture/precipitation/rain": 57388,
+              "flood": 3747,
+              "plant disease": 2074
+            }
+          }
+        },
+        "2016": {
+          "zea-mays": {
+            "drought_heat": 696137,
+            "top_cause": "heat",
+            "top_amount": 690890,
+            "by_cause": {
+              "decline in price": 97862,
+              "drought": 5247,
+              "heat": 690890,
+              "hail": 12089,
+              "excess moisture/precipitation/rain": 82544,
+              "flood": 1235,
+              "wind/excess wind": 270045,
+              "other (snow, lightning, etc.)": 5458
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 8771,
+            "top_cause": "hail",
+            "top_amount": 18173,
+            "by_cause": {
+              "drought": 6127,
+              "heat": 2644,
+              "hail": 18173,
+              "excess moisture/precipitation/rain": 15789,
+              "flood": 1680
+            }
+          }
+        },
+        "2017": {
+          "zea-mays": {
+            "drought_heat": 898,
+            "top_cause": "wind/excess wind",
+            "top_amount": 485238,
+            "by_cause": {
+              "decline in price": 46149,
+              "drought": 898,
+              "hail": 28953,
+              "excess moisture/precipitation/rain": 7876,
+              "wind/excess wind": 485239
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 1549,
+            "top_cause": "hail",
+            "top_amount": 58191,
+            "by_cause": {
+              "decline in price": 272,
+              "drought": 1549,
+              "hail": 58191,
+              "excess moisture/precipitation/rain": 47630,
+              "cold wet weather": 3198,
+              "wind/excess wind": 4913,
+              "insects": 567,
+              "plant disease": 4560,
+              "other (snow, lightning, etc.)": 2260
+            }
+          }
+        },
+        "2018": {
+          "zea-mays": {
+            "drought_heat": 27495,
+            "top_cause": "hail",
+            "top_amount": 838853,
+            "by_cause": {
+              "decline in price": 29290,
+              "drought": 27495,
+              "hail": 838854,
+              "excess moisture/precipitation/rain": 26223,
+              "cold wet weather": 848,
+              "wind/excess wind": 135315
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 10448,
+            "top_cause": "hail",
+            "top_amount": 3000869,
+            "by_cause": {
+              "decline in price": 332046,
+              "drought": 1914,
+              "heat": 8534,
+              "hail": 3000869,
+              "excess moisture/precipitation/rain": 2021,
+              "cold wet weather": 10601,
+              "flood": 31479,
+              "wind/excess wind": 3697
+            }
+          }
+        },
+        "2019": {
+          "zea-mays": {
+            "drought_heat": 0,
+            "top_cause": "excess moisture/precipitation/rain",
+            "top_amount": 244745,
+            "by_cause": {
+              "hail": 3284,
+              "excess moisture/precipitation/rain": 244746,
+              "flood": 22358,
+              "wind/excess wind": 6389
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 0,
+            "top_cause": "excess moisture/precipitation/rain",
+            "top_amount": 123298,
+            "by_cause": {
+              "decline in price": 2388,
+              "hail": 5822,
+              "excess moisture/precipitation/rain": 123298,
+              "cold wet weather": 2673,
+              "flood": 3337
+            }
+          }
+        },
+        "2020": {
+          "zea-mays": {
+            "drought_heat": 9177,
+            "top_cause": "wind/excess wind",
+            "top_amount": 267865,
+            "by_cause": {
+              "heat": 9177,
+              "excess moisture/precipitation/rain": 2523,
+              "wind/excess wind": 267865,
+              "other (snow, lightning, etc.)": 13464
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 2051,
+            "top_cause": "excess moisture/precipitation/rain",
+            "top_amount": 13973,
+            "by_cause": {
+              "drought": 2051,
+              "excess moisture/precipitation/rain": 13973,
+              "cold wet weather": 1190,
+              "wind/excess wind": 4121,
+              "insects": 2682,
+              "other (snow, lightning, etc.)": 34786
+            }
+          }
+        },
+        "2021": {
+          "zea-mays": {
+            "drought_heat": 61269,
+            "top_cause": "wind/excess wind",
+            "top_amount": 76264,
+            "by_cause": {
+              "drought": 13904,
+              "heat": 47365,
+              "hail": 2968,
+              "wind/excess wind": 76264,
+              "wildlife": 975
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 17504,
+            "top_cause": "hail",
+            "top_amount": 22140,
+            "by_cause": {
+              "drought": 17328,
+              "heat": 176,
+              "hail": 22140,
+              "excess moisture/precipitation/rain": 11481
+            }
+          }
+        },
+        "2022": {
+          "zea-mays": {
+            "drought_heat": 690014,
+            "top_cause": "hail",
+            "top_amount": 55350332,
+            "by_cause": {
+              "drought": 264321,
+              "heat": 425693,
+              "hail": 55350332,
+              "excess moisture/precipitation/rain": 15725,
+              "arpi/sco/eco/stax/mp/hip-wi/pace crops only": 120777,
+              "wind/excess wind": 459442,
+              "tornado": 130382,
+              "other (snow, lightning, etc.)": -240318,
+              "all other causes": 10439
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 167392,
+            "top_cause": "hail",
+            "top_amount": 3185341,
+            "by_cause": {
+              "decline in price": 7879,
+              "drought": 124986,
+              "heat": 42406,
+              "hail": 3185341,
+              "excess moisture/precipitation/rain": 19249,
+              "frost": 12810,
+              "freeze": 3245,
+              "cold wet weather": 7008,
+              "arpi/sco/eco/stax/mp/hip-wi/pace crops only": 70716,
+              "wind/excess wind": 22719,
+              "hot wind": 1193,
+              "other (snow, lightning, etc.)": 574,
+              "all other causes": 2121
+            }
+          }
+        },
+        "2023": {
+          "zea-mays": {
+            "drought_heat": 4805888,
+            "top_cause": "hail",
+            "top_amount": 11111571,
+            "by_cause": {
+              "decline in price": 1277528,
+              "drought": 3414491,
+              "heat": 1391398,
+              "failure of irrigation supply": 32081,
+              "hail": 11111572,
+              "freeze": 1277,
+              "arpi/sco/eco/stax/mp/hip-wi/pace crops only": 3191898,
+              "wind/excess wind": 407037,
+              "hot wind": 45915,
+              "other (snow, lightning, etc.)": 18098,
+              "all other causes": 82961
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 2513278,
+            "top_cause": "hail",
+            "top_amount": 3819748,
+            "by_cause": {
+              "decline in price": 274968,
+              "drought": 1633300,
+              "heat": 879978,
+              "failure of irrigation supply": 1709,
+              "hail": 3819748,
+              "excess moisture/precipitation/rain": 735,
+              "cold wet weather": 1491,
+              "arpi/sco/eco/stax/mp/hip-wi/pace crops only": 140541,
+              "wind/excess wind": 1324,
+              "hot wind": 53515,
+              "insects": 32368,
+              "other (snow, lightning, etc.)": 15496,
+              "all other causes": 67733
+            }
+          }
+        },
+        "2024": {
+          "zea-mays": {
+            "drought_heat": 389862,
+            "top_cause": "heat",
+            "top_amount": 244957,
+            "by_cause": {
+              "decline in price": 69344,
+              "drought": 144904,
+              "heat": 244958,
+              "hail": 63492,
+              "excess moisture/precipitation/rain": 15037,
+              "arpi/sco/eco/stax/mp/pace crops only": 925709,
+              "wind/excess wind": 171836,
+              "hot wind": 3859
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 167644,
+            "top_cause": "hail",
+            "top_amount": 184915,
+            "by_cause": {
+              "decline in price": 169121,
+              "drought": 122197,
+              "heat": 45446,
+              "hail": 184915,
+              "excess moisture/precipitation/rain": 94209,
+              "arpi/sco/eco/stax/mp/pace crops only": 181897,
+              "hot wind": 8224,
+              "other (snow, lightning, etc.)": 474,
+              "all other causes": 508
+            }
+          }
+        },
+        "2025": {
+          "zea-mays": {
+            "drought_heat": 33135,
+            "top_cause": "wind/excess wind",
+            "top_amount": 447265,
+            "by_cause": {
+              "decline in price": 111972,
+              "drought": 17273,
+              "heat": 15862,
+              "hail": 366757,
+              "excess moisture/precipitation/rain": 5455,
+              "arpi/sco/eco/stax/mp/pace crops only": 2316504,
+              "wind/excess wind": 447265
+            }
+          },
+          "glycine-max": {
+            "drought_heat": 15045,
+            "top_cause": "hail",
+            "top_amount": 13750,
+            "by_cause": {
+              "decline in price": 8969,
+              "drought": 3166,
+              "heat": 11879,
+              "hail": 13750,
+              "excess moisture/precipitation/rain": 3914,
+              "wind/excess wind": 430,
+              "insects": 3619
+            }
+          }
+        }
+      }
+    },
+    "run_at": "2026-11-15T23:36:43Z"
+  },
+  "V6": {
+    "question": "How much soil does each rotation lose, and how much does a cover crop save?",
+    "truth": "RUSLE (AH-703) on Daymet rain, SSURGO K and slope length, 3DEP and SSURGO slope; published Nebraska figures not yet documented",
+    "criterion": "The app's erosion score orders the strategies as RUSLE does (higher score = less soil loss)",
+    "verdict": "PASS",
+    "summary": "current 24.64 -> 21.7 t/ha/yr (-12%); small_grain 20.01 -> 17.5 t/ha/yr (-13%); other_family 26.58 -> 23.16 t/ha/yr (-13%) on the 3DEP slope; T = 11.2; score order matches RUSLE",
+    "details": {
+      "r": 2057,
+      "k": 0.0487,
+      "lambda_m": 76.0,
+      "t_factor": 11.2,
+      "erosivity_by_month": {
+        "1": 0.006,
+        "2": 0.005,
+        "3": 0.053,
+        "4": 0.089,
+        "5": 0.217,
+        "6": 0.169,
+        "7": 0.117,
+        "8": 0.142,
+        "9": 0.073,
+        "10": 0.08,
+        "11": 0.028,
+        "12": 0.021
+      },
+      "results": {
+        "3DEP 4.05%": {
+          "current": {
+            "no_cover": 24.64,
+            "with_cover": 21.7,
+            "saved_pct": 12,
+            "over_t": true
+          },
+          "small_grain": {
+            "no_cover": 20.01,
+            "with_cover": 17.5,
+            "saved_pct": 13,
+            "over_t": true
+          },
+          "other_family": {
+            "no_cover": 26.58,
+            "with_cover": 23.16,
+            "saved_pct": 13,
+            "over_t": true
+          }
+        },
+        "SSURGO 1%": {
+          "current": {
+            "no_cover": 5.59,
+            "with_cover": 4.92,
+            "saved_pct": 12,
+            "over_t": false
+          },
+          "small_grain": {
+            "no_cover": 4.54,
+            "with_cover": 3.97,
+            "saved_pct": 13,
+            "over_t": false
+          },
+          "other_family": {
+            "no_cover": 6.03,
+            "with_cover": 5.25,
+            "saved_pct": 13,
+            "over_t": false
+          }
+        }
+      },
+      "rusle_order": [
+        "small_grain",
+        "current",
+        "other_family"
+      ],
+      "app_erosion": {
+        "current": 76,
+        "small_grain": 84,
+        "other_family": 76
+      },
+      "assumptions": {
+        "residue": {
+          "zea-mays": 50.0,
+          "glycine-max": 20.0,
+          "triticum-aestivum": 40.0,
+          "helianthus-annuus": 20.0
+        },
+        "fall_height": {
+          "zea-mays": 1.0,
+          "glycine-max": 0.4,
+          "triticum-aestivum": 0.5,
+          "helianthus-annuus": 1.0
+        },
+        "cover_fc": 0.5,
+        "cover_ramp_days": 60
+      },
+      "blocked": "comparison with published Nebraska soil-loss figures (source to document)"
+    },
+    "run_at": "2026-11-15T23:36:51Z"
+  }
+}

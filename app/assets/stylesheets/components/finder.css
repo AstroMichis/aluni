@@ -231,86 +231,6 @@
   color: var(--color-text-tertiary);
 }
 
-/* Basics: chips are labels wrapping a hidden radio, 48px targets, obvious state. */
-.finder__group {
-  border: 0;
-  padding: 0;
-  margin: 0;
-  min-width: 0;
-}
-
-.finder__legend {
-  margin-bottom: var(--space-2);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--color-text-secondary);
-}
-
-.finder__optional {
-  font-weight: 400;
-  color: var(--color-text-tertiary);
-}
-
-.finder__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.finder__chip {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: var(--space-2) var(--space-5);
-  border: 2px solid var(--color-border-default);
-  border-radius: var(--radius-full);
-  background: var(--color-bg-tertiary);
-  color: var(--color-text-primary);
-  font-size: var(--text-base);
-  cursor: pointer;
-  transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
-}
-
-.finder__chip--compact { padding-inline: var(--space-4); font-size: var(--text-sm); }
-
-.finder__chip input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.finder__chip:hover { transform: translateY(-1px); border-color: var(--color-border-strong); }
-
-.finder__chip:has(input:checked) {
-  border-color: var(--color-accent);
-  background: var(--color-accent);
-  color: var(--color-text-inverse);
-}
-
-.finder__chip:has(input:focus-visible) {
-  outline: 3px solid var(--color-accent-text);
-  outline-offset: 3px;
-}
-
-.finder__area {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.finder__area-input {
-  flex: 1 1 120px;
-  min-height: 48px;
-  font-family: var(--font-mono);
-}
-
 /* Save: the "auth" Turbo Frame hosts the two cards (components/auth-choice.css), then the code
    entry or the name step (components/code-input.css). The footer's passkey button shows only
    while the passkey card is the chosen one (finder_controller.js). */
@@ -348,15 +268,10 @@
   50% { transform: scale(1.06); }
 }
 
-@media (min-width: 641px) {
-  .finder__area-input { flex: 0 1 160px; }
-}
-
 @media (min-width: 1025px) {
   .finder__map { min-height: 360px; }
 }
 
 @media (forced-colors: active) {
-  .finder__chip:has(input:checked) { outline: 3px solid CanvasText; }
   .finder__pin::before { background: Highlight; border-color: CanvasText; }
 }

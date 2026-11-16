@@ -1,5 +1,14 @@
 es:
   shared:
+    evidence_note:
+      link: Ver el estudio
+      weather: "Probado en 25 años en Iowa: la temperatura y las heladas de la NASA son fiables en el punto (máximas a %{tmax_rmse} °C); la lluvia de NASA POWER marcó de menos, así que las cifras de lluvia para los cultivos usan NASA GPM IMERG."
+      water: "Probado en 25 temporadas en Iowa: ordenó los años de sequía (pérdidas aseguradas, %{rho_corn} en maíz) pero no el tamaño de la cosecha."
+      crop_rank: "Probado en Iowa: FAO GAEZ calificó igual los %{crops} cultivos y quedó %{maize_gap} %% (maíz) y %{soy_gap} %% (soya) por encima de los rendimientos reales del condado. Un techo de referencia, no un pronóstico."
+      rotation: "El maíz después de soya rinde %{gain} %% más que después de un cultivo que no es leguminosa (intervalo del 95 %% de %{low} a %{high} %%), según %{trials} ensayos de campo en climas como el de Ames."
+      scout: "Probado en 25 temporadas en el centro de Iowa: las reglas del clima apuntan a las temporadas correctas pero no siguieron las pérdidas reales de forma significativa (%{rho_min} a %{rho_max}). Dicen cuándo recorrer el campo."
+      erosion: "La ecuación de pérdida de suelo (RUSLE) ordena las rotaciones así. Una cubierta de centeno ahorró de %{saved_min} a %{saved_max} %% en Ames; las toneladas se basan en valores supuestos de rastrojo y cobertura."
+      margin: "Una regla de margen no superó la rotación propia de un agricultor con experiencia en %{years} temporadas. El margen informa tu decisión; no la toma."
     ask_aluni:
       open: "Pregúntale a %{app_name}"
       full_page: "Ampliar"

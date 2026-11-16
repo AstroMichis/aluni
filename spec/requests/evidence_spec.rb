@@ -36,6 +36,19 @@ RSpec.describe "Evidence page", type: :request do
     expect(response.body).to include(I18n.t("evidence.show.fix_status.done")).and include(I18n.t("evidence.show.fix_status.open"))
   end
 
+  it "compares every study on the second field when the snapshot has one" do
+    york = snapshot.dig("sites", "york")
+    skip "no second field in the snapshot" unless york
+
+    get evidence_path(locale: "en")
+
+    body = response.body
+    expect(body).to include(%(id="second-field")).and include(york.dig("field", "place"))
+    expect(body).to include("Correlation with yields: #{york.dig('studies', 'v2', 'r_corn')} corn")
+    EvidenceController::STUDIES.each { |id| expect(body).to include(CGI.escapeHTML(I18n.t("evidence.show.sites.names.#{id}"))) }
+    expect(body).to include(CGI.escapeHTML(I18n.t("evidence.show.sites.buin")))
+  end
+
   it "is linked from the reviewers' strip on the landing page, next to the action plan" do
     get "/en"
 

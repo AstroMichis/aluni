@@ -5,7 +5,7 @@
 # For every season 2001-2025, the worked example's chain (FAO-56 ET0 with the day's NASA POWER wind ->
 # Kc curve -> CROPWAT effective rain -> soil buffer -> FAO-33 yield factor) is run for corn and
 # soybean. Nothing is fitted: every coefficient comes from the FAO tables, so this is a true out-of-sample
-# test. The modelled yield factor is then scored against what happened in Story County:
+# test. The modelled yield factor is then scored against what happened in the site's county (sites.yml):
 #   - NASS county yields, detrended by a straight line over 2001-2025 (the anomaly in %);
 #   - USDA RMA insured losses by cause (drought + heat vs everything else), rank-correlated.
 #
@@ -23,28 +23,27 @@ include Hindcast
 
 YEARS = (2001..2025).to_a
 CROPS = { CORN => "0041", SOY => "0081" }.freeze
-NASS_DESC = { CORN => "CORN, GRAIN - YIELD, MEASURED IN BU / ACRE", SOY => "SOYBEANS - YIELD, MEASURED IN BU / ACRE" }.freeze
 
 power = power_daily
 et0s = et0_series
+# The app's rule since the backtest (U-27, U-28): IMERG rain and the state's NASS planting month.
+CALENDAR = YAML.safe_load_file(File.join(ROOT, "config/crops/planting_calendars.yml")).dig("US", SITE["state_name"]) || {}
+# name => [daily rain, planting month or nil for the FAO-56 row]
 rain_sources = {
-  "POWER" => power.transform_values { |v| v[:rain].to_f },
-  "IMERG" => imerg,
-  "Daymet" => daymet.transform_values { |v| v[:rain] }
+  "POWER" => [ power.transform_values { |v| v[:rain].to_f }, nil ],
+  "IMERG" => [ imerg, nil ],
+  "Daymet" => [ daymet.transform_values { |v| v[:rain] }, nil ],
+  "App rule" => [ imerg, :calendar ]
 }
 
-# NASS Story County yields (bu/acre), or nil when the NASS fetch has not run.
-nass = if File.exist?(path("nass/yield_county.json"))
-         rows = JSON.parse(File.read(path("nass/yield_county.json")))
-         CROPS.keys.to_h do |k|
-           [ k, rows.select { |r| r["short_desc"] == NASS_DESC[k] && r["reference_period_desc"] == "YEAR" }
-                   .filter_map { |r| (v = Float(r["Value"].to_s.delete(","), exception: false)) && [ r["year"].to_i, v ] }.to_h ]
-         end
-end
+# NASS county yields (bu/acre) in the series sites.yml prefers (non-irrigated first where it exists), or nil.
+nass_series = CROPS.keys.to_h { |k| [ k, nass_yields(k) ] }
+nass = nass_series.values.any? { |series, _| series.any? } ? nass_series.transform_values(&:first) : nil
+nass_series.each { |k, (series, desc)| puts "NASS #{k}: #{desc || 'none'} (#{series.size} years)" }
 
-# RMA Story County indemnity by year and cause group.
+# RMA indemnity in the site's county by year and cause group.
 rma_by_year = YEARS.to_h do |y|
-  rows = rma(y).select { |r| r[:county_code].to_i == 169 }
+  rows = rma(y).select { |r| r[:county_code].to_i == SITE["county_fips"].to_i }
   [ y, CROPS.to_h do |k, code|
     crop_rows = rows.select { |r| r[:commodity_code] == code }
     group = crop_rows.group_by { |r| r[:cause].to_s.downcase }.transform_values { |rs| rs.sum { |r| r[:indemnity] } }
@@ -56,10 +55,11 @@ end
 
 results = {}
 CROPS.each_key do |crop|
-  heading "#{crop == CORN ? 'Corn' : 'Soybean'}: modelled yield factor by rain source vs Story County records"
-  model = rain_sources.to_h do |name, rain|
+  heading "#{crop == CORN ? 'Corn' : 'Soybean'}: modelled yield factor by rain source vs #{SITE['county_name']} County records"
+  model = rain_sources.to_h do |name, (rain, planting)|
+    month = planting == :calendar ? CALENDAR.dig(crop, "planting_month") : nil
     [ name, YEARS.to_h do |y|
-      need = season_need(crop, y, et0s, rain)
+      need = season_need(crop, y, et0s, rain, planting: month)
       [ y, need && { factor: yield_factor(crop, need).round(3), factor_deep: yield_factor(crop, need, zr: ZR_MAX[crop]).round(3), deficit: need[:deficit_mm].round } ]
     end ]
   end
@@ -71,10 +71,10 @@ CROPS.each_key do |crop|
     anomaly = ys.to_h { |y| [ y, (100 * (nass[crop][y] - (a + (b * y))) / (a + (b * y))).round(1) ] }
   end
 
-  puts "year  NASS bu/ac  anomaly%  | factor POWER  IMERG  Daymet | RMA drought+heat $  top weather cause"
+  puts "year  NASS bu/ac  anomaly%  | factor POWER  IMERG  Daymet  App   | RMA drought+heat $  top weather cause"
   YEARS.each do |y|
     r = rma_by_year[y][crop]
-    printf("%d  %9s  %8s  |      %5s  %5s  %6s | %17s  %s\n", y, nass&.dig(crop, y) || "-", anomaly&.dig(y) || "-",
+    printf("%d  %9s  %8s  |      %5s  %5s  %6s  %5s | %17s  %s\n", y, nass&.dig(crop, y) || "-", anomaly&.dig(y) || "-",
            *rain_sources.keys.map { |n| model[n][y]&.dig(:factor) || "-" }, r[:drought_heat], "#{r[:top_cause]} ($#{r[:top_amount]})")
   end
 
@@ -124,7 +124,7 @@ end.join("; ")
 verdicts = results.values.map { |r| r[:verdict] }.uniq
 record("V2",
        question: "Would the water model have flagged the bad years?",
-       truth: "NASS Story County yields (detrended), USDA RMA insured losses by cause, 2001-2025",
+       truth: "NASS #{SITE['county_name']} County yields (detrended), USDA RMA insured losses by cause, 2001-2025",
        criterion: "Pearson r >= 0.5 vs detrended yield anomaly and 2012 among the 3 lowest modelled years, per crop (app's POWER rain)",
        verdict: verdicts.size == 1 ? verdicts.first : verdicts.join("/"),
        summary: summary,

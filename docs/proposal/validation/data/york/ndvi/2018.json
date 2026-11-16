@@ -1,0 +1,86 @@
+[
+  {
+    "month": "2018-01",
+    "ndvi": 0.019,
+    "date": "2018-01-15",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20180115_02_T1"
+  },
+  {
+    "month": "2018-02",
+    "ndvi": 0.214,
+    "date": "2018-02-27",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20180227T172251_R012_T14TPL_20201014T013502"
+  },
+  {
+    "month": "2018-03",
+    "ndvi": 0.234,
+    "date": "2018-03-14",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20180314T172059_R012_T14TPL_20201013T090655"
+  },
+  {
+    "month": "2018-04",
+    "ndvi": 0.196,
+    "date": "2018-04-28",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20180428T171901_R012_T14TPL_20201013T034410"
+  },
+  {
+    "month": "2018-05",
+    "ndvi": 0.107,
+    "date": "2018-05-07",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20180507_02_T1"
+  },
+  {
+    "month": "2018-06",
+    "ndvi": 0.37,
+    "date": "2018-06-02",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20180602T171849_R012_T14TPL_20201026T131340"
+  },
+  {
+    "month": "2018-07",
+    "ndvi": 0.848,
+    "date": "2018-07-12",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20180712T171859_R012_T14TPL_20201011T150716"
+  },
+  {
+    "month": "2018-08",
+    "ndvi": 0.491,
+    "date": "2018-08-11",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20180811T171849_R012_T14TPL_20201011T002921"
+  },
+  {
+    "month": "2018-09",
+    "ndvi": 0.734,
+    "date": "2018-09-20",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20180920T171959_R012_T14TPL_20201009T031625"
+  },
+  {
+    "month": "2018-10",
+    "ndvi": 0.832,
+    "date": "2018-10-20",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20181020T172339_R012_T14TPL_20201009T134019"
+  },
+  {
+    "month": "2018-11",
+    "ndvi": 0.25,
+    "date": "2018-11-16",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_028032_20181116_02_T1"
+  },
+  {
+    "month": "2018-12",
+    "ndvi": 0.149,
+    "date": "2018-12-17",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20181217_02_T1"
+  }
+]

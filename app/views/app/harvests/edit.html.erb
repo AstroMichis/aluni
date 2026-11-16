@@ -1,0 +1,51 @@
+<% content_for :title, t(".title", crop: crop_name(@crop), year: @crop.season_year, app_name: t("app_name")) %>
+<% basis = @crop.area_basis || (@field.record.area_unit_acres? ? "ac" : "ha") %>
+
+<div class="screen">
+  <%= render "shared/screen_bar", back_path: harvest_app_reports_path, back_label: t(".back"), title: t("app.reports.show.crumb"), section: :reports %>
+
+  <main id="main" class="screen__body">
+    <header class="screen__header">
+      <p class="text-label screen__eyebrow"><%= plot_name(@field) %> · <%= @crop.season_year %></p>
+      <h1 class="text-display screen__title"><%= t(".headline", crop: crop_name(@crop)) %></h1>
+      <p class="screen__lede"><%= t(".lede") %></p>
+    </header>
+
+    <%= form_with url: app_field_harvest_path(@field.key, @crop), method: :patch, scope: :harvest, class: "stack stack--md harvest-form" do |f| %>
+      <div class="harvest-form__row">
+        <label class="input-group">
+          <span class="input-group__label"><%= t(".yield") %></span>
+          <%= f.text_field :yield_amount, value: @crop.yield_amount&.to_s("F"), class: "input", inputmode: "decimal", autocomplete: "off" %>
+        </label>
+        <label class="input-group">
+          <span class="input-group__label"><%= t(".unit") %></span>
+          <%= f.select :yield_unit, FieldCrop::YIELD_UNITS.map { |u| [ t(".units.#{u}"), u ] }, { selected: @crop.yield_unit || "t" }, class: "input select" %>
+        </label>
+        <label class="input-group">
+          <span class="input-group__label"><%= t(".basis") %></span>
+          <%= f.select :area_basis, FieldCrop::AREA_BASES.map { |b| [ t(".bases.#{b}"), b ] }, { selected: basis }, class: "input select" %>
+        </label>
+      </div>
+      <div class="harvest-form__row">
+        <label class="input-group">
+          <span class="input-group__label"><%= t(".price") %></span>
+          <%= f.text_field :price, value: @crop.price&.to_s("F"), class: "input", inputmode: "decimal", autocomplete: "off" %>
+          <span class="input-group__hint"><%= t(".price_hint") %></span>
+        </label>
+        <label class="input-group">
+          <span class="input-group__label"><%= t(".cost") %></span>
+          <%= f.text_field :cost, value: @crop.cost&.to_s("F"), class: "input", inputmode: "decimal", autocomplete: "off" %>
+          <span class="input-group__hint"><%= t(".cost_hint") %></span>
+        </label>
+        <label class="input-group">
+          <span class="input-group__label"><%= t(".currency") %></span>
+          <%= f.select :currency, FieldCrop::CURRENCIES, { selected: @crop.currency || "USD" }, class: "input select" %>
+        </label>
+      </div>
+      <p class="choice-set__hint"><%= t(".private") %></p>
+      <div>
+        <%= f.submit t(".save"), class: "btn btn--primary" %>
+      </div>
+    <% end %>
+  </main>
+</div>

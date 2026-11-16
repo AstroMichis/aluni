@@ -11,8 +11,9 @@ import { Controller } from "@hotwired/stimulus"
 //           (field_map_controller.js). "This is my field" GETs /places/reverse into
 //           #place-summary; when the summary arrives with a pin the finder copies its place
 //           label, country and region and moves on.
-//   basics  crop (free text over a datalist), rainfed or irrigated, an optional area with a
-//           unit that defaults from the country.
+//   basics  the crop (free text over a datalist). Water and area are not asked here: the
+//           Rotation tab asks for the water where it changes the score, the reports for the
+//           area; the area unit still defaults from the country for when it is given.
 //   save    signed out: two equal ways in inside the "auth" Turbo Frame (sign_in_codes/_choice,
 //           choice_controller.js). The passkey card holds #finder-save, whose ceremony
 //           (passkey_controller.js on this element; its button sits in the footer, shown while
@@ -47,7 +48,6 @@ const AUTH_FORMS = ["finder-code", "finder-verify", "finder-complete", "finder-r
 const SIGNING_IN_FORMS = ["finder-verify", "finder-complete"]
 const SOURCES = ["geolocation", "typed", "map"]
 const UNITS = ["hectares", "acres"]
-const IRRIGATIONS = ["rainfed", "irrigated"]
 const FIELD_SELECTOR = "input, textarea, select"
 const CLOSE_FROM_SELECTOR = "button, a, [role='application']"
 
@@ -301,7 +301,7 @@ export default class extends Controller {
     this.state.place_label = (data.placeLabel || "").slice(0, NAME_MAX) || null
     this.state.country_code = data.countryCode || null
     this.state.admin_area = (data.adminArea || "").slice(0, NAME_MAX) || null
-    if (!this.state.unit_chosen) this.state.area_unit = this.imperialValue.includes(this.state.country_code) ? "acres" : "hectares"
+    this.state.area_unit = this.imperialValue.includes(this.state.country_code) ? "acres" : "hectares"
     this.syncPinInputs()
     this.applyBasics()
     this.report("")
@@ -318,39 +318,21 @@ export default class extends Controller {
 
   skipBasics() {
     this.state.crop_name = null
-    this.state.irrigation = null
-    this.state.area = null
     this.applyBasics()
     this.showStep("save", { speak: true })
-  }
-
-  chooseUnit(event) {
-    this.state.unit_chosen = true
-    this.state.area_unit = UNITS.includes(event.target.value) ? event.target.value : this.state.area_unit
-    this.persist()
   }
 
   readBasics() {
     if (!this.hasBasicsFormTarget) return
     const data = new FormData(this.basicsFormTarget)
     this.state.crop_name = String(data.get("crop_name") || "").trim().slice(0, NAME_MAX) || null
-    const irrigation = String(data.get("irrigation") || "")
-    this.state.irrigation = IRRIGATIONS.includes(irrigation) ? irrigation : null
-    const area = Number(data.get("area"))
-    this.state.area = Number.isFinite(area) && area > 0 ? String(data.get("area")) : null
-    const unit = String(data.get("area_unit") || "")
-    this.state.area_unit = UNITS.includes(unit) ? unit : this.state.area_unit
   }
 
   applyBasics() {
     if (!this.hasBasicsFormTarget) return
     const form = this.basicsFormTarget
     const crop = form.elements.namedItem("crop_name")
-    const area = form.elements.namedItem("area")
     if (crop) crop.value = this.state.crop_name || ""
-    if (area) area.value = this.state.area || ""
-    form.querySelectorAll("input[name='irrigation']").forEach((radio) => { radio.checked = radio.value === this.state.irrigation })
-    form.querySelectorAll("input[name='area_unit']").forEach((radio) => { radio.checked = radio.value === this.state.area_unit })
   }
 
   // ── step 3: save ───────────────────────────────────────────────────────
@@ -425,7 +407,7 @@ export default class extends Controller {
     return {
       open: false, step: STEPS[0], latitude: null, longitude: null, location_source: null,
       place_label: null, country_code: null, admin_area: null,
-      crop_name: null, irrigation: null, area: null, area_unit: "hectares", unit_chosen: false
+      crop_name: null, area_unit: "hectares"
     }
   }
 
@@ -447,10 +429,7 @@ export default class extends Controller {
     state.step = STEPS.includes(data.step) && state.latitude ? data.step : STEPS[0]
     state.open = Boolean(data.open)
     state.crop_name = typeof data.crop_name === "string" ? data.crop_name.slice(0, NAME_MAX) : null
-    state.irrigation = IRRIGATIONS.includes(data.irrigation) ? data.irrigation : null
-    state.area = Number(data.area) > 0 ? String(data.area) : null
     state.area_unit = UNITS.includes(data.area_unit) ? data.area_unit : "hectares"
-    state.unit_chosen = Boolean(data.unit_chosen)
     return state
   }
 

@@ -1,0 +1,22 @@
+en:
+  omniauth_callbacks:
+    providers:
+      google_oauth2: "Google"
+      apple: "Apple"
+      microsoft_graph: "Microsoft"
+    connected: "%{provider} is connected. You can sign in with it next time."
+    apple_return:
+      title: "Signing you in"
+      continue: "Continue"
+    errors:
+      provider_failed: "That sign-in did not finish. Try again, or use a passkey or a code by email."
+      paused: "Signing in with Google, Apple or Microsoft is paused for now. Use a passkey or a code by email."
+      email_conflict: "An account already uses that address. Sign in with a passkey or a code by email, then connect %{provider} from your account."
+      already_linked: "That %{provider} account is already connected to another account here."
+      signups_closed: "New accounts are closed for now."
+      name_required: "%{provider} did not share a name. Sign up with a code by email instead."
+      invalid: "That account could not be saved. Try again, or use a code by email."
+  identities:
+    destroy:
+      removed: "%{provider} disconnected."
+      last_way_in: "That is your only way in. Add a passkey or confirm your email first."

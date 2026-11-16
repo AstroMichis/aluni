@@ -89,16 +89,6 @@
   font-size: var(--text-sm);
   white-space: nowrap;
 }
-.plan__note {
-  display: flex;
-  margin: 0 0 var(--space-4);
-  max-width: 72ch;
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  line-height: var(--leading-snug);
-}
-.plan__note::before { margin-top: 0.45em; }
 .plan__evidence { margin: 0 0 var(--space-4); }
 .plan__top { margin: var(--space-4) 0 0; font-size: var(--text-sm); }
 .plan__top a { color: var(--color-accent-text); }
