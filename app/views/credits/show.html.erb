@@ -1,0 +1,97 @@
+<% app_name = t("app_name") %>
+<% content_for :title, t(".title", app_name: app_name) %>
+<% content_for :description, t(".description", app_name: app_name) %>
+<% all = @credits.values %>
+
+<div class="landing evidence credits">
+  <nav class="landing__nav" data-controller="landing-nav" aria-label="<%= t(".nav_label") %>">
+    <div class="container landing__nav-inner">
+      <%= link_to root_path, class: "landing__brand", aria: { label: t(".back_home") } do %>
+        <span class="landing__wordmark"><%= app_name %></span>
+      <% end %>
+      <div class="cluster cluster--sm">
+        <%= render "shared/devices_link" %>
+        <%= render "shared/language_toggle" %>
+        <%= render "shared/access_buttons" %>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main" class="container evidence__main">
+    <header class="evidence__hero stack stack--md" aria-labelledby="credits-title">
+      <span class="badge badge--accent evidence__eyebrow"><%= t(".eyebrow") %></span>
+      <h1 id="credits-title" class="text-display evidence__title"><%= t(".headline", app_name: app_name) %></h1>
+      <p class="evidence__lede"><%= t(".lede", app_name: app_name) %></p>
+      <ul class="evidence__tally cluster cluster--sm" role="list" aria-label="<%= t(".tally_label") %>">
+        <li class="badge badge--accent"><%= t(".tally.sources", count: all.size) %></li>
+        <li class="badge badge--accent"><%= t(".tally.nasa", count: @groups["nasa"].size) %></li>
+        <li class="badge badge--success"><%= t(".tally.live", count: all.count { |c| c["used_in"] != "backtest" }) %></li>
+        <li class="badge badge--info"><%= t(".tally.doi", count: all.count { |c| c["doi"] }) %></li>
+      </ul>
+      <nav class="cluster cluster--sm" aria-label="<%= t(".jump_label") %>">
+        <% CreditsController::GROUPS.each do |group| %>
+          <a class="btn btn--secondary btn--sm" data-turbo="false" href="#<%= group %>"><%= t(".groups.#{group}.short") %></a>
+        <% end %>
+      </nav>
+    </header>
+
+    <section class="evidence__section" aria-labelledby="credits-read">
+      <h2 id="credits-read" class="evidence__heading"><%= t(".read.title") %></h2>
+      <p class="evidence__text"><%= t(".read.body", app_name: app_name) %></p>
+    </section>
+
+    <% CreditsController::GROUPS.each do |group| %>
+      <section id="<%= group %>" class="evidence__section" aria-labelledby="credits-<%= group %>">
+        <h2 id="credits-<%= group %>" class="evidence__heading"><%= t(".groups.#{group}.title") %></h2>
+        <p class="evidence__text"><%= t(".groups.#{group}.lede", app_name: app_name) %></p>
+        <ol class="credits__list" role="list">
+          <% @groups[group].each do |id, credit| %>
+            <li id="credit-<%= id %>" class="credits__item">
+              <div class="credits__head">
+                <h3 class="credits__name"><%= credit["name"] %></h3>
+                <span class="<%= credit_used_in_badge(credit["used_in"]) %>"><%= t(".used_in.#{credit['used_in']}") %></span>
+                <span class="<%= credit_licence_badge(credit["licence_kind"]) %>"><%= t(".licences.#{credit['licence_kind']}") %></span>
+                <% if credit["verify"] %><span class="badge badge--secondary"><%= t(".to_confirm") %></span><% end %>
+              </div>
+              <dl class="credits__facts">
+                <div><dt><%= t(".labels.what") %></dt><dd><%= t(".sources.#{id}.what", app_name: app_name) %></dd></div>
+                <div><dt><%= t(".labels.why") %></dt><dd><%= t(".sources.#{id}.why", app_name: app_name) %></dd></div>
+                <div>
+                  <dt><%= t(".labels.how") %></dt>
+                  <dd class="credits__code">
+                    <% Array(credit["code"]).map(&:first).uniq.each do |file| %><code><%= file %></code><% end %>
+                    <% Array(credit["hosts"]).each do |host| %><code><%= host %></code><% end %>
+                  </dd>
+                </div>
+                <% if (asked = credit.dig("attribution", "required")) %>
+                  <div><dt><%= t(".labels.credit") %></dt><dd lang="en"><%= asked %></dd></div>
+                <% end %>
+              </dl>
+              <p class="credits__apa" lang="en"><%= credit_reference(credit["apa"]) %></p>
+              <% if credit["also_cite"] %><p class="credits__apa" lang="en"><%= credit_reference(credit["also_cite"]) %></p><% end %>
+            </li>
+          <% end %>
+        </ol>
+      </section>
+    <% end %>
+
+    <section class="evidence__section" aria-labelledby="credits-open">
+      <h2 id="credits-open" class="evidence__heading"><%= t(".open.title") %></h2>
+      <p class="evidence__text"><%= t(".open.licences", names: @credits.values.select { |c| c["licence_kind"] == "unknown" }.map { |c| c["name"] }.to_sentence) %></p>
+      <p class="evidence__text"><%= t(".open.confirm", count: all.count { |c| c["verify"] }) %></p>
+    </section>
+
+    <section class="evidence__section" aria-labelledby="credits-audit">
+      <h2 id="credits-audit" class="evidence__heading"><%= t(".audit.title") %></h2>
+      <p class="evidence__text"><%= t(".audit.body") %></p>
+      <ol class="evidence__commands" role="list">
+        <% CreditsController::AUDIT.each do |command| %><li><code><%= command %></code></li><% end %>
+      </ol>
+      <div class="cluster cluster--sm">
+        <%= link_to t(".cta_evidence"), evidence_path, class: "btn btn--secondary" %>
+        <%= link_to t(".cta_plan"), plan_path, class: "btn btn--secondary" %>
+      </div>
+    </section>
+  </main>
+  <%= render "shared/public_footer" %>
+</div>

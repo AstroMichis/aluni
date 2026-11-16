@@ -1,6 +1,7 @@
 # Every quantitative or evidence claim in "Aluni — Integrated Project Proposal", with the value draft 0.2
 # stated (was), the value draft 0.3 states (now), and how it is recomputed (compute: a Ruby expression,
-# evaluated by claims_audit.rb with we = ames_worked_example_out.json, v = validation/validation_out.json).
+# evaluated by claims_audit.rb with we = ames_worked_example_out.json, v = validation/validation_out.json (Ames),
+# y = validation/validation_out_york.json (York, the second field)).
 # kind: number (compared within tol) or evidence (compute returns SUPPORTED / REFUTED / OVERCLAIM / QUALIFIED).
 # C-numbers are the review findings (see the plan and the comments in the 0.3 docx).
 
@@ -62,3 +63,17 @@
     compute: "\"REFUTED: #{v.dig('V2','summary')}\"" }
 - { id: V1a, section: T5d, text: "NASA POWER rain at the pin is accurate", kind: evidence,
     compute: "\"REFUTED: POWER rain fails, IMERG passes the same test. #{v.dig('V1','summary')}\"" }
+
+# ---------------------------------------------------------------- the second field (York, Nebraska) and the timeline fix, on /plan
+- { id: Y1, section: 1/10, text: "York: NASA POWER season rain within 15% of the gauges (% of seasons)", kind: number, was: 83, now: 83, tol: 0, compute: "y.dig('V1','summary')[/within 15% in (\\d+)%/, 1].to_i" }
+- { id: Y2, section: 1/10, text: "York: water model vs rainfed corn yields (Pearson r)", kind: number, was: 0.66, now: 0.66, tol: 0.005, compute: "y.dig('V2','details','zea-mays','scored','POWER','pearson_vs_nass')" }
+- { id: Y3, section: 1/10, text: "York: water model vs rainfed soybean yields (Pearson r)", kind: number, was: 0.77, now: 0.77, tol: 0.005, compute: "y.dig('V2','details','glycine-max','scored','POWER','pearson_vs_nass')" }
+- { id: Y4, section: 1/10, text: "York: corn after soybean yield gain at farm N rates (%)", kind: number, was: 12.7, now: 12.7, tol: 0.05, compute: "y.dig('V4','details','effects','site-like, maize N >= 120 kg/ha','gain_pct')" }
+- { id: Y5, section: 1/10, text: "York: margin rule over the farmer, 15 seasons ($/ha)", kind: number, was: 752, now: 752, tol: 0, compute: "y.dig('V7','details','totals','aluni') - y.dig('V7','details','totals','farmer')" }
+- { id: Y6, section: 1/10, text: "Ames: margin rule short of the farmer, 18 seasons ($/ha)", kind: number, was: 255, now: 255, tol: 0, compute: "v.dig('V7','details','totals','farmer') - v.dig('V7','details','totals','aluni')" }
+- { id: Y7, section: 10, text: "York: rye cover saves at least (%)", kind: number, was: 12, now: 12, tol: 0, compute: "y.dig('V6','details','results').values.first.values.map { |r| r['saved_pct'] }.min" }
+- { id: Y8, section: 1/10, text: "Timeline agreement with satellite NDVI under the app's rule, Ames (%)", kind: number, was: 90, now: 90, tol: 0, compute: "v.dig('V8','details','app_rule_agreement_pct')" }
+- { id: Y9, section: 1/10, text: "Timeline agreement with satellite NDVI under the app's rule, York (%)", kind: number, was: 82, now: 82, tol: 0, compute: "y.dig('V8','details','app_rule_agreement_pct')" }
+- { id: Y10, section: 1/10, text: "Studies passed at York (of 8)", kind: number, was: 5, now: 5, tol: 0, compute: "y.values.count { |s| s['verdict'] == 'PASS' }" }
+- { id: Y11, section: 10, text: "Ames: the farmer's alternation over continuous corn, 18 seasons ($/ha)", kind: number, was: 1884, now: 1884, tol: 0, compute: "v.dig('V7','details','totals','farmer') - v.dig('V7','details','totals','corn_always')" }
+- { id: Y12, section: 10, text: "York: the margin rule over continuous corn, 15 seasons ($/ha)", kind: number, was: 2947, now: 2947, tol: 0, compute: "y.dig('V7','details','totals','aluni') - y.dig('V7','details','totals','corn_always')" }

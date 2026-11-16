@@ -28,6 +28,9 @@ en:
       plan:
         title: "The action plan"
         detail: "Proposal, budget and roadmap"
+      credits:
+        title: "The credits"
+        detail: "Every data source, how and why we use it"
     devices_link:
       short: "Probe"
       label: "%{app_name} Probe: field station"

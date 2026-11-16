@@ -1,0 +1,200 @@
+es:
+  credits:
+    show:
+      title: "Créditos y fuentes de datos · %{app_name}"
+      description: "Cada fuente de datos, API, método y biblioteca que usa %{app_name}: la referencia APA, qué se lee, cómo, por qué, la licencia y el crédito que pide cada proveedor."
+      nav_label: "Navegación de créditos"
+      back_home: "Volver a la página de inicio"
+      eyebrow: "Créditos"
+      headline: "De dónde sale cada número de %{app_name}"
+      lede: "%{app_name} se apoya en ciencia pública. Aquí está cada fuente que consultamos, cada fórmula que aplicamos y cada biblioteca que usamos: qué leemos, cómo, por qué, su licencia y cómo citarla."
+      tally_label: "Los créditos de un vistazo"
+      tally:
+        sources:
+          one: "%{count} fuente"
+          other: "%{count} fuentes"
+        nasa:
+          one: "%{count} de la NASA"
+          other: "%{count} de la NASA"
+        live:
+          one: "%{count} en la app en vivo"
+          other: "%{count} en la app en vivo"
+        doi:
+          one: "%{count} con DOI"
+          other: "%{count} con DOI"
+      jump_label: "Ir a un grupo"
+      read:
+        title: "Cómo leer una tarjeta"
+        body: "Cada tarjeta dice qué lee %{app_name}, por qué lo necesita y en qué parte del código ocurre (el archivo y el servidor que consulta). Las insignias dicen si la usa la app en vivo o solo la prueba retrospectiva de 2001 a 2025, y su licencia. La referencia está en formato APA 7.ª edición, tal como la publica el proveedor, con el DOI cuando existe; la línea de crédito es la redacción que pide el proveedor, en su idioma original."
+      groups:
+        nasa:
+          short: "NASA"
+          title: "Datos de la NASA"
+          lede: "Las observaciones de la Tierra en el centro de %{app_name}: clima, lluvia, humedad del suelo, agua subterránea, verdor de las plantas, estrés de las plantas y relieve."
+        data:
+          short: "Otros datos"
+          title: "Otros datos"
+          lede: "Registros de suelo, tierra, cultivos y estadísticas que complementan los datos de la NASA, y los registros independientes con los que la prueba retrospectiva califica a %{app_name}."
+        service:
+          short: "Servicios"
+          title: "Servicios y mapas"
+          lede: "Las interfaces y los mapas que llevan los datos al campo, y el modelo de lenguaje detrás del chat."
+        method:
+          short: "Métodos"
+          title: "Métodos"
+          lede: "Las fórmulas publicadas que %{app_name} aplica a los datos. Nada se ajusta: cada coeficiente sale de estas fuentes."
+        software:
+          short: "Software"
+          title: "Software y tipografía"
+          lede: "Las bibliotecas abiertas y las tipografías con que están hechas las páginas."
+      used_in:
+        app: "App en vivo"
+        both: "App en vivo y prueba retrospectiva"
+        backtest: "Solo prueba retrospectiva"
+      licences:
+        nasa_open: "Abierta, sin restricciones"
+        public_domain: "Dominio público"
+        copernicus: "Abierta, con crédito obligatorio"
+        cc_by: "CC BY 4.0"
+        odbl: "ODbL, con crédito obligatorio"
+        bsd: "BSD-2-Clause"
+        mit: "MIT"
+        ofl: "SIL Open Font License"
+        copyright: "Citada, no copiada"
+        terms: "Términos del proveedor"
+        unknown: "Licencia por confirmar"
+      to_confirm: "Referencia por confirmar"
+      labels:
+        what: "Qué leemos"
+        why: "Por qué"
+        how: "Cómo (código y servidor)"
+        credit: "Crédito que se pide"
+      open:
+        title: "Pendiente"
+        licences: "Aún no se encontró una licencia explícita para %{names}. Se usan bajo los términos publicados del proveedor mientras el equipo pide confirmación por escrito."
+        confirm:
+          one: "%{count} referencia está marcada por confirmar: su redacción sigue al proveedor, pero su DOI aún no se ha contrastado con el registro DOI ni con el catálogo de la NASA."
+          other: "%{count} referencias están marcadas por confirmar: su redacción sigue al proveedor, pero su DOI aún no se ha contrastado con el registro DOI ni con el catálogo de la NASA."
+      audit:
+        title: "Cómo se verifica esta página"
+        body: "La lista es un archivo del repositorio y un script la compara con el código: cada dirección web que consulta el código debe tener aquí su tarjeta, cada producto, versión y parámetro que nombra una tarjeta debe aparecer de verdad en el archivo que indica, y cada crédito que debe ir sobre un mapa debe estar ahí en inglés y en español. La verificación en línea lee cada DOI desde doi.org en formato APA y el DOI de cada producto de la NASA desde su catálogo."
+      cta_evidence: "Ver la evidencia"
+      cta_plan: "Ver el plan de acción"
+      sources:
+        nasa_power:
+          what: "Temperatura, lluvia y humedad del suelo en la zona de raíces de cada día de la temporada, y los promedios mensuales de temperatura, lluvia, días de helada, humedad, viento y sol en la celda del campo."
+          why: "La tarjeta del clima, los grados día, el riesgo de helada, la necesidad de agua de cada cultivo (evapotranspiración FAO-56), los escenarios climáticos y las ventanas para revisar plagas."
+        gpm_imerg:
+          what: "Lluvia diaria por satélite a 0,1 grados en los últimos 20 años, a través de la interfaz de NASA POWER."
+          why: "Con qué frecuencia caen aguaceros cada mes, los meses en que el suelo queda expuesto a lluvias fuertes y la lluvia en la necesidad de agua de cada cultivo."
+        grace:
+          what: "El cambio mensual del agua almacenada en el terreno de la región, medido por dos satélites que la pesan por gravedad."
+          why: "Si el agua del suelo y del subsuelo de la región está por debajo de lo habitual."
+        smap:
+          what: "Humedad del suelo en la zona de raíces y su percentil, cada 3 horas a 9 km, en los últimos 12 meses."
+          why: "Si el suelo está más húmedo o más seco que lo habitual para el mes."
+        modis_ndvi:
+          what: "Verdor de las plantas (NDVI) cada 16 días desde 2001 a 250 m."
+          why: "Qué tan verde suele estar el campo cada mes, la base con la que se comparan las imágenes recientes."
+        ecostress:
+          what: "El índice de estrés evaporativo a 70 m desde la estación espacial, últimos 3 años."
+          why: "Si a las plantas les faltaba agua los días en que pasó por encima."
+        nasadem:
+          what: "Elevación en el campo y a 90 m de cada lado."
+          why: "La pendiente para estimar la pérdida de suelo fuera de Estados Unidos."
+        gibs:
+          what: "Una imagen satelital de unos 40 km alrededor del pin."
+          why: "Para que el agricultor confirme la zona de un vistazo al empezar."
+        appeears:
+          what: "El servicio de extracción por punto de la NASA, usado para SMAP, MODIS y ECOSTRESS."
+          why: "Una consulta por producto en el campo en lugar de descargar archivos completos."
+        landsat:
+          what: "Reflectancia roja e infrarroja cercana en el campo, la escena más despejada de cada mes."
+          why: "El verdor mensual del campo, junto con Sentinel-2."
+        sentinel2:
+          what: "Reflectancia roja e infrarroja cercana y la máscara de nubes en el campo, a 10 m."
+          why: "El verdor mensual del campo, y los meses verdes y desnudos con que se calificó la línea de tiempo."
+        planetary_computer:
+          what: "La búsqueda en el catálogo y el servicio que calcula el valor de un píxel."
+          why: "Valores de un píxel sin descargar la escena, y las teselas del mapa de verdor."
+        gaez:
+          what: "Aptitud y rendimiento alcanzable en secano para los cultivos del campo y 8 candidatos, clima de 1981 a 2010."
+          why: "Qué cultivos pueden sostener el clima y el suelo, y su rendimiento potencial."
+        ecocrop:
+          what: "Los rangos de temperatura, lluvia, suelo y pH de cada cultivo y la duración de su temporada."
+          why: "Si un cultivo tolera el clima y el suelo del campo."
+        ssurgo:
+          what: "El suelo en el pin: nombre, drenaje, pendiente, materia orgánica, textura, capacidad de retener agua, pH y erosionabilidad."
+          why: "La tarjeta del suelo, la estimación de pérdida de suelo y la reserva de agua del suelo."
+        usgs_3dep:
+          what: "Elevación por lidar en el pin y a 30 m alrededor."
+          why: "La pendiente para estimar la pérdida de suelo en Estados Unidos."
+        cdl:
+          what: "El cultivo mapeado en el campo cada año reciente."
+          why: "El historial de cultivos del campo para el consejo de rotación, y la verdad de lo sembrado en la prueba retrospectiva."
+        fcc_census_block:
+          what: "El estado y el condado de Estados Unidos que contienen el pin."
+          why: "Si aplican los datos de Estados Unidos, y la región de la finca sin preguntar."
+        meteomatics:
+          what: "Un pronóstico por hora de 7 días en el pin: temperatura, lluvia y su probabilidad, humedad, punto de rocío, viento, evapotranspiración y suelo."
+          why: "La tarjeta del pronóstico y las alertas diarias de helada, lluvia y calor."
+        nominatim:
+          what: "La búsqueda de lugares y el nombre del pueblo bajo un pin."
+          why: "El buscador de campos: escribir un pueblo para encontrar el campo."
+        osm_tiles:
+          what: "Teselas de mapa de calles."
+          why: "Para que el agricultor reconozca caminos y pueblos al poner el pin."
+        esri_imagery:
+          what: "Teselas de mapa base satelital."
+          why: "Para que el agricultor vea los bordes del campo al poner el pin y en el mapa de verdor."
+        gemini:
+          what: "Las respuestas escritas del chat de bienvenida, los nombres de cultivos escritos libremente y el resumen en lenguaje sencillo de una rotación."
+          why: "Ayuda en palabras sencillas. Cada número en pantalla sale de las fuentes de datos, nunca del modelo."
+        daymet:
+          what: "Lluvia y temperatura diarias a 1 km, de 2001 a 2025."
+          why: "Una verificación independiente del clima de la NASA, y el patrón de lluvia detrás de la estimación de pérdida de suelo."
+        cocorahs:
+          what: "Reportes diarios de pluviómetros voluntarios a menos de 30 km de cada campo de prueba."
+          why: "La verdad de terreno para la lluvia de la NASA."
+        rma_cause_of_loss:
+          what: "Pagos del seguro agrícola por condado, cultivo, causa y mes."
+          why: "La verdad de los años de sequía y las pérdidas por plagas que el modelo debió señalar."
+        nass_quickstats:
+          what: "Rendimientos por condado, precios estatales, avance semanal de siembra y días aptos para trabajar el campo."
+          why: "La verdad para el modelo de agua y la regla de margen, y el mes en que siembran los agricultores de cada estado."
+        zhao_2022:
+          what: "Un metaanálisis de 11.768 rendimientos pareados después de una leguminosa y después de un cereal."
+          why: "El tamaño del beneficio de la rotación, con su intervalo de confianza."
+        fao56:
+          what: "La evapotranspiración de referencia, los coeficientes de cultivo y la profundidad de raíces."
+          why: "La necesidad de agua de cada cultivo a partir del clima de la NASA."
+        fao33:
+          what: "La respuesta del rendimiento al agua."
+          why: "Convierte una falta de agua en pérdida de rendimiento, para calificarla contra rendimientos reales."
+        cropwat:
+          what: "La lluvia efectiva a partir del total mensual."
+          why: "Solo la lluvia que llega a las raíces cubre la necesidad del cultivo."
+        rusle:
+          what: "La ecuación de pérdida de suelo y su factor de cobertura del dosel."
+          why: "El suelo perdido por hectárea y año en cada rotación, con y sin cultivo de cobertura."
+        renard_freimund_1994:
+          what: "La erosividad de la lluvia a partir de la lluvia anual."
+          why: "El factor de lluvia donde no hay registro de tormentas."
+        mccool_ls:
+          what: "Los factores de inclinación y longitud de la pendiente."
+          why: "Cuánto aceleran la pendiente y su longitud la pérdida de suelo."
+        tar_spot_2023:
+          what: "Las temperaturas que favorecen la mancha de asfalto en el maíz."
+          why: "Cuándo revisar el maíz por mancha de asfalto."
+        du_plessis_2020:
+          what: "Los umbrales de desarrollo del gusano cogollero."
+          why: "Cuántas generaciones de gusano cogollero permite una temporada."
+        leaflet:
+          what: "La biblioteca de mapas interactivos."
+          why: "El buscador de campos y el mapa de verdor."
+        threejs:
+          what: "La biblioteca 3D."
+          why: "La escena del campo en la página de inicio."
+        google_fonts:
+          what: "Inter, Fraunces y JetBrains Mono."
+          why: "La tipografía del sistema de diseño."
