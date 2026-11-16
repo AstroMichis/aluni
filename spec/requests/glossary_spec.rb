@@ -14,5 +14,6 @@ RSpec.describe "Glossary" do
 
   it "has an entry for every source the plan links to" do
     expect(GlossaryController::SOURCES.values - GlossaryController::TERMS).to be_empty
+    expect(Rotations::Comparator::WATER_SOURCES.values - GlossaryController::SOURCES.keys).to be_empty # every water-need source links
   end
 end
