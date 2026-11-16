@@ -1,6 +1,7 @@
 module App
   # Weather (menu section 3): the season so far and the long-term normals at
-  # a field's pin (NASA POWER), the alerts it would have raised, and the next
+  # a field's pin (NASA POWER), when the weather says to scout for a pest
+  # (Weather::ScoutWindows), the alerts it would have raised, and the next
   # seven days (Meteomatics), loaded lazily so a slow forecast never holds the page.
   class WeatherController < BaseController
     include FarmScreen
@@ -8,6 +9,7 @@ module App
     before_action do
       @field = selected_field
       @season = Weather::Season.for(@field&.observation("nasa_power"))
+      @scout = Weather::ScoutWindows.for(@season, Array(@field&.current_crops).map(&:crop_key))
     end
 
     def show

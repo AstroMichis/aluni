@@ -1,5 +1,5 @@
 <% content_for :title, t(".title", app_name: t("app_name")) %>
-<% events = @season.events %>
+<% events = (@season.events + @scout.events).sort_by(&:from) %>
 <% frost_free = @season.frost_free %>
 
 <div class="screen">

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_15_190316) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_16_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -96,6 +96,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_190316) do
     t.datetime "updated_at", null: false
     t.decimal "share", precision: 5, scale: 4
     t.integer "cells", default: [], null: false, array: true
+    t.decimal "yield_amount", precision: 12, scale: 2
+    t.string "yield_unit"
+    t.string "area_basis"
+    t.decimal "price", precision: 12, scale: 2
+    t.decimal "cost", precision: 12, scale: 2
+    t.string "currency", limit: 3
     t.index ["field_id", "season_year", "role", "crop_key"], name: "index_field_crops_on_field_season_role_crop", unique: true
     t.index ["field_id"], name: "index_field_crops_on_field_id"
   end

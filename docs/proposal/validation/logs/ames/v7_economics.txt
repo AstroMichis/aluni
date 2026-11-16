@@ -1,0 +1,41 @@
+NASS zea-mays: CORN, GRAIN - YIELD, MEASURED IN BU / ACRE
+NASS glycine-max: SOYBEANS - YIELD, MEASURED IN BU / ACRE
+Corn after corn = 0.91 x rotated corn (V4, Zhao 2022); soybean after soybean 0.95 (placeholder)
+
+== Part A: realised margin, $/ha, 2008-2025 (placeholder costs, NASS yields and prices) ==
+farmer       total $12250 (mean $681/ha/yr); corn 9 of 18 years
+aluni        total $11995 (mean $666/ha/yr); corn 11 of 18 years
+corn_always  total $10366 (mean $576/ha/yr); corn 18 of 18 years
+foresight    total $13567 (mean $754/ha/yr); corn 9 of 18 years
+The margin rule planted differently from the farmer in: 2008 corn, 2012 corn, 2015 soy, 2016 corn, 2017 soy, 2020 corn, 2021 soy, 2022 corn
+Share of the hindsight gain over the farmer that the rule captured: -19%
+
+== Part B: could a 400 ha farm plant corn and soybean between 15 April and 20 May? ==
+2001: 18.2 suitable days -> 861 ha with one planter (enough); Iowa corn 50% planted by 2001-05-06
+2002: 23.6 suitable days -> 1117 ha with one planter (enough); Iowa corn 50% planted by 2002-05-05
+2003: 18.3 suitable days -> 866 ha with one planter (enough); Iowa corn 50% planted by 2003-05-04
+2004: 24.4 suitable days -> 1155 ha with one planter (enough); Iowa corn 50% planted by 2004-05-02
+2005: 21.6 suitable days -> 1022 ha with one planter (enough); Iowa corn 50% planted by 2005-05-01
+2006: 25.5 suitable days -> 1207 ha with one planter (enough); Iowa corn 50% planted by 2006-04-30
+2007: 20.0 suitable days -> 946 ha with one planter (enough); Iowa corn 50% planted by 2007-05-06
+2008: 18.3 suitable days -> 866 ha with one planter (enough); Iowa corn 50% planted by 2008-05-18
+2009: 22.5 suitable days -> 1065 ha with one planter (enough); Iowa corn 50% planted by 2009-05-03
+2010: 22.4 suitable days -> 1060 ha with one planter (enough); Iowa corn 50% planted by 2010-04-25
+2011: 20.2 suitable days -> 956 ha with one planter (enough); Iowa corn 50% planted by 2011-05-08
+2012: 23.8 suitable days -> 1126 ha with one planter (enough); Iowa corn 50% planted by 2012-04-29
+2013: 13.8 suitable days -> 653 ha with one planter (enough); Iowa corn 50% planted by 2013-05-19
+2014: 19.9 suitable days -> 940 ha with one planter (enough); Iowa corn 50% planted by 2014-05-11
+2015: 20.6 suitable days -> 975 ha with one planter (enough); Iowa corn 50% planted by 2015-05-03
+2016: 23.4 suitable days -> 1107 ha with one planter (enough); Iowa corn 50% planted by 2016-05-01
+2017: 19.1 suitable days -> 904 ha with one planter (enough); Iowa corn 50% planted by 2017-05-07
+2018: 18.1 suitable days -> 856 ha with one planter (enough); Iowa corn 50% planted by 2018-05-13
+2019: 16.8 suitable days -> 795 ha with one planter (enough); Iowa corn 50% planted by 2019-05-19
+2020: 25.8 suitable days -> 1221 ha with one planter (enough); Iowa corn 50% planted by 2020-05-03
+2021: 28.9 suitable days -> 1368 ha with one planter (enough); Iowa corn 50% planted by 2021-05-02
+2022: 20.3 suitable days -> 961 ha with one planter (enough); Iowa corn 50% planted by 2022-05-15
+2023: 26.6 suitable days -> 1259 ha with one planter (enough); Iowa corn 50% planted by 2023-05-07
+2024: 16.4 suitable days -> 776 ha with one planter (enough); Iowa corn 50% planted by 2024-05-12
+2025: 27.8 suitable days -> 1315 ha with one planter (enough); Iowa corn 50% planted by 2025-05-11
+Planter capacity 4.73 ha/h. Short of time in 0 of 25 springs: 
+
+V7: FAIL  margin rule $11995 vs farmer $12250 vs continuous corn $10366 vs hindsight $13567 per ha over 18 years; differs from the farmer in 8 years; short of planting days in 0 of 25 springs

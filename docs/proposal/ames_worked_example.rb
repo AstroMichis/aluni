@@ -84,7 +84,7 @@ check("CDL history maps to catalog crops", history.all? { |_, k| k }, cdl.inspec
 # Wind: the CSV has no WS2M. When docs/proposal/validation/fetch.rb has run, the day's NASA POWER WS2M at the
 # pin is used (the app's own source); otherwise the FAO-56 default of 2 m/s (FAO-56 Sec. 3).
 U2 = 2.0
-power_file = File.expand_path("validation/data/power_daily.json", __dir__)
+power_file = File.expand_path("validation/data/ames/power_daily.json", __dir__)
 WIND = if File.exist?(power_file)
          JSON.parse(File.read(power_file)).dig("properties", "parameter", "WS2M").to_h
              .filter_map { |k, v| [ Date.strptime(k, "%Y%m%d"), v ] if v && v > -999 }.to_h
@@ -94,7 +94,7 @@ end
 if WIND.empty?
   gap("wind", "CSV has no NASA POWER WS2M; ET0 uses the FAO-56 default 2 m/s (run validation/fetch.rb for the measured wind)")
 else
-  check("measured NASA POWER wind covers every day of the record", days.all? { |x| WIND[x] }, "WS2M from validation/data/power_daily.json")
+  check("measured NASA POWER wind covers every day of the record", days.all? { |x| WIND[x] }, "WS2M from validation/data/ames/power_daily.json")
 end
 gap("normals", "one year (2025) of daily data stands in for the 30-year NASA POWER normals the app uses")
 gap("nov_dec", "data ends #{days.last}; November and December are unknown months in the timeline") if days.last.month < 12
@@ -534,7 +534,7 @@ heat32 = days.count { |x| d[x]["air_temp_max"] >= 32 }
 landing = {
   "frost_days" => [ claimed.("frost_days"), season[:frost_days], "Tmin <= 0 C, #{days.first}..#{days.last}" ],
   "rain_mm" => [ claimed.("rain_mm"), season[:rain_mm], "NASA POWER precipitation, #{days.first}..#{days.last}" ],
-  "gdd" => [ claimed.("gdd"), season[:gdd_simple_all], "simple method, daily T2M - 10 C, #{days.first}..#{days.last}; 86/50 gives #{season[:gdd_86_50_all]} (May-Sep #{season[:gdd_86_50_may_sep]})" ],
+  "gdd" => [ claimed.("gdd"), season[:gdd_86_50_may_sep], "86/50 method, May-Sep (Weather::Season); the simple method over #{days.first}..#{days.last} gives #{season[:gdd_simple_all]}" ],
   "heat_days" => [ claimed.("heat_days"), heat32, "Tmax >= 32 C (>= 30 C gives #{heat30})" ],
   "slope" => [ claimed.("slope"), SLOPE_3DEP, "USGS 3DEP (derived)" ],
   "om" => [ claimed.("om"), Float(facts["organic_matter"]), "SSURGO" ],

@@ -42,7 +42,7 @@ sources:
   gaez:             { name: "FAO GAEZ v4", layer: global, scale: zone, resolution: "9 km", doc: gaez.md, status: connected }
   ecocrop:          { name: "FAO ECOCROP", layer: global, scale: species, resolution: "-", doc: ecocrop.md, status: reference }
   gibs:             { name: "NASA Worldview / GIBS", layer: global, scale: zone, resolution: "250 m", doc: gibs_worldview.md, status: connected }
-  fao56:            { name: "FAO-56", layer: global, scale: species, resolution: "-", doc: fao56_crop_coefficients.md, status: planned }
+  fao56:            { name: "FAO-56", layer: global, scale: species, resolution: "-", doc: fao56_crop_coefficients.md, status: reference }
   srtm:             { name: "NASADEM (SRTM)", layer: global, scale: parcel, resolution: "30 m", doc: terrain.md, status: connected }
   hls:              { name: "HLS (Landsat + Sentinel-2)", layer: global, scale: parcel, resolution: "30 m", doc: vegetation_indices.md, status: connected }
   grace:            { name: "NASA GRACE / GRACE-FO", layer: global, scale: region, resolution: "3° mascons (0.5° grid)", doc: grace.md, status: connected }
@@ -285,6 +285,26 @@ data:
       sources: { global: [soilgrids], us: [ssurgo] }
       precision: 2
       feeds: [water]
+    hydrologic_group:
+      group: soil
+      origin: auto
+      observation: { value: ssurgo.hydgrp }
+      sources: { us: [ssurgo] }
+      feeds: [erosion, water]
+    soil_erodibility:
+      group: soil
+      origin: auto
+      observation: { value: ssurgo.kwfact }
+      sources: { us: [ssurgo] }
+      precision: 2
+      feeds: [erosion]
+    tolerable_loss:
+      group: soil
+      origin: auto
+      observation: { value: ssurgo.tfact }
+      sources: { us: [ssurgo] }
+      precision: 0
+      feeds: [erosion]
     elevation:
       group: terrain
       origin: auto
@@ -350,7 +370,7 @@ data:
 # questions belong to the onboarding chat. input: pin | details | crop | history | review
 onboarding:
   - { step: location, input: pin, data: [location] }
-  - { step: details, input: details, data: [name, area, irrigation, water_source] }
+  - { step: details, input: details, data: [name] }  # water: the Rotation tab; area: the reports and the planner
   - { step: crop, input: crop, data: [current_crop, planting_month, harvest_month] }
   - { step: history, input: history, data: [crop_history] }
   - { step: done, input: review, data: [] }

@@ -1,6 +1,14 @@
 es:
   passkeys:
     index:
+      connected:
+        title: "Cuentas conectadas"
+        lede: "Entra con Google, Apple o Microsoft además de tus llaves de acceso. Aluni no guarda contraseñas ni tokens de ellos."
+        linked: "Conectada"
+        not_linked: "Sin conectar"
+        connect: "Conectar"
+        disconnect: "Desconectar"
+        confirm_disconnect: "¿Desconectar %{provider}? Puedes volver a conectarlo después."
       title: "Tus llaves de acceso"
       lede: "Cada dispositivo desde el que entras tiene su propia llave. Agrega una antes de cambiar de teléfono."
       lede_empty: "Agrega una llave de acceso para entrar con tu cara o tu huella la próxima vez."

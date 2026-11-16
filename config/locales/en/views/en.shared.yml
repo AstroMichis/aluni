@@ -1,5 +1,14 @@
 en:
   shared:
+    evidence_note:
+      link: See the study
+      weather: "Tested on 25 years in Iowa: temperature and frost from NASA are reliable at the pin (highs within %{tmax_rmse} °C); NASA POWER rain read low, so rain figures for crops use NASA GPM IMERG."
+      water: "Tested on 25 seasons in Iowa: it ranked the drought years (insurance losses, %{rho_corn} for corn) but not the size of the harvest."
+      crop_rank: "Tested in Iowa: FAO GAEZ rated all %{crops} crops the same and ran %{maize_gap} %% (corn) and %{soy_gap} %% (soybeans) above the real county yields. A reference ceiling, not a forecast."
+      rotation: "Corn after soybeans yields %{gain} %% more than after a non-legume (95 %% interval %{low} to %{high} %%), from %{trials} field trials in climates like Ames."
+      scout: "Tested on 25 seasons in central Iowa: the weather rules point at the right seasons but did not track real losses significantly (%{rho_min} to %{rho_max}). They say when to scout."
+      erosion: "The soil loss equation (RUSLE) ranks the rotations in this order. A rye cover saved %{saved_min} to %{saved_max} %% at Ames; the tonnes rest on assumed residue and cover values."
+      margin: "A margin rule did not beat an experienced farmer's own rotation over %{years} seasons. The margin informs your choice; it does not make it."
     ask_aluni:
       open: "Ask %{app_name}"
       full_page: "Expand"

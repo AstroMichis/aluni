@@ -1,0 +1,102 @@
+{
+  "Table": [
+    [
+      "muname",
+      "compname",
+      "comppct_r",
+      "slope_r",
+      "slopelenusle_r",
+      "tfact",
+      "hzdept_r",
+      "hzdepb_r",
+      "kwfact",
+      "kffact",
+      "awc_r",
+      "om_r"
+    ],
+    [
+      "Hastings silt loam, 0 to 1 percent slopes",
+      "Hastings",
+      "85",
+      "1",
+      "76",
+      "5",
+      "0",
+      "16",
+      ".37",
+      ".37",
+      "0.23",
+      "3"
+    ],
+    [
+      "Hastings silt loam, 0 to 1 percent slopes",
+      "Hastings",
+      "85",
+      "1",
+      "76",
+      "5",
+      "16",
+      "32",
+      ".32",
+      ".32",
+      "0.23",
+      "2.5"
+    ],
+    [
+      "Hastings silt loam, 0 to 1 percent slopes",
+      "Hastings",
+      "85",
+      "1",
+      "76",
+      "5",
+      "32",
+      "42",
+      ".37",
+      ".37",
+      "0.17",
+      "1.5"
+    ],
+    [
+      "Hastings silt loam, 0 to 1 percent slopes",
+      "Hastings",
+      "85",
+      "1",
+      "76",
+      "5",
+      "42",
+      "82",
+      ".37",
+      ".37",
+      "0.17",
+      "0.75"
+    ],
+    [
+      "Hastings silt loam, 0 to 1 percent slopes",
+      "Hastings",
+      "85",
+      "1",
+      "76",
+      "5",
+      "82",
+      "99",
+      ".49",
+      ".49",
+      "0.19",
+      "0.5"
+    ],
+    [
+      "Hastings silt loam, 0 to 1 percent slopes",
+      "Hastings",
+      "85",
+      "1",
+      "76",
+      "5",
+      "99",
+      "200",
+      ".49",
+      ".49",
+      "0.19",
+      "0.25"
+    ]
+  ]
+}

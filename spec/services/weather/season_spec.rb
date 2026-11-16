@@ -17,4 +17,9 @@ RSpec.describe Weather::Season do
     expect(described_class.for(nil)).not_to be_any
     expect(described_class.for(create(:field_observation, field: field, status: :failed))).not_to be_any
   end
+
+  it "counts growing degree days by the 86/50 method, May to September (docs/proposal W3: 1702 at Ames in 2025)" do
+    expect(ames_season.gdd).to eq(1702)
+    expect(LandingHelper::SAMPLE[:gdd]).to eq(1702)
+  end
 end

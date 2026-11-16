@@ -26,7 +26,7 @@ clim = map.to_h do |param, var|
 end
 # Wind: the measured NASA POWER WS2M monthly means when validation/fetch.rb has run (as the worked example
 # uses), else the worked example's constant.
-power_file = Rails.root.join("docs/proposal/validation/data/power_daily.json")
+power_file = Rails.root.join("docs/proposal/validation/data/ames/power_daily.json")
 ws = File.exist?(power_file) ? JSON.parse(File.read(power_file)).dig("properties", "parameter", "WS2M").select { |k, v| k.start_with?("2025") && v > -999 } : {}
 clim["WS2M"] = months.to_h do |m|
   days = ws.select { |k, _| k[4, 2].to_i == m }.values

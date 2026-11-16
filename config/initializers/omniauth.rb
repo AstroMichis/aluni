@@ -64,8 +64,33 @@ OmniAuth.config.test_mode = Rails.env.test?
 # Every failure (cancelled, state mismatch, paused switch) lands on our controller.
 OmniAuth.config.on_failure = ->(env) { OmniauthCallbacksController.action(:failure).call(env) }
 
-# The operator's pause: nothing leaves for the provider while `oauth` is paused.
-OmniAuth.config.before_request_phase = ->(_env) { Platform::Switchboard.guard!(:oauth) }
+# What the button's form carried waits in the session for the callback
+# (OmniauthCallbacksController): the finder's field, the language, and whether
+# this is "connect" from the account page rather than a sign-in.
+OmniAuth.config.before_request_phase = lambda do |env|
+  body = Rack::Request.new(env).POST
+  env["rack.session"]["oauth_pending"] = {
+    "locale" => body["locale"].to_s.presence,
+    "intent" => (body["intent"] == "connect" ? "connect" : "sign_in"),
+    "field" => Fields::SaveSetupService.coerce(body.slice(*Fields::SaveSetupService::KEYS))
+  }.compact
+end
+
+# The operator's pause: while `oauth` is paused nothing leaves for the provider;
+# the request phase lands on /auth/failure?message=paused instead (a middleware
+# ahead of OmniAuth, since an exception there would never reach a controller).
+class OmniauthPauseGate
+  def initialize(app) = @app = app
+
+  def call(env)
+    if env["REQUEST_METHOD"] == "POST" && env["PATH_INFO"].to_s.match?(%r{\A/auth/[a-z_0-9]+/?\z}) && Platform::Switchboard.paused?(:oauth)
+      return [ 303, { "location" => "/auth/failure?message=paused" }, [] ]
+    end
+
+    @app.call(env)
+  end
+end
+Rails.application.config.middleware.use OmniauthPauseGate
 
 Rails.application.config.middleware.use OmniAuth::Builder do
   providers.each do |name, (client_id, client_secret, options)|

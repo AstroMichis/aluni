@@ -21,8 +21,6 @@
     <p class="plan__formula"><code><%= value %></code></p>
   <% elsif kind == "figure" %>
     <p class="plan__figure"><%= plan_text(value) %></p>
-  <% elsif kind == "note" %>
-    <p class="badge badge--warning plan__note" role="note"><%= t("plan.show.notes.#{value}") %></p>
   <% elsif kind == "evidence" %>
     <p class="plan__evidence"><%= link_to value, evidence_path, class: "btn btn--secondary btn--sm" %></p>
   <% end %>

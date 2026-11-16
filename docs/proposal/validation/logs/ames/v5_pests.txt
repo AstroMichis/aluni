@@ -1,0 +1,53 @@
+
+== Season counts at the pin and insured losses in NASS Central Iowa district ==
+year  GLS days  NCLB days  tar-spot days  FAW DD | corn disease $  corn insects $  soy disease $  soy insects $
+2001         3         20             36    1252 |           1457          171512          12332          53161
+2002         7         16             31    1385 |            698            9394          41487          33374
+2003         1          7             25    1277 |              0             381              0         109831
+2004        18         33             93    1142 |              0            5885         434451              0
+2005         3         20             15    1531 |          14965            2170            116              0
+2006         3         12             19    1409 |           1412            3260          22711           4021
+2007         8         25             30    1375 |              0            6045              0           9888
+2008        28         42             87    1042 |            983               0              0              0
+2009        14         20             91    1014 |           4447               0              0              0
+2010        35         54             43    1230 |        1088432           17845        1214902           1168
+2011        13         44             45    1314 |          36326            1924              0          11811
+2012         4          8             17    1636 |          73262           75079              0              0
+2013        12         26             63    1335 |              0            5775           2400              0
+2014        25         42             93    1103 |          10973               0         101929              0
+2015        17         41             74    1196 |          57038            7422         195885           1092
+2016        17         43             43    1337 |           5796               0         178776           1703
+2017         1         12             47    1429 |            753           24157          20187           4158
+2018        19         40             12    1438 |              0               0           2504              0
+2019        26         55             60    1217 |              0               0           1481           6101
+2020         6         26             28    1356 |              0               0              0              0
+2021         3         17              6    1617 |              0             463           8655              0
+2022         4         13             22    1509 |              0               0              0              0
+2023         4         16             12    1581 |              0           18684              0         121805
+2024         5         26             39    1495 |              0           21770              0           3534
+2025        22         42             38    1402 |        2109783               0              0              0
+
+== Rank correlation of each rule with the losses it should explain ==
+gray leaf spot -> corn disease         rho 0.25 (p=0.223); as share of weather losses rho 0.18 (p=0.37); years with losses 14
+N. corn leaf blight -> corn disease    rho 0.27 (p=0.191); as share of weather losses rho 0.24 (p=0.237); years with losses 14
+tar spot -> corn disease               rho 0.23 (p=0.261); as share of weather losses rho 0.14 (p=0.48); years with losses 14
+fall armyworm DD -> corn insects       rho 0.28 (p=0.172); as share of weather losses rho 0.23 (p=0.27); years with losses 16
+RH >= 90% hours -> soybean disease     rho 0.32 (p=0.108); as share of weather losses rho 0.24 (p=0.252); years with losses 14
+
+== Lead time: first favourable day vs the month insured disease losses are dated ==
+2001: first favourable 2001-06-14, losses mostly dated Jul (1 months later)
+2002: first favourable 2002-06-10, losses mostly dated Jul (1 months later)
+2005: first favourable 2005-06-08, losses mostly dated Jun (0 months later)
+2006: first favourable 2006-06-15, losses mostly dated Jul (1 months later)
+2008: first favourable 2008-05-25, losses mostly dated Dec (7 months later)
+2009: first favourable 2009-06-16, losses mostly dated Oct (4 months later)
+2010: first favourable 2010-05-23, losses mostly dated Aug (3 months later)
+2011: first favourable 2011-05-09, losses mostly dated Nov (6 months later)
+2012: first favourable 2012-05-02, losses mostly dated May (0 months later)
+2014: first favourable 2014-05-25, losses mostly dated Aug (3 months later)
+2015: first favourable 2015-05-15, losses mostly dated Aug (3 months later)
+2016: first favourable 2016-05-26, losses mostly dated Jul (2 months later)
+2017: first favourable 2017-06-15, losses mostly dated Dec (6 months later)
+2025: first favourable 2025-06-15, losses mostly dated Aug (2 months later)
+
+V5: REPORTED  no rule reached rho >= 0.4 at p <= 0.05; median lead from the first favourable day to the main loss month 3 months

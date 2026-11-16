@@ -4,6 +4,270 @@
 # Do not edit by hand: rerun the script. Keyed by ISO country code, then the
 # state or region name as Farm#admin_area stores it, then the catalog crop key.
 US:
+  Alabama:
+    zea-mays:
+      planting_month: 4
+      planted_10: 04-03
+      planted_50: 04-16
+      planted_90: 05-07
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-04
+      planted_50: 05-24
+      planted_90: 06-24
+      years: 2016-2025
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 04-29
+      planted_50: 05-14
+      planted_90: 06-04
+      years: 2016-2025
+    arachis-hypogaea:
+      planting_month: 5
+      planted_10: 05-01
+      planted_50: 05-20
+      planted_90: 06-10
+      years: 2016-2025
+  Arizona:
+    hordeum-vulgare:
+      planting_month: 2
+      planted_10: 03-02
+      planted_50: 02-03
+      planted_90: 03-05
+      years: 2016-2025
+    gossypium-hirsutum:
+      planting_month: 4
+      planted_10: 03-26
+      planted_50: 04-25
+      planted_90: 05-19
+      years: 2016-2025
+  Arkansas:
+    zea-mays:
+      planting_month: 4
+      planted_10: 03-31
+      planted_50: 04-17
+      planted_90: 05-07
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 04-16
+      planted_50: 05-10
+      planted_90: 06-10
+      years: 2016-2025
+    sorghum-bicolor:
+      planting_month: 5
+      planted_10: 04-18
+      planted_50: 05-05
+      planted_90: 05-25
+      years: 2014-2019
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 05-01
+      planted_50: 05-14
+      planted_90: 05-30
+      years: 2016-2025
+    arachis-hypogaea:
+      planting_month: 5
+      planted_10: 04-30
+      planted_50: 05-13
+      planted_90: 05-31
+      years: 2016-2025
+    oryza-sativa:
+      planting_month: 4
+      planted_10: 04-07
+      planted_50: 04-23
+      planted_90: 05-17
+      years: 2016-2025
+  California:
+    gossypium-hirsutum:
+      planting_month: 4
+      planted_10: 04-13
+      planted_50: 04-26
+      planted_90: 05-17
+      years: 2016-2025
+    oryza-sativa:
+      planting_month: 5
+      planted_10: 04-29
+      planted_50: 05-16
+      planted_90: 05-28
+      years: 2016-2025
+  Colorado:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-29
+      planted_50: 05-15
+      planted_90: 06-02
+      years: 2016-2025
+    sorghum-bicolor:
+      planting_month: 6
+      planted_10: 05-21
+      planted_50: 06-10
+      planted_90: 06-24
+      years: 2016-2025
+    helianthus-annuus:
+      planting_month: 6
+      planted_10: 05-26
+      planted_50: 06-13
+      planted_90: 07-02
+      years: 2016-2025
+    hordeum-vulgare:
+      planting_month: 4
+      planted_10: 04-03
+      planted_50: 04-23
+      planted_90: 05-11
+      years: 2016-2025
+    triticum-aestivum:
+      planting_month: 4
+      planted_10: 04-03
+      planted_50: 04-30
+      planted_90: 05-27
+      years: 2014-2018
+    beta-vulgaris:
+      planting_month: 5
+      planted_10: 04-17
+      planted_50: 05-07
+      planted_90: 05-19
+      years: 2016-2025
+  Connecticut:
+    zea-mays:
+      planting_month: 6
+      planted_10: 05-10
+      planted_50: 06-01
+      planted_90: 06-16
+      years: 2016-2025
+  Delaware:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-25
+      planted_50: 05-13
+      planted_90: 06-01
+      years: 2016-2025
+    glycine-max:
+      planting_month: 6
+      planted_10: 05-08
+      planted_50: 06-02
+      planted_90: 06-24
+      years: 2016-2025
+    hordeum-vulgare:
+      planting_month: 10
+      planted_10: '09-26'
+      planted_50: 10-17
+      planted_90: 11-07
+      years: 2014-2025
+    solanum-tuberosum:
+      planting_month: 5
+      planted_10: 04-21
+      planted_50: 05-02
+      planted_90: 05-16
+      years: 2014-2021
+  Florida:
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 05-03
+      planted_50: 05-20
+      planted_90: 06-10
+      years: 2017-2025
+    arachis-hypogaea:
+      planting_month: 5
+      planted_10: 04-18
+      planted_50: 05-13
+      planted_90: 06-03
+      years: 2016-2025
+  Georgia:
+    zea-mays:
+      planting_month: 4
+      planted_10: 04-03
+      planted_50: 04-06
+      planted_90: 04-27
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-03
+      planted_50: 05-27
+      planted_90: 06-23
+      years: 2016-2025
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 04-30
+      planted_50: 05-20
+      planted_90: 06-10
+      years: 2016-2025
+    arachis-hypogaea:
+      planting_month: 5
+      planted_10: 04-30
+      planted_50: 05-16
+      planted_90: 06-05
+      years: 2016-2025
+  Idaho:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-25
+      planted_50: 05-09
+      planted_90: 05-31
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 5
+      planted_10: 04-07
+      planted_50: 05-01
+      planted_90: 05-27
+      years: 2016-2025
+    hordeum-vulgare:
+      planting_month: 4
+      planted_10: 04-05
+      planted_50: 04-23
+      planted_90: 05-17
+      years: 2016-2025
+    triticum-aestivum:
+      planting_month: 4
+      planted_10: 04-06
+      planted_50: 04-24
+      planted_90: 05-16
+      years: 2016-2025
+    beta-vulgaris:
+      planting_month: 4
+      planted_10: 04-06
+      planted_50: 04-17
+      planted_90: 05-06
+      years: 2016-2025
+    solanum-tuberosum:
+      planting_month: 5
+      planted_10: 04-11
+      planted_50: 05-04
+      planted_90: 05-26
+      years: 2016-2025
+  Illinois:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-21
+      planted_50: 05-02
+      planted_90: 05-27
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 04-28
+      planted_50: 05-17
+      planted_90: 06-08
+      years: 2016-2025
+    sorghum-bicolor:
+      planting_month: 5
+      planted_10: 05-11
+      planted_50: 05-28
+      planted_90: 07-02
+      years: 2014-2019
+  Indiana:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-27
+      planted_50: 05-13
+      planted_90: 06-04
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 04-30
+      planted_50: 05-20
+      planted_90: 06-10
+      years: 2016-2025
   Iowa:
     zea-mays:
       planting_month: 5
@@ -16,4 +280,926 @@ US:
       planted_10: 05-03
       planted_50: 05-17
       planted_90: 06-01
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 4
+      planted_10: 04-07
+      planted_50: 04-18
+      planted_90: 05-03
+      years: 2016-2025
+  Kansas:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-15
+      planted_50: 05-07
+      planted_90: 06-02
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-03
+      planted_50: 05-24
+      planted_90: 06-21
+      years: 2016-2025
+    sorghum-bicolor:
+      planting_month: 6
+      planted_10: 05-21
+      planted_50: 06-10
+      planted_90: 06-28
+      years: 2016-2025
+    helianthus-annuus:
+      planting_month: 6
+      planted_10: 05-23
+      planted_50: 06-13
+      planted_90: 07-05
+      years: 2016-2025
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 05-12
+      planted_50: 05-25
+      planted_90: 06-10
+      years: 2016-2025
+  Kentucky:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-16
+      planted_50: 05-08
+      planted_90: 06-03
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 04-29
+      planted_50: 05-25
+      planted_90: 06-26
+      years: 2016-2025
+  Louisiana:
+    zea-mays:
+      planting_month: 3
+      planted_10: 03-14
+      planted_50: 03-24
+      planted_90: 04-07
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 04-07
+      planted_50: 05-02
+      planted_90: 05-30
+      years: 2016-2025
+    sorghum-bicolor:
+      planting_month: 4
+      planted_10: 04-01
+      planted_50: 04-18
+      planted_90: 05-12
+      years: 2014-2019
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 04-27
+      planted_50: 05-12
+      planted_90: 05-30
+      years: 2016-2025
+    oryza-sativa:
+      planting_month: 3
+      planted_10: 03-14
+      planted_50: 03-31
+      planted_90: 05-05
+      years: 2016-2025
+  Maine:
+    zea-mays:
+      planting_month: 5
+      planted_10: 05-15
+      planted_50: 05-27
+      planted_90: 06-17
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 5
+      planted_10: 05-17
+      planted_50: 05-24
+      planted_90: 06-07
+      years: 2015-2025
+    hordeum-vulgare:
+      planting_month: 5
+      planted_10: 05-16
+      planted_50: 05-26
+      planted_90: 06-06
+      years: 2014-2025
+    solanum-tuberosum:
+      planting_month: 5
+      planted_10: 05-14
+      planted_50: 05-25
+      planted_90: 06-12
+      years: 2016-2025
+  Maryland:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-24
+      planted_50: 05-15
+      planted_90: 05-27
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-06
+      planted_50: 05-30
+      planted_90: 06-27
+      years: 2016-2025
+    hordeum-vulgare:
+      planting_month: 10
+      planted_10: '09-18'
+      planted_50: 10-08
+      planted_90: 11-08
+      years: 2014-2025
+    solanum-tuberosum:
+      planting_month: 5
+      planted_10: 04-22
+      planted_50: 05-01
+      planted_90: 05-16
+      years: 2014-2020
+  Massachusetts:
+    zea-mays:
+      planting_month: 6
+      planted_10: 05-14
+      planted_50: 06-05
+      planted_90: 06-18
+      years: 2016-2025
+  Michigan:
+    zea-mays:
+      planting_month: 5
+      planted_10: 05-03
+      planted_50: 05-20
+      planted_90: 06-03
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-08
+      planted_50: 05-24
+      planted_90: 06-12
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 5
+      planted_10: 04-21
+      planted_50: 05-10
+      planted_90: 06-01
+      years: 2016-2025
+    hordeum-vulgare:
+      planting_month: 5
+      planted_10: 05-05
+      planted_50: 05-23
+      planted_90: 06-18
+      years: 2014-2023
+    beta-vulgaris:
+      planting_month: 4
+      planted_10: 04-19
+      planted_50: 04-29
+      planted_90: 05-12
+      years: 2016-2025
+  Minnesota:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-28
+      planted_50: 05-10
+      planted_90: 05-26
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-05
+      planted_50: 05-20
+      planted_90: 06-01
+      years: 2016-2025
+    helianthus-annuus:
+      planting_month: 5
+      planted_10: 05-15
+      planted_50: 05-25
+      planted_90: 06-06
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 5
+      planted_10: 04-20
+      planted_50: 05-04
+      planted_90: 05-20
+      years: 2016-2025
+    hordeum-vulgare:
+      planting_month: 5
+      planted_10: 04-30
+      planted_50: 05-14
+      planted_90: 05-25
+      years: 2016-2025
+    triticum-aestivum:
+      planting_month: 5
+      planted_10: 04-29
+      planted_50: 05-11
+      planted_90: 05-24
+      years: 2016-2025
+    beta-vulgaris:
+      planting_month: 5
+      planted_10: 04-22
+      planted_50: 05-06
+      planted_90: 05-19
+      years: 2016-2025
+    solanum-tuberosum:
+      planting_month: 5
+      planted_10: 04-29
+      planted_50: 05-11
+      planted_90: 06-01
+      years: 2016-2025
+  Mississippi:
+    zea-mays:
+      planting_month: 4
+      planted_10: 03-22
+      planted_50: 04-11
+      planted_90: 05-04
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 04-11
+      planted_50: 05-03
+      planted_90: 05-31
+      years: 2016-2025
+    sorghum-bicolor:
+      planting_month: 5
+      planted_10: 04-26
+      planted_50: 05-16
+      planted_90: 06-08
+      years: 2014-2019
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 05-01
+      planted_50: 05-16
+      planted_90: 06-05
+      years: 2016-2025
+    arachis-hypogaea:
+      planting_month: 5
+      planted_10: 04-27
+      planted_50: 05-23
+      planted_90: 06-22
+      years: 2016-2025
+    oryza-sativa:
+      planting_month: 5
+      planted_10: 04-07
+      planted_50: 05-01
+      planted_90: 05-19
+      years: 2016-2025
+  Missouri:
+    zea-mays:
+      planting_month: 4
+      planted_10: 04-13
+      planted_50: 04-30
+      planted_90: 05-23
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-02
+      planted_50: 05-26
+      planted_90: 06-21
+      years: 2016-2025
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 05-01
+      planted_50: 05-14
+      planted_90: 05-26
+      years: 2016-2025
+    oryza-sativa:
+      planting_month: 4
+      planted_10: 04-12
+      planted_50: 04-29
+      planted_90: 05-19
+      years: 2016-2025
+  Montana:
+    zea-mays:
+      planting_month: 5
+      planted_10: 05-03
+      planted_50: 05-21
+      planted_90: 06-16
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 5
+      planted_10: 04-29
+      planted_50: 05-16
+      planted_90: 06-03
+      years: 2016-2025
+    hordeum-vulgare:
+      planting_month: 5
+      planted_10: 04-17
+      planted_50: 05-07
+      planted_90: 05-29
+      years: 2016-2025
+    triticum-aestivum:
+      planting_month: 5
+      planted_10: 04-21
+      planted_50: 05-08
+      planted_90: 05-29
+      years: 2016-2025
+    beta-vulgaris:
+      planting_month: 5
+      planted_10: 04-28
+      planted_50: 05-12
+      planted_90: 06-10
+      years: 2016-2025
+  Nebraska:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-24
+      planted_50: 05-08
+      planted_90: 05-23
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 04-29
+      planted_50: 05-17
+      planted_90: 05-31
+      years: 2016-2025
+    sorghum-bicolor:
+      planting_month: 5
+      planted_10: 05-13
+      planted_50: 05-31
+      planted_90: 06-15
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 4
+      planted_10: 04-04
+      planted_50: 04-14
+      planted_90: 05-08
+      years: 2016-2025
+  New Hampshire:
+    zea-mays:
+      planting_month: 5
+      planted_10: 05-14
+      planted_50: 05-29
+      planted_90: 06-15
+      years: 2016-2025
+  New Jersey:
+    zea-mays:
+      planting_month: 5
+      planted_10: 05-07
+      planted_50: 05-20
+      planted_90: 06-09
+      years: 2016-2025
+    glycine-max:
+      planting_month: 6
+      planted_10: 05-16
+      planted_50: 06-01
+      planted_90: 06-29
+      years: 2016-2025
+  New Mexico:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-16
+      planted_50: 05-15
+      planted_90: 06-14
+      years: 2016-2025
+    sorghum-bicolor:
+      planting_month: 6
+      planted_10: 05-11
+      planted_50: 06-03
+      planted_90: 07-01
+      years: 2014-2018
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 04-12
+      planted_50: 05-15
+      planted_90: 06-13
+      years: 2016-2025
+    arachis-hypogaea:
+      planting_month: 5
+      planted_10: 05-13
+      planted_50: 05-31
+      planted_90: 06-20
+      years: 2014-2023
+  New York:
+    zea-mays:
+      planting_month: 5
+      planted_10: 05-13
+      planted_50: 05-27
+      planted_90: 06-21
+      years: 2016-2025
+    glycine-max:
+      planting_month: 6
+      planted_10: 05-19
+      planted_50: 06-03
+      planted_90: 06-23
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 5
+      planted_10: 04-20
+      planted_50: 05-13
+      planted_90: 06-04
+      years: 2016-2025
+    hordeum-vulgare:
+      planting_month: 5
+      planted_10: 04-24
+      planted_50: 05-21
+      planted_90: 06-27
+      years: 2016-2025
+    solanum-tuberosum:
+      planting_month: 5
+      planted_10: 05-09
+      planted_50: 05-27
+      planted_90: 07-01
+      years: 2015-2025
+  North Carolina:
+    zea-mays:
+      planting_month: 4
+      planted_10: 04-08
+      planted_50: 04-22
+      planted_90: 05-11
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-02
+      planted_50: 05-25
+      planted_90: 06-27
+      years: 2016-2025
+    sorghum-bicolor:
+      planting_month: 6
+      planted_10: 05-12
+      planted_50: 06-06
+      planted_90: 07-07
+      years: 2016-2025
+    hordeum-vulgare:
+      planting_month: 10
+      planted_10: 10-12
+      planted_50: 10-30
+      planted_90: 11-17
+      years: 2016-2025
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 05-04
+      planted_50: 05-20
+      planted_90: 06-09
+      years: 2016-2025
+    arachis-hypogaea:
+      planting_month: 5
+      planted_10: 05-04
+      planted_50: 05-20
+      planted_90: 06-08
+      years: 2016-2025
+  North Dakota:
+    zea-mays:
+      planting_month: 5
+      planted_10: 05-07
+      planted_50: 05-20
+      planted_90: 06-04
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-14
+      planted_50: 05-26
+      planted_90: 06-09
+      years: 2016-2025
+    helianthus-annuus:
+      planting_month: 6
+      planted_10: 05-19
+      planted_50: 06-03
+      planted_90: 06-18
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 5
+      planted_10: 05-02
+      planted_50: 05-17
+      planted_90: 06-04
+      years: 2016-2025
+    hordeum-vulgare:
+      planting_month: 5
+      planted_10: 05-04
+      planted_50: 05-15
+      planted_90: 06-02
+      years: 2016-2025
+    triticum-aestivum:
+      planting_month: 5
+      planted_10: 05-01
+      planted_50: 05-13
+      planted_90: 05-31
+      years: 2016-2025
+    beta-vulgaris:
+      planting_month: 5
+      planted_10: 04-29
+      planted_50: 05-04
+      planted_90: 05-15
+      years: 2016-2025
+    solanum-tuberosum:
+      planting_month: 5
+      planted_10: 05-06
+      planted_50: 05-17
+      planted_90: 06-04
+      years: 2016-2025
+  Ohio:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-30
+      planted_50: 05-21
+      planted_90: 06-03
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-05
+      planted_50: 05-24
+      planted_90: 06-12
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 4
+      planted_10: 04-09
+      planted_50: 04-26
+      planted_90: 05-22
+      years: 2016-2025
+  Oklahoma:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-11
+      planted_50: 05-08
+      planted_90: 06-12
+      years: 2016-2025
+    glycine-max:
+      planting_month: 6
+      planted_10: 05-03
+      planted_50: 06-09
+      planted_90: 07-11
+      years: 2016-2025
+    sorghum-bicolor:
+      planting_month: 6
+      planted_10: 05-03
+      planted_50: 06-14
+      planted_90: 07-02
+      years: 2016-2025
+    gossypium-hirsutum:
+      planting_month: 6
+      planted_10: 05-11
+      planted_50: 06-06
+      planted_90: 06-24
+      years: 2016-2025
+    arachis-hypogaea:
+      planting_month: 6
+      planted_10: 05-10
+      planted_50: 06-04
+      planted_90: 06-20
+      years: 2016-2025
+  Oregon:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-18
+      planted_50: 05-05
+      planted_90: 05-27
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 4
+      planted_10: 04-03
+      planted_50: 04-19
+      planted_90: 05-14
+      years: 2016-2025
+    hordeum-vulgare:
+      planting_month: 4
+      planted_10: 04-04
+      planted_50: 04-12
+      planted_90: 05-07
+      years: 2016-2025
+    triticum-aestivum:
+      planting_month: 4
+      planted_10: 04-03
+      planted_50: 04-08
+      planted_90: 04-27
+      years: 2016-2025
+    beta-vulgaris:
+      planting_month: 4
+      planted_10: 04-06
+      planted_50: 04-14
+      planted_90: 04-25
+      years: 2016-2025
+    solanum-tuberosum:
+      planting_month: 4
+      planted_10: 04-02
+      planted_50: 04-21
+      planted_90: 05-10
+      years: 2016-2025
+  Pennsylvania:
+    zea-mays:
+      planting_month: 5
+      planted_10: 05-01
+      planted_50: 05-24
+      planted_90: 06-10
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-10
+      planted_50: 05-29
+      planted_90: 06-28
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 4
+      planted_10: 04-08
+      planted_50: 04-24
+      planted_90: 05-25
+      years: 2016-2025
+    hordeum-vulgare:
+      planting_month: 10
+      planted_10: '09-17'
+      planted_50: 10-05
+      planted_90: 10-23
+      years: 2015-2025
+  Rhode Island:
+    zea-mays:
+      planting_month: 5
+      planted_10: 05-12
+      planted_50: 05-30
+      planted_90: 06-22
+      years: 2016-2025
+  South Carolina:
+    zea-mays:
+      planting_month: 4
+      planted_10: 04-03
+      planted_50: 04-11
+      planted_90: 04-28
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-08
+      planted_50: 05-29
+      planted_90: 06-25
+      years: 2016-2025
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 05-01
+      planted_50: 05-17
+      planted_90: 06-08
+      years: 2016-2025
+    arachis-hypogaea:
+      planting_month: 5
+      planted_10: 04-30
+      planted_50: 05-14
+      planted_90: 06-05
+      years: 2016-2025
+  South Dakota:
+    zea-mays:
+      planting_month: 5
+      planted_10: 05-01
+      planted_50: 05-14
+      planted_90: 05-28
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-08
+      planted_50: 05-22
+      planted_90: 06-07
+      years: 2016-2025
+    sorghum-bicolor:
+      planting_month: 6
+      planted_10: 05-14
+      planted_50: 06-01
+      planted_90: 06-16
+      years: 2016-2025
+    helianthus-annuus:
+      planting_month: 6
+      planted_10: 05-23
+      planted_50: 06-09
+      planted_90: 06-23
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 4
+      planted_10: 04-06
+      planted_50: 04-29
+      planted_90: 05-17
+      years: 2016-2025
+    triticum-aestivum:
+      planting_month: 5
+      planted_10: 04-10
+      planted_50: 05-01
+      planted_90: 05-18
+      years: 2016-2025
+  Tennessee:
+    zea-mays:
+      planting_month: 4
+      planted_10: 04-12
+      planted_50: 04-30
+      planted_90: 05-20
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 04-29
+      planted_50: 05-21
+      planted_90: 06-24
+      years: 2016-2025
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 05-06
+      planted_50: 05-18
+      planted_90: 06-02
+      years: 2016-2025
+  Texas:
+    zea-mays:
+      planting_month: 3
+      planted_10: 03-05
+      planted_50: 03-29
+      planted_90: 05-23
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 04-20
+      planted_50: 05-09
+      planted_90: 06-20
+      years: 2016-2025
+    sorghum-bicolor:
+      planting_month: 4
+      planted_10: 03-05
+      planted_50: 04-12
+      planted_90: 06-10
+      years: 2016-2025
+    helianthus-annuus:
+      planting_month: 6
+      planted_10: 05-16
+      planted_50: 06-02
+      planted_90: 07-04
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 10
+      planted_10: '09-26'
+      planted_50: 10-13
+      planted_90: 11-14
+      years: 2016-2025
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 04-09
+      planted_50: 05-27
+      planted_90: 06-18
+      years: 2016-2025
+    arachis-hypogaea:
+      planting_month: 5
+      planted_10: 05-08
+      planted_50: 05-24
+      planted_90: 06-18
+      years: 2016-2025
+    oryza-sativa:
+      planting_month: 4
+      planted_10: 03-26
+      planted_50: 04-06
+      planted_90: 05-13
+      years: 2016-2025
+  Utah:
+    zea-mays:
+      planting_month: 5
+      planted_10: 05-01
+      planted_50: 05-17
+      planted_90: 06-09
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 4
+      planted_10: 04-04
+      planted_50: 04-18
+      planted_90: 05-15
+      years: 2014-2018
+    hordeum-vulgare:
+      planting_month: 4
+      planted_10: 04-01
+      planted_50: 04-19
+      planted_90: 05-15
+      years: 2016-2025
+    triticum-aestivum:
+      planting_month: 4
+      planted_10: 04-02
+      planted_50: 04-12
+      planted_90: 04-28
+      years: 2014-2018
+  Vermont:
+    zea-mays:
+      planting_month: 5
+      planted_10: 05-09
+      planted_50: 05-22
+      planted_90: 06-04
+      years: 2016-2025
+  Virginia:
+    zea-mays:
+      planting_month: 4
+      planted_10: 04-12
+      planted_50: 04-30
+      planted_90: 05-24
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-05
+      planted_50: 05-26
+      planted_90: 06-24
+      years: 2016-2025
+    hordeum-vulgare:
+      planting_month: 10
+      planted_10: '09-22'
+      planted_50: 10-17
+      planted_90: 11-09
+      years: 2016-2025
+    gossypium-hirsutum:
+      planting_month: 5
+      planted_10: 04-28
+      planted_50: 05-17
+      planted_90: 06-06
+      years: 2016-2025
+    arachis-hypogaea:
+      planting_month: 5
+      planted_10: 05-03
+      planted_50: 05-17
+      planted_90: 06-03
+      years: 2016-2025
+    solanum-tuberosum:
+      planting_month: 4
+      planted_10: 04-04
+      planted_50: 04-09
+      planted_90: 05-03
+      years: 2014-2019
+  Washington:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-20
+      planted_50: 05-07
+      planted_90: 05-26
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 5
+      planted_10: 04-12
+      planted_50: 05-09
+      planted_90: 05-27
+      years: 2015-2021
+    hordeum-vulgare:
+      planting_month: 4
+      planted_10: 04-08
+      planted_50: 04-24
+      planted_90: 05-16
+      years: 2016-2025
+    triticum-aestivum:
+      planting_month: 4
+      planted_10: 04-06
+      planted_50: 04-19
+      planted_90: 05-10
+      years: 2016-2025
+    beta-vulgaris:
+      planting_month: 4
+      planted_10: 04-06
+      planted_50: 04-23
+      planted_90: 05-15
+      years: 2016-2020
+    solanum-tuberosum:
+      planting_month: 4
+      planted_10: 04-06
+      planted_50: 04-23
+      planted_90: 05-13
+      years: 2016-2025
+  West Virginia:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-24
+      planted_50: 05-29
+      planted_90: 06-24
+      years: 2016-2025
+    glycine-max:
+      planting_month: 6
+      planted_10: 05-05
+      planted_50: 06-04
+      planted_90: 07-07
+      years: 2016-2025
+  Wisconsin:
+    zea-mays:
+      planting_month: 5
+      planted_10: 05-03
+      planted_50: 05-16
+      planted_90: 06-04
+      years: 2016-2025
+    glycine-max:
+      planting_month: 5
+      planted_10: 05-06
+      planted_50: 05-20
+      planted_90: 06-09
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 5
+      planted_10: 04-15
+      planted_50: 05-08
+      planted_90: 05-27
+      years: 2016-2025
+    solanum-tuberosum:
+      planting_month: 5
+      planted_10: 04-19
+      planted_50: 05-07
+      planted_90: 05-28
+      years: 2016-2025
+  Wyoming:
+    zea-mays:
+      planting_month: 5
+      planted_10: 04-30
+      planted_50: 05-16
+      planted_90: 05-29
+      years: 2016-2025
+    avena-sativa:
+      planting_month: 5
+      planted_10: 04-07
+      planted_50: 05-02
+      planted_90: 05-27
+      years: 2014-2018
+    hordeum-vulgare:
+      planting_month: 4
+      planted_10: 03-30
+      planted_50: 04-12
+      planted_90: 05-12
+      years: 2016-2025
+    triticum-aestivum:
+      planting_month: 4
+      planted_10: 04-12
+      planted_50: 04-27
+      planted_90: 05-27
+      years: 2014-2018
+    beta-vulgaris:
+      planting_month: 5
+      planted_10: 04-17
+      planted_50: 05-03
+      planted_90: 05-19
       years: 2016-2025

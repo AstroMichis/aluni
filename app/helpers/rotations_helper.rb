@@ -23,6 +23,10 @@ module RotationsHelper
       values[:need] = ecocrop_class(attribute, values[:need]).downcase
     end
     values[:source] = value_label("water_source", values[:source]).downcase if fact.key == "irrigation_supply"
+    values[:value] = "#{number_with_delimiter(values[:value])} #{values[:currency]}" if fact.key == "margin"
+    if fact.key.start_with?("soil_loss")
+      values = values.transform_values { |v| v.is_a?(Numeric) ? number_with_precision(v, precision: 1, strip_insignificant_zeros: true) : v }
+    end
     t("app.rotations.evidence.#{fact.key}", **values)
   end
 

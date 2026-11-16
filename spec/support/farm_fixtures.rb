@@ -55,7 +55,8 @@ module FarmFixtures
       create(:field_observation, field: field, source: "fcc", payload: { "state_code" => "NE", "state" => "Nebraska" })
       create(:field_observation, field: field, source: "ssurgo", payload: {
         "muname" => "Hastings silt loam, 0 to 1 percent slopes", "compname" => "Hastings", "drainagecl" => "Well drained",
-        "om_r" => 3.0, "sandtotal_r" => 13.0, "claytotal_r" => 24.0, "awc_r" => 0.23, "ph1to1h2o_r" => 5.8 })
+        "om_r" => 3.0, "sandtotal_r" => 13.0, "claytotal_r" => 24.0, "awc_r" => 0.23, "ph1to1h2o_r" => 5.8,
+        "kwfact" => 0.32, "slopelenusle_r" => 61.0, "tfact" => 5.0, "hydgrp" => "B" })
       create(:field_observation, field: field, source: "usgs_elevation", payload: { "elevation" => 497.3, "slope" => 1.2 })
       create(:field_observation, field: field, source: "cdl", payload: { "years" => { (Date.current.year - 2).to_s => "Corn", (Date.current.year - 3).to_s => "Soybeans" } })
     else

@@ -27,6 +27,16 @@ RSpec.describe "Public site", type: :request do
     expect(response.body).not_to include("apps.apple.com")
   end
 
+  it "shows on the tour only what the app computes for the Ames pin" do
+    get "/en"
+
+    expect(response.body).to include("1702 growing degree days").and include("82/100").and include("68/100").and include("60/100")
+    expect(response.body).to include(I18n.t("pages.home.steps.compare.other_family")).and include(I18n.t("pages.home.steps.alerts.scout"))
+    expect(response.body).to include("38 days this summer").and include('href="/en/evidence"')
+    %w[1915 six\ years Root\ zone\ drying].each { |claim| expect(response.body).not_to include(claim) }
+    expect(response.body.scan("phone-frame__chip-year").size).to eq(5)
+  end
+
   it "links the store badges once the urls are configured" do
     allow(NativeApp).to receive_messages(
       app_store_url: "https://apps.apple.com/app/id1",

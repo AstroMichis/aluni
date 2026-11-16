@@ -46,12 +46,12 @@ end
 
 # Follows redirects (figshare and others answer a download with 302 to the file store); an empty
 # body is an error, never a saved file.
-def http_get(url, params = {}, hops: 5)
+def http_get(url, params = {}, hops = 5)
   response = HTTP.get(url, params)
   if (300..399).cover?(response.status) && response.headers["location"]
     raise "too many redirects: #{url}" if hops.zero?
 
-    return http_get(URI.join(url, response.headers["location"]).to_s, {}, hops: hops - 1)
+    return http_get(URI.join(url, response.headers["location"]).to_s, {}, hops - 1)
   end
   raise "empty body from #{url}" if response.body.to_s.empty?
 
@@ -282,6 +282,9 @@ SOURCES = {
     }
   }
 }.freeze
+
+unknown = Array(only) - SOURCES.keys
+abort "unknown source #{unknown.join(', ')}; choose from: #{SOURCES.keys.join(', ')}" if unknown.any?
 
 SOURCES.each do |name, source|
   next if only && !only.include?(name)

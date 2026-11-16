@@ -1,0 +1,32 @@
+
+== Temperature: NASA POWER against Daymet (2001-01-01..2025-12-31, 9125 days) ==
+tmax: RMSE 1.88 C, bias 0.13 C, r 0.988
+tmin: RMSE 2.49 C, bias 1.23 C, r 0.981
+Frost-day agreement in April-May (Tmin <= 0 in both or neither): 95.8%
+
+== Season rain (May-Sep): POWER and IMERG against gauges and Daymet ==
+2008  truth 658  POWER 603 (-8.4%)  IMERG 598 (-9.1%)  Daymet 603
+2009  truth 415  POWER 397 (-4.3%)  IMERG 416 (0.2%)  Daymet 450
+2010  truth 476  POWER 551 (15.8%)  IMERG 596 (25.3%)  Daymet 498
+2011  truth 541  POWER 506 (-6.5%)  IMERG 518 (-4.3%)  Daymet 602
+2012  truth 199  POWER 223 (12.3%)  IMERG 255 (28.0%)  Daymet 217
+2013  truth 396  POWER 401 (1.3%)  IMERG 450 (13.6%)  Daymet 418
+2014  truth 715  POWER 596 (-16.7%)  IMERG 615 (-14.0%)  Daymet 737
+2015  truth 617  POWER 548 (-11.1%)  IMERG 666 (8.0%)  Daymet 621
+2016  truth 436  POWER 394 (-9.8%)  IMERG 505 (15.7%)  Daymet 463
+2017  truth 503  POWER 483 (-4.0%)  IMERG 560 (11.3%)  Daymet 532
+2018  truth 589  POWER 566 (-3.9%)  IMERG 577 (-2.1%)  Daymet 614
+2019  truth 734  POWER 678 (-7.6%)  IMERG 688 (-6.2%)  Daymet 773
+2020  truth 415  POWER 367 (-11.5%)  IMERG 408 (-1.7%)  Daymet 417
+2021  truth 411  POWER 379 (-7.9%)  IMERG 393 (-4.5%)  Daymet 396
+2022  truth 427  POWER 326 (-23.7%)  IMERG 411 (-3.6%)  Daymet 456
+2023  truth 332  POWER 320 (-3.7%)  IMERG 367 (10.6%)  Daymet 310
+2024  truth 485  POWER 434 (-10.4%)  IMERG 509 (4.9%)  Daymet 437
+2025  truth 492  POWER 557 (13.3%)  IMERG 554 (12.7%)  Daymet 454
+POWER within +-15% in 15 of 18 seasons (83%); IMERG within +-15% in 15
+
+== Heavy-rain days (>= 25 mm), matched within one day ==
+POWER: 101 heavy days in the truth, 77 in POWER; hit rate 50%, false alarms 35%
+IMERG: 101 heavy days in the truth, 133 in IMERG; hit rate 67%, false alarms 46%
+
+V1: PASS  Tmax RMSE 1.88 C, Tmin RMSE 2.49 C; season rain within 15% in 83% of years against CoCoRaHS gauges (77 stations within 30 km)

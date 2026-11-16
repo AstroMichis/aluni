@@ -51,7 +51,7 @@
 - { id: C4, section: T5c, text: "What this proves: Aluni does not push change for its own sake", kind: evidence,
     compute: "\"QUALIFIED: one season; V4 (#{v.dig('V4','verdict')}) supports the rotation; V7 (#{v.dig('V7','verdict')}) shows the strict alternation beat a margin-switching rule\"" }
 - { id: C5, section: T5c, text: "Production uses 25-year POWER normals", kind: evidence,
-    compute: "clim = JSON.parse(File.read(File.join(VAL, 'data/power_climatology.json'))); clim.dig('header','range').to_s.include?('25-year') ? \"SUPPORTED: #{clim.dig('header','range')} (docs/FIELDS.md now says the same)\" : 'REFUTED'" }
+    compute: "clim = JSON.parse(File.read(File.join(VAL, 'data/ames/power_climatology.json'))); clim.dig('header','range').to_s.include?('25-year') ? \"SUPPORTED: #{clim.dig('header','range')} (docs/FIELDS.md now says the same)\" : 'REFUTED'" }
 - { id: C8, section: T5b/T5c/U-25, text: "Wind moves the corn yield factor by up to 4.4%, so the Sonda needs an anemometer", kind: evidence,
     compute: "'OVERCLAIM: NASA POWER WS2M is free at every pin (mean 3.15 m/s in 2025 here) and now used; the device case rests on leaf wetness'" }
 - { id: C11, section: T5c, text: "Pests the daily data can already flag (tar spot, fall armyworm)", kind: evidence,

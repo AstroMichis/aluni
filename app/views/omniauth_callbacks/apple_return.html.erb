@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title><%= t("omniauth_callbacks.apple_return.title") %></title>
+    <style>body { font-family: system-ui, sans-serif; background: #0f2a20; color: #e8efe9; display: grid; place-items: center; min-height: 100vh; margin: 0; }</style>
+  </head>
+  <body>
+    <%# Apple's cross-site POST carries no Lax cookie: re-post the same fields from our own origin. %>
+    <form id="apple-return" action="/auth/apple/callback" method="post">
+      <% @fields.each do |name, value| %>
+        <input type="hidden" name="<%= name %>" value="<%= value %>">
+      <% end %>
+      <noscript><button type="submit"><%= t("omniauth_callbacks.apple_return.continue") %></button></noscript>
+    </form>
+    <script nonce="<%= content_security_policy_nonce %>">document.getElementById("apple-return").submit()</script>
+  </body>
+</html>

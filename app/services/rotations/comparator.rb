@@ -115,7 +115,7 @@ module Rotations
       cover_history_fact(facts)
       double_crop_fact(crops, facts, gaps)
       vegetation_fact(facts)
-      gaps << "market"
+      margin_fact(crops, facts, gaps)
       gaps << "soil" if @record.soil["texture"].blank?
       gaps << "ecocrop" unless crops.all? { |c| Crops::Agronomy.find(c)&.requirements.present? }
       Strategy.new(key: key, crops: crops, scores: scores, total: total(scores), why: why(key, crops, scores),
@@ -233,9 +233,46 @@ module Rotations
       end
 
       facts << Fact.new(key: "slope", values: { value: slope }, source: source)
+      soil_loss_fact(crops, slope, facts)
       rows = crops.count { |c| ROW_CROPS.include?(c) }
       penalty = (slope >= STEEP ? 25 : 8) + (rain.stormy_field? ? STORM_PENALTY : 0)
       [ 100 - (rows * penalty), 0 ].max
+    end
+
+    # The mean margin a hectare a season over the sequence, from the farmer's
+    # own recorded harvests (FieldCrop#margin_per_ha) in the farm's most used
+    # currency, when every crop in it has one. Shown, never scored: a margin
+    # rule did not beat an experienced farmer's rotation (docs/proposal V7).
+    def margin_fact(crops, facts, gaps)
+      margins = crops.map { |c| own_margins[c] }
+      return gaps << "market" if margins.any?(&:nil?)
+
+      facts << Fact.new(key: "margin", values: { value: (margins.sum / margins.size).round, currency: @margin_currency,
+                                                 seasons: @margin_seasons }, source: nil)
+    end
+
+    # crop key => mean margin a hectare, from every field of the farm.
+    def own_margins
+      @own_margins ||= begin
+        rows = FieldCrop.where(field_id: @record.farm.field_ids).where.not(yield_amount: nil, price: nil).to_a
+        @margin_currency = rows.map(&:currency).compact.tally.max_by(&:last)&.first
+        rows = rows.select { |r| r.currency == @margin_currency }
+        @margin_seasons = rows.size
+        rows.group_by(&:crop_key).transform_values { |list| list.sum(&:margin_per_ha) / list.size }
+      end
+    end
+
+    # Tonnes of soil lost a year (Erosion::Rusle, US soil survey only). The
+    # score above stays the ranking; the tonnes show the size and what a rye
+    # cover saves, on assumed residue values (docs/proposal V6).
+    def soil_loss_fact(crops, slope, facts)
+      @rusle = Erosion::Rusle.for(@field, slope: slope) unless defined?(@rusle)
+      loss = @rusle&.loss(crops)
+      return unless loss
+
+      key = loss.over_tolerable? ? "soil_loss_over" : "soil_loss"
+      facts << Fact.new(key: key, values: { no_cover: loss.no_cover, with_cover: loss.with_cover, saved: loss.saved_pct,
+                                            tolerable: loss.tolerable }, source: "RUSLE · USDA SSURGO")
     end
 
     # How often it pours at the pin (GPM IMERG), and in which months.

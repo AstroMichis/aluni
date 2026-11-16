@@ -40,6 +40,15 @@ module ReportsHelper
   end
 
   # The report's three downloads, PDF first.
+  # "11.2 t/ha" or "180 bu/ac": a recorded yield in the farmer's own units.
+  def harvest_yield(crop)
+    t("app.reports.harvest.own.yield", value: number_with_precision(crop.yield_amount, precision: 2, strip_insignificant_zeros: true),
+                                       unit: t("app.harvests.edit.units_short.#{crop.yield_unit}"), basis: crop.area_basis)
+  end
+
+  # A per-hectare money figure with its currency code.
+  def harvest_money(value, currency) = "#{number_with_delimiter(value.round)} #{currency}"
+
   def report_download_links(**options)
     safe_join(REPORT_FORMATS.map do |format|
       link_to format.upcase, download_app_reports_path(format: format), data: { turbo: false }, download: "",

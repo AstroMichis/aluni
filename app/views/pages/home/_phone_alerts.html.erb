@@ -6,18 +6,18 @@
     </span>
     <span class="phone-frame__alert-body"><%= t("#{scope}.frost_body") %></span>
   </li>
-  <li class="phone-frame__alert phone-frame__alert--bare">
+  <li class="phone-frame__alert phone-frame__alert--scout">
     <span class="phone-frame__alert-head">
-      <span class="phone-frame__value"><%= t("#{scope}.bare") %></span>
+      <span class="phone-frame__value"><%= t("#{scope}.scout") %></span>
       <span class="phone-frame__time"><%= t("#{scope}.earlier") %></span>
     </span>
-    <span class="phone-frame__alert-body"><%= t("#{scope}.bare_body") %></span>
+    <span class="phone-frame__alert-body"><%= t("#{scope}.scout_body", days: sample[:tar_spot_days]) %></span>
   </li>
-  <li class="phone-frame__alert phone-frame__alert--moisture">
+  <li class="phone-frame__alert phone-frame__alert--dry">
     <span class="phone-frame__alert-head">
-      <span class="phone-frame__value"><%= t("#{scope}.moisture") %></span>
+      <span class="phone-frame__value"><%= t("#{scope}.dry") %></span>
       <span class="phone-frame__time"><%= t("#{scope}.earlier") %></span>
     </span>
-    <span class="phone-frame__alert-body"><%= t("#{scope}.moisture_body", value: sample[:wetness_low]) %></span>
+    <span class="phone-frame__alert-body"><%= t("#{scope}.dry_body", days: sample[:dry_days]) %></span>
   </li>
 </ul>

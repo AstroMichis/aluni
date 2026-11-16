@@ -21,7 +21,7 @@
               <% end %>
             </span>
           </div>
-          <% if @passkeys.size > 1 || Current.user.email_verified_at.present? %>
+          <% if @passkeys.size > 1 || Current.user.email_verified_at.present? || @identities.any? %>
             <%= button_to t(".remove"), passkey_path(passkey), method: :delete, class: "btn btn--danger btn--sm",
                           form: { data: { turbo_confirm: t(".confirm_remove") } } %>
           <% end %>
@@ -48,4 +48,35 @@
       <p class="auth__status" data-passkey-target="error" role="status" aria-live="polite"></p>
     </div>
   </section>
+
+  <% linkable = social_providers %>
+  <% if @identities.any? || linkable.any? %>
+    <section class="card" aria-labelledby="connected-accounts">
+      <div class="card__body stack stack--md">
+        <h2 class="text-heading" id="connected-accounts"><%= t(".connected.title") %></h2>
+        <p class="auth__lede"><%= t(".connected.lede") %></p>
+        <ul class="passkey-list" role="list">
+          <% (Identity::PROVIDERS & (linkable + @identities.map(&:provider))).each do |provider| %>
+            <% identity = @identities.find { |i| i.provider == provider } %>
+            <li class="passkey-list__item">
+              <div class="stack stack--sm">
+                <strong><%= t("omniauth_callbacks.providers.#{provider}") %></strong>
+                <span class="passkey-list__meta"><%= identity ? (identity.email.presence || t(".connected.linked")) : t(".connected.not_linked") %></span>
+              </div>
+              <% if identity %>
+                <%= button_to t(".connected.disconnect"), identity_path(identity), method: :delete, class: "btn btn--ghost btn--sm",
+                              form: { data: { turbo_confirm: t(".connected.confirm_disconnect", provider: t("omniauth_callbacks.providers.#{provider}")) } } %>
+              <% elsif linkable.include?(provider) %>
+                <%= form_tag "/auth/#{provider}", method: :post, data: { turbo: false } do %>
+                  <input type="hidden" name="intent" value="connect">
+                  <input type="hidden" name="locale" value="<%= I18n.locale %>">
+                  <button type="submit" class="btn btn--secondary btn--sm"><%= t(".connected.connect") %></button>
+                <% end %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </section>
+  <% end %>
 </div>

@@ -12,6 +12,9 @@
       <% end %>
       <h1 class="text-display screen__title"><%= t(".headline") %></h1>
       <p class="screen__lede"><%= t(".lede", count: @farm.fields.size, area: hectares(@farm.total_area)) %></p>
+      <% if (no_area = @farm.fields.find { |f| f.record.area.blank? }) %>
+        <p class="choice-set__hint"><%= link_to t(".add_area", name: plot_name(no_area)), edit_focus_path(edit_app_field_path(no_area.key), "area") %></p>
+      <% end %>
       <div class="cluster cluster--sm report__actions">
         <span class="report__download-label"><%= t(".download") %></span>
         <%= report_download_links(class: "btn btn--secondary btn--sm") %>

@@ -77,3 +77,14 @@
   font-size: var(--text-sm);
   color: var(--color-text-primary);
 }
+
+/* The second-field comparison: one row per study, a column per field. Scrolls inside its own box on phones. */
+.evidence__compare-wrap { overflow-x: auto; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-lg); }
+.evidence__compare { width: 100%; min-width: 36rem; border-collapse: collapse; font-size: var(--text-sm); }
+.evidence__compare th,
+.evidence__compare td { padding: var(--space-3); text-align: left; vertical-align: top; border-bottom: 1px solid var(--color-border-subtle); }
+.evidence__compare thead th { color: var(--color-text-tertiary); font-weight: 600; background: var(--color-bg-secondary); }
+.evidence__compare tbody th { color: var(--color-text-primary); font-weight: 600; min-width: 9rem; }
+.evidence__compare tbody th a { color: var(--color-accent-text); text-decoration: none; font-family: var(--font-mono); }
+.evidence__compare td .badge { margin-bottom: var(--space-1); }
+.evidence__compare-line { display: block; color: var(--color-text-secondary); }

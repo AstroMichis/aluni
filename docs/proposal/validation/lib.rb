@@ -51,16 +51,17 @@ module Hindcast
 
   # { year => bu/acre } from the site's NASS county yields, the first series in sites.yml with 15+ years,
   # and that series' short_desc; [{}, nil] when NASS has not been fetched.
-  def nass_yields(crop)
-    return [{}, nil] unless File.exist?(path("nass/yield_county.json"))
+  # within: count only those years (a study that needs a series across its own window, e.g. V7 2008-2025).
+  def nass_yields(crop, within: nil, min: 15)
+    return [ {}, nil ] unless File.exist?(path("nass/yield_county.json"))
 
     rows = JSON.parse(File.read(path("nass/yield_county.json")))
     SITE.dig("yield_desc", crop).to_a.each do |desc|
       series = rows.select { |r| r["short_desc"] == desc && r["reference_period_desc"] == "YEAR" }
-                   .filter_map { |r| (v = Float(r["Value"].to_s.delete(","), exception: false)) && [r["year"].to_i, v] }.to_h
-      return [series, desc] if series.size >= 15
+                   .filter_map { |r| (v = Float(r["Value"].to_s.delete(","), exception: false)) && [ r["year"].to_i, v ] }.to_h
+      return [ series, desc ] if (within ? series.keys.count { |y| within.cover?(y) } : series.size) >= min
     end
-    [{}, nil]
+    [ {}, nil ]
   end
 
   def need!(*names)

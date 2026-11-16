@@ -30,10 +30,14 @@
       <% current = @comparator.strategies.first %>
       <%= render "shared/aluni", message: best && best.total.to_i > current.total.to_i ? t(".summary_better", strategy: strategy_title(best), best: best.total, current: current.total) : t(".summary_current") %>
 
+      <%= render "app/rotations/water_question", field: @field, zone: @zone %>
       <%= render "app/fields/vegetation", field: @field %>
       <%= render "app/rotations/scenario", scenario: @scenario %>
       <% timeline = Rotations::Timeline.new(@zone, scenario: @scenario) %>
       <%= render "app/rotations/timeline_weather", timeline: timeline %>
+
+      <%= render "shared/evidence_note", study: "v4", note: "rotation" %>
+      <%= render "shared/evidence_note", study: "v6", note: "erosion" %>
 
       <details class="weights">
         <summary><%= t(".weights_title") %></summary>
@@ -119,6 +123,9 @@
         <% end %>
       </ol>
 
+      <% if @comparator.strategies.any? { |s| s.evidence.any? { |f| f.key == "margin" } } %>
+        <%= render "shared/evidence_note", study: "v7", note: "margin" %>
+      <% end %>
       <p class="choice-set__hint"><%= t(".disclaimer") %> <%= link_to t(".glossary"), glossary_path %></p>
     <% end %>
 <% end %>

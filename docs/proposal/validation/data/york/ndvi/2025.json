@@ -1,0 +1,86 @@
+[
+  {
+    "month": "2025-01",
+    "ndvi": 0.131,
+    "date": "2025-01-31",
+    "mission": "sentinel-2",
+    "scene": "S2C_MSIL2A_20250131T172611_R012_T14TPL_20250131T221856"
+  },
+  {
+    "month": "2025-02",
+    "ndvi": 0.105,
+    "date": "2025-02-27",
+    "mission": "landsat",
+    "scene": "LC09_L2SP_029032_20250227_02_T1"
+  },
+  {
+    "month": "2025-03",
+    "ndvi": 0.118,
+    "date": "2025-03-02",
+    "mission": "sentinel-2",
+    "scene": "S2C_MSIL2A_20250302T172251_R012_T14TPL_20250302T220111"
+  },
+  {
+    "month": "2025-04",
+    "ndvi": 0.126,
+    "date": "2025-04-21",
+    "mission": "sentinel-2",
+    "scene": "S2C_MSIL2A_20250421T173031_R012_T14TPL_20250421T224157"
+  },
+  {
+    "month": "2025-05",
+    "ndvi": 0.124,
+    "date": "2025-05-11",
+    "mission": "sentinel-2",
+    "scene": "S2C_MSIL2A_20250511T171911_R012_T14TPL_20250511T210412"
+  },
+  {
+    "month": "2025-06",
+    "ndvi": 0.304,
+    "date": "2025-06-20",
+    "mission": "sentinel-2",
+    "scene": "S2C_MSIL2A_20250620T171911_R012_T14TPL_20250620T220317"
+  },
+  {
+    "month": "2025-07",
+    "ndvi": 0.35,
+    "date": "2025-07-05",
+    "mission": "landsat",
+    "scene": "LC09_L2SP_029032_20250705_02_T1"
+  },
+  {
+    "month": "2025-08",
+    "ndvi": 0.52,
+    "date": "2025-08-14",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20250814_02_T1"
+  },
+  {
+    "month": "2025-09",
+    "ndvi": 0.147,
+    "date": "2025-09-28",
+    "mission": "sentinel-2",
+    "scene": "S2C_MSIL2A_20250928T172131_R012_T14TPL_20250928T221213"
+  },
+  {
+    "month": "2025-10",
+    "ndvi": 0.115,
+    "date": "2025-10-08",
+    "mission": "sentinel-2",
+    "scene": "S2C_MSIL2A_20251008T172231_R012_T14TPL_20251008T235919"
+  },
+  {
+    "month": "2025-11",
+    "ndvi": 0.108,
+    "date": "2025-11-27",
+    "mission": "sentinel-2",
+    "scene": "S2C_MSIL2A_20251127T172701_R012_T14TPL_20251127T202512"
+  },
+  {
+    "month": "2025-12",
+    "ndvi": 0.067,
+    "date": "2025-12-29",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20251229T172751_R012_T14TPL_20251229T210322"
+  }
+]

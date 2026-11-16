@@ -1,0 +1,41 @@
+NASS zea-mays: CORN, GRAIN - YIELD, MEASURED IN BU / ACRE
+NASS glycine-max: SOYBEANS - YIELD, MEASURED IN BU / ACRE
+Corn after corn = 0.887 x rotated corn (V4, Zhao 2022); soybean after soybean 0.95 (placeholder)
+
+== Part A: realised margin, $/ha, 2008-2024 (placeholder costs, NASS yields and prices) ==
+farmer       total $12583 (mean $839/ha/yr); corn 10 of 15 years
+aluni        total $13335 (mean $889/ha/yr); corn 8 of 15 years
+corn_always  total $10388 (mean $693/ha/yr); corn 15 of 15 years
+foresight    total $13886 (mean $926/ha/yr); corn 8 of 15 years
+The margin rule planted differently from the farmer in: 2011 corn, 2014 soy, 2015 corn, 2016 soy, 2018 soy, 2019 corn, 2020 soy, 2024 soy
+Share of the hindsight gain over the farmer that the rule captured: 58%
+
+== Part B: could a 400 ha farm plant corn and soybean between 15 April and 20 May? ==
+2001: 24.2 suitable days -> 1145 ha with one planter (enough); Nebraska corn 50% planted by 2001-05-06
+2002: 31.3 suitable days -> 1481 ha with one planter (enough); Nebraska corn 50% planted by 2002-05-05
+2003: 20.0 suitable days -> 946 ha with one planter (enough); Nebraska corn 50% planted by 2003-05-18
+2004: 31.6 suitable days -> 1495 ha with one planter (enough); Nebraska corn 50% planted by 2004-05-02
+2005: 25.1 suitable days -> 1188 ha with one planter (enough); Nebraska corn 50% planted by 2005-05-08
+2006: 33.5 suitable days -> 1585 ha with one planter (enough); Nebraska corn 50% planted by 2006-05-07
+2007: 23.3 suitable days -> 1103 ha with one planter (enough); Nebraska corn 50% planted by 2007-05-13
+2008: 23.4 suitable days -> 1107 ha with one planter (enough); Nebraska corn 50% planted by 2008-05-11
+2009: 29.1 suitable days -> 1377 ha with one planter (enough); Nebraska corn 50% planted by 2009-05-03
+2010: 25.1 suitable days -> 1188 ha with one planter (enough); Nebraska corn 50% planted by 2010-05-09
+2011: 22.9 suitable days -> 1084 ha with one planter (enough); Nebraska corn 50% planted by 2011-05-08
+2012: 31.1 suitable days -> 1472 ha with one planter (enough); Nebraska corn 50% planted by 2012-05-06
+2013: 23.1 suitable days -> 1093 ha with one planter (enough); Nebraska corn 50% planted by 2013-05-19
+2014: 29.9 suitable days -> 1414 ha with one planter (enough); Nebraska corn 50% planted by 2014-05-11
+2015: 22.4 suitable days -> 1060 ha with one planter (enough); Nebraska corn 50% planted by 2015-05-03
+2016: 22.7 suitable days -> 1074 ha with one planter (enough); Nebraska corn 50% planted by 2016-05-08
+2017: 23.5 suitable days -> 1112 ha with one planter (enough); Nebraska corn 50% planted by 2017-05-14
+2018: 25.9 suitable days -> 1226 ha with one planter (enough); Nebraska corn 50% planted by 2018-05-13
+2019: 23.9 suitable days -> 1131 ha with one planter (enough); Nebraska corn 50% planted by 2019-05-19
+2020: 30.1 suitable days -> 1424 ha with one planter (enough); Nebraska corn 50% planted by 2020-05-03
+2021: 30.6 suitable days -> 1448 ha with one planter (enough); Nebraska corn 50% planted by 2021-05-09
+2022: 29.5 suitable days -> 1396 ha with one planter (enough); Nebraska corn 50% planted by 2022-05-15
+2023: 32.0 suitable days -> 1514 ha with one planter (enough); Nebraska corn 50% planted by 2023-05-07
+2024: 25.2 suitable days -> 1192 ha with one planter (enough); Nebraska corn 50% planted by 2024-05-12
+2025: 33.7 suitable days -> 1595 ha with one planter (enough); Nebraska corn 50% planted by 2025-05-04
+Planter capacity 4.73 ha/h. Short of time in 0 of 25 springs: 
+
+V7: PASS  margin rule $13335 vs farmer $12583 vs continuous corn $10388 vs hindsight $13886 per ha over 15 years; differs from the farmer in 8 years; short of planting days in 0 of 25 springs

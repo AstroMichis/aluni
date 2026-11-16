@@ -1,0 +1,86 @@
+[
+  {
+    "month": "2019-01",
+    "ndvi": 0.292,
+    "date": "2019-01-08",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20190108T172709_R012_T14TPL_20201007T235816"
+  },
+  {
+    "month": "2019-02",
+    "ndvi": 0.086,
+    "date": "2019-02-04",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_028032_20190204_02_T1"
+  },
+  {
+    "month": "2019-03",
+    "ndvi": 0.083,
+    "date": "2019-03-31",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_029032_20190331_02_T1"
+  },
+  {
+    "month": "2019-04",
+    "ndvi": 0.102,
+    "date": "2019-04-24",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20190424_02_T1"
+  },
+  {
+    "month": "2019-05",
+    "ndvi": 0.102,
+    "date": "2019-05-02",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_029032_20190502_02_T1"
+  },
+  {
+    "month": "2019-06",
+    "ndvi": 0.215,
+    "date": "2019-06-02",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20190602T171901_R012_T14TPL_20201005T210846"
+  },
+  {
+    "month": "2019-07",
+    "ndvi": 0.924,
+    "date": "2019-07-22",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20190722T171901_R012_T14TPL_20201005T175951"
+  },
+  {
+    "month": "2019-08",
+    "ndvi": 0.914,
+    "date": "2019-08-06",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20190806T171909_R012_T14TPL_20201004T211847"
+  },
+  {
+    "month": "2019-09",
+    "ndvi": 0.22,
+    "date": "2019-09-15",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20190915T171929_R012_T14TPL_20201004T133559"
+  },
+  {
+    "month": "2019-10",
+    "ndvi": 0.53,
+    "date": "2019-10-25",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20191025T172409_R012_T14TPL_20201004T061627"
+  },
+  {
+    "month": "2019-11",
+    "ndvi": 0.271,
+    "date": "2019-11-02",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20191102_02_T1"
+  },
+  {
+    "month": "2019-12",
+    "ndvi": 0.31,
+    "date": "2019-12-21",
+    "mission": "landsat",
+    "scene": "LE07_L2SP_028032_20191221_02_T1"
+  }
+]

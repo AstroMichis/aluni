@@ -144,11 +144,11 @@ puts "\nRUSLE order (least loss first): #{rusle_order.join(' > ')}; app erosion 
      "#{consistent ? 'is consistent with it' : 'ranks them differently'}#{" (the score ties #{ties.join(', ')})" if ties.any?}"
 record("V6",
        question: "How much soil does each rotation lose, and how much does a cover crop save?",
-       truth: "RUSLE (AH-703) on Daymet rain, SSURGO K and slope length, 3DEP and SSURGO slope; published Iowa figures not yet documented",
+       truth: "RUSLE (AH-703) on Daymet rain, SSURGO K and slope length, 3DEP and SSURGO slope; published #{SITE['state_name']} figures not yet documented",
        criterion: "The app's erosion score orders the strategies as RUSLE does (higher score = less soil loss)",
        verdict: verdict(consistent),
        summary: "#{base.map { |k, r| "#{k} #{r[:no_cover]} -> #{r[:with_cover]} t/ha/yr (-#{r[:saved_pct]}%)" }.join('; ')} on the 3DEP slope; " \
                 "T = #{T_FACTOR.round(1)}; score order #{consistent ? 'matches' : 'differs from'} RUSLE",
        details: { r: R.round, k: K.round(4), lambda_m: LAMBDA, t_factor: T_FACTOR.round(1), erosivity_by_month: monthly_share,
                   results: results, rusle_order: rusle_order, app_erosion: app_erosion, assumptions: ASSUMPTION,
-                  blocked: "comparison with published Iowa soil-loss figures (source to document)" })
+                  blocked: "comparison with published #{SITE['state_name']} soil-loss figures (source to document)" })

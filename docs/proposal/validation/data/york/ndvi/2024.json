@@ -1,0 +1,86 @@
+[
+  {
+    "month": "2024-01",
+    "ndvi": -0.046,
+    "date": "2024-01-16",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029032_20240116_02_T1"
+  },
+  {
+    "month": "2024-02",
+    "ndvi": 0.119,
+    "date": "2024-02-26",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20240226T172301_R012_T14TPL_20240227T003050"
+  },
+  {
+    "month": "2024-03",
+    "ndvi": 0.107,
+    "date": "2024-03-20",
+    "mission": "landsat",
+    "scene": "LC08_L2SP_029031_20240320_02_T1"
+  },
+  {
+    "month": "2024-04",
+    "ndvi": 0.13,
+    "date": "2024-04-21",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20240421T171859_R012_T14TPL_20240421T224125"
+  },
+  {
+    "month": "2024-05",
+    "ndvi": 0.139,
+    "date": "2024-05-16",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20240516T171901_R012_T14TPL_20240517T175246"
+  },
+  {
+    "month": "2024-06",
+    "ndvi": 0.187,
+    "date": "2024-06-05",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20240605T171901_R012_T14TPL_20240606T022357"
+  },
+  {
+    "month": "2024-07",
+    "ndvi": 0.572,
+    "date": "2024-07-25",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20240725T171901_R012_T14TPL_20240726T021252"
+  },
+  {
+    "month": "2024-08",
+    "ndvi": 0.492,
+    "date": "2024-08-04",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20240804T171901_R012_T14TPL_20240805T005253"
+  },
+  {
+    "month": "2024-09",
+    "ndvi": 0.382,
+    "date": "2024-09-03",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20240903T171901_R012_T14TPL_20240904T003950"
+  },
+  {
+    "month": "2024-10",
+    "ndvi": 0.354,
+    "date": "2024-10-08",
+    "mission": "sentinel-2",
+    "scene": "S2B_MSIL2A_20241008T172129_R012_T14TPL_20241008T213703"
+  },
+  {
+    "month": "2024-11",
+    "ndvi": 0.413,
+    "date": "2024-11-12",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20241112T172551_R012_T14TPL_20241112T210847"
+  },
+  {
+    "month": "2024-12",
+    "ndvi": 0.117,
+    "date": "2024-12-22",
+    "mission": "sentinel-2",
+    "scene": "S2A_MSIL2A_20241222T172741_R012_T14TPL_20241222T205605"
+  }
+]

@@ -1,8 +1,10 @@
 # Getting a farmer started
 
 Setup is not a conversation. Aluni, the mascot, is the preloader and the host; the
-only required step is the field pin; crop and irrigation are two taps; everything
-else is progressive and lives in the app. The Gemini chat (`/app/onboarding`,
+only required step is the field pin; the crop is one answer; everything else is
+progressive and lives in the app, asked where it changes something: whether the field
+is watered on the Rotation tab (it moves the Water score), the area in the reports
+(it only feeds totals). The Gemini chat (`/app/onboarding`,
 "Ask Aluni") is optional and saves what it hears right away with an Undo.
 
 Read with: `docs/DESIGN_SYSTEM.md` (preferences, the mascot, `.panel`, `.intro`),
@@ -24,7 +26,7 @@ Field finder (panel: bottom sheet on phones, side panel from 1025 px; Aluni dock
              Leaflet map (OpenStreetMap tiles, satellite toggle, [Use my location] to ask again), draggable pin  ->  [This is my field]
              -> reverse geocoding (Turbo Frame #place-summary): place, region, country, coordinates
   2 Basics   crop now (type-ahead over config/crops/common.yml, free text normalised later)
-             [Rainfed] [Irrigated]   area (optional) [ha | acres]   [Continue] [Skip for now]
+             [Continue] [Skip for now]   (water and area are asked later, in context)
   3 Save     signed out: your name + [Create passkey]  (flat hidden inputs carry pin and basics)
              signed in:  [Save field]  (PATCH /app/fields/:id)
   -> /app
@@ -80,8 +82,12 @@ time, each announced (`aria-live`) and spoken (`data-speak`).
    line when the geocoder fails or the `geocoding` switch is paused. Nothing is
    fetched from the browser except map tiles (images).
 2. **Basics.** Crop now (a `<datalist>` from `Crops::Catalog`, free text allowed),
-   rainfed or irrigated, an optional area with a unit that defaults from the
-   country (`US`, `LR`, `MM` → acres). The crop text is normalised at save time by
+   nothing else: the area unit still defaults from the country (`US`, `LR`, `MM` →
+   acres) for when the area is given later. Water was dropped from this step
+   because it only moves the Water criterion and an unknown answer reads as rainfed
+   (right for most farms); the Rotation tab asks it in one tap
+   (`app/rotations/_water_question`). Area was dropped because no advice reads it;
+   the season and harvest reports ask for it where totals need it. The crop text is normalised at save time by
    `Crops::NormalizeService`: the catalog first (about 60 crops with English and
    Spanish names and aliases, accent-insensitive), otherwise one structured Gemini
    call (`crop_name`, `scientific_name`, `confidence`), falling back to the raw text.

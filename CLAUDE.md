@@ -48,7 +48,7 @@ Read the relevant doc before working on that area:
 | `docs/NATIVE.md` | The iOS and Android shells, path configuration, app links, bridge components, building them |
 | `docs/DESIGN_SYSTEM.md` | Any UI work: tokens, typography, CSS components, layouts, the Three.js hero |
 | `docs/DATA_MODEL.md` | Tables, migrations, associations, conventions |
-| `docs/ONBOARDING.md` | Getting a farmer started: Aluni as the preloader and first bubble (language, comfort), the field finder (pin, crop, irrigation, area, passkey), the optional Ask Aluni chat (auto-apply with undo, topics in `config/onboarding/topics.yml`), accessibility, demo runbook |
+| `docs/ONBOARDING.md` | Getting a farmer started: Aluni as the preloader and first bubble (language, comfort), the field finder (pin, crop, passkey; water and area asked later in context), the optional Ask Aluni chat (auto-apply with undo, topics in `config/onboarding/topics.yml`), accessibility, demo runbook |
 | `docs/RAILS_PATTERNS.md` | Service objects, controllers, Hotwire, Stimulus, jobs, the switchboard |
 | `docs/I18N.md` | Locale files, switching, formats, the copy specs |
 | `docs/INTEGRATIONS.md` | Gemini, push, web push, mail, R2, outbound client and inbound webhook shapes |

@@ -48,7 +48,7 @@ RSpec.describe Crops::WaterNeed do
     iowa = { country_code: "US", admin_area: "Iowa" }
 
     expect(described_class.for("zea-mays", observation: observation, latitude: 42.0, place: iowa).planting_month).to eq(5)
-    expect(described_class.for("zea-mays", observation: observation, latitude: 42.0, place: { country_code: "US", admin_area: "Texas" }).planting_month).to eq(4)
+    expect(described_class.for("zea-mays", observation: observation, latitude: 42.0, place: { country_code: "US", admin_area: "Nevada" }).planting_month).to eq(4)
     expect(described_class.for("zea-mays", observation: observation, latitude: 42.0, place: iowa, planting_month: 4).planting_month).to eq(4)
   end
 

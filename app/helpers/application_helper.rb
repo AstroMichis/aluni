@@ -1,5 +1,15 @@
 module ApplicationHelper
   LOCALE_PREFIX = %r{\A/(?:en|es)(?=/|\z)}
+  SOCIAL_ORDER = %w[google_oauth2 apple microsoft_graph].freeze
+
+  # The social sign-in buttons to offer here: providers with credentials, not
+  # paused, in a browser let in (NativeOnly). The shells get them once the
+  # system-browser handoff exists (docs/AUTH.md).
+  def social_providers
+    return [] if hotwire_native_app? || !Platform::Features.native_web_access? || Platform::Switchboard.paused?(:oauth)
+
+    SOCIAL_ORDER & Platform::Features.oauth_providers
+  end
 
   # The current page in another locale, by swapping the path prefix, so the
   # language toggle and the hreflang alternates work on any routed page.

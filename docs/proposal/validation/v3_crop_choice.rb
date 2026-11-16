@@ -3,7 +3,7 @@
 # V3 · Does Aluni's crop evidence point at the crops that actually thrive here?
 #
 # Aluni's crop fit reads FAO GAEZ v4 (1981-2010 climate, rainfed) and its water criterion reads the FAO-56
-# water need. At the Ames pin these are compared with what the land shows: the crops grown (CDL 2008-2025)
+# water need. At the site's pin (sites.yml) these are compared with what the land shows: the crops grown (CDL 2008-2025)
 # and the yields obtained (NASS Story County, and Iowa for wheat and other crops Story does not report).
 #
 # GAEZ attainable yield is dry weight; NASS reports grain at market moisture, so NASS is converted to dry
@@ -61,7 +61,12 @@ nass = if File.exist?(path("nass/yield_county.json"))
            county = sel.select { |r| r["agg_level_desc"] == "COUNTY" }
            state = sel.select { |r| r["agg_level_desc"] == "STATE" }
            pick = county.any? ? county : state
-           [ k, { level: county.any? ? "Story County" : "Iowa",
+           series, preferred = nass_yields(k)
+           if series.any? # the site's preferred series (non-irrigated first where it exists, sites.yml)
+             next [ k, { level: "#{SITE['county_name']} County (#{preferred.split(' - ').first.downcase})", by_year: series } ]
+           end
+
+           [ k, { level: county.any? ? "#{SITE['county_name']} County" : SITE["state_name"],
                  by_year: pick.filter_map { |r| (v = Float(r["Value"].to_s.delete(","), exception: false)) && [ r["year"].to_i, v ] }.to_h } ]
          end
 end
@@ -88,10 +93,10 @@ yield_ok = checks.slice(CORN, SOY).values.all? { |c| c[:diff_pct] && c[:diff_pct
 pass = nass ? rank_ok && yield_ok : nil
 record("V3",
        question: "Does the crop evidence point at the crops that thrive here?",
-       truth: "CDL crops grown at the pin 2008-2025; NASS Story County (and Iowa) yields",
+       truth: "CDL crops grown at the pin 2008-2025; NASS #{SITE['county_name']} County (and #{SITE['state_name']}) yields",
        criterion: "Corn and soybean ranked above wheat and sunflower; GAEZ attainable yield within +-30% of NASS (2001-2010) for both",
        verdict: verdict(pass),
-       summary: "GAEZ #{distinguishes ? 'separates' : 'does not separate'} the crops (all #{gaez_rows.values.first[:suit_high]&.round} at high input); " \
+       summary: "GAEZ #{distinguishes ? "separates the crops (#{gaez_rows.map { |k, r| "#{GAEZ_NAME[k]} #{r[:suit_high]&.round}" }.join(', ')})" : "does not separate the crops (all #{gaez_rows.values.first[:suit_high]&.round} at high input)"}; " \
                 "water model ranks #{top_water.map { |k| GAEZ_NAME[k] }.join(' and ')} first; " \
                 "attainable vs NASS: #{checks.map { |k, c| "#{GAEZ_NAME[k]} #{c[:diff_pct]}%" }.join(', ').then { |s| s.empty? ? 'needs NASS' : s }}",
        details: { grown: grown, gaez: gaez_rows, gaez_other: others, water_mean_factor: water, gaez_vs_nass: checks })

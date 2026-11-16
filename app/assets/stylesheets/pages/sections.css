@@ -302,3 +302,20 @@
 .strategy__source { font-size: var(--text-xs); color: var(--color-text-tertiary); }
 .strategy .btn, .strategy form { justify-self: start; }
 .potential__water { font-size: var(--text-sm); color: var(--color-text-secondary); }
+
+/* Recording a harvest: amount, unit and area side by side from tablet width */
+.harvest-form__row { display: grid; gap: var(--space-3); }
+@media (min-width: 640px) {
+  .harvest-form__row { grid-template-columns: 2fr 1fr 1fr; align-items: start; }
+}
+
+/* The Rotation tab's one-tap water question (app/rotations/_water_question) */
+.water-question {
+  margin-block: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-accent);
+  background: var(--color-accent-muted);
+}
+.water-question__title { margin: 0 0 var(--space-1); font-size: var(--text-base); font-weight: 600; }
+.water-question__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }

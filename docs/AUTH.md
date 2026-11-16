@@ -56,6 +56,19 @@ The second way in, for people who find the passkey prompt unfamiliar or whose de
 
 Guards: `codes/email` (5 per address per 15 min), `codes/ip` (10), `verify/ip` (20) and `auth/ip` in Rack::Attack; the `mail` switch (`Platform::Switchboard.guard!(:mail)`) and `Platform::Features.mail?` hide or refuse the option calmly; `SignInCodes::PurgeJob` deletes rows after a day; `sessions.sign_in_method` records how each session started. After a code sign-in the person is invited once (a toast) to add a passkey from `/passkeys`; `PasskeysController#destroy` lets the last passkey go when the address is verified.
 
+## Google, Apple and Microsoft (`OmniauthCallbacksController`, `config/initializers/omniauth.rb`)
+
+A third way in beside passkeys and emailed codes, web only for now.
+
+- **Providers appear once their credentials exist** (`oauth.google.client_id/client_secret`, `oauth.apple.client_id/team_id/key_id/private_key`, `oauth.microsoft.client_id/client_secret`); `ApplicationHelper#social_providers` lists them in the order Google, Apple, Microsoft and hides them in the native shells, when browsers are shut out (`NativeOnly`) and while the `oauth` switch is paused.
+- **The buttons** (`sign_in_codes/_social`, under the two cards on `/sign_in`, `/sign_up` and the finder's save step) are plain POST forms to OmniAuth's request phase (`/auth/:provider`, CSRF-checked by omniauth-rails_csrf_protection), outside Turbo. In the finder they carry the finder's hidden field inputs; `OmniAuth.config.before_request_phase` keeps those, the language and `intent` (sign_in or connect) in `session["oauth_pending"]`.
+- **The callback** (`/auth/:provider/callback`, CSRF skipped: OmniAuth's state is the check) hands the auth hash to `Auth::SocialSignInService`: a linked account signs in; a verified Google or Apple address that belongs to an account links and signs in ("proof wins", as with the code); an unverified one (Microsoft's always) is refused, never linked; otherwise a new account, with the finder's field. Sessions record the provider as `sign_in_method` (`google_oauth2`, `apple`, `microsoft_graph`). No provider token is kept.
+- **Apple** answers with a cross-site form POST that carries no SameSite=Lax cookie, so its registered return URL is `https://<host>/auth/apple/return`, a page that re-posts the same fields to `/auth/apple/callback` from our origin.
+- **Connected accounts** on `/passkeys`: connect (POST `/auth/:provider` with `intent=connect` while signed in), disconnect (`IdentitiesController#destroy`, `Auth::DisconnectIdentityService`) unless it is the last way in. A passkey can now be removed when a connected account remains.
+- **Pause**: `bin/rails platform:pause[oauth]`; `OmniauthPauseGate` (ahead of OmniAuth) sends the request phase to `/auth/failure?message=paused`.
+- **Provider setup**: Google, an OAuth client with `https://<host>/auth/google_oauth2/callback`; Apple, a Services ID, a Sign in with Apple key and `https://<host>/auth/apple/return`; Microsoft, an app registration with `https://<host>/auth/microsoft_graph/callback`.
+- **Not yet**: the native shells. Google refuses embedded web views, so the shells must open the system browser (ASWebAuthenticationSession, Custom Tabs) and come back through a one-use `AuthHandoff` token (`Auth::Handoffs.mint`, `Auth::RedeemHandoffService`); the route and the bridge are the next step. If the iOS app offers Google, App Review also expects Sign in with Apple there.
+
 ## Sign-ups
 
 `SIGNUPS_ENABLED=0` closes account creation while sign-in stays open (`ensure_signups_open`, `signups_enabled?` in views).

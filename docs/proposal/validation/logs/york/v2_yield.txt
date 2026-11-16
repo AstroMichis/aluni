@@ -1,0 +1,76 @@
+NASS zea-mays: CORN, GRAIN, NON-IRRIGATED - YIELD, MEASURED IN BU / ACRE (22 years)
+NASS glycine-max: SOYBEANS, NON-IRRIGATED - YIELD, MEASURED IN BU / ACRE (18 years)
+
+== Corn: modelled yield factor by rain source vs York County records ==
+year  NASS bu/ac  anomaly%  | factor POWER  IMERG  Daymet  App   | RMA drought+heat $  top weather cause
+2001      111.0      46.0  |      0.339  0.405   0.302  0.382 |            114800  drought ($93605)
+2002       38.0     -53.2  |      0.195  0.275   0.262    0.2 |           2400624  drought ($2306082)
+2003       32.0     -63.0  |      0.304  0.371   0.264  0.399 |           2190120  drought ($2141297)
+2004      127.0      38.3  |      0.398  0.476   0.323  0.384 |             83644  drought ($83644)
+2005       84.0     -13.5  |      0.397  0.386   0.398   0.35 |            304721  drought ($283856)
+2006       73.0     -28.7  |      0.338  0.345   0.273  0.461 |            942413  drought ($937011)
+2007      146.0      35.7  |        0.7  0.637   0.681  0.666 |              7973  grp/grip  crops only` ($255821)
+2008      154.0      36.4  |      0.729  0.683   0.782  0.633 |              1828  grp/grip  crops only` ($1836387)
+2009      158.9      34.5  |      0.468  0.488   0.551  0.494 |                 0  hail ($193380)
+2010      149.5      21.2  |      0.695  0.732   0.662  0.561 |                 0  wind/excess wind ($53015)
+2011      143.6      11.6  |      0.571  0.582   0.744  0.499 |             16145  hail ($161587)
+2012       54.1     -59.6  |       0.12  0.143   0.137  0.102 |           5442443  drought ($4732890)
+2013      107.6     -22.7  |      0.387  0.394   0.382  0.274 |           1490578  drought ($1170348)
+2014      148.1       2.5  |      0.642  0.686   0.692  0.704 |              5673  hail ($10950101)
+2015      166.8      11.4  |      0.697  0.805   0.751  0.606 |              5089  excess moisture/precipitation/rain ($242605)
+2016      158.2       2.1  |      0.334  0.418   0.349  0.422 |            696137  heat ($690890)
+2017      156.5      -2.3  |      0.488  0.566   0.566  0.502 |               898  wind/excess wind ($485238)
+2018          -         -  |      0.561  0.513   0.626    0.7 |             27495  hail ($838853)
+2019          -         -  |      0.794  0.799   0.886  0.854 |                 0  excess moisture/precipitation/rain ($244745)
+2020          -         -  |      0.341  0.406   0.408  0.362 |              9177  wind/excess wind ($267865)
+2021          -         -  |      0.339  0.364   0.369  0.348 |             61269  wind/excess wind ($76264)
+2022          -         -  |      0.243  0.359   0.396  0.268 |            690014  hail ($55350332)
+2023          -         -  |      0.232  0.314   0.278  0.309 |           4805888  hail ($11111571)
+2024          -         -  |      0.507  0.587    0.52  0.418 |            389862  heat ($244957)
+2025          -         -  |      0.577  0.624   0.446    0.7 |             33135  wind/excess wind ($447265)
+POWER  r vs NASS anomaly 0.66 (p=0.0026); rank corr. with RMA drought+heat losses 0.84 (p=0.0002); 3 lowest modelled years [2012, 2002, 2023]; years with any stress: 25
+IMERG  r vs NASS anomaly 0.65 (p=0.0034); rank corr. with RMA drought+heat losses 0.83 (p=0.0002); 3 lowest modelled years [2012, 2002, 2023]; years with any stress: 25
+Daymet r vs NASS anomaly 0.6 (p=0.011); rank corr. with RMA drought+heat losses 0.86 (p=0.0002); 3 lowest modelled years [2012, 2002, 2003]; years with any stress: 25
+App rule r vs NASS anomaly 0.63 (p=0.0052); rank corr. with RMA drought+heat losses 0.75 (p=0.0002); 3 lowest modelled years [2012, 2002, 2022]; years with any stress: 25
+Lowest-quarter modelled years: [2002, 2003, 2006, 2012, 2016, 2022, 2023]; of them above trend in reality: [2016]
+With the FAO-56 maximum root depth (1.7 m): r vs NASS anomaly 0.68; years with any stress 17
+Bad years (NASS anomaly <= -10%) the water model did not flag: 2005 (drought), 2013 (drought)
+2025: modelled factor 0.577 (POWER rain), 0.446 (Daymet rain), deep roots 0.755; NASS anomaly n/a%; RMA causes {"decline in price" => 111972, "drought" => 17273, "heat" => 15862, "hail" => 366757, "excess moisture/precipitation/rain" => 5455, "arpi/sco/eco/stax/mp/pace crops only" => 2316504, "wind/excess wind" => 447265}
+
+== Soybean: modelled yield factor by rain source vs York County records ==
+year  NASS bu/ac  anomaly%  | factor POWER  IMERG  Daymet  App   | RMA drought+heat $  top weather cause
+2001       40.0      14.6  |      0.418  0.474    0.41  0.474 |             78951  drought ($51420)
+2002       28.0     -21.6  |      0.377  0.398   0.388  0.398 |            672308  drought ($596401)
+2003       17.0     -53.4  |      0.456   0.49    0.43   0.49 |           1589417  drought ($1514399)
+2004       39.0       4.6  |      0.487  0.492    0.44  0.492 |            175860  drought ($143582)
+2005       39.0       2.4  |      0.496  0.487   0.452  0.487 |             31587  excess moisture/precipitation/rain ($103250)
+2006       41.0       5.4  |      0.492  0.483   0.496  0.483 |            108112  hail ($112707)
+2007       53.0      33.5  |      0.661  0.662   0.667  0.662 |              2412  excess moisture/precipitation/rain ($43978)
+2008       49.0      21.0  |      0.688  0.657   0.724  0.657 |              1656  hail ($252129)
+2009       52.0      25.9  |      0.549  0.559    0.61  0.559 |              2685  hail ($116360)
+2010       49.3      17.1  |      0.641  0.639   0.626  0.639 |                 0  excess moisture/precipitation/rain ($60587)
+2011       51.8      20.8  |      0.575  0.593   0.693  0.593 |             10736  hail ($145502)
+2012       20.1     -54.0  |      0.316  0.323   0.322  0.323 |           2867840  drought ($2481984)
+2013       36.8     -17.3  |       0.43  0.437    0.43  0.437 |            576209  drought ($430206)
+2014          -         -  |      0.722   0.74   0.752   0.74 |                 0  hail ($966026)
+2015          -         -  |      0.656  0.732   0.704  0.732 |              9989  hail ($124773)
+2016          -         -  |      0.444  0.504   0.463  0.504 |              8771  hail ($18173)
+2017          -         -  |      0.515  0.564   0.582  0.564 |              1549  hail ($58191)
+2018          -         -  |      0.667  0.638   0.714  0.638 |             10448  hail ($3000869)
+2019          -         -  |      0.798  0.809   0.862  0.809 |                 0  excess moisture/precipitation/rain ($123298)
+2020          -         -  |      0.462  0.512    0.52  0.512 |              2051  excess moisture/precipitation/rain ($13973)
+2021          -         -  |      0.482  0.498   0.467  0.498 |             17504  hail ($22140)
+2022          -         -  |      0.402  0.459    0.49  0.459 |            167392  hail ($3185341)
+2023          -         -  |        0.4  0.442    0.41  0.442 |           2513278  hail ($3819748)
+2024          -         -  |       0.51   0.56   0.513   0.56 |            167644  hail ($184915)
+2025          -         -  |      0.674   0.67   0.586   0.67 |             15045  hail ($13750)
+POWER  r vs NASS anomaly 0.77 (p=0.0012); rank corr. with RMA drought+heat losses 0.76 (p=0.0002); 3 lowest modelled years [2012, 2002, 2023]; years with any stress: 25
+IMERG  r vs NASS anomaly 0.78 (p=0.001); rank corr. with RMA drought+heat losses 0.82 (p=0.0002); 3 lowest modelled years [2012, 2002, 2013]; years with any stress: 25
+Daymet r vs NASS anomaly 0.77 (p=0.0014); rank corr. with RMA drought+heat losses 0.83 (p=0.0002); 3 lowest modelled years [2012, 2002, 2001]; years with any stress: 25
+App rule r vs NASS anomaly 0.78 (p=0.001); rank corr. with RMA drought+heat losses 0.82 (p=0.0002); 3 lowest modelled years [2012, 2002, 2013]; years with any stress: 25
+Lowest-quarter modelled years: [2001, 2002, 2012, 2013, 2016, 2022, 2023]; of them above trend in reality: [2001]
+With the FAO-56 maximum root depth (1.3 m): r vs NASS anomaly 0.77; years with any stress 13
+Bad years (NASS anomaly <= -10%) the water model did not flag: 2003 (drought)
+2025: modelled factor 0.674 (POWER rain), 0.586 (Daymet rain), deep roots 0.787; NASS anomaly n/a%; RMA causes {"decline in price" => 8969, "drought" => 3166, "heat" => 11879, "hail" => 13750, "excess moisture/precipitation/rain" => 3914, "wind/excess wind" => 430, "insects" => 3619}
+
+V2: PASS  corn PASS: r=0.66 vs NASS, 2012 flagged, rho=0.84 vs RMA drought; soybean PASS: r=0.77 vs NASS, 2012 flagged, rho=0.76 vs RMA drought

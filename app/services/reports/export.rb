@@ -70,11 +70,12 @@ module Reports
     def fields_block = [ [ t("app.reports.show.fields_title") ], @view.report_field_header, *@view.report_field_rows(@farm) ]
 
     def field_crops_block
-      header = %w[field season role crop share hectares planting harvest source].map { |key| t("app.reports.export.csv.columns.#{key}") }
+      header = %w[field season role crop share hectares planting harvest source yield yield_unit price cost currency margin].map { |key| t("app.reports.export.csv.columns.#{key}") }
       rows = @farm.fields.flat_map do |field|
         field.record.field_crops.map do |c|
           [ @view.plot_name(field), c.season_year, @view.value_label("crop_role", c.role), c.crop_name, "#{(c.portion * 100).round}%",
-            round(field.area_hectares * c.portion), c.planting_month, c.harvest_month, t("app.fields.crop_sources.#{c.source}") ]
+            round(field.area_hectares * c.portion), c.planting_month, c.harvest_month, t("app.fields.crop_sources.#{c.source}"),
+            c.yield_amount&.to_f, c.yield_unit && "#{c.yield_unit}/#{c.area_basis}", c.price&.to_f, c.cost&.to_f, c.currency, c.margin_per_ha&.round ]
         end
       end
       [ [ t("app.reports.export.csv.field_crops") ], header, *rows ]
@@ -109,7 +110,13 @@ module Reports
 
     def crop_hash(field, crop)
       { "crop" => crop.crop_name, "scientific_name" => crop.scientific_name, "share" => crop.portion, "hectares" => round(field.area_hectares * crop.portion),
-        "cells" => crop.map_cells, "planting_month" => crop.planting_month, "harvest_month" => crop.harvest_month, "source" => crop.source }
+        "cells" => crop.map_cells, "planting_month" => crop.planting_month, "harvest_month" => crop.harvest_month, "source" => crop.source,
+        "harvest" => crop.harvest? ? harvest_hash(crop) : nil }
+    end
+
+    def harvest_hash(crop)
+      { "yield" => crop.yield_amount.to_f, "yield_unit" => crop.yield_unit, "area_basis" => crop.area_basis, "price" => crop.price&.to_f,
+        "cost" => crop.cost&.to_f, "currency" => crop.currency, "margin_per_ha" => crop.margin_per_ha&.round }
     end
 
     # Every datum of the farm and each field, with its state, source and confidence.

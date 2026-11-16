@@ -1,5 +1,6 @@
 <% content_for :title, t(".title", app_name: t("app_name")) %>
 <% planted = @farm.fields.reject(&:empty?) %>
+<% years = (Date.current.year - Fields::SeasonLayoutService::PAST_SEASONS)..Date.current.year %>
 
 <div class="screen">
   <%= render "shared/screen_bar", back_path: back_to_menu_path, back_label: t("app.fields.back_to_menu"), title: t("app.reports.show.crumb"), section: :reports %>
@@ -14,31 +15,54 @@
       <p class="screen__lede"><%= t("app.crops.show.none") %></p>
     <% end %>
 
-    <ul class="harvest" role="list">
-      <% planted.each do |field| %>
-        <% potential = Crops::Potential.new(field.observation("gaez")) %>
-        <% field.current_crops.each do |crop| %>
-          <% row = potential.for(crop) %>
-          <% area = field.area_hectares * crop.portion %>
-          <li class="harvest__row">
-            <span class="harvest__name"><%= plot_name(field) %> <small><%= crop_name(crop) %> · <%= portion_area(field, crop.portion) %></small></span>
-            <% if row&.yield_t %>
-              <span class="harvest__value"><%= t("app.crops.attainable", value: chart_number(row.yield_t)) %>
-                <small><%= t(".total", value: chart_number(row.yield_t * area, 0)) %></small></span>
-              <span class="meter-list__bar"><span class="meter-list__fill" style="--share: <%= [ row.suitability.to_f / 10000, 1 ].min.round(3) %>"></span></span>
-            <% else %>
-              <span class="harvest__missing"><%= Crops::Agronomy.gaez_name(crop) ? t("app.crops.gaez_pending") : t("app.crops.no_gaez") %></span>
-            <% end %>
-          </li>
-        <% end %>
-      <% end %>
-    </ul>
-
-    <p class="choice-set__hint"><%= t(".note") %></p>
-
-    <section class="screen__section gap-card" aria-labelledby="harvest-own">
+    <section class="screen__section" aria-labelledby="harvest-own">
       <h2 class="screen__section-title" id="harvest-own"><%= t(".own.title") %></h2>
-      <%= render "shared/aluni", message: t(".own.body") %>
+      <ul class="harvest" role="list">
+        <% planted.each do |field| %>
+          <% field.main_crops.select { |c| years.cover?(c.season_year) }.reverse_each do |crop| %>
+            <li class="harvest__row">
+              <span class="harvest__name"><%= plot_name(field) %> · <%= crop.season_year %> <small><%= crop_name(crop) %> · <%= portion_area(field, crop.portion) %></small></span>
+              <% if crop.harvest? %>
+                <span class="harvest__value"><%= harvest_yield(crop) %>
+                  <% if (margin = crop.margin_per_ha) %><small><%= t(".own.margin", value: harvest_money(margin, crop.currency)) %></small><% end %></span>
+              <% else %>
+                <span class="harvest__missing"><%= t(".own.missing") %></span>
+              <% end %>
+              <%= link_to crop.harvest? ? t(".own.edit") : t(".own.record"), edit_app_field_harvest_path(field.key, crop), class: "reading__edit" %>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+      <p class="choice-set__hint"><%= t(".own.hint") %></p>
+    </section>
+
+    <section class="screen__section" aria-labelledby="harvest-reference">
+      <h2 class="screen__section-title" id="harvest-reference"><%= t(".reference.title") %></h2>
+      <p class="choice-set__hint"><%= t(".reference.lede") %></p>
+      <ul class="harvest" role="list">
+        <% planted.each do |field| %>
+          <% potential = Crops::Potential.new(field.observation("gaez")) %>
+          <% field.current_crops.each do |crop| %>
+            <% row = potential.for(crop) %>
+            <% area = field.area_hectares * crop.portion %>
+            <li class="harvest__row">
+              <span class="harvest__name"><%= plot_name(field) %> <small><%= crop_name(crop) %> · <%= portion_area(field, crop.portion) %></small></span>
+              <% if row&.yield_t %>
+                <span class="harvest__value"><%= t("app.crops.attainable", value: chart_number(row.yield_t)) %>
+                  <% if field.record.area.present? %><small><%= t(".total", value: chart_number(row.yield_t * area, 0)) %></small><% end %></span>
+                <span class="meter-list__bar"><span class="meter-list__fill" style="--share: <%= [ row.suitability.to_f / 10000, 1 ].min.round(3) %>"></span></span>
+              <% else %>
+                <span class="harvest__missing"><%= Crops::Agronomy.gaez_name(crop) ? t("app.crops.gaez_pending") : t("app.crops.no_gaez") %></span>
+              <% end %>
+              <% if field.record.area.blank? %>
+                <%= link_to t(".add_area"), edit_focus_path(edit_app_field_path(field.key), "area"), class: "reading__edit" %>
+              <% end %>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+      <p class="choice-set__hint"><%= t(".note") %></p>
+      <%= render "shared/evidence_note", study: "v3", note: "crop_rank" %>
     </section>
   </main>
 </div>

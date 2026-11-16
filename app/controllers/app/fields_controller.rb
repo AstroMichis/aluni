@@ -23,7 +23,7 @@ module App
 
       case Fields::SaveService.call(user: Current.user, subject: @field.key, values: form_values(:field), confirm: form_confirmations)
       in Result::Success
-        redirect_to app_field_path(@field.key, tab: "data"), notice: t(".saved"), status: :see_other
+        redirect_to saved_path, notice: t(".saved"), status: :see_other
       in Result::Failure
         redirect_to edit_app_field_path(@field.key), alert: t("app.screens.invalid"), status: :see_other
       end
@@ -69,6 +69,13 @@ module App
       in Result::Failure(error)
         redirect_back fallback_location: root_path, alert: extract_error_message(error), status: :see_other
       end
+    end
+
+    # One answer given where it matters (the Rotation tab's water question) returns there.
+    def saved_path
+      return app_field_rotation_path(@field.key, zone: params[:zone].presence) if params[:return_to] == "rotation"
+
+      app_field_path(@field.key, tab: "data")
     end
 
     def set_field
