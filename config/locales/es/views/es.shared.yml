@@ -28,6 +28,9 @@ es:
       plan:
         title: "El plan de acción"
         detail: "Propuesta, presupuesto y hoja de ruta"
+      credits:
+        title: "Los créditos"
+        detail: "Cada fuente de datos, cómo y por qué la usamos"
     devices_link:
       short: "Sonda"
       label: "%{app_name} Sonda: estación de campo"

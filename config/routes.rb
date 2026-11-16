@@ -58,6 +58,7 @@ scope "(:locale)", locale: /en|es/ do
   # and the integrated project proposal, the action plan (docs/proposal/). Public, informational.
   get "evidence", to: "evidence#show", as: :evidence
   get "plan", to: "plan#show", as: :plan
+  get "credits", to: "credits#show", as: :credits
 
   # The welcome screen and the accessibility controls (cookie, plus the account when signed in).
   post "preferences", to: "preferences#update", as: :preferences

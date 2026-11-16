@@ -1,0 +1,35 @@
+/* The credits page (/credits): every source with its reference, what, why and how. Reuses the
+   evidence page's layout classes (.evidence__*); everything new is .credits*. Mobile first. */
+
+.credits__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
+@media (min-width: 1024px) { .credits__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.credits__item {
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+  scroll-margin-top: var(--space-16);
+}
+.credits__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.credits__name { margin: 0; margin-right: auto; font-size: var(--text-lg); color: var(--color-text-primary); }
+
+.credits__facts { margin: 0; display: grid; gap: var(--space-2); font-size: var(--text-sm); }
+.credits__facts dt { color: var(--color-text-tertiary); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.06em; }
+.credits__facts dd { margin: 0; color: var(--color-text-secondary); overflow-wrap: anywhere; }
+.credits__code { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.credits__code code { font-size: var(--text-xs); overflow-wrap: anywhere; }
+
+.credits__apa {
+  margin: 0;
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--color-accent);
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  overflow-wrap: anywhere;
+}
+.credits__apa a { color: var(--color-accent-text); }

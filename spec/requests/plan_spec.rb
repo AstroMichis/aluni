@@ -33,7 +33,8 @@ RSpec.describe "Action plan page", type: :request do
 
     body = response.body
     expect(body).to include("1. Executive summary", "2. How Aluni answers the challenge", "11. Reference tests: rerun every number")
-    expect(body).to include("40 of 40 reproduce", "24 of 24 checks pass")
+    expect(body).to include("52 of 52 reproduce", "24 of 24 checks pass")
+    expect(body).to include("York, Nebraska (rainfed)", "York: 5 pass, 1 reported, 2 fail", "$752")
     expect(body).not_to include("Draft for team review", "Open questions for the team", "Under revision", "Before submission", "Summary for the judges", "T5d")
   end
 

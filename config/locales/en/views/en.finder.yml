@@ -41,7 +41,7 @@ en:
       hint: "Tap the map or drag the pin onto your field."
       satellite: "Satellite view"
       osm_attribution: "© OpenStreetMap contributors"
-      esri_attribution: "Tiles © Esri"
+      esri_attribution: "Powered by Esri. Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community"
       pin: "Your field"
     status:
       locating: "Finding your location. If your device asks, allow it."

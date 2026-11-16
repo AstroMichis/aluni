@@ -16,6 +16,7 @@ require "yaml"
 VAL = File.expand_path("validation", __dir__)
 we = JSON.parse(File.read(File.expand_path("ames_worked_example_out.json", __dir__)))
 v = File.exist?(File.join(VAL, "validation_out.json")) ? JSON.parse(File.read(File.join(VAL, "validation_out.json"))) : {}
+y = File.exist?(File.join(VAL, "validation_out_york.json")) ? JSON.parse(File.read(File.join(VAL, "validation_out_york.json"))) : {}
 claims = YAML.safe_load_file(File.expand_path("claims.yml", __dir__))
 
 drift = 0

@@ -1,0 +1,200 @@
+en:
+  credits:
+    show:
+      title: "Credits and data sources · %{app_name}"
+      description: "Every data source, API, method and library %{app_name} uses: the APA reference, what is read, how, why, the licence and the credit each provider asks for."
+      nav_label: "Credits navigation"
+      back_home: "Back to the home page"
+      eyebrow: "Credits"
+      headline: "Where every number in %{app_name} comes from"
+      lede: "%{app_name} stands on public science. Here is each source we call, the formula we run and the library we ship: what we read from it, how, why, its licence and how to cite it."
+      tally_label: "Credits at a glance"
+      tally:
+        sources:
+          one: "%{count} source"
+          other: "%{count} sources"
+        nasa:
+          one: "%{count} from NASA"
+          other: "%{count} from NASA"
+        live:
+          one: "%{count} in the live app"
+          other: "%{count} in the live app"
+        doi:
+          one: "%{count} with a DOI"
+          other: "%{count} with a DOI"
+      jump_label: "Jump to a group"
+      read:
+        title: "How to read a card"
+        body: "Each card says what %{app_name} reads, why it needs it, and where in the code it happens (the file and the host it calls). The badges say whether the live app uses it or only the 2001 to 2025 backtest, and its licence. The reference below is in APA 7th edition, as the provider publishes it, with the DOI where there is one; the credit line is the wording the provider asks for."
+      groups:
+        nasa:
+          short: "NASA"
+          title: "NASA data"
+          lede: "The Earth observations at the heart of %{app_name}: weather, rain, soil moisture, ground water, plant greenness, plant stress and terrain."
+        data:
+          short: "Other data"
+          title: "Other data"
+          lede: "Soil, land, crop and statistics records that complement the NASA data, and the independent records the backtest scores %{app_name} against."
+        service:
+          short: "Services"
+          title: "Services and maps"
+          lede: "The interfaces and maps that carry the data to the field, and the language model behind the chat."
+        method:
+          short: "Methods"
+          title: "Methods"
+          lede: "The published formulas %{app_name} runs on the data. Nothing is fitted: every coefficient comes from these sources."
+        software:
+          short: "Software"
+          title: "Software and type"
+          lede: "The open libraries and typefaces the pages are built with."
+      used_in:
+        app: "Live app"
+        both: "Live app and backtest"
+        backtest: "Backtest only"
+      licences:
+        nasa_open: "Open, no restrictions"
+        public_domain: "Public domain"
+        copernicus: "Open, credit required"
+        cc_by: "CC BY 4.0"
+        odbl: "ODbL, credit required"
+        bsd: "BSD-2-Clause"
+        mit: "MIT"
+        ofl: "SIL Open Font License"
+        copyright: "Cited, not copied"
+        terms: "Provider's terms"
+        unknown: "Licence to confirm"
+      to_confirm: "Reference to confirm"
+      labels:
+        what: "What we read"
+        why: "Why"
+        how: "How (code and host)"
+        credit: "Credit asked for"
+      open:
+        title: "Still open"
+        licences: "No licence grant was found yet for %{names}. They are used under the provider's published terms while the team asks for written confirmation."
+        confirm:
+          one: "%{count} reference is marked to confirm: its wording follows the provider but its DOI has not yet been read back from the DOI registry or NASA's catalogue."
+          other: "%{count} references are marked to confirm: their wording follows the provider but their DOI has not yet been read back from the DOI registry or NASA's catalogue."
+      audit:
+        title: "How this page is checked"
+        body: "The list is a file in the repository, and a script checks it against the code: every web address the code calls must have a card here, every product, version and parameter named on a card must really appear in the file it names, and every credit that must sit on a map must be there in English and Spanish. The online check reads each DOI back from doi.org in APA style and each NASA product's DOI from NASA's catalogue."
+      cta_evidence: "See the evidence"
+      cta_plan: "See the action plan"
+      sources:
+        nasa_power:
+          what: "Daily temperature, rain and root-zone soil wetness for the season so far, and monthly normals of temperature, rain, frost days, humidity, wind and sunshine at the field's cell."
+          why: "The weather card, growing degree days, frost risk, each crop's water need (FAO-56 evapotranspiration), the climate scenarios and the pest scouting windows."
+        gpm_imerg:
+          what: "Daily satellite rain at 0.1 degree over the last 20 years, through the NASA POWER interface."
+          why: "How often it pours in each month, the months soil lies open to heavy rain, and the rain in every crop's water need."
+        grace:
+          what: "The monthly change in water stored in the ground across the region, from twin satellites that weigh it by gravity."
+          why: "Whether the region's soil and ground water are below their usual level."
+        smap:
+          what: "Root-zone soil moisture and its percentile, every 3 hours at 9 km, for the last 12 months."
+          why: "Whether the soil is wetter or drier than usual for the month."
+        modis_ndvi:
+          what: "Plant greenness (NDVI) every 16 days since 2001 at 250 m."
+          why: "How green the field usually is in each month, the baseline recent images are compared with."
+        ecostress:
+          what: "The evaporative stress index at 70 m from the space station, last 3 years."
+          why: "Whether the plants were short of water on the days it passed over."
+        nasadem:
+          what: "Elevation at the field and 90 m to each side."
+          why: "Slope for the soil loss estimate outside the United States."
+        gibs:
+          what: "A satellite picture about 40 km around the pin."
+          why: "So the farmer can confirm the area at a glance during onboarding."
+        appeears:
+          what: "NASA's point extraction service, used for SMAP, MODIS and ECOSTRESS."
+          why: "One request per product at the field instead of downloading whole files."
+        landsat:
+          what: "Red and near-infrared reflectance at the field, the clearest scene of each month."
+          why: "Monthly greenness at the field, together with Sentinel-2."
+        sentinel2:
+          what: "Red and near-infrared reflectance and the cloud mask at the field, 10 m."
+          why: "Monthly greenness at the field, and the green and bare months the timeline was scored against."
+        planetary_computer:
+          what: "The catalogue search and the service that computes a pixel's value."
+          why: "Values at one pixel without downloading a scene, and the greenness map tiles."
+        gaez:
+          what: "Crop suitability and attainable rainfed yield for the field's crops and 8 candidates, 1981 to 2010 climate."
+          why: "Which crops the climate and soil can carry, and their potential yield."
+        ecocrop:
+          what: "Each crop's temperature, rain, soil and pH ranges and season length."
+          why: "Whether a crop tolerates the field's climate and soil."
+        ssurgo:
+          what: "The soil at the pin: name, drainage, slope, organic matter, texture, water holding capacity, pH and erodibility."
+          why: "The soil card, the soil loss estimate and the soil water buffer."
+        usgs_3dep:
+          what: "Lidar elevation at the pin and 30 m around it."
+          why: "Slope for the soil loss estimate in the United States."
+        cdl:
+          what: "The crop mapped at the field in each recent year."
+          why: "The field's crop history for the rotation advice, and the truth for the crops grown in the backtest."
+        fcc_census_block:
+          what: "The US state and county that contain the pin."
+          why: "Whether the US data apply, and the farm's region without asking."
+        meteomatics:
+          what: "An hourly 7 day forecast at the pin: temperature, rain and its chance, humidity, dew point, wind, evapotranspiration and soil."
+          why: "The forecast card and the daily frost, rain and heat alerts."
+        nominatim:
+          what: "Place search and the name of the town under a pin."
+          why: "The field finder: type a town to find the field."
+        osm_tiles:
+          what: "Street map tiles."
+          why: "So the farmer recognises roads and towns when placing the pin."
+        esri_imagery:
+          what: "Satellite basemap tiles."
+          why: "So the farmer sees the field's edges when placing the pin and on the greenness map."
+        gemini:
+          what: "Written replies in the onboarding chat, crop names typed freely, and the plain language summary of a rotation."
+          why: "Help in plain words. Every number on the screens comes from the data sources, never from the model."
+        daymet:
+          what: "Daily rain and temperature at 1 km, 2001 to 2025."
+          why: "An independent check on NASA weather, and the rain pattern behind the soil loss estimate."
+        cocorahs:
+          what: "Daily volunteer rain gauge reports within 30 km of each test field."
+          why: "Ground truth for NASA rain."
+        rma_cause_of_loss:
+          what: "Crop insurance payouts by county, crop, cause and month."
+          why: "The truth for the drought years and pest losses the model should have flagged."
+        nass_quickstats:
+          what: "County yields, state prices, weekly planting progress and days suitable for fieldwork."
+          why: "The truth for the water model and the margin rule, and the month farmers in each state plant."
+        zhao_2022:
+          what: "A meta-analysis of 11,768 paired yields after a legume and after a cereal."
+          why: "The size of the rotation benefit, with its confidence interval."
+        fao56:
+          what: "Reference evapotranspiration, crop coefficients and root depths."
+          why: "Each crop's water need from NASA weather."
+        fao33:
+          what: "The yield response to water."
+          why: "Turns a water shortfall into a yield loss, to score against real yields."
+        cropwat:
+          what: "Effective rain from the monthly total."
+          why: "Only the rain that reaches the roots offsets a crop's need."
+        rusle:
+          what: "The soil loss equation and its canopy cover factor."
+          why: "Soil lost per hectare per year for each rotation, with and without a cover crop."
+        renard_freimund_1994:
+          what: "Rain erosivity from yearly rain."
+          why: "The rain factor where no storm record exists."
+        mccool_ls:
+          what: "The slope steepness and slope length factors."
+          why: "How slope and length speed up soil loss."
+        tar_spot_2023:
+          what: "The temperatures that favour tar spot on corn."
+          why: "When to scout corn for tar spot."
+        du_plessis_2020:
+          what: "Fall armyworm development thresholds."
+          why: "How many fall armyworm generations a season allows."
+        leaflet:
+          what: "The interactive map library."
+          why: "The field finder and the greenness map."
+        threejs:
+          what: "The 3D library."
+          why: "The field scene on the home page."
+        google_fonts:
+          what: "Inter, Fraunces and JetBrains Mono."
+          why: "The design system's type."

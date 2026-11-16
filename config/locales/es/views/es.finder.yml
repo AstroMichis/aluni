@@ -41,7 +41,7 @@ es:
       hint: "Toca el mapa o arrastra el marcador hasta tu campo."
       satellite: "Vista satélite"
       osm_attribution: "© Colaboradores de OpenStreetMap"
-      esri_attribution: "Teselas © Esri"
+      esri_attribution: "Con tecnología de Esri. Fuente: Esri, Maxar, Earthstar Geographics y la comunidad de usuarios de SIG"
       pin: "Tu campo"
     status:
       locating: "Buscando tu ubicación. Si tu dispositivo pregunta, permítelo."

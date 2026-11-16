@@ -55,7 +55,7 @@
                 data-ndvi-map-latitude-value="<%= field.record.latitude.to_f %>" data-ndvi-map-longitude-value="<%= field.record.longitude.to_f %>"
                 data-ndvi-map-tiles-value="<%= tiles %>"
                 data-ndvi-map-esri-attribution-value="<%= t("finder.map.esri_attribution") %>"
-                data-ndvi-map-ndvi-attribution-value="<%= t("app.vegetation.map.attribution", mission: t("app.vegetation.missions.#{scene.mission}")) %>"
+                data-ndvi-map-ndvi-attribution-value="<%= t("app.vegetation.map.attribution", mission: t("app.vegetation.missions.#{scene.mission}"), credit: t("app.vegetation.map.credits.#{scene.mission}", year: scene.date.to_s[0, 4])) %>"
                 data-ndvi-map-failed-value="<%= t("app.vegetation.map.failed") %>">
           <div class="vegetation__map" data-ndvi-map-target="map" role="img"
                aria-label="<%= t("app.vegetation.map.label", date: l(Date.iso8601(scene.date), format: :long)) %>"></div>

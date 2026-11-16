@@ -1,0 +1,766 @@
+# Every external data source, API, method and library Aluni uses, with its APA 7 reference, what is read,
+# how, why, the licence and the attribution its provider asks for. The public /credits page (CreditsController)
+# renders it; the words around it are in config/locales/{en,es}/views/*.credits.yml.
+# Checked by docs/proposal/credits_audit.rb:
+#   offline  every external host in the code maps to an entry here; every `code` match is really in that file
+#            (so "what is used" is proven against the code); every attribution is shown where it must be
+#   --online (Luis runs it; no web from Claude) each DOI is resolved at doi.org in APA style and compared with `apa`;
+#            each NASA product's DOI is read from NASA CMR by short name and version and compared with `doi`
+#
+# Fields
+#   name, licence_kind (nasa_open, public_domain, copernicus, cc_by, odbl, bsd, mit, ofl, copyright, terms, unknown)
+#   attribution_at  map: the credit must show on the map or image itself; otherwise the /credits page carries it
+#   group      nasa | data | method | service | software
+#   used_in    app (aluni.us), backtest (docs/proposal/validation), or both
+#   apa        the reference, APA 7th edition; `verify: true` marks a reference not yet confirmed against its DOI or provider
+#   cmr        NASA CMR short_name and version, for the --online DOI check
+#   code       [file, text that must appear in it]: where it is used, and the proof of the product, version or parameters
+#   hosts      the hosts the code calls for it
+#   licence    as read in docs/data_sources/*.md or the provider's terms; UNKNOWN where no grant was found
+#   attribution.required  the wording the provider asks for (nil when none is asked)
+#   attribution.shown     [file, text] where the app shows it; empty = not shown (a GAP when required)
+
+nasa_power:
+  name: NASA POWER
+  group: nasa
+  licence_kind: nasa_open
+  used_in: both
+  apa: "NASA Langley Research Center. (2025). Prediction Of Worldwide Energy Resources (POWER) Project: Daily, hourly and climatology API (Version 2) [Data set]. https://power.larc.nasa.gov/"
+  verify: true
+  what: "Daily T2M, T2M_MIN, T2M_MAX, PRECTOTCORR, GWETROOT for the season so far; climatology (monthly normals) of T2M, T2M_MIN, T2M_MAX, PRECTOTCORR, FROST_DAYS, RH2M, WS2M, ALLSKY_SFC_SW_DWN; the cell's elevation. Community AG, 0.5 x 0.625 degree cells. Backtest: the same daily parameters 2001-2025 plus WS2M, RH2M, ALLSKY, and hourly T2M, RH2M for the pest rules."
+  how: "NasaPower::Client GET /api/temporal/daily/point and /climatology/point at the pin, no key, through the data switchboard; Fields::FetchObservationsJob on every pin and weekly (Fields::RefreshObservationsJob). Backtest: validation/fetch.rb."
+  why: "Weather card, growing degree days and frost (Weather::Season), FAO-56 reference evapotranspiration (Weather::Et0) for every crop's water need, the climate scenarios, the pest scouting windows."
+  code:
+    - [app/services/nasa_power/client.rb, "power.larc.nasa.gov/api/temporal/"]
+    - [app/services/nasa_power/client.rb, "T2M T2M_MIN T2M_MAX PRECTOTCORR GWETROOT"]
+    - [app/services/nasa_power/client.rb, "FROST_DAYS RH2M WS2M ALLSKY_SFC_SW_DWN"]
+    - [docs/proposal/validation/fetch.rb, "hourly/point"]
+  hosts: [power.larc.nasa.gov]
+  licence: "NASA open data, no restrictions on use"
+  attribution:
+    required: "These data were obtained from the NASA Langley Research Center (LaRC) POWER Project funded through the NASA Earth Science/Applied Science Program."
+    must_include: "POWER Project"
+    shown: []
+
+gpm_imerg:
+  name: NASA GPM IMERG
+  group: nasa
+  licence_kind: nasa_open
+  used_in: both
+  apa: "Huffman, G. J., Stocker, E. F., Bolvin, D. T., Nelkin, E. J., & Tan, J. (2023). GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree V07 [Data set]. Goddard Earth Sciences Data and Information Services Center (GES DISC). https://doi.org/10.5067/GPM/IMERGDF/DAY/07"
+  doi: 10.5067/GPM/IMERGDF/DAY/07
+  cmr: { short_name: GPM_3IMERGDF, version: "07" }
+  verify: true
+  what: "Daily rain (IMERG_PRECTOT, Final Run, 0.1 degree, UTC days) over the last 20 years at the pin. The run version POWER serves is not stated in its API answer; V07 is assumed."
+  how: "Served through NASA POWER (NasaPower::Client#imerg_daily, parameter IMERG_PRECTOT, time-standard UTC), so no Earthdata login is needed."
+  why: "How often it pours (Weather::RainExtremes: heavy-rain days by month, the open-soil months on the timeline) and, since U-27, the rain in every crop's water need (Crops::WaterNeed rain_normals)."
+  code:
+    - [app/services/nasa_power/client.rb, "IMERG_PRECTOT"]
+    - [app/jobs/fields/fetch_observations_job.rb, "imerg_daily"]
+  hosts: [power.larc.nasa.gov]
+  licence: "NASA open data, no restrictions on use"
+  attribution:
+    required: "Cite the dataset DOI (NASA Earthdata data use guidance)."
+    must_include: "IMERG"
+    shown: []
+
+grace:
+  name: NASA GRACE and GRACE-FO
+  group: nasa
+  licence_kind: nasa_open
+  used_in: app
+  apa: "Wiese, D. N., Yuan, D.-N., Boening, C., Landerer, F. W., & Watkins, M. M. (2023). JPL GRACE and GRACE-FO Mascon Ocean, Ice, and Hydrology Equivalent Water Height Coastal Resolution Improvement (CRI) Filtered Release 06.3 Version 04 [Data set]. NASA Physical Oceanography DAAC. https://doi.org/10.5067/TEMSC-3JC634"
+  doi: 10.5067/TEMSC-3JC634
+  cmr: { short_name: TELLUS_GRAC-GRFO_MASCON_CRI_GRID_RL06.3_V4 }
+  verify: true
+  also_cite: "Watkins, M. M., Wiese, D. N., Yuan, D.-N., Boening, C., & Landerer, F. W. (2015). Improved methods for observing Earth's time variable mass distribution with GRACE using spherical cap mascons. Journal of Geophysical Research: Solid Earth, 120(4), 2648-2671. https://doi.org/10.1002/2014JB011547"
+  also_doi: 10.1002/2014JB011547
+  what: "Monthly liquid water equivalent thickness anomaly (cm, against 2004.0-2009.999) times the land scale factor, at the 0.5 degree cell (3 degree mascons), 2002 to date."
+  how: "Grace::Client reads PO.DAAC's open kerchunk reference file, then only the 4 lwe_thickness chunks and 1 scale-factor chunk holding the cell with HTTP Range requests, Earthdata bearer token (Earthdata::Token)."
+  why: "Whether the region's stored water (soil, ground water) is below its usual level (Weather::WaterStorage), for the water card."
+  code:
+    - [app/services/grace/client.rb, "TELLUS_GRAC-GRFO_MASCON_CRI_GRID_RL06.3_V4"]
+  hosts: [archive.podaac.earthdata.nasa.gov, urs.earthdata.nasa.gov]
+  licence: "NASA open data, no restrictions on use"
+  attribution:
+    required: "Cite the dataset DOI and Watkins et al. (2015) (PO.DAAC dataset page)."
+    must_include: "GRACE"
+    shown: []
+  finding: "docs/data_sources/grace.md cites doi:10.5067/TEMSC-3MJC6, an older release; the code reads RL06.3 V04."
+
+smap:
+  name: NASA SMAP L4
+  group: nasa
+  licence_kind: nasa_open
+  used_in: app
+  apa: "Reichle, R., De Lannoy, G., Koster, R. D., Crow, W. T., Kimball, J. S., Liu, Q., & Bechtold, M. (2025). SMAP L4 Global 3-hourly 9 km EASE-Grid Surface and Root Zone Soil Moisture Geophysical Data (Version 8) [Data set]. NASA National Snow and Ice Data Center Distributed Active Archive Center."
+  cmr: { short_name: SPL4SMGP, version: "008" }
+  verify: true
+  what: "Root-zone soil moisture (Geophysical_Data_sm_rootzone) and its percentile (sm_rootzone_pctl), 3-hourly, 9 km, last 12 months."
+  how: "AppEEARS point task (Fields::FetchAppeearsJob source smap, product SPL4SMGP.008), polled every 5 minutes, CSV summarised by Weather::SoilMoisture."
+  why: "Is the soil wetter or drier than usual for the month (water card, alerts)."
+  code:
+    - [app/jobs/fields/fetch_appeears_job.rb, "SPL4SMGP.008"]
+    - [app/jobs/fields/fetch_appeears_job.rb, "Geophysical_Data_sm_rootzone"]
+  hosts: [appeears.earthdatacloud.nasa.gov]
+  licence: "NASA open data, no restrictions on use"
+  attribution:
+    required: "Cite the dataset DOI (NSIDC citation policy)."
+    must_include: "SMAP"
+    shown: []
+
+modis_ndvi:
+  name: NASA MODIS NDVI (MOD13Q1)
+  group: nasa
+  licence_kind: nasa_open
+  used_in: app
+  apa: "Didan, K. (2021). MODIS/Terra Vegetation Indices 16-Day L3 Global 250m SIN Grid V061 [Data set]. NASA EOSDIS Land Processes Distributed Active Archive Center. https://doi.org/10.5067/MODIS/MOD13Q1.061"
+  doi: 10.5067/MODIS/MOD13Q1.061
+  cmr: { short_name: MOD13Q1, version: "061" }
+  what: "NDVI every 16 days since 2001 at 250 m, with the pixel reliability flag."
+  how: "AppEEARS point task (Fields::FetchAppeearsJob source modis, product MOD13Q1.061), summarised by Fields::VegetationNormal into a 20-year monthly normal."
+  why: "How green the field usually is in each month, the baseline the recent Landsat and Sentinel-2 NDVI is compared with."
+  code:
+    - [app/jobs/fields/fetch_appeears_job.rb, "MOD13Q1.061"]
+    - [app/jobs/fields/fetch_appeears_job.rb, "_250m_16_days_NDVI"]
+  hosts: [appeears.earthdatacloud.nasa.gov]
+  licence: "NASA open data, no restrictions on use"
+  attribution:
+    required: "Cite the dataset DOI (LP DAAC citation policy)."
+    must_include: "MODIS"
+    shown: []
+
+ecostress:
+  name: NASA ECOSTRESS
+  group: nasa
+  licence_kind: nasa_open
+  used_in: app
+  apa: "Fisher, J. B., & Halverson, G. H. (2022). ECOSTRESS Tiled Evaporative Stress Index PT-JPL Instantaneous L4 Global 70 m V002 [Data set]. NASA EOSDIS Land Processes Distributed Active Archive Center."
+  cmr: { short_name: ECO_L4T_ESI, version: "002" }
+  verify: true
+  what: "Evaporative Stress Index (ESI) with the cloud mask, 70 m, last 3 years of overpasses."
+  how: "AppEEARS point task (Fields::FetchAppeearsJob source ecostress, product ECO_L4T_ESI.002), summarised by Weather::WaterStress."
+  why: "Whether the plants at the pin were short of water on the days the space station passed over."
+  code:
+    - [app/jobs/fields/fetch_appeears_job.rb, "ECO_L4T_ESI.002"]
+  hosts: [appeears.earthdatacloud.nasa.gov]
+  licence: "NASA open data, no restrictions on use"
+  attribution:
+    required: "Cite the dataset DOI (LP DAAC citation policy)."
+    must_include: "ECOSTRESS"
+    shown: []
+
+nasadem:
+  name: NASADEM
+  group: nasa
+  licence_kind: nasa_open
+  used_in: app
+  apa: "NASA JPL. (2020). NASADEM Merged DEM Global 1 arc second V001 [Data set]. NASA EOSDIS Land Processes Distributed Active Archive Center. https://doi.org/10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001"
+  doi: 10.5067/MEaSUREs/NASADEM/NASADEM_HGT.001
+  cmr: { short_name: NASADEM_HGT, version: "001" }
+  what: "Elevation at the pin and at points 90 m to each side (slope), 60 N to 56 S."
+  how: "Microsoft Planetary Computer data API (PlanetaryComputer::Client#terrain, collection nasadem, band elevation_b1), no key."
+  why: "Slope and elevation outside the United States (USGS 3DEP is used inside it), for the erosion estimate."
+  code:
+    - [app/services/planetary_computer/client.rb, 'NASADEM = "nasadem"']
+  hosts: [planetarycomputer.microsoft.com]
+  licence: "NASA open data, no restrictions on use"
+  attribution:
+    required: "Cite the dataset DOI (LP DAAC citation policy)."
+    must_include: "NASADEM"
+    shown: []
+
+gibs:
+  name: NASA GIBS
+  group: nasa
+  licence_kind: nasa_open
+  used_in: app
+  apa: "NASA Global Imagery Browse Services. (n.d.). Blue Marble: Next Generation and MODIS Terra Corrected Reflectance (True Color) [Imagery service]. NASA Earth Science Data and Information System. https://gibs.earthdata.nasa.gov"
+  also_cite: "Stöckli, R., Vermote, E., Saleous, N., Simmon, R., & Herring, D. (2005). The Blue Marble Next Generation: A true color earth dataset including seasonal dynamics from MODIS. NASA Earth Observatory."
+  what: "A 512 px WMS picture about 40 km around the pin (layer BlueMarble_NextGeneration; MODIS_Terra_CorrectedReflectance_TrueColor when a date is given)."
+  how: "Onboarding::AreaImage builds a WMS 1.3.0 GetMap URL that the browser loads directly; no key."
+  why: "'Is this your area?' in onboarding, so the farmer can confirm the pin at a glance."
+  code:
+    - [app/services/onboarding/area_image.rb, "BlueMarble_NextGeneration"]
+    - [app/services/onboarding/area_image.rb, "gibs.earthdata.nasa.gov"]
+  hosts: [gibs.earthdata.nasa.gov]
+  licence: "NASA open imagery, no restrictions on use"
+  attribution:
+    required: "We acknowledge the use of imagery provided by services from NASA's Global Imagery Browse Services (GIBS), part of NASA's Earth Science Data and Information System (ESDIS)."
+    must_include: "GIBS"
+    shown:
+      - [config/locales/en/views/en.app.yml, "image_caption: NASA GIBS"]
+
+appeears:
+  name: NASA AppEEARS
+  group: service
+  licence_kind: nasa_open
+  used_in: app
+  apa: "AppEEARS Team. (2025). Application for Extracting and Exploring Analysis Ready Samples (AppEEARS) [Computer software]. NASA EOSDIS Land Processes Distributed Active Archive Center, USGS/Earth Resources Observation and Science Center. https://appeears.earthdatacloud.nasa.gov"
+  verify: true
+  what: "Point extraction service for SMAP, MODIS and ECOSTRESS (the products are cited on their own entries)."
+  how: "Appeears::Client: POST /api/login with the Earthdata account, POST /api/task, GET /api/task/{id}, then the results CSV."
+  why: "One asynchronous call per product at the pin instead of downloading whole granules."
+  code:
+    - [app/services/appeears/client.rb, "appeears.earthdatacloud.nasa.gov/api/"]
+  hosts: [appeears.earthdatacloud.nasa.gov, urs.earthdata.nasa.gov]
+  licence: "NASA service, free with an Earthdata login"
+  attribution:
+    required: "LP DAAC asks that AppEEARS be cited along with the products."
+    must_include: "AppEEARS"
+    shown: []
+
+landsat:
+  name: Landsat Collection 2 (USGS)
+  group: data
+  licence_kind: public_domain
+  attribution_at: map
+  used_in: app
+  apa: "U.S. Geological Survey. (2020). Landsat 8-9 Operational Land Imager / Thermal Infrared Sensor Level-2, Collection 2 [Data set]. https://doi.org/10.5066/P9OGBGM6"
+  doi: 10.5066/P9OGBGM6
+  what: "Red and NIR surface reflectance (red, nir08) and QA_PIXEL at the pin, least cloudy scene per month, last 12 months."
+  how: "Microsoft Planetary Computer STAC search (collection landsat-c2-l2) then the data API's point value; clear pixels only (QA bit 6 set, bits 1-4 clear)."
+  why: "Monthly NDVI at the field (Fields::Vegetation), together with Sentinel-2, so a cloudy month still gets a value."
+  code:
+    - [app/services/planetary_computer/client.rb, 'LANDSAT = "landsat-c2-l2"']
+  hosts: [planetarycomputer.microsoft.com]
+  licence: "US Government work, public domain"
+  attribution:
+    required: "Landsat imagery courtesy of the U.S. Geological Survey (USGS credit request)."
+    must_include: "U.S. Geological Survey"
+    shown:
+      - [config/locales/en/views/en.vegetation.yml, "Landsat courtesy of the U.S. Geological Survey"]
+
+sentinel2:
+  name: Copernicus Sentinel-2
+  group: data
+  licence_kind: copernicus
+  attribution_at: map
+  used_in: both
+  apa: "European Space Agency. (2022). Copernicus Sentinel-2 MSI Level-2A Bottom-of-Atmosphere Reflectance (Collection 1) [Data set]. https://doi.org/10.5270/S2_-znk9xsj"
+  doi: 10.5270/S2_-znk9xsj
+  verify: true
+  what: "B04 (red), B08 (NIR) and the scene classification (SCL) at the pin; clear pixels are SCL 4, 5, 6. Backtest: monthly NDVI 2013-2025 at the Ames and York pins (V8)."
+  how: "Microsoft Planetary Computer STAC search (collection sentinel-2-l2a) then the data API's point value; no imagery downloaded."
+  why: "Monthly NDVI at the field (with Landsat), and the observed bare and green months the timeline is scored against (V8)."
+  code:
+    - [app/services/planetary_computer/client.rb, 'COLLECTION = "sentinel-2-l2a"']
+  hosts: [planetarycomputer.microsoft.com]
+  licence: "Copernicus Sentinel data legal notice: free, full and open, attribution required"
+  attribution:
+    required: "Contains modified Copernicus Sentinel data [year]."
+    must_include: "Copernicus Sentinel"
+    shown:
+      - [config/locales/en/views/en.vegetation.yml, "Contains modified Copernicus Sentinel data"]
+
+planetary_computer:
+  name: Microsoft Planetary Computer
+  group: service
+  licence_kind: terms
+  used_in: both
+  apa: "Microsoft Open Source, McFarland, M., Emanuele, R., Morris, D., & Augspurger, T. (2022). microsoft/PlanetaryComputer: October 2022 (Version 2022.10.28) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.7261897"
+  doi: 10.5281/zenodo.7261897
+  verify: true
+  what: "STAC catalogue search and the TiTiler data API (point values, NDVI tiles for the vegetation map)."
+  how: "PlanetaryComputer::Client: POST /api/stac/v1/search, GET /api/data/v1/item/point; tiles in ndvi_map_controller.js. No key; 429s retried with backoff."
+  why: "Values at one pixel computed server side, so Aluni never downloads a scene."
+  code:
+    - [app/services/planetary_computer/client.rb, "planetarycomputer.microsoft.com/api/stac/v1/"]
+  hosts: [planetarycomputer.microsoft.com]
+  licence: "Service terms of use; each dataset keeps its own licence"
+  attribution:
+    required: "Credit the datasets' providers; the Planetary Computer asks to be cited with the Zenodo DOI."
+    must_include: "Planetary Computer"
+    shown:
+      - [config/locales/en/views/en.vegetation.yml, "via Microsoft Planetary Computer"]
+
+gaez:
+  name: FAO GAEZ v4
+  group: data
+  licence_kind: unknown
+  used_in: both
+  apa: "FAO & IIASA. (2021). Global Agro-Ecological Zones version 4 (GAEZ v4) [Data portal]. Food and Agriculture Organization of the United Nations. https://gaez.fao.org/"
+  verify: true
+  what: "Theme 5 (res05) suitability index (sx, 0-10000) and attainable yield (yx, kg DW/ha), 1981-2010 climate, CRU TS 3.2, rainfed, with CO2 fertilisation, high or low input, for the field's crops and 8 candidates (maize, soybean, wheat, oat, barley, sorghum, phaseolus bean, alfalfa)."
+  how: "Gaez::Client: ArcGIS ImageServer /query for the layer ids, /identify at the pin. Input level follows the farmer's budget and segment."
+  why: "Which crops the climate and soil can carry at the pin, and their potential yield (crop choice, the rotation comparator)."
+  code:
+    - [app/services/gaez/client.rb, "res05/ImageServer"]
+    - [app/services/gaez/client.rb, "year='1981-2010' AND model='CRUTS32' AND water_supply='Rainfed'"]
+  hosts: [gaez-services.fao.org]
+  licence: "UNKNOWN: no licence in the service metadata (licenseInfo null); FAO terms of use apply"
+  attribution:
+    required: "Source: FAO & IIASA, GAEZ v4 (FAO terms ask that FAO be acknowledged as the source)."
+    must_include: "GAEZ"
+    shown: []
+
+ecocrop:
+  name: FAO ECOCROP
+  group: data
+  licence_kind: unknown
+  used_in: app
+  apa: "Food and Agriculture Organization of the United Nations. (n.d.). ECOCROP: Crop ecological requirements database [Data set]. Extracted from the OpenCLIM EcoCrop_DB.csv, https://github.com/OpenCLIM/ecocrop"
+  verify: true
+  doi_of_extraction: 10.5281/zenodo.10843625
+  what: "Per crop: optimal and absolute temperature, rain, pH ranges, soil texture, drainage, depth, salinity, growing season length; extracted once into config/ecocrop.yml."
+  how: "Static file, generated by rake ecocrop:extract from EcoCrop_DB.csv on 2026-11-15; read by the crop screens."
+  why: "Whether a crop tolerates the field's climate and soil, and crop facts on the crop cards."
+  code:
+    - [config/ecocrop.yml, "Generated by rake ecocrop:extract from EcoCrop_DB.csv"]
+  hosts: []
+  licence: "UNKNOWN: the OpenCLIM repository has no licence file; FAO terms of use apply to the source"
+  attribution:
+    required: "FAO as the source."
+    must_include: "ECOCROP"
+    shown: []
+
+ssurgo:
+  name: USDA SSURGO
+  group: data
+  licence_kind: public_domain
+  used_in: both
+  apa: "Soil Survey Staff, Natural Resources Conservation Service, United States Department of Agriculture. (2025). Soil Survey Geographic (SSURGO) Database [Data set]. https://sdmdataaccess.sc.egov.usda.gov/"
+  what: "At the pin: map unit name, dominant major component, hydrologic group, drainage class, slope, USLE slope length, T factor, and its topsoil horizon's organic matter, sand, clay, available water capacity, pH and K factor."
+  how: "Ssurgo::Client POSTs one SQL query to Soil Data Access (Tabular/post.rest) using SDA_Get_Mukey_from_intersection_with_WktWgs84; no key; United States only."
+  why: "The soil card, the RUSLE K, LS and T inputs (Erosion::Rusle), the soil water buffer (backtest V2)."
+  code:
+    - [app/services/ssurgo/client.rb, "SDA_Get_Mukey_from_intersection_with_WktWgs84"]
+    - [app/services/ssurgo/client.rb, "kwfact"]
+  hosts: [sdmdataaccess.sc.egov.usda.gov]
+  licence: "US Government work, public domain"
+  attribution:
+    required: "Soil Survey Staff, NRCS, USDA. Soil Survey Geographic (SSURGO) Database. Available online. Accessed [date] (NRCS citation format)."
+    must_include: "SSURGO"
+    shown: []
+
+usgs_3dep:
+  name: USGS 3DEP
+  group: data
+  licence_kind: public_domain
+  used_in: app
+  apa: "U.S. Geological Survey. (2025). 3D Elevation Program Elevation Point Query Service [Data set]. https://epqs.nationalmap.gov/v1/"
+  what: "Elevation (m) at the pin and at 4 points 30 m away (slope in percent)."
+  how: "Usgs::ElevationClient GET /v1/json, retried when EPQS answers 200 without a value; United States only."
+  why: "Slope for the erosion estimate and the terrain card (NASADEM outside the US)."
+  code:
+    - [app/services/usgs/elevation_client.rb, "epqs.nationalmap.gov/v1/"]
+  hosts: [epqs.nationalmap.gov]
+  licence: "US Government work, public domain"
+  attribution:
+    required: "Data courtesy of the U.S. Geological Survey (USGS credit request)."
+    must_include: "USGS"
+    shown: []
+
+cdl:
+  name: USDA Cropland Data Layer
+  group: data
+  licence_kind: public_domain
+  used_in: both
+  apa: "USDA National Agricultural Statistics Service. (2025). Cropland Data Layer [Data set]. USDA NASS. https://nassgeodata.gmu.edu/CropScape/"
+  also_cite: "Han, W., Yang, Z., Di, L., & Mueller, R. (2012). CropScape: A Web service based application for exploring and disseminating US conterminous geospatial cropland data products for decision support. Computers and Electronics in Agriculture, 84, 111-123. https://doi.org/10.1016/j.compag.2012.03.005"
+  also_doi: 10.1016/j.compag.2012.03.005
+  what: "The crop mapped at the pin's 30 m pixel in each of the last 5 years (backtest: 2008-2025)."
+  how: "Cdl::Client converts the pin to CONUS Albers (EPSG:5070) and calls CDLService GetCDLValue per year; no key."
+  why: "The field's crop history for the rotation comparator; the truth for the crops grown in the backtest (V3, V7, V8)."
+  code:
+    - [app/services/cdl/client.rb, "nassgeodata.gmu.edu/axis2/services/CDLService/"]
+  hosts: [nassgeodata.gmu.edu]
+  licence: "US Government work, public domain"
+  attribution:
+    required: "USDA National Agricultural Statistics Service Cropland Data Layer. {YEAR}. Published crop-specific data layer [Online]. Available at https://nassgeodata.gmu.edu/CropScape/ (NASS citation format)."
+    must_include: "Cropland Data Layer"
+    shown: []
+
+fcc_census_block:
+  name: FCC Census Block API
+  group: service
+  licence_kind: public_domain
+  used_in: app
+  apa: "Federal Communications Commission. (n.d.). Census Block Conversions API [Application programming interface]. https://geo.fcc.gov/api/census/"
+  what: "State code, state name, county name and county FIPS for the pin."
+  how: "Fcc::Client GET /api/census/block/find; an empty answer means outside the US."
+  why: "Decides whether the US layer (SSURGO, 3DEP, CDL) applies, and fills the farm's region without asking."
+  code:
+    - [app/services/fcc/client.rb, "geo.fcc.gov/api/census/"]
+  hosts: [geo.fcc.gov]
+  licence: "US Government work, public domain"
+  attribution:
+    required: null
+    shown: []
+
+meteomatics:
+  name: Meteomatics Weather API
+  group: service
+  licence_kind: unknown
+  used_in: app
+  apa: "Meteomatics AG. (2026). Meteomatics Weather API [Application programming interface]. https://www.meteomatics.com/en/weather-api/"
+  what: "Hourly forecast for 7 days at the pin: t_2m, precip_1h, prob_precip_1h, relative_humidity_2m, dew_point_2m, wind_speed_10m, wind_gusts_10m_1h, evapotranspiration_1h, soil_moisture_index_-15cm, t_-5cm."
+  how: "Meteomatics::Client, HTTP Basic with the account (METEOMATICS_USERNAME/PASSWORD), one point query of up to 10 parameters; Weather::Forecast and Weather::DailyAlertsJob."
+  why: "The forecast card and the daily weather alerts (frost, heavy rain, heat)."
+  code:
+    - [app/services/meteomatics/client.rb, "api.meteomatics.com"]
+    - [app/services/meteomatics/client.rb, "soil_moisture_index_-15cm:idx"]
+  hosts: [api.meteomatics.com]
+  licence: "UNKNOWN: commercial API under the account's terms (hackathon offer); the terms were not captured in docs/data_sources/meteomatics.md"
+  attribution:
+    required: "Check the account's terms; Meteomatics usually asks for a visible credit."
+    must_include: "Meteomatics"
+    shown: []
+
+nominatim:
+  name: OpenStreetMap Nominatim
+  group: service
+  licence_kind: odbl
+  attribution_at: map
+  used_in: app
+  apa: "OpenStreetMap contributors. (2026). OpenStreetMap [Data set], via the Nominatim geocoding service. https://www.openstreetmap.org"
+  what: "Place search (up to 5 results) and reverse lookup at zoom 10, the pin rounded to 3 decimals."
+  how: "Geocoding::Client with an identifying User-Agent, search only on submit, per-IP throttle, 24 h cache, no retry on 429 (Nominatim usage policy)."
+  why: "The field finder: type a town to find the field; name the place under a pin."
+  code:
+    - [app/services/geocoding/client.rb, "nominatim.openstreetmap.org"]
+    - [app/services/geocoding/client.rb, 'USER_AGENT = "Aluni/1.0']
+  hosts: [nominatim.openstreetmap.org]
+  licence: "ODbL 1.0 (OpenStreetMap data); Nominatim usage policy"
+  attribution:
+    required: "© OpenStreetMap contributors"
+    must_include: "OpenStreetMap"
+    shown:
+      - [config/locales/en/views/en.finder.yml, "© OpenStreetMap contributors"]
+
+osm_tiles:
+  name: OpenStreetMap tiles
+  group: service
+  licence_kind: odbl
+  attribution_at: map
+  used_in: app
+  apa: "OpenStreetMap contributors. (2026). OpenStreetMap standard tile layer [Map tiles]. https://www.openstreetmap.org"
+  what: "Street map tiles behind the finder's pin."
+  how: "Leaflet tile layer tile.openstreetmap.org/{z}/{x}/{y}.png in field_map_controller.js."
+  why: "So the farmer recognises roads and towns when placing the pin."
+  code:
+    - [app/javascript/controllers/field_map_controller.js, "tile.openstreetmap.org"]
+  hosts: [tile.openstreetmap.org]
+  licence: "ODbL 1.0 data, CC BY-SA 2.0 tiles; OSMF tile usage policy (no heavy use)"
+  attribution:
+    required: "© OpenStreetMap contributors"
+    must_include: "OpenStreetMap"
+    shown:
+      - [config/locales/en/views/en.finder.yml, "© OpenStreetMap contributors"]
+
+esri_imagery:
+  name: Esri World Imagery
+  group: service
+  licence_kind: unknown
+  attribution_at: map
+  used_in: app
+  apa: "Esri. (2026). World Imagery [Basemap]. Sources: Esri, Maxar, Earthstar Geographics, and the GIS User Community. https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9"
+  what: "Satellite basemap tiles under the finder's pin and the NDVI map."
+  how: "Leaflet tile layer server.arcgisonline.com World_Imagery in field_map_controller.js and ndvi_map_controller.js, no key."
+  why: "So the farmer sees the actual field edges when placing the pin."
+  code:
+    - [app/javascript/controllers/field_map_controller.js, "World_Imagery/MapServer"]
+    - [app/javascript/controllers/ndvi_map_controller.js, "World_Imagery/MapServer"]
+  hosts: [server.arcgisonline.com]
+  licence: "UNKNOWN: Esri terms of use; use outside ArcGIS without an ArcGIS account is not clearly granted"
+  attribution:
+    required: "Powered by Esri. Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community."
+    must_include: "Maxar"
+    shown:
+      - [config/locales/en/views/en.finder.yml, "Powered by Esri. Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community"]
+
+gemini:
+  name: Google Gemini
+  group: service
+  licence_kind: terms
+  used_in: app
+  apa: "Google. (2026). Gemini 3.8 Flash [Large language model]. https://ai.google.dev/"
+  verify: true
+  what: "Text replies and structured JSON: the onboarding chat (draft and reply), intent classification, free-text crop names to the catalogue, the rotation narration."
+  how: "Gemini::Client over Faraday, Developer API (key, development) or Vertex AI (the VM's service account, production); model from GEMINI_FLASH_MODEL, default gemini-3.8-flash; daily cap and the gemini switch."
+  why: "Plain-language help; every number on the screens comes from the data sources, not from the model."
+  code:
+    - [app/services/gemini/client.rb, "gemini-3.8-flash"]
+    - [app/services/gemini/client.rb, "generativelanguage.googleapis.com"]
+  hosts: [generativelanguage.googleapis.com]
+  licence: "Gemini API / Vertex AI terms of service"
+  attribution:
+    required: null
+    shown: []
+
+# ---------------------------------------------------------------- backtest (docs/proposal/validation)
+
+daymet:
+  name: Daymet V4 R1
+  group: data
+  licence_kind: nasa_open
+  used_in: backtest
+  apa: "Thornton, M. M., Shrestha, R., Wei, Y., Thornton, P. E., Kao, S.-C., & Wilson, B. E. (2022). Daymet: Daily surface weather data on a 1-km grid for North America (Version 4 R1) [Data set]. ORNL DAAC. https://doi.org/10.3334/ORNLDAAC/2129"
+  doi: 10.3334/ORNLDAAC/2129
+  what: "Daily prcp, tmax, tmin, 2001-2025 at the Ames and York pins."
+  how: "validation/fetch.rb, Daymet single-pixel API (daymet.ornl.gov/single-pixel/api/data); no key."
+  why: "An independent 1 km check on NASA POWER (V1), a third rain source for the water model (V2), the daily erosivity weights (V6)."
+  code:
+    - [docs/proposal/validation/fetch.rb, "daymet.ornl.gov/single-pixel/api/data"]
+  hosts: [daymet.ornl.gov]
+  licence: "NASA/ORNL DAAC open data, no restrictions on use"
+  attribution:
+    required: "Cite the dataset DOI (and the single-pixel tool, https://doi.org/10.3334/ORNLDAAC/2361)."
+    must_include: "Daymet"
+    shown:
+      - [config/locales/en/views/en.evidence.yml, "Daymet"]
+
+cocorahs:
+  name: CoCoRaHS
+  group: data
+  licence_kind: unknown
+  used_in: backtest
+  apa: "Community Collaborative Rain, Hail and Snow Network. (2025). CoCoRaHS daily precipitation reports [Data set]. Colorado Climate Center, Colorado State University. https://www.cocorahs.org"
+  verify: true
+  what: "Daily gauge reports 2008-2025 from every gauge within 30 km of the pin (77 at York)."
+  how: "validation/fetch.rb, data.cocorahs.org export, gauges chosen by distance."
+  why: "Ground truth for NASA POWER and IMERG rain (V1)."
+  code:
+    - [docs/proposal/validation/fetch.rb, "data.cocorahs.org/export/exportreports.aspx"]
+  hosts: [data.cocorahs.org]
+  licence: "UNKNOWN: no licence captured in docs/data_sources/cocorahs.md"
+  attribution:
+    required: "Data courtesy of CoCoRaHS."
+    must_include: "CoCoRaHS"
+    shown:
+      - [config/locales/en/views/en.evidence.yml, "CoCoRaHS"]
+
+rma_cause_of_loss:
+  name: USDA RMA Cause of Loss
+  group: data
+  licence_kind: public_domain
+  used_in: backtest
+  apa: "USDA Risk Management Agency. (2025). Cause of loss historical data files, 2001-2025 [Data set]. https://www.rma.usda.gov/tools-reports/summary-of-business/cause-loss"
+  verify: true
+  what: "Insured indemnity by county, crop, cause and month, 2001-2025 (drought, heat, plant disease, mycotoxin, insects)."
+  how: "validation/fetch.rb downloads colsom_{year}.zip and keeps the site's state."
+  why: "Truth for the bad years the water model should flag (V2) and for the pest rules (V5)."
+  code:
+    - [docs/proposal/validation/fetch.rb, "cause_of_loss/colsom_"]
+  hosts: [pubfs-rma.fpac.usda.gov]
+  licence: "US Government work, public domain (CC0 on data.gov)"
+  attribution:
+    required: null
+    shown:
+      - [config/locales/en/views/en.evidence.yml, "USDA crop insurance losses by cause"]
+
+nass_quickstats:
+  name: USDA NASS Quick Stats
+  group: data
+  licence_kind: public_domain
+  used_in: both
+  apa: "USDA National Agricultural Statistics Service. (2025). Quick Stats database [Data set]. https://quickstats.nass.usda.gov/"
+  what: "County yields (corn, soybean; non-irrigated first at York), monthly state prices received, weekly crop progress (percent planted, all states) and days suitable for fieldwork, 2001-2025."
+  how: "validation/fetch.rb, GET quickstats.nass.usda.gov/api/api_GET with NASS_API_KEY read from Rails credentials at run time. The app reads only the planting calendars generated from it (config/crops/planting_calendars.yml, calendars.rb)."
+  why: "Truth for the water model and the margin rule (V2, V7); the month farmers in each state plant (Crops::PlantingCalendar, U-28)."
+  code:
+    - [docs/proposal/validation/fetch.rb, "quickstats.nass.usda.gov/api/api_GET/"]
+    - [config/crops/planting_calendars.yml, "USDA NASS weekly crop progress"]
+  hosts: [quickstats.nass.usda.gov]
+  licence: "US Government work, public domain; API terms of use"
+  attribution:
+    required: "This product uses the NASS API but is not endorsed or certified by NASS."
+    must_include: "not endorsed or certified by NASS"
+    shown: []
+
+zhao_2022:
+  name: Zhao et al. 2022
+  group: data
+  licence_kind: cc_by
+  used_in: backtest
+  apa: "Zhao, J., Chen, J., Beillouin, D., Lambers, H., Yang, Y., Smith, P., Zeng, Z., Olesen, J. E., & Zang, H. (2022). Global systematic review with meta-analysis reveals yield advantage of legume-based rotations and its drivers. Nature Communications, 13, Article 4926. https://doi.org/10.1038/s41467-022-32464-0"
+  doi: 10.1038/s41467-022-32464-0
+  data_doi: 10.6084/m9.figshare.20290923.v2
+  what: "The meta-analysis data.csv: paired yields of a crop after a legume vs after a cereal, with site climate and N rate."
+  how: "validation/fetch.rb reads the figshare article 20290923 metadata and downloads data.csv."
+  why: "The size of the rotation benefit (corn after soybean) with its confidence interval (V4), used in the margin rule (V7)."
+  code:
+    - [docs/proposal/validation/fetch.rb, "api.figshare.com/v2/articles/20290923"]
+  hosts: [api.figshare.com, ndownloader.figshare.com]
+  licence: "CC BY 4.0"
+  attribution:
+    required: "Cite the paper and the data (CC BY 4.0)."
+    must_include: "Zhao"
+    shown:
+      - [config/locales/en/views/en.evidence.yml, "Zhao et al. 2022"]
+
+# ---------------------------------------------------------------- methods (formulas in the code)
+
+fao56:
+  name: FAO-56
+  group: method
+  licence_kind: copyright
+  used_in: both
+  apa: "Allen, R. G., Pereira, L. S., Raes, D., & Smith, M. (1998). Crop evapotranspiration: Guidelines for computing crop water requirements (FAO Irrigation and Drainage Paper No. 56). Food and Agriculture Organization of the United Nations."
+  what: "Penman-Monteith ET0 (Eq. 6, 21), single Kc curve (Tables 11, 12), root depth and depletion (Table 22), canopy fraction (Eq. 76)."
+  how: "Weather::Et0, Crops::WaterNeed, Erosion::Rusle (canopy), validation/lib.rb."
+  why: "Each crop's water need from NASA weather."
+  code:
+    - [app/services/weather/et0.rb, "FAO-56 Penman-Monteith"]
+  licence: "FAO copyright; formulas cited, tables transcribed"
+  attribution: { required: null, shown: [] }
+
+fao33:
+  name: FAO-33
+  group: method
+  licence_kind: copyright
+  used_in: backtest
+  apa: "Doorenbos, J., & Kassam, A. H. (1979). Yield response to water (FAO Irrigation and Drainage Paper No. 33). Food and Agriculture Organization of the United Nations."
+  what: "Seasonal yield response factor Ky (Table 24): Ya/Ym = 1 - Ky (1 - ETa/ETc)."
+  how: "validation/lib.rb yield_factor."
+  why: "Turns a water shortfall into a yield loss to score against NASS yields (V2)."
+  code:
+    - [docs/proposal/validation/lib.rb, "FAO-33"]
+  licence: "FAO copyright; formula cited"
+  attribution: { required: null, shown: [] }
+
+cropwat:
+  name: CROPWAT (FAO-46)
+  group: method
+  licence_kind: copyright
+  used_in: both
+  apa: "Smith, M. (1992). CROPWAT: A computer program for irrigation planning and management (FAO Irrigation and Drainage Paper No. 46). Food and Agriculture Organization of the United Nations."
+  what: "Effective rain from the monthly total (USDA SCS method as implemented in CROPWAT)."
+  how: "Crops::WaterNeed, validation/lib.rb."
+  why: "Not all rain reaches the roots; only the effective part offsets the crop's need."
+  code:
+    - [app/services/crops/water_need.rb, "FAO/CROPWAT, Smith 1992"]
+  licence: "FAO copyright; formula cited"
+  attribution: { required: null, shown: [] }
+
+rusle:
+  name: RUSLE (Agriculture Handbook 703)
+  group: method
+  licence_kind: public_domain
+  used_in: both
+  apa: "Renard, K. G., Foster, G. R., Weesies, G. A., McCool, D. K., & Yoder, D. C. (1997). Predicting soil erosion by water: A guide to conservation planning with the Revised Universal Soil Loss Equation (RUSLE) (Agriculture Handbook No. 703). U.S. Department of Agriculture."
+  what: "A = R x K x LS x C x P; canopy cover CC = 1 - fc exp(-0.1 H) (Eq. 5-4)."
+  how: "Erosion::Rusle (app), validation/v6_erosion.rb."
+  why: "Soil loss in t/ha/yr per rotation, with and without a cover crop."
+  code:
+    - [app/services/erosion/rusle.rb, "Agriculture Handbook 703"]
+  licence: "US Government work, public domain"
+  attribution: { required: null, shown: [] }
+
+renard_freimund_1994:
+  name: Renard and Freimund 1994
+  group: method
+  licence_kind: copyright
+  used_in: both
+  apa: "Renard, K. G., & Freimund, J. R. (1994). Using monthly precipitation data to estimate the R-factor in the revised USLE. Journal of Hydrology, 157(1-4), 287-306. https://doi.org/10.1016/0022-1694(94)90110-4"
+  doi: 10.1016/0022-1694(94)90110-4
+  what: "Rainfall erosivity R from annual rain."
+  how: "Erosion::Rusle, validation/v6_erosion.rb."
+  why: "The R factor where no storm-by-storm record exists."
+  code:
+    - [app/services/erosion/rusle.rb, "Renard and Freimund 1994"]
+  licence: "Journal article; formula cited"
+  attribution: { required: null, shown: [] }
+
+mccool_ls:
+  name: "McCool et al. 1987, 1989"
+  group: method
+  licence_kind: copyright
+  used_in: both
+  apa: "McCool, D. K., Brown, L. C., Foster, G. R., Mutchler, C. K., & Meyer, L. D. (1987). Revised slope steepness factor for the Universal Soil Loss Equation. Transactions of the ASAE, 30(5), 1387-1396. https://doi.org/10.13031/2013.30576"
+  doi: 10.13031/2013.30576
+  also_cite: "McCool, D. K., Foster, G. R., Mutchler, C. K., & Meyer, L. D. (1989). Revised slope length factor for the Universal Soil Loss Equation. Transactions of the ASAE, 32(5), 1571-1576. https://doi.org/10.13031/2013.31192"
+  also_doi: 10.13031/2013.31192
+  verify: true
+  what: "Slope steepness S and slope length L factors."
+  how: "Erosion::Rusle, validation/v6_erosion.rb."
+  why: "The LS factor from the slope (3DEP or NASADEM) and the SSURGO slope length."
+  code:
+    - [app/services/erosion/rusle.rb, "McCool et al. (1987, 1989)"]
+  licence: "Journal articles; formulas cited"
+  attribution: { required: null, shown: [] }
+
+tar_spot_2023:
+  name: Webster et al. 2023
+  group: method
+  licence_kind: cc_by
+  used_in: both
+  apa: "Webster, R. W., Nicolli, C., Allen, T. W., Bradley, C. A., Chilvers, M. I., Kleczewski, N. M., Mueller, D. S., Robertson, A. E., Shim, S., Smith, D. L., & Telenko, D. E. P. (2023). Uncovering the environmental conditions required for Phyllachora maydis infection and tar spot development on corn in the United States for use as predictive models for future epidemics. Scientific Reports, 13, Article 17064. https://doi.org/10.1038/s41598-023-44338-6"
+  doi: 10.1038/s41598-023-44338-6
+  verify: true
+  what: "Tar spot favoured by a 30-day mean temperature of 18-23 C."
+  how: "Weather::ScoutWindows (app), validation/v5_pests.rb."
+  why: "When to scout corn for tar spot."
+  code:
+    - [app/services/weather/scout_windows.rb, "tar spot"]
+  licence: "CC BY 4.0 (Scientific Reports)"
+  attribution: { required: null, shown: [] }
+
+du_plessis_2020:
+  name: du Plessis et al. 2020
+  group: method
+  licence_kind: cc_by
+  used_in: both
+  apa: "du Plessis, H., Schlemmer, M.-L., & Van den Berg, J. (2020). The effect of temperature on the development of Spodoptera frugiperda (Lepidoptera: Noctuidae). Insects, 11(4), Article 228. https://doi.org/10.3390/insects11040228"
+  doi: 10.3390/insects11040228
+  what: "Fall armyworm lower threshold 12.57 C and 391 degree-days per generation."
+  how: "Weather::ScoutWindows (app), validation/v5_pests.rb."
+  why: "How many fall armyworm generations the season allows once it arrives."
+  code:
+    - [app/services/weather/scout_windows.rb, "du Plessis et al. 2020"]
+  licence: "CC BY 4.0 (MDPI)"
+  attribution: { required: null, shown: [] }
+
+# ---------------------------------------------------------------- software and fonts
+
+leaflet:
+  name: Leaflet 1.9.4
+  group: software
+  licence_kind: bsd
+  used_in: app
+  apa: "Agafonkin, V. (2023). Leaflet (Version 1.9.4) [Computer software]. https://leafletjs.com"
+  what: "The finder and NDVI maps."
+  how: "Vendored vendor/javascript/leaflet.js, loaded lazily."
+  why: "A small open map library without a bundler."
+  code:
+    - [vendor/javascript/leaflet.js, "Leaflet 1.9.4"]
+  licence: "BSD-2-Clause (vendor/javascript/leaflet.LICENSE.txt)"
+  attribution:
+    required: "Keep the copyright notice; Leaflet asks for the 'Leaflet' link in the attribution control."
+    must_include: "leafletjs.com"
+    shown:
+      - [vendor/javascript/leaflet.js, "prefix:'<a href=\"https://leafletjs.com\""]
+
+threejs:
+  name: three.js r169
+  group: software
+  licence_kind: mit
+  used_in: app
+  apa: "three.js authors. (2024). three.js (Version r169) [Computer software]. https://threejs.org"
+  what: "The landing page's field scene."
+  how: "Vendored vendor/javascript/three.js, loaded with await import()."
+  why: "The 3D hero scene."
+  code:
+    - [vendor/javascript/three.js, "169"]
+  licence: "MIT (keep the copyright notice)"
+  attribution: { required: null, shown: [] }
+
+google_fonts:
+  name: "Inter, Fraunces, JetBrains Mono"
+  group: software
+  licence_kind: ofl
+  used_in: app
+  apa: "Andersson, R. (2023). Inter [Typeface]; Undercase Type. (2018). Fraunces [Typeface]; JetBrains. (2020). JetBrains Mono [Typeface]. Served by Google Fonts, https://fonts.google.com"
+  verify: true
+  what: "Inter (UI), Fraunces (display), JetBrains Mono (numbers)."
+  how: "Stylesheet link to fonts.googleapis.com in the layouts."
+  why: "The design system's type."
+  code:
+    - [app/views/layouts/public.html.erb, "family=Fraunces"]
+  hosts: [fonts.googleapis.com, fonts.gstatic.com]
+  licence: "SIL Open Font License 1.1"
+  attribution: { required: null, shown: [] }
+
+# Hosts in the code that are not data sources (sign-in, metadata, links in comments).
+ignore_hosts: [urs.earthdata.nasa.gov, metadata.google.internal, aluni.us, www.w3.org, github.com, raw.githubusercontent.com,
+               leafletjs.com, bugzilla.mozilla.org, bugs.chromium.org, threejs.org]

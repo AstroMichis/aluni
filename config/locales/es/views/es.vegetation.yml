@@ -7,7 +7,10 @@ es:
         label: "Tu terreno desde arriba, coloreado según qué tan verde estaba el %{date}"
         caption: "NDVI del %{date} (%{mission}), sobre imagen satelital. Una escena, píxeles de 10 a 30 m."
         toggle: Mostrar u ocultar el NDVI
-        attribution: "NDVI: %{mission} vía Microsoft Planetary Computer"
+        attribution: "NDVI: %{mission} vía Microsoft Planetary Computer. %{credit}"
+        credits:
+          sentinel-2: "Contiene datos modificados de Copernicus Sentinel %{year}"
+          landsat: "Landsat por cortesía del U.S. Geological Survey"
         failed: No se pudo cargar el mapa. El gráfico de arriba tiene los mismos meses.
       missions:
         sentinel-2: Sentinel-2
