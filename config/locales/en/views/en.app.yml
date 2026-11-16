@@ -325,6 +325,8 @@ en:
         save: Save field
         review_empty: Not answered
         review_edit: Edit
+        invalid_step: Something on this step needs a fix before going on.
+        crop_needed: Write the crop growing now, or clear its months.
         pin_note: The pin is all the data sources need. Nothing else about the place is asked.
         history_note: In the United States the crop map will propose these seasons on the field page.
         steps:
@@ -399,11 +401,14 @@ en:
         added: Field added. Looking up its data now.
         too_many: That is the most fields a farm can hold for now.
         invalid: The field needs at least a valid pin.
+        invalid_location: "The pin is not valid: check the latitude (-90 to 90) and the longitude (-180 to 180), with a decimal point."
       reset:
         reset: Back to the sample farm.
       no_area: Area not given
       pick_month: Choose a month
       pin:
+        latitude_range: "Latitude goes from -90 to 90, with a decimal point (for example -33.59)."
+        longitude_range: "Longitude goes from -180 to 180, with a decimal point (for example -70.84)."
         latitude: Latitude
         longitude: Longitude
         use_my_location: Use my location

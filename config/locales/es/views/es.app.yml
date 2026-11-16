@@ -325,6 +325,8 @@ es:
         save: Guardar terreno
         review_empty: Sin responder
         review_edit: Editar
+        invalid_step: Hay algo en este paso que corregir antes de seguir.
+        crop_needed: Escribe el cultivo que tienes ahora, o borra sus meses.
         pin_note: El punto es todo lo que necesitan las fuentes de datos. No se pregunta nada más del lugar.
         history_note: En Estados Unidos el mapa de cultivos propondrá estas temporadas en la página del terreno.
         steps:
@@ -399,11 +401,14 @@ es:
         added: Terreno agregado. Ya estoy buscando sus datos.
         too_many: Es el máximo de terrenos que admite una finca por ahora.
         invalid: El terreno necesita al menos un punto válido.
+        invalid_location: "El punto no es válido: revisa la latitud (de -90 a 90) y la longitud (de -180 a 180), con punto decimal."
       reset:
         reset: De vuelta a la finca de ejemplo.
       no_area: Área sin indicar
       pick_month: Elige un mes
       pin:
+        latitude_range: "La latitud va de -90 a 90, con punto decimal (por ejemplo -33.59)."
+        longitude_range: "La longitud va de -180 a 180, con punto decimal (por ejemplo -70.84)."
         latitude: Latitud
         longitude: Longitud
         use_my_location: Usar mi ubicación

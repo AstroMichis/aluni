@@ -9,11 +9,13 @@
     <div class="form-row form-row--two">
       <label class="input-group">
         <span class="input-group__label"><%= t("app.fields.pin.latitude") %></span>
-        <input class="input" type="number" step="any" min="-90" max="90" name="<%= name %>[latitude]" value="<%= Array(current)[0] %>" data-geolocate-target="latitude" required>
+        <input class="input" type="number" step="any" min="-90" max="90" name="<%= name %>[latitude]" value="<%= Array(current)[0] %>" data-geolocate-target="latitude" required
+               data-invalid-message="<%= t("app.fields.pin.latitude_range") %>">
       </label>
       <label class="input-group">
         <span class="input-group__label"><%= t("app.fields.pin.longitude") %></span>
-        <input class="input" type="number" step="any" min="-180" max="180" name="<%= name %>[longitude]" value="<%= Array(current)[1] %>" data-geolocate-target="longitude" required>
+        <input class="input" type="number" step="any" min="-180" max="180" name="<%= name %>[longitude]" value="<%= Array(current)[1] %>" data-geolocate-target="longitude" required
+               data-invalid-message="<%= t("app.fields.pin.longitude_range") %>">
       </label>
     </div>
     <input type="hidden" data-geolocate-target="text">
