@@ -53,6 +53,13 @@ module FieldsHelper
     entry ? t("app.crops.names.#{entry.key}", default: entry.scientific) : crop.to_s
   end
 
+  # What the add-a-field form was sent with, when the server sends it back (fields#create
+  # failed): the param under field[...], or nil on a fresh form.
+  def wizard_value(*keys)
+    value = params[:field].respond_to?(:dig) ? params[:field].dig(*keys) : nil
+    value.respond_to?(:to_unsafe_h) ? value.to_unsafe_h : value
+  end
+
   def plot_name(field) = field.name || t("app.fields.untitled", number: field.record.position + 1)
 
   def field_area(field)

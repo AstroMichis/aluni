@@ -4,6 +4,6 @@
   <fieldset class="choice-set">
     <legend class="choice-set__legend"><%= datum_label(datum) %></legend>
     <% param = datum.key == "current_crop" ? "crop" : datum.key %>
-    <%= render "app/fields/input", datum: datum, name: "field[#{param}]", current: nil, preview: true %>
+    <%= render "app/fields/input", datum: datum, name: "field[#{param}]", current: wizard_value(param), preview: true %>
   </fieldset>
 <% end %>

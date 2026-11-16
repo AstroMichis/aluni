@@ -115,6 +115,17 @@ RSpec.describe "Menu sections on the farmer's own farm", type: :request do
     expect { post refresh_app_field_path(field, locale: "en"), headers: native_headers }.to have_enqueued_job(Fields::FetchObservationsJob).with(field.id)
   end
 
+  it "keeps the answers and says why when a new field is sent with a wrong pin" do
+    expect {
+      post app_fields_path(locale: "en"), headers: native_headers,
+                                          params: { field: { name: "Parcela", latitude: "-33.59", longitude: "-708476706", crop: "Maize" } }
+    }.not_to change(Field, :count)
+
+    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response.body).to include(ERB::Util.h(I18n.t("app.fields.create.invalid_location"))).and include("toast--error")
+    expect(response.body).to include('value="Parcela"').and include('value="-708476706"').and include('value="Maize"')
+  end
+
   it "shows the farm profile, the team and the sources" do
     get app_farm_path(locale: "en"), headers: native_headers
     expect(response.body).to include("Finca Ana").and include(I18n.t("onboarding.values.segment.mid_mechanized"))

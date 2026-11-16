@@ -5,19 +5,97 @@ import { Controller } from "@hotwired/stimulus"
 // motion), the progress bar follows and focus lands on each question. The
 // crop grows on the preview plot; the last step lists every answer with a
 // way back to its step, then the form is sent and the field is created.
+//
+// Errors: Next checks the step's answers before moving on (the browser's own
+// constraints, a plain message for an out-of-range coordinate from the
+// field's data-invalid-message, and a crop when its months were picked) and
+// says what is wrong on the field and in a toast (the project's flash toasts,
+// cloned from the "toast" template into #flash). A control still invalid when
+// the form is sent (it lives on a hidden step) takes the person to its step
+// instead of the browser blocking the send in silence.
 export default class extends Controller {
-  static targets = ["step", "progress", "bar", "plot", "review"]
+  static targets = ["step", "progress", "bar", "plot", "review", "toast"]
   static classes = ["current"]
-  static values = { empty: String, edit: String }
+  static values = { empty: String, edit: String, invalid: String, cropNeeded: String }
 
   connect() {
     this.index = 0
     this.reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    this.onInvalid = (event) => this.invalidOnSend(event)
+    this.onEdit = (event) => event.target.setCustomValidity?.("")
+    this.element.addEventListener("invalid", this.onInvalid, true)
+    this.element.addEventListener("input", this.onEdit)
+    this.element.addEventListener("change", this.onEdit)
     this.update()
   }
 
-  next() { this.go(this.index + 1) }
+  disconnect() {
+    this.element.removeEventListener("invalid", this.onInvalid, true)
+    this.element.removeEventListener("input", this.onEdit)
+    this.element.removeEventListener("change", this.onEdit)
+  }
+
+  next() {
+    if (!this.check(this.stepTargets[this.index])) return
+    this.go(this.index + 1)
+  }
+
   back() { this.go(this.index - 1) }
+
+  // The step's first wrong answer, reported on its field and in a toast; true when all fit.
+  check(step) {
+    const controls = [...step.querySelectorAll("input, select, textarea")].filter((c) => c.willValidate)
+    controls.forEach((control) => this.explain(control))
+    this.requireCrop(step)
+    const wrong = controls.find((control) => !control.checkValidity())
+    if (!wrong) return true
+
+    wrong.reportValidity()
+    this.toast(this.invalidValue)
+    return false
+  }
+
+  // A number out of its range says why in plain words (data-invalid-message).
+  explain(control) {
+    const message = control.dataset.invalidMessage
+    if (!message) return
+    control.setCustomValidity("")
+    const { rangeOverflow, rangeUnderflow, badInput } = control.validity
+    if (rangeOverflow || rangeUnderflow || badInput) control.setCustomValidity(message)
+  }
+
+  // Months picked for this season's crop without the crop: the server would drop them.
+  requireCrop(step) {
+    const crop = step.querySelector("input[name='field[crop]']")
+    if (!crop) return
+    const months = [...step.querySelectorAll("select[name='field[planting_month]'], select[name='field[harvest_month]']")]
+    const orphan = !crop.value.trim() && months.some((select) => select.value)
+    crop.setCustomValidity(orphan ? this.cropNeededValue : "")
+  }
+
+  // The browser found a wrong answer while sending: go to its step and say so there.
+  invalidOnSend(event) {
+    if (this.reporting) return
+    event.preventDefault()
+    const index = this.stepTargets.findIndex((step) => step.contains(event.target))
+    if (index < 0) return
+    this.reporting = true
+    this.go(index)
+    requestAnimationFrame(() => {
+      this.explain(event.target)
+      event.target.reportValidity()
+      this.reporting = false
+    })
+    this.toast(this.invalidValue)
+  }
+
+  toast(message) {
+    const flash = document.getElementById("flash")
+    if (!this.hasToastTarget || !flash || !message) return
+    const toast = this.toastTarget.content.firstElementChild.cloneNode(true)
+    toast.querySelector(".toast__message").textContent = message
+    flash.append(toast)
+  }
 
   // Enter moves on instead of sending the form early.
   enter(event) {

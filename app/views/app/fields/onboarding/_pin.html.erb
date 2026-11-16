@@ -1,4 +1,4 @@
 <%# Step: where the field is. The pin is what every data source needs; nothing else about the place is asked. %>
-<%= render "app/fields/input", datum: step.data.first, name: "field", current: nil %>
+<%= render "app/fields/input", datum: step.data.first, name: "field", current: [ wizard_value(:latitude), wizard_value(:longitude) ].compact.presence %>
 <input type="hidden" name="field[location_source]" value="typed">
 <p class="layer-note layer-note--global"><%= t("app.fields.new.pin_note") %></p>

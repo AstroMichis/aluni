@@ -17,8 +17,12 @@ RSpec.describe Fields::CreateFieldService do
       [ Date.current.year, "Frijol", "Phaseolus vulgaris" ], [ Date.current.year - 1, "Maíz", "Zea mays" ])
   end
 
-  it "needs a valid pin" do
-    expect(described_class.call(user: user, attributes: { name: "No pin" })).to be_failure
-    expect(described_class.call(user: user, attributes: { latitude: "200", longitude: "0" })).to be_failure
+  it "needs a valid pin, and writes nothing without one" do
+    expect(described_class.call(user: user, attributes: { name: "No pin" }).error).to include(code: :invalid_location)
+    expect(described_class.call(user: user, attributes: { latitude: "200", longitude: "0" }).error).to include(code: :invalid_location)
+
+    newcomer = create(:user)
+    expect { described_class.call(user: newcomer, attributes: { latitude: "-33.59", longitude: "-708476706" }) }
+      .not_to change(Farm, :count) # the longitude lost its decimal point
   end
 end

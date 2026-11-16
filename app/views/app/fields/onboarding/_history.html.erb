@@ -1,5 +1,5 @@
 <%# Step: the last three seasons. For a US pin the crop map proposes them on the field page afterwards. %>
 <% step.data.each do |datum| %>
-  <%= render "app/fields/input", datum: datum, name: "field[history]", current: nil %>
+  <%= render "app/fields/input", datum: datum, name: "field[history]", current: wizard_value(:history) %>
 <% end %>
 <p class="choice-set__hint"><%= t("app.fields.new.history_note") %></p>

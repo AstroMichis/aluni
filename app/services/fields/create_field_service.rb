@@ -4,7 +4,9 @@ module Fields
   # Adds a field from the add-a-field form: the pin, a name, the area and
   # how it is watered, this season's crop and the seasons before. Everything
   # passes Onboarding::Allowlist first; the pin enqueues the data fetch
-  # (Field#after_commit). Returns Success(field).
+  # (Field#after_commit). Returns Success(field), or Failure with code
+  # :invalid_location (no valid pin), :too_many or :invalid (messages); nothing
+  # is written on a failure, not even the farm.
   class CreateFieldService < ApplicationService
     MAX_FIELDS = 30
 
@@ -17,13 +19,12 @@ module Fields
     end
 
     def call
-      farm = @user.farms.first || @user.farms.create!
-      return Failure(code: :too_many) if farm.fields.count >= MAX_FIELDS
-
       field_attrs = Onboarding::Allowlist.filter("field" => @attributes.merge(location))["field"].to_h
-      return Failure(code: :invalid) unless field_attrs["latitude"] && field_attrs["longitude"]
+      return Failure(code: :invalid_location) unless field_attrs["latitude"] && field_attrs["longitude"]
+      return Failure(code: :too_many) if @user.farms.first&.fields&.count.to_i >= MAX_FIELDS
 
       field = ActiveRecord::Base.transaction do
+        farm = @user.farms.first || @user.farms.create!
         record = farm.fields.create!(field_attrs.except("soil").merge("position" => farm.fields.maximum(:position).to_i + 1))
         crops.each { |row| record.field_crops.create!(row.merge("source" => "farmer")) }
         record

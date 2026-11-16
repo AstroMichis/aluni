@@ -49,8 +49,10 @@ module App
         redirect_to app_field_path(field), notice: t(".added"), status: :see_other
       in Result::Failure(code: :too_many)
         redirect_to app_fields_path, alert: t(".too_many"), status: :see_other
-      in Result::Failure
-        redirect_to new_app_field_path, alert: t(".invalid"), status: :see_other
+      in Result::Failure(code:, **rest)
+        # Back to the form with every answer kept (FieldsHelper#wizard_value) and why, as a toast.
+        flash.now[:alert] = code == :invalid_location ? t(".invalid_location") : [ t(".invalid"), *rest[:messages] ].join(" ")
+        render :new, status: :unprocessable_entity
       end
     end
 
