@@ -64,7 +64,7 @@ jobs:
 
       - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
 
-      - uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1.334.0
+      - uses: ruby/setup-ruby@20eb24b0d509e2b9ed9b6d42ddfeb992915e0564 # v1.341.0
       - name: Install Kamal (version from Gemfile.lock)
         run: gem install kamal --no-document -v "$(sed -n 's/^    kamal (\(.*\))$/\1/p' Gemfile.lock)"
 
