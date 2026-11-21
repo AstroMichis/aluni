@@ -24,7 +24,7 @@ gem "propshaft"
 gem "importmap-rails"
 
 # Storage: Cloudflare R2 through the S3 adapter; variants through libvips.
-gem "aws-sdk-s3", "~> 1.0"
+gem "aws-sdk-s3", "~> 1.244"
 gem "image_processing", "~> 1.12"
 
 # HTTP clients (Gemini and any other outside service).
